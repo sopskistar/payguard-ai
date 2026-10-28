@@ -56,8 +56,8 @@ export function Landing() {
                 changes through a known contact, and remember the policy for next time.
               </p>
               <div className="hero-actions">
-                <Link href="/app" className="button primary">
-                  Open PayGuard <ArrowUpRight size={19} />
+                <Link href="/try" className="button primary">
+                  Try the judge sandbox <ArrowUpRight size={19} />
                 </Link>
                 <Link className="button text-button" href="/app/replay">
                   Replay an attack <ArrowRight size={18} />

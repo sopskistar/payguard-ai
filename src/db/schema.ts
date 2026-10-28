@@ -267,3 +267,48 @@ export const humanVerifications = pgTable(
   },
   (t) => [index('human_verification_invoice').on(t.tenantId, t.invoiceId)],
 );
+export const servicePaymentIntents = pgTable(
+  'service_payment_intents',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    tenantId: tenant(),
+    invoiceId: uuid('invoice_id')
+      .notNull()
+      .references(() => invoices.id),
+    operationKey: uuid('operation_key').notNull(),
+    instructionHash: text('instruction_hash').notNull(),
+    analysisInput: jsonb('analysis_input').notNull().default({}),
+    challenge: jsonb('challenge').notNull(),
+    state: text('state').notNull().default('quoted'),
+    payer: text('payer'),
+    payloadHash: text('payload_hash'),
+    digest: text('digest'),
+    approvedAt: timestamp('approved_at', { withTimezone: true }),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    createdAt: time(),
+  },
+  (t) => [
+    uniqueIndex('service_operation').on(t.tenantId, t.operationKey),
+    uniqueIndex('service_payload_once').on(t.payloadHash),
+    uniqueIndex('service_digest_once').on(t.digest),
+  ],
+);
+export const servicePaymentReceipts = pgTable(
+  'service_payment_receipts',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    tenantId: tenant(),
+    intentId: uuid('intent_id')
+      .notNull()
+      .references(() => servicePaymentIntents.id),
+    digest: text('digest').notNull(),
+    network: text('network').notNull(),
+    evidence: jsonb('evidence').notNull(),
+    result: jsonb('result').notNull(),
+    createdAt: time(),
+  },
+  (t) => [
+    uniqueIndex('service_receipt_intent').on(t.intentId),
+    uniqueIndex('service_receipt_digest').on(t.network, t.digest),
+  ],
+);

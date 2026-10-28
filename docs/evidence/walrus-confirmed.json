@@ -1,5 +1,5 @@
 {
-  "exportedAt": "2026-10-28T14:12:42.594Z",
+  "exportedAt": "2026-10-28T23:01:40.457Z",
   "source": "Neon records; completion evidence returned by Walrus SDK",
   "memoryAccountId": "0x7cf55b418a403dc667fcd98296fb05d894faef3b3a96657e06ef8108e45ff301",
   "confirmedMemories": [
@@ -118,6 +118,159 @@
       "accountId": "0x7cf55b418a403dc667fcd98296fb05d894faef3b3a96657e06ef8108e45ff301",
       "namespace": "payguard-v1-6ccb21624a510029c350b89da522cf9c",
       "completedAt": "2026-10-28T13:59:52.500Z",
+      "isSyntheticBusinessEvent": true
+    },
+    {
+      "id": "84eb4277-d68a-4929-bd30-135846fe8ff6",
+      "jobId": "19d5921c-de93-47b3-a760-3f499ec9d23f",
+      "blobId": "9Z2VE-rj2-XE8s_KdqfUEenuJgLwGNz5-DCAyRM8Eks",
+      "accountId": "0x7cf55b418a403dc667fcd98296fb05d894faef3b3a96657e06ef8108e45ff301",
+      "namespace": "payguard-v1-6ccb21624a510029c350b89da522cf9c",
+      "completedAt": "2026-10-28T23:00:16.055Z",
+      "isSyntheticBusinessEvent": true
+    },
+    {
+      "id": "c9219700-5a44-4f2c-943b-1eb20910d89d",
+      "jobId": "416cff4b-7b15-4521-b003-92e71baa44df",
+      "blobId": "v8OD2R59cXEjANkoV5UY9HSIInE-SY1tOBzZY7uerYQ",
+      "accountId": "0x7cf55b418a403dc667fcd98296fb05d894faef3b3a96657e06ef8108e45ff301",
+      "namespace": "payguard-v1-6ccb21624a510029c350b89da522cf9c",
+      "completedAt": "2026-10-28T23:00:13.465Z",
+      "isSyntheticBusinessEvent": true
+    },
+    {
+      "id": "a495777c-56ab-43f7-ae02-49c8a2ed8307",
+      "jobId": "bf0c610a-c854-4b85-a54c-2a782c46896f",
+      "blobId": "XlBuCNiCJsPVn4iSW07zzvIoumMieGUyxPMaJxNWg5k",
+      "accountId": "0x7cf55b418a403dc667fcd98296fb05d894faef3b3a96657e06ef8108e45ff301",
+      "namespace": "payguard-v1-6ccb21624a510029c350b89da522cf9c",
+      "completedAt": "2026-10-28T23:00:18.734Z",
+      "isSyntheticBusinessEvent": true
+    },
+    {
+      "id": "48153c05-3791-447a-ac1e-1676808e41b0",
+      "jobId": "474a6a64-ad05-4ed7-b5f4-a22acfabade7",
+      "blobId": "3WogKM2IAtehjpvTCgIWpi3S7-Ciy5rJw4usKe-bf2g",
+      "accountId": "0x7cf55b418a403dc667fcd98296fb05d894faef3b3a96657e06ef8108e45ff301",
+      "namespace": "payguard-v1-6ccb21624a510029c350b89da522cf9c",
+      "completedAt": "2026-10-28T23:00:26.355Z",
+      "isSyntheticBusinessEvent": true
+    },
+    {
+      "id": "5ebffcd6-eacc-4ee1-9993-3a742017dfdd",
+      "jobId": "869d5212-09a0-4ecd-9f39-5ae0b2291db8",
+      "blobId": "4OkVDojIGY0q4WzmANQUuuKkYaFeyPdIhjDb48GVyOM",
+      "accountId": "0x7cf55b418a403dc667fcd98296fb05d894faef3b3a96657e06ef8108e45ff301",
+      "namespace": "payguard-v1-6ccb21624a510029c350b89da522cf9c",
+      "completedAt": "2026-10-28T23:00:31.688Z",
+      "isSyntheticBusinessEvent": true
+    },
+    {
+      "id": "5a6dd8ce-6391-410e-a4da-35a0f3f4a280",
+      "jobId": "292820cd-b090-4a63-900b-b4e605425fb7",
+      "blobId": "t8xATUp5_3_L79mG2DCTTq1jN0N3zQNcef15kYZOvdw",
+      "accountId": "0x7cf55b418a403dc667fcd98296fb05d894faef3b3a96657e06ef8108e45ff301",
+      "namespace": "payguard-v1-6ccb21624a510029c350b89da522cf9c",
+      "completedAt": "2026-10-28T23:00:29.091Z",
+      "isSyntheticBusinessEvent": true
+    },
+    {
+      "id": "3850853f-6ed7-4c57-9686-2577fd12b8a5",
+      "jobId": "b1c59b64-faab-4e6d-b66c-b914be699a7b",
+      "blobId": "gDt16mmOG810QixENGVgyaEB_2ospWC19Fpild32BhI",
+      "accountId": "0x7cf55b418a403dc667fcd98296fb05d894faef3b3a96657e06ef8108e45ff301",
+      "namespace": "payguard-v1-6ccb21624a510029c350b89da522cf9c",
+      "completedAt": "2026-10-28T23:00:39.722Z",
+      "isSyntheticBusinessEvent": true
+    },
+    {
+      "id": "4d2f911f-0fa6-408d-8126-6391338d1e86",
+      "jobId": "66cb45d5-af9b-44f6-9b39-0e10437a93e4",
+      "blobId": "_1bwWsj7Si4TGFuM4PH0tKIsINrAd7Lc23mbJFYGFZ4",
+      "accountId": "0x7cf55b418a403dc667fcd98296fb05d894faef3b3a96657e06ef8108e45ff301",
+      "namespace": "payguard-v1-6ccb21624a510029c350b89da522cf9c",
+      "completedAt": "2026-10-28T23:00:34.695Z",
+      "isSyntheticBusinessEvent": true
+    },
+    {
+      "id": "db9c8473-f0e4-4cd1-93b8-f74ca0b3ea07",
+      "jobId": "26b9f3b6-7421-429c-9450-5cdf00341235",
+      "blobId": "8PhJP7PFwXG-NmJ_Tvd36RaGKZs10uVffA7XBWtE_5A",
+      "accountId": "0x7cf55b418a403dc667fcd98296fb05d894faef3b3a96657e06ef8108e45ff301",
+      "namespace": "payguard-v1-6ccb21624a510029c350b89da522cf9c",
+      "completedAt": "2026-10-28T22:55:41.675Z",
+      "isSyntheticBusinessEvent": true
+    },
+    {
+      "id": "211396fa-d040-46af-9de2-c4608e84f115",
+      "jobId": "5425784b-fa5f-4640-a935-3024e4333f86",
+      "blobId": "F_1Poe3UQ3lKnvnnwZyIdSlvDPBoYDvgGhDEvxsQFSY",
+      "accountId": "0x7cf55b418a403dc667fcd98296fb05d894faef3b3a96657e06ef8108e45ff301",
+      "namespace": "payguard-v1-6ccb21624a510029c350b89da522cf9c",
+      "completedAt": "2026-10-28T23:00:37.236Z",
+      "isSyntheticBusinessEvent": true
+    },
+    {
+      "id": "fb21a4c7-1569-4d76-97dd-abf2351a7c20",
+      "jobId": "83e59f14-0679-4557-87f9-c6432166aa30",
+      "blobId": "-8Zr3bN7mKSTnqW9hF1gfH3mKOb6qm2uLPOCXMpbP9k",
+      "accountId": "0x7cf55b418a403dc667fcd98296fb05d894faef3b3a96657e06ef8108e45ff301",
+      "namespace": "payguard-v1-6ccb21624a510029c350b89da522cf9c",
+      "completedAt": "2026-10-28T22:57:20.833Z",
+      "isSyntheticBusinessEvent": true
+    },
+    {
+      "id": "f21f80b7-584b-44a7-8669-3dbdad4ab5de",
+      "jobId": "afa56c92-971e-42bd-b2d2-b865f0a1a705",
+      "blobId": "56SOSxSVJVwSkZGFmCN7Sx2DUMBLlovypLYfSFrMoW4",
+      "accountId": "0x7cf55b418a403dc667fcd98296fb05d894faef3b3a96657e06ef8108e45ff301",
+      "namespace": "payguard-v1-6ccb21624a510029c350b89da522cf9c",
+      "completedAt": "2026-10-28T23:00:50.668Z",
+      "isSyntheticBusinessEvent": true
+    },
+    {
+      "id": "c015bdeb-ed89-4c0a-9e05-bde9d586cdc9",
+      "jobId": "fad578ba-7a66-42be-9699-d24504af803c",
+      "blobId": "o_e8TXMGdpQ-vLtPoRFwzNBmThuPSCnIxszMyeFQSOk",
+      "accountId": "0x7cf55b418a403dc667fcd98296fb05d894faef3b3a96657e06ef8108e45ff301",
+      "namespace": "payguard-v1-6ccb21624a510029c350b89da522cf9c",
+      "completedAt": "2026-10-28T22:58:08.595Z",
+      "isSyntheticBusinessEvent": true
+    },
+    {
+      "id": "5ac8f548-1a33-4172-9b8d-506cbc4786c2",
+      "jobId": "303659ee-6607-4868-89b5-3e632bf2fd11",
+      "blobId": "yk1vnCv-fnHh3S0Oxc61RnXMWshJdqAJ0f5VlD1hosI",
+      "accountId": "0x7cf55b418a403dc667fcd98296fb05d894faef3b3a96657e06ef8108e45ff301",
+      "namespace": "payguard-v1-6ccb21624a510029c350b89da522cf9c",
+      "completedAt": "2026-10-28T23:00:21.446Z",
+      "isSyntheticBusinessEvent": true
+    },
+    {
+      "id": "ce659c3a-cefb-441e-9e5d-c14467a231eb",
+      "jobId": "f5e84c1e-11e7-44e1-84ce-0e1d6c8e7f98",
+      "blobId": "PyiSfvA2yS_8Xa3PZGVDDVhRMVNJKT6n5lDGjsm9a50",
+      "accountId": "0x7cf55b418a403dc667fcd98296fb05d894faef3b3a96657e06ef8108e45ff301",
+      "namespace": "payguard-v1-6ccb21624a510029c350b89da522cf9c",
+      "completedAt": "2026-10-28T23:00:45.559Z",
+      "isSyntheticBusinessEvent": true
+    },
+    {
+      "id": "ebb01f9d-c410-4ad9-96a6-623aeca6061d",
+      "jobId": "b39fdc9f-ff2f-430b-8f35-b2db62ddb414",
+      "blobId": "7LxVCj03Q9JztRjE7Jir_7M4YERHG9KlrM0SaPsa6vY",
+      "accountId": "0x7cf55b418a403dc667fcd98296fb05d894faef3b3a96657e06ef8108e45ff301",
+      "namespace": "payguard-v1-6ccb21624a510029c350b89da522cf9c",
+      "completedAt": "2026-10-28T23:00:42.656Z",
+      "isSyntheticBusinessEvent": true
+    },
+    {
+      "id": "d67b2371-f951-4e62-9f72-bb2b53be6c48",
+      "jobId": "12ae081e-cbe0-488a-abd5-f1793e6280b4",
+      "blobId": "lBa7czw0MVB1oZeclRzmMtD7e8u2hvzySnyiY4vne4E",
+      "accountId": "0x7cf55b418a403dc667fcd98296fb05d894faef3b3a96657e06ef8108e45ff301",
+      "namespace": "payguard-v1-6ccb21624a510029c350b89da522cf9c",
+      "completedAt": "2026-10-28T23:00:48.078Z",
       "isSyntheticBusinessEvent": true
     }
   ]

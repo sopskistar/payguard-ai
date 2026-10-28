@@ -1155,6 +1155,13 @@ function TransactionPane({
         Paste a mainnet digest to verify. Recipient, coin, exact agreed token amount, execution and
         uniqueness are checked independently.
       </p>
+      {invoice && owner && (
+        <p>
+          <Link className="inline-link" href="/services">
+            Request supplemental consistency analysis · Testnet service payment
+          </Link>
+        </p>
+      )}
       <form className="inline-form" onSubmit={submit}>
         <Field label="Transaction digest">
           <input

@@ -4,7 +4,7 @@ const origin = process.env.E2E_BASE_URL || 'http://localhost:3000';
 test('LIVE Mainnet correction is recalled in a separate owner session', async ({ browser }) => {
   test.skip(
     process.env.LIVE_MEMORY_TEST !== '1' || !process.env.E2E_OWNER_PASSWORD,
-    'Requires explicit LIVE_MEMORY_TEST=1, private owner access and configured Neon/Walrus. Creates a real memory.',
+    'Requires explicit LIVE_MEMORY_TEST=1, private owner access and configured Neon/Walrus. Creates a real memory unless LIVE_MEMORY_REUSE=1 uses the existing confirmed correction.',
   );
   test.setTimeout(240000);
   const first = await browser.newContext();
@@ -24,25 +24,34 @@ test('LIVE Mainnet correction is recalled in a separate owner session', async ({
     data: { invoiceId: invoice.id, memoryOn: false },
   });
   expect(off.ok()).toBe(true);
-  const correction = await first.request.post('/api/corrections', {
-    headers: { origin },
-    data: {
-      invoiceId: invoice.id,
-      findingId: 'recipient-change',
-      action: 'remember',
-      explanation:
-        'Synthetic live demo: independently verify the supplier before any changed payout address is approved.',
-      scope: 'vendor',
-      future: true,
-      kind: 'verify_address',
-      value: '',
-      hard: false,
-      consent: true,
-      operationKey: randomUUID(),
-    },
-  });
-  expect(correction.ok()).toBe(true);
-  let job = await correction.json();
+  let job: { id: string; status: string; blobId: string | null };
+  if (process.env.LIVE_MEMORY_REUSE === '1') {
+    job = snapshot.memories.find(
+      (m: { status: string; invoiceId: string; intent: string }) =>
+        m.status === 'confirmed' && m.invoiceId === invoice.id && m.intent === 'remember',
+    );
+    expect(job).toBeTruthy();
+  } else {
+    const correction = await first.request.post('/api/corrections', {
+      headers: { origin },
+      data: {
+        invoiceId: invoice.id,
+        findingId: 'recipient-change',
+        action: 'remember',
+        explanation:
+          'Synthetic live demo: independently verify the supplier before any changed payout address is approved.',
+        scope: 'vendor',
+        future: true,
+        kind: 'verify_address',
+        value: '',
+        hard: false,
+        consent: true,
+        operationKey: randomUUID(),
+      },
+    });
+    expect(correction.ok()).toBe(true);
+    job = await correction.json();
+  }
   for (let attempt = 0; job.status === 'pending' && attempt < 4; attempt++) {
     const response = await first.request.post('/api/memory/resume', {
       headers: { origin },

@@ -15,6 +15,20 @@
       "when": 1793157709772,
       "tag": "0001_slippery_loki",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793228196727,
+      "tag": "0002_bumpy_lake",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1793228338182,
+      "tag": "0003_wonderful_lifeguard",
+      "breakpoints": true
     }
   ]
 }

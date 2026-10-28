@@ -2,9 +2,28 @@
 
 **Verify before you pay. Remember what nearly went wrong.** Built on the existing PayGuard AI application and official branding.
 
-PayGuard Verify helps a human reviewer investigate supplier payment-instruction changes. It compares proposed recipients with independently established vendor profiles, flags observable business email compromise (BEC) patterns, records out-of-band verification, and recalls approved policies from Walrus Memory. Tatum Sui Mainnet gRPC supplies separate chain evidence. **A successful transfer does not establish supplier identity or authorize an instruction.** No supplier payment is ever initiated.
+PayGuard Verify helps a human reviewer investigate supplier payment-instruction changes. It compares proposed recipients with independently established vendor profiles, flags observable business email compromise (BEC) patterns, records out-of-band verification, and recalls approved policies from Walrus Memory. Tatum Sui Mainnet gRPC supplies separate chain evidence. **A successful transfer does not establish supplier identity or authorize an instruction.** No supplier payment is ever initiated. A separate, explicitly approved and capped Testnet service fee is available behind owner authentication.
 
-The application is implemented and locally production-tested. **13 Walrus Mainnet memories are confirmed; real semantic recall passed across a fresh owner browser session; Tatum gRPC inspected a real transaction and correctly rejected a false invoice match.** See [the proof ledger](docs/MAINNET_PROOF.md), [test results](docs/TEST_RESULTS.md), and [handoff](docs/CODEX_HANDOFF.md). Vercel built the application successfully, but its project aliases currently require Vercel login, so the public demo gate is blocked on deployment protection/domain configuration. No supplier payment or positive live payment match is claimed. The updated October 27 PayGuard Verify specification was merged safely from GitHub.
+The application is implemented and locally production-tested. **30 Walrus Mainnet memories are confirmed; real semantic recall passed across a fresh owner browser session; Tatum gRPC inspected a real transaction and correctly rejected a false invoice match.** See [the proof ledger](docs/MAINNET_PROOF.md), [test results](docs/TEST_RESULTS.md), and [handoff](docs/CODEX_HANDOFF.md). Vercel built the application successfully, but its project aliases currently require Vercel login, so the public demo gate is blocked on deployment protection/domain configuration. No supplier payment or positive live payment match is claimed. The updated October 27 PayGuard Verify specification was merged safely from GitHub.
+
+## Judge? Start Here
+
+**PayGuard Verify — Verify before you pay. Remember what nearly went wrong.**
+
+| Explore                           | Link and actual status                                                                                                                                                                 |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Public three-minute judge sandbox | [Try PayGuard Verify](https://sopskistar.github.io/payguard-ai/try/) — no account, funds or credentials; same judge component and protection logic, recorded genuine provider evidence |
+| Next.js application               | [PayGuard workspace](https://payguard-ai-sopskistars-projects.vercel.app) — Vercel build succeeded; deployment protection currently requires Vercel login                              |
+| Next.js judge route               | [/try on the application](https://payguard-ai-sopskistars-projects.vercel.app/try) — available when owner exposes production                                                           |
+| Guided instructions               | [Judge walkthrough and troubleshooting](docs/JUDGE_WALKTHROUGH.md)                                                                                                                     |
+| Walrus Mainnet                    | [30 confirmed job/blob records](docs/MAINNET_PROOF.md) · [Raw evidence](docs/evidence/walrus-confirmed.json)                                                                           |
+| Actual remembered decisions       | [Recorded semantic recall](docs/evidence/judge-recall.json) · [Live quality evaluation](docs/MEMORY_EVALUATION.md)                                                                     |
+| Tatum Sui Mainnet                 | [Real transaction and mismatch evidence](docs/evidence/tatum-reconciliation.json)                                                                                                      |
+| Verification and architecture     | [Tests](docs/TEST_RESULTS.md) · [Architecture](docs/ARCHITECTURE.md)                                                                                                                   |
+| Technical article                 | [Published engineering report](https://sopskistar.github.io/payguard-ai/)                                                                                                              |
+| Agent-service payments            | [Controlled Testnet feature and blockers](docs/AGENT_PAYMENTS.md) — no settled-payment award claim                                                                                     |
+
+The public practice uses synthetic invoices and a synthetic callback. Its Walrus citations and Tatum receipt are dated, authentic captured results. It performs no guest memory writes, provider requests or supplier payments. Real owner review decisions are stored in Neon; the sandbox audit is local practice state.
 
 ## What is implemented
 
@@ -16,8 +35,8 @@ The application is implemented and locally production-tested. **13 Walrus Mainne
 - Human callback/in-person/established-portal attestation. Changes to invoice terms, instructions or trust-profile revision invalidate prior verification. Row locks protect approval/verification against concurrent edits.
 - Attack Replay Lab with seven clearly synthetic scenarios, including a normal control. Patterns are grounded in [FBI BEC guidance](https://www.fbi.gov/how-we-can-help-you/common-frauds-and-scams/business-email-compromise).
 - Editable manual/PDF/TXT/CSV intake; exact/possible duplicate checks, threshold rules and amount history. Raw uploads are not retained or sent to Walrus.
-- Neon + Drizzle persistence, 19 tables, additive migrations, tenant-scoped records, append-only application audit, idempotent sample seeding.
-- Walrus SDK 0.1.10 adapter: durable operation keys, accepted-job persistence, pending/confirmed/failed states, resumable polling, exact provenance checks on recall, 12 distinct synthetic-event write jobs.
+- Neon + Drizzle persistence, 21 tables, additive migrations, tenant-scoped records, append-only application audit, idempotent sample seeding.
+- Walrus SDK 0.1.10 adapter: durable operation keys, accepted-job persistence, pending/confirmed/failed states, resumable polling, exact provenance checks on recall, 30 completed distinct synthetic business/correction memories.
 - **Native HTTP/2 + TLS gRPC** to Tatum using the installed Sui SDK v2 generated services and server-only `x-api-key`. Service identity, balances, transaction inspection, metadata and bounded candidate streams. No legacy JSON-RPC fallback.
 - Exact BigInt reconciliation: execution, network identity, intended recipient, token identity/decimals, exact agreed amount, gas-payer exclusion and database-enforced digest/invoice uniqueness.
 
@@ -84,7 +103,7 @@ No architecture path signs or submits a supplier payment. A human review approva
 
 Follow [the 2–3 minute demo script](docs/DEMO_SCRIPT.md). The crucial live sequence is: Memory OFF → changed supplier instruction → human correction → **completed Walrus job with blob ID** → later invoice → fresh authenticated browser session → actual semantic recall → Memory ON/OFF comparison.
 
-The ten-memory gate and fresh-session recall are evidenced in [MAINNET_PROOF.md](docs/MAINNET_PROOF.md). The [technical article is published](https://sopskistar.github.io/payguard-ai/). Public app access and a recorded video remain submission gates. The [article source](docs/HACKATHON_ARTICLE_DRAFT.md) includes measured results and genuine screenshots. No x402/MPP bonus is claimed.
+The ten-memory gate and fresh-session recall are evidenced in [MAINNET_PROOF.md](docs/MAINNET_PROOF.md). The [technical article is published](https://sopskistar.github.io/payguard-ai/). Public app access remains a submission gate. The owner will arrange the demo video separately; this build creates no video. The [article source](docs/HACKATHON_ARTICLE_DRAFT.md) includes measured results and genuine screenshots. The Testnet x402 service-payment implementation is gated off until configured; settlement and the bonus remain unproven.
 
 ## Security and limitations
 

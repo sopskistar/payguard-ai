@@ -278,7 +278,7 @@ export async function recallMemories(
     .select()
     .from(s.memoryJobs)
     .where(and(eq(s.memoryJobs.tenantId, tenantId), eq(s.memoryJobs.status, 'confirmed')));
-  const result = await client.recall({ query, namespace: namespaceFor(tenantId), limit: 12 });
+  const result = await client.recall({ query, namespace: namespaceFor(tenantId), limit: 30 });
   // Recalled text is untrusted. Only exact confirmed, tenant-owned records can influence policy.
   const citations: Citation[] = result.results.flatMap((item) => {
     const job = jobs.find((j) => j.blobId === item.blob_id && j.text === item.text && j.policyId);

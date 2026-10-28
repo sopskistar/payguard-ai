@@ -85,3 +85,13 @@ describe('Supplier instruction verification', () => {
       instructionSignals(attackReplays[3].invoice, profile, replayInstruction(3)),
     ).toHaveLength(0));
 });
+it('expires positive attestations after 30 days and rejects future timestamps', () => {
+  for (const checkedAt of ['2025-01-01T00:00:00Z', '2030-01-01T00:00:00Z'])
+    expect(
+      approvalGate(i, profile, instruction, { ...attestation, checkedAt }, 'fixture-hash').allowed,
+    ).toBe(false);
+});
+it('holds onchain instructions with a missing recipient', () =>
+  expect(
+    approvalGate({ ...i, recipient: '' }, profile, undefined, undefined, 'fixture-hash').allowed,
+  ).toBe(false));

@@ -18,7 +18,12 @@
     "memory:seed": "node --conditions=react-server --import tsx scripts/seed-memory.ts",
     "memory:prove-recall": "node --conditions=react-server --import tsx scripts/recall-proof.ts",
     "format": "prettier --write src scripts tests docs README.md CONTRIBUTING.md *.config.* package.json",
-    "format:check": "prettier --check src scripts tests docs README.md CONTRIBUTING.md *.config.* package.json"
+    "format:check": "prettier --check src scripts tests docs README.md CONTRIBUTING.md *.config.* package.json",
+    "memory:expand": "node --conditions=react-server --import tsx scripts/expand-memory.ts",
+    "judge:evidence": "node --conditions=react-server --import tsx scripts/judge-evidence.ts",
+    "memory:evaluate": "node --conditions=react-server --import tsx scripts/evaluate-memory.ts",
+    "judge:publish-build": "node scripts/build-judge-pages.mjs",
+    "memory:preflight": "node --conditions=react-server --import tsx scripts/memory-preflight.ts"
   },
   "dependencies": {
     "@fontsource/manrope": "^5.2.8",
@@ -28,6 +33,7 @@
     "@mysten/sui": "2.38.0",
     "@neondatabase/serverless": "^1.0.2",
     "@protobuf-ts/grpc-transport": "^2.11.1",
+    "@wallet-standard/app": "^1.1.1",
     "csv-parse": "^7.0.3",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.4",
@@ -48,6 +54,7 @@
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "drizzle-kit": "^0.31.5",
+    "esbuild": "^0.28.2",
     "eslint": "^9.38.0",
     "eslint-config-next": "^16.0.0",
     "prettier": "^3.9.10",

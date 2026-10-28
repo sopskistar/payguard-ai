@@ -22,6 +22,17 @@ export function instructionSignals(
       action:
         'Pause approval. Use the pre-established contact from the vendor profile, not contact details in this request.',
     });
+  if (
+    /\b(?:ignore|override|disregard)\b.{0,100}\b(?:instructions?|rules?|safety)\b/i.test(
+      invoice.memo,
+    )
+  )
+    add(
+      'invoice-directive',
+      'Invoice attempts to override review',
+      'Embedded invoice directives cannot authorize approval.',
+      'critical',
+    );
   if (!profile)
     add(
       'trust-unknown',
@@ -97,8 +108,13 @@ export function verificationIsCurrent(
   profile: VendorTrust | undefined,
   verification: HumanVerification | undefined,
   hash: string,
+  now = new Date(),
 ) {
+  const checked = Date.parse(verification?.checkedAt || '');
   return !!(
+    Number.isFinite(checked) &&
+    checked <= now.getTime() + 300000 &&
+    now.getTime() - checked < 30 * 86400000 &&
     profile &&
     verification &&
     verification.recipient === invoice.recipient &&
@@ -112,7 +128,13 @@ export function approvalGate(
   instruction: PaymentInstruction | undefined,
   verification: HumanVerification | undefined,
   hash: string,
+  now = new Date(),
 ) {
+  if ((invoice.coinType || invoice.tokenAmount) && !invoice.recipient)
+    return {
+      allowed: false,
+      reason: 'Record the intended recipient before approving onchain payment instructions.',
+    };
   const relevant = !!invoice.recipient || !!instruction;
   if (!relevant) return { allowed: true, reason: 'No supplier payment instructions attached.' };
   if (!profile)
@@ -128,7 +150,9 @@ export function approvalGate(
         'The trusted contact must predate this request. Investigate through an independent channel.',
     };
   if (
-    verificationIsCurrent(invoice, profile, verification, hash) &&
+    verification?.instructionHash === hash &&
+    verification?.profileRevision === profile.revision &&
+    verification?.recipient === invoice.recipient &&
     verification?.outcome === 'rejected'
   )
     return { allowed: false, reason: 'The human verifier rejected these payment instructions.' };
@@ -136,7 +160,7 @@ export function approvalGate(
   if (
     signals.length &&
     !(
-      verificationIsCurrent(invoice, profile, verification, hash) &&
+      verificationIsCurrent(invoice, profile, verification, hash, now) &&
       verification?.outcome === 'confirmed'
     )
   )

@@ -30,7 +30,7 @@ flowchart TD
 
 ## Persistence and concurrency
 
-Migrations `0000` and `0001` are additive; they were applied successfully to configured Neon. The 19 tables retain invoices, vendor references, payment instructions, human attestations, decisions, policy JSON, memory jobs/recalls, candidates/matches, rate limits and audit events. Existing migrations were not rewritten.
+Migrations `0000` and `0001` are additive; they were applied successfully to configured Neon. The original 19 tables retain invoices, vendor references, payment instructions, human attestations, decisions, policy JSON, memory jobs/recalls, candidates/matches, rate limits and audit events. Existing migrations were not rewritten. Additive `0002`/`0003` bring the total to 21 tables with service intents and receipts.
 
 `vendor_trust_profiles` is the current established reference. Each update increments its revision and records previous/current recipients in the audit trail. `human_verifications` binds an outcome to the full invoice/instruction hash and that revision; a later change invalidates the attestation. These are human assertions, not cryptographic vendor identity. This MVP uses a single active reference per vendor plus invoice-scoped attestations rather than a general multi-destination registry with all five destination lifecycle statuses.
 
@@ -49,3 +49,9 @@ Memory OFF does not invoke semantic recall. It keeps baseline detection and mand
 Walrus is pinned to the managed Mainnet relayer. Tatum is pinned to native TLS gRPC with server-side `x-api-key`. Node route handlers use bounded calls and return unavailable/error states; there is no fabricated fallback. Manual digest lookup is the reliable demonstration path; bounded streaming discovery is provider-dependent, not complete archival history.
 
 A local PGlite fallback exists only for explicit local QA, is labeled, and cannot enable live memory or run on Vercel. Production persistence is Neon. Secrets are never passed to client components. Vercel must receive its own environment settings and exact production `APP_URL`.
+
+## Judge and service-payment extension
+
+`/try` uses the existing deterministic rules and approval gate with synthetic input and a whitelisted captured recall artifact. The same React component is bundled for the public GitHub Pages sandbox; it performs no anonymous provider calls or writes. The capture script queries the authenticated SDK and publishes only synthetic scoped policies with exact confirmed citations. Public replay and live owner recall are explicitly distinguished.
+
+Two additive service tables preserve owner-approved x402 Testnet intents and unique receipts. A signed nonce, frozen instruction snapshot, exact term allowlist and pre-settlement claim prevent rebinding or duplicate charges. Finality is independently checked through Tatum before a result is delivered. Service fees are isolated from supplier invoices; no supplier payment path exists. Mainnet service settlement is unconditionally disabled. See [agent payments](AGENT_PAYMENTS.md).

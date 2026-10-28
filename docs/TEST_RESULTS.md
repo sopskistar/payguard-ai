@@ -52,3 +52,19 @@ Code and evidence were pushed normally to public GitHub (`10ec793`), preserving 
 The [technical article](https://sopskistar.github.io/payguard-ai/) was published using GitHub Pages from `/docs` and returned HTTP 200. Source, screenshots and reviewed proof remain in this repository. No video has been recorded or submitted.
 
 The additional opt-in **live Tatum browser test passed in 16.0 seconds** against the local production build: real digest → Transaction Inspector → actual chain evidence → sample invoice verification → visible Mismatch and zero recipient credit. This validates Next.js route and UI wiring as well as the CLI adapter. Across separate runs, four core browser tests plus one real Walrus and one real Tatum test passed. Enable `LIVE_CHAIN_TEST` and provide `TATUM_TEST_DIGEST` explicitly to repeat it; it performs chain reads and records the negative comparison, not a payment.
+
+## Current continuation release
+
+The saved `652a397` baseline was rechecked: TypeScript, lint and all 51 unit tests passed. All 13 original memory jobs were freshly confirmed `done` with matching SDK blobs. Neon responded and migrations `0002`/`0003` were applied additively for service intents/receipts. The bounded expansion then reached **30 confirmed, 0 pending, 0 failed** at `2026-10-28T23:00:52.070Z`. [Quality results](MEMORY_EVALUATION.md) are from actual semantic recall.
+
+Fresh Tatum Mainnet service check returned checkpoint `339208670` and the existing real digest at `2026-10-28T22:42:31.319Z`. Tatum Testnet read-only service identity returned the correct Testnet genesis and checkpoint `400320637`; no settlement was attempted.
+
+New tests cover the public judge journey, expiration, edit invalidation, missing recipient holds, x402 caps/nonce/network/command validation, explicit approval, cross-tenant access, single settlement and timeout/resume. Payment persistence tests use signed synthetic transaction bytes and mocked providers, never real settlement proof. Final test/build/browser results are recorded below after the run.
+
+No demo video was generated, captured, edited, rendered or uploaded. The owner handles that separately.
+
+Final local continuation checks: **63 unit tests across 9 files passed; TypeScript, lint, formatting and production Webpack build passed. Eight browser tests passed in 2.3 minutes**, including owner persistence, exact human verification/edit invalidation, public judge desktop/mobile controls, unauthenticated service-payment denial, real Tatum inspection/mismatch, and genuine recall in new authenticated contexts. `LIVE_MEMORY_REUSE=1` reused the original confirmed correction instead of writing again. The separately served GitHub Pages judge bundle passed its complete desktop/mobile journey. No videos were recorded.
+
+A publish scan checked 259 repository/client-bundle files against configured secret values with zero matches. Final dependency installation/audit reported zero vulnerabilities after removal of the rejected payment SDK. Public Vercel owner workflows remain untested because deployment protection requires owner action. The service payment has no real settlement receipt; its tests are synthetic provider fixtures.
+
+The final service-method security guard was rebuilt and rechecked: authenticated GET on a service action returns 405, while the full independent-verification/edit-invalidation browser workflow still passed (38.9 seconds). This was a focused regression after the 8/8 complete run.

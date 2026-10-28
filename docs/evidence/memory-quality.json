@@ -1,0 +1,156 @@
+{
+  "checkedAt": "2026-10-28T23:02:08.749Z",
+  "source": "Fresh process, real SDK semantic recalls; synthetic invoices; no fabricated retrieval",
+  "results": [
+    {
+      "vendor": "Northstar Studio",
+      "scenario": "Synthetic business review",
+      "returned": 30,
+      "applied": 8,
+      "staleApplied": 0,
+      "wrongScopeApplied": 0,
+      "off": "Needs review",
+      "on": "High risk / verification required",
+      "citations": [
+        {
+          "id": "48153c05-3791-447a-ac1e-1676808e41b0",
+          "blobId": "3WogKM2IAtehjpvTCgIWpi3S7-Ciy5rJw4usKe-bf2g",
+          "policyId": "1e5dd96a-90e6-47a9-a840-6036ebcfdb19"
+        },
+        {
+          "id": "f21f80b7-584b-44a7-8669-3dbdad4ab5de",
+          "blobId": "56SOSxSVJVwSkZGFmCN7Sx2DUMBLlovypLYfSFrMoW4",
+          "policyId": "6181df21-1d8d-4fe4-900e-9d32e5dece60"
+        },
+        {
+          "id": "273fae59-2855-4cf6-a2ea-1079a11cf84b",
+          "blobId": "i3nSnl9ix5Es129QXaW1gUggnN6t0NaNAZubOMyb-G4",
+          "policyId": "272da366-0028-456b-9af0-2959eb001433"
+        },
+        {
+          "id": "a58c7a99-5d7e-40e3-bf81-d3fb62f99454",
+          "blobId": "k_VAehYdw7pjBjGTW4X4gOjCS4xDIheFZoItuHWMHyQ",
+          "policyId": "48f13c23-23d5-4424-aa1f-c70bc35e5b20"
+        },
+        {
+          "id": "c9219700-5a44-4f2c-943b-1eb20910d89d",
+          "blobId": "v8OD2R59cXEjANkoV5UY9HSIInE-SY1tOBzZY7uerYQ",
+          "policyId": "1e13b709-fc08-4943-b139-7c270c19d913"
+        },
+        {
+          "id": "ebb01f9d-c410-4ad9-96a6-623aeca6061d",
+          "blobId": "7LxVCj03Q9JztRjE7Jir_7M4YERHG9KlrM0SaPsa6vY",
+          "policyId": "e3c0724e-da1e-405b-b43d-154a5b0aa9b8"
+        },
+        {
+          "id": "1adbf8f0-4e31-47c0-b451-fadc4fa57337",
+          "blobId": "pPYsV-RKCESYlutuJDdc9lj9pxV2ixSA_zMHRDr2CM4",
+          "policyId": "6651bfb1-0b09-4ac4-b126-a55555ed3dd1"
+        },
+        {
+          "id": "4cbaa678-77e0-475b-9089-ecea41543194",
+          "blobId": "T5Zlt_7PXvQaySFPOIY0VqmTxz4n8WZYZV2MAgb5p1U",
+          "policyId": "0528915d-7056-4634-9bde-3ba5742fe25b"
+        }
+      ],
+      "baselineFindingsPreserved": true
+    },
+    {
+      "vendor": "Orbit Hosting",
+      "scenario": "Synthetic business review",
+      "returned": 30,
+      "applied": 5,
+      "staleApplied": 0,
+      "wrongScopeApplied": 0,
+      "off": "Needs review",
+      "on": "High risk / verification required",
+      "citations": [
+        {
+          "id": "84eb4277-d68a-4929-bd30-135846fe8ff6",
+          "blobId": "9Z2VE-rj2-XE8s_KdqfUEenuJgLwGNz5-DCAyRM8Eks",
+          "policyId": "8aaacf81-7974-4a5c-905b-6ba3397a6e28"
+        },
+        {
+          "id": "1ec8ab78-096f-4979-863d-c8bec1ffbc3d",
+          "blobId": "mLNTvTJEDoZx11lGldhBb3ngfNCO1Qj5-doyCGgR8mc",
+          "policyId": "52c5389c-b911-4fab-8ca3-627b2d4ff155"
+        },
+        {
+          "id": "5a6dd8ce-6391-410e-a4da-35a0f3f4a280",
+          "blobId": "t8xATUp5_3_L79mG2DCTTq1jN0N3zQNcef15kYZOvdw",
+          "policyId": "0d02f897-4c31-4f94-a25c-df5c322235bc"
+        },
+        {
+          "id": "c1cc0583-6457-4ad5-b44a-6e08d4e50ed6",
+          "blobId": "3F43tEG4dK-y6V_QLEoeMi-PELKOUp_K4pM2_2Am_UQ",
+          "policyId": "b99ef102-f9af-4988-bd61-87196cb0ee20"
+        },
+        {
+          "id": "c015bdeb-ed89-4c0a-9e05-bde9d586cdc9",
+          "blobId": "o_e8TXMGdpQ-vLtPoRFwzNBmThuPSCnIxszMyeFQSOk",
+          "policyId": "cd5f0ccb-1557-4ce7-823d-fac5f87bfc48"
+        }
+      ],
+      "baselineFindingsPreserved": true
+    },
+    {
+      "vendor": "Forma Legal",
+      "scenario": "Synthetic business review",
+      "returned": 30,
+      "applied": 3,
+      "staleApplied": 0,
+      "wrongScopeApplied": 0,
+      "off": "Needs review",
+      "on": "High risk / verification required",
+      "citations": [
+        {
+          "id": "3850853f-6ed7-4c57-9686-2577fd12b8a5",
+          "blobId": "gDt16mmOG810QixENGVgyaEB_2ospWC19Fpild32BhI",
+          "policyId": "02a13ad0-7d2f-4663-b94d-53f7d7139dfa"
+        },
+        {
+          "id": "8729dd59-3da2-4c80-ba01-687cf51bfef4",
+          "blobId": "UQpmPhtm_BN7bvLvpNoW8LYvYpsv2TlCC7hxpAlPISo",
+          "policyId": "49e8b874-b68b-493e-9b76-7417b3b8104d"
+        },
+        {
+          "id": "c9fd05b5-4a69-436e-b507-c14087d0b784",
+          "blobId": "PiI7OOBTnlXTA4GHbR5pSDXzMsb9_TfJ-DeSgazvmDE",
+          "policyId": "59c45f05-a538-4d12-a6c8-b4e1db7119e4"
+        }
+      ],
+      "baselineFindingsPreserved": true
+    },
+    {
+      "vendor": "Lumen Research",
+      "scenario": "Synthetic business review",
+      "returned": 30,
+      "applied": 2,
+      "staleApplied": 0,
+      "wrongScopeApplied": 0,
+      "off": "Insufficient evidence",
+      "on": "High risk / verification required",
+      "citations": [
+        {
+          "id": "fb21a4c7-1569-4d76-97dd-abf2351a7c20",
+          "blobId": "-8Zr3bN7mKSTnqW9hF1gfH3mKOb6qm2uLPOCXMpbP9k",
+          "policyId": "6ee86dd0-1d9c-4151-8961-2d7f0fc58c73"
+        },
+        {
+          "id": "6a64a39f-fbc5-4135-9194-0589040af9bf",
+          "blobId": "9DkeMtB6hOAZwDsUd4UCUkF4YQwKlouPXAEMV8q-K10",
+          "policyId": "15816b34-281f-4a3c-8f56-e18aeda8e88f"
+        }
+      ],
+      "baselineFindingsPreserved": true
+    }
+  ],
+  "control": {
+    "baselineCritical": 0,
+    "learnedCritical": 0,
+    "extraCritical": 0
+  },
+  "staleOrWrongScopeApplied": 0,
+  "baselinePreservationRate": 1,
+  "reviewRecallSuccessRate": 1
+}

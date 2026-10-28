@@ -1,0 +1,1 @@
+ALTER TABLE "service_payment_intents" ADD COLUMN "analysis_input" jsonb DEFAULT '{}'::jsonb NOT NULL;

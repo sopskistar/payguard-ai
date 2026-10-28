@@ -49,3 +49,13 @@ The narrow MVP deliberately uses a single active supplier reference with invoice
 ![Instruction comparison](screenshots/verification.png)
 
 This article is [published on GitHub Pages](https://sopskistar.github.io/payguard-ai/). Vercel built the application successfully, but project aliases still require Vercel authentication. The remaining submission work is public app access and hosted smoke testing, a short recorded demonstration, and the required account/dashboard details. The repository contains the application, reproducible checks and reviewed real evidence. No x402/MPP settlement or payment bonus is claimed.
+
+## Follow-up: thirty memories and a public judge journey
+
+The original thirteen Mainnet records were rechecked through the SDK. We then added seventeen distinct business-event policies through the sponsored managed relayer, using stable operation keys and a hard 30-operation cap. Accepted pending jobs resumed their original IDs; all thirty confirmed. No wallet funding or storage-renewal transaction was sent.
+
+A fresh live evaluation applied relevant policies in all four supplier scenarios, retained all baseline findings, applied zero expired/superseded/wrong-vendor rules, and added zero critical warnings to one unchanged control. The relayer returned thirty candidates per query, so this is a bounded application-policy test rather than a large-scale retrieval benchmark.
+
+The [public three-minute judge sandbox](https://sopskistar.github.io/payguard-ai/try/) uses the same protection functions and a dated capture of real semantic recall. It exposes no private data or write endpoints. The owner workflow continues to use live SDK calls and Neon persistence.
+
+A controlled Testnet x402 service-fee workflow is implemented for first-party consistency analysis. Exact owner approval, wallet signing, quote nonce, replay prevention and independent Tatum receipt checks precede result delivery. No real service payment has settled through it yet, and Mainnet settlement is disabled. We claim no agent-payment award completion. Public access to the Vercel owner app still requires its hosting protection to be opened. The owner will arrange the demonstration video separately; no video was created by this build.

@@ -1,3 +1,23 @@
+# Current continuation — read this first
+
+Continue the existing repo; no reset or res scaffold. The owner explicitly forbids creating or recording any demo video. Maintain only written outlines.
+
+The `652a397` baseline was reverified. Original 13 jobs were confirmed through SDK status; bounded expansion added 17 unique sponsored policies. **30 memories confirmed, zero pending/failed.** No Mainnet payment or renewal transaction was sent. Provider receipts and live quality results are in `docs/evidence/`. Four supplier reviews retained baseline checks and applied relevant policies; stale/wrong-scope application and added critical control warnings were zero.
+
+New functionality: account-free `/try` judge journey using the production gate/rules and real recorded recall/Tatum proof; the same component is published as GitHub Pages `/try/`. Positive human verification expires at 30 days; edits/revisions invalidate it; missing onchain recipients and invoice directives enforce a hold.
+
+Controlled first-party x402 v2 service analysis is implemented behind owner authentication at `/services`. It is disabled by default, Testnet-only, capped at 1,000,000 Testnet MIST, wallet-signed only after explicit terms approval, uniquely claimed before settlement, independently verified by Tatum, and stored in separate receipt tables. Additive migrations `0002`/`0003` have been applied to Neon. No funded-wallet settlement was performed; no bonus completion is claimed. Required configuration names: `ENABLE_AGENT_PAYMENTS`, `SERVICE_PAYMENT_RECIPIENT`, existing `TATUM_API_KEY`, auth/Neon variables. Never request secrets in chat. Mainnet cannot be enabled by environment alone and requires separate exact financial authorization plus code review.
+
+The existing Vercel alias still redirects to Vercel login and the old homepage returns 404. Pending owner question: Vercel project Settings → Deployment Protection → make intended Production public and supply its domain. Keep PayGuard's owner login on. GitHub Pages article and public judge use the existing public Pages hosting. Verify hosted routes after deployment.
+
+Release checks: 63 unit tests, TypeScript, lint, formatting and production build passed; 8/8 complete browser tests passed, including real read-only Tatum and existing-correction cross-session Walrus recall. The exact static judge bundle passed separately on desktop/mobile. A final authenticated POST-only regression also passed. Dependency audit is zero vulnerabilities. No settled service payment or verified public Vercel owner flow is claimed.
+
+Read `docs/JUDGE_WALKTHROUGH.md`, `docs/MEMORY_EVALUATION.md`, `docs/AGENT_PAYMENTS.md`, and the final section of `docs/TEST_RESULTS.md` for exact status. Preserve `.gitignore.save` as an untracked owner backup, `.data` and `.env.local` as ignored. Do not re-run the live memory test with a new write unnecessarily; `LIVE_MEMORY_REUSE=1` verifies existing corrections across sessions.
+
+Commands: `npm run memory:preflight`, `npm run memory:evaluate`, `npm run judge:evidence`, `npm run judge:publish-build`, `npm run typecheck`, `npm run lint`, `npm test`, `npm run build`. `memory:expand` is dry-run unless `--execute`; total durable-operation cap is 30 and existing IDs are reused.
+
+---
+
 # PayGuard Verify handoff
 
 Continue this repository. Do not reset, re-scaffold, delete migrations, discard `.gitignore.save`, or force-push.
@@ -21,7 +41,7 @@ Evidence lives in `docs/MAINNET_PROOF.md`, `docs/evidence/`, and `docs/TEST_RESU
 1. Final local formatting/typecheck/lint/build passed, 51 unit tests passed, and 4 browser tests passed after the latest exception and mobile changes. The separately enabled live memory and live Tatum browser tests also passed.
 2. Code/evidence are committed and pushed (`10ec793`), with article publication added in `3d64889`. Vercel reports build success. Both project aliases redirect to Vercel login; the old repository homepage is 404. The pending owner question asks for public production access and its exact URL. No local Vercel token/login is available to change protection. Do not claim public deployment is verified.
 3. Once the owner exposes the production URL, confirm Vercel environment variables and `APP_URL`, then run public/authorization/owner/provider smoke tests against that URL. Local tests and Mainnet proof passed separately.
-4. The technical article is published at https://sopskistar.github.io/payguard-ai/ (GitHub Pages, HTTP 200). Record a 2–3 minute demo video and complete hackathon submission/dashboard details. No video or completed event submission is claimed.
+4. The technical article is published at https://sopskistar.github.io/payguard-ai/ (GitHub Pages, HTTP 200). The owner will separately arrange the demo video and complete hackathon submission/dashboard details; Codex must not create or record video. No video or completed event submission is claimed.
 
 5. Verify public delegate identity for the submission dashboard (`MEMWAL_AGENT_ID`).
 

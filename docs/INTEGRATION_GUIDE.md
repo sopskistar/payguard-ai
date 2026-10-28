@@ -53,7 +53,7 @@ For Vercel, import the repository as a Next.js project or authenticate the Verce
 
 Recommended deployment checks: landing/public replay; owner login; DB import/reload; live integration health; memory write completion; actual new-session recall; real digest inspection; unauthorized and cross-origin denial. No hosted URL should be announced until the deployment succeeds and these endpoints are checked.
 
-`OPENAI_API_KEY`, `GUEST_LIVE_WRITES` and `ENABLE_AGENT_PAYMENTS` are reserved configuration only. This build uses no LLM, grants no anonymous writes and implements no supplier or optional agent payment execution.
+`OPENAI_API_KEY` and `GUEST_LIVE_WRITES` remain unused/reserved. This build uses no LLM or anonymous writes. Supplier payments remain unavailable; the separate owner-approved Testnet service-fee feature is described below.
 
 ## Verified recovery notes
 
@@ -64,3 +64,9 @@ On October 28, all twelve seed jobs confirmed and a separate live browser correc
 The repository has a Vercel GitHub status integration. A normal push may trigger deployment; verify the new commit's status and live page. The old repository homepage was 404 during inspection. If CLI deployment is necessary, authenticate Vercel locally or set `VERCEL_TOKEN` privately, then link the existing project. Configure `DATABASE_URL`, `AUTH_SECRET`, `OWNER_PASSWORD`, `APP_URL`, `MEMWAL_ACCOUNT_ID`, `MEMWAL_PRIVATE_KEY`, `MEMWAL_SERVER_URL`, and `TATUM_API_KEY` in the Vercel project. Never assume `.env.local` was transferred. Redeploy after configuration and run hosted smoke tests.
 
 The verified Vercel build is currently behind Vercel authentication. In the existing project's Deployment Protection settings, make the intended production deployment publicly accessible and confirm its production domain. Keep the app's own owner login enabled; public access to the landing page does not grant invoice or integration privileges. The GitHub Pages article is separate from the Next.js app and is not a substitute for the working app demo.
+
+## Judge publication and controlled service fees
+
+`npm run judge:evidence` captures a fresh real recall of synthetic owner policies; it preserves the previous artifact if no applicable citations return. `npm run judge:publish-build` bundles the same judge component and reviewed evidence for the existing `/docs` GitHub Pages deployment. No `.env` value or provider SDK credential is included. The Next.js route remains `/try`.
+
+Service-payment configuration and signing are described in [AGENT_PAYMENTS.md](AGENT_PAYMENTS.md). `ENABLE_AGENT_PAYMENTS` defaults off. Only controlled Testnet mode is accepted; Mainnet is disabled by schema and verifier. Configure `SERVICE_PAYMENT_RECIPIENT` privately to a separate Testnet merchant. No spending key is requested. The normal Tatum key is required for independent Testnet receipt verification. Actual wallet signing/settlement must still be demonstrated before claiming the bonus.

@@ -15,6 +15,11 @@ test('owner records independent verification; edited instructions invalidate app
       })
     ).ok(),
   ).toBe(true);
+  expect(
+    (
+      await context.request.get('/api/service-payments/a0000000-0000-4000-8000-000000000001/resume')
+    ).status(),
+  ).toBe(405);
   const snapshot = await (await context.request.get('/api/snapshot')).json();
   const source = snapshot.invoices.find(
     (i: { number: string; isDemo: boolean }) => i.isDemo && i.number === 'NS-1048',
