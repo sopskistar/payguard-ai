@@ -11,6 +11,7 @@ import { correctionInput } from '../validation';
 import { evaluate } from '../risk';
 import { rateLimit } from '../auth';
 import { seedEvents } from '../demo';
+import { trustContext } from '../verify-store';
 import type { z } from 'zod';
 export const namespaceFor=(tenantId:string)=>`payguard-v1-${createHash('sha256').update(tenantId).digest('hex').slice(0,32)}`;
 export const vendorReference=(tenantId:string,vendorId:string)=>`vendor-${createHash('sha256').update(tenantId+':'+vendorId).digest('hex').slice(0,16)}`;
@@ -27,18 +28,18 @@ export function policyText(kind:Policy['kind'],value='') {
  return templates[kind];
 }
 export function minimizedMemory(tenantId:string,policy:Policy,isDemo:boolean) {
- return `PayGuard user-approved payment-review policy. ${policy.text} Scope: ${policy.scope}. Vendor reference: ${policy.vendorId?vendorReference(tenantId,policy.vendorId):'all vendors'}. ${isDemo?'Synthetic business event.':'Minimized business policy.'}\n${JSON.stringify({version:1,policyId:policy.id,kind:policy.kind,scope:policy.scope,vendorRef:policy.vendorId?vendorReference(tenantId,policy.vendorId):null,value:policy.value||null})}`;
+ return `PayGuard user-approved payment-review policy. ${policy.text} Scope: ${policy.scope}. Vendor reference: ${policy.vendorId?vendorReference(tenantId,policy.vendorId):'all vendors'}. ${isDemo?'Synthetic business event.':'Minimized business policy.'}\n${JSON.stringify({version:1,policyId:policy.id,kind:policy.kind,scope:policy.scope,vendorRef:policy.vendorId?vendorReference(tenantId,policy.vendorId):null,value:policy.value||null,currency:policy.currency||null})}`;
 }
 export async function recordCorrection(tenantId:string,input:z.infer<typeof correctionInput>) {
  const invoice=await ownedInvoice(tenantId,input.invoiceId); if(input.future&&!memoryConfigured()) unavailable('Walrus Mainnet');
- const d=await db(); const op=`correction-${input.operationKey}`;
+ const d=await db(); const prefs=await preferences(tenantId); const op=`correction-${input.operationKey}`;
  const [existing]=await d.select().from(s.memoryJobs).where(and(eq(s.memoryJobs.tenantId,tenantId),eq(s.memoryJobs.operationKey,op)));
  if(existing) return existing;
  const jobId=await d.transaction(async tx=>{
   const [decision]=await tx.insert(s.reviewDecisions).values({tenantId,invoiceId:invoice.id,action:input.action,findingId:input.findingId,explanation:input.explanation,scope:input.scope,future:input.future}).returning();
   await tx.insert(s.auditEvents).values({tenantId,type:'review.correction',entityId:invoice.id,detail:{decisionId:decision.id,action:input.action,findingId:input.findingId,scope:input.scope,future:input.future}});
   if(!input.future) return null;
-  const policy:Policy={id:randomUUID(),vendorId:input.scope==='all'?null:invoice.vendorId,invoiceId:input.scope==='invoice'?invoice.id:null,kind:input.kind,value:input.value,text:policyText(input.kind,input.value),hard:input.hard,scope:input.scope,active:true};
+  const policy:Policy={id:randomUUID(),vendorId:input.scope==='all'?null:invoice.vendorId,invoiceId:input.scope==='invoice'?invoice.id:null,kind:input.kind,value:input.value,text:policyText(input.kind,input.value),hard:input.hard,currency:prefs.currency,isDemo:invoice.isDemo,scope:input.scope,active:true};
   await tx.insert(s.userRules).values({id:policy.id,tenantId,vendorId:policy.vendorId,invoiceId:policy.invoiceId,decisionId:decision.id,policy});
   const [job]=await tx.insert(s.memoryJobs).values({tenantId,invoiceId:invoice.id,policyId:policy.id,operationKey:op,namespace:namespaceFor(tenantId),intent:input.action,text:minimizedMemory(tenantId,policy,invoice.isDemo),accountId:process.env.MEMWAL_ACCOUNT_ID,isDemo:invoice.isDemo}).returning();
   await tx.insert(s.auditEvents).values({tenantId,type:'memory.requested',entityId:job.id,detail:{operationKey:op,policyId:policy.id}});
@@ -95,7 +96,8 @@ export async function assess(tenantId:string,invoiceId:string,memoryOn:boolean) 
   try { const recalled=await recallMemories(tenantId,`Payment review for ${vendorReference(tenantId,invoice.vendorId)}. Changed or new recipient address, duplicate billing, manual approval threshold and confirmed exceptions.`,invoice.id); citations=recalled.citations; status=recalled.status; }
   catch(error) { status=safeError(error); await audit(tenantId,'memory.recall_unavailable',invoice.id,{status}); }
  }
- const assessment=evaluate(invoice,history,prefs,rules,citations,status);
+ const context=await trustContext(tenantId,invoice);
+ const assessment=evaluate(invoice,history,prefs,rules,citations,status,new Date(),context.signals);
  await (await db()).insert(s.riskFindings).values({tenantId,invoiceId,memoryOn,assessment,findings:assessment.findings});
  await audit(tenantId,'review.evaluated',invoiceId,{level:assessment.level,memoryOn,usedMemoryIds:assessment.citations.map(c=>c.id),findingIds:assessment.findings.map(f=>f.id)});
  return assessment;
@@ -110,7 +112,7 @@ export async function prepareSeed(tenantId:string) {
   const [existing]=await d.select().from(s.memoryJobs).where(and(eq(s.memoryJobs.tenantId,tenantId),eq(s.memoryJobs.operationKey,key)));
   if(existing) continue;
   const invoice=invoices.find(i=>i.isDemo&&i.vendor===names[event.vendor])!;
-  const policy:Policy={id:randomUUID(),vendorId:invoice.vendorId,kind:event.kind,value:'value' in event?event.value:undefined,text:event.text,hard:false,scope:'vendor',active:true};
+  const policy:Policy={id:randomUUID(),vendorId:invoice.vendorId,kind:event.kind,value:'value' in event?event.value:undefined,text:event.text,hard:false,currency:'USD',isDemo:true,scope:'vendor',active:true};
   await d.transaction(async tx=>{
    await tx.insert(s.userRules).values({id:policy.id,tenantId,vendorId:invoice.vendorId,policy});
    await tx.insert(s.memoryJobs).values({tenantId,invoiceId:invoice.id,policyId:policy.id,operationKey:key,namespace:namespaceFor(tenantId),intent:`Synthetic business event ${index+1}`,text:minimizedMemory(tenantId,policy,true),accountId:process.env.MEMWAL_ACCOUNT_ID,isDemo:true});

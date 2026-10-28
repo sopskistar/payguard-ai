@@ -1,0 +1,7 @@
+Vendor: Northstar Studio
+Invoice number: NS-PDF-01
+Issued: 2026-10-24
+Due: 2026-10-31
+Amount: 1250.00
+Currency: USD
+Memo: Synthetic text PDF for PayGuard Verify testing

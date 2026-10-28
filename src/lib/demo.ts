@@ -1,4 +1,4 @@
-import { DEFAULT_PREFERENCES, type Invoice, type Snapshot } from './types';
+import { DEFAULT_PREFERENCES, type Invoice, type Snapshot, type VendorTrust } from './types';
 import { evaluate } from './risk';
 export const OWNER_ID = 'a0000000-0000-4000-8000-000000000001';
 export const sampleAddress = '0x'+'1'.repeat(64);
@@ -19,7 +19,7 @@ export function demoInvoices(): Invoice[] {
 }
 export function publicSnapshot(): Snapshot {
  const invoices=demoInvoices();
- return {mode:'public-demo',storage:'Read-only sample dataset', invoices, assessments:Object.fromEntries(invoices.map(i=>[i.id,evaluate(i,invoices,DEFAULT_PREFERENCES,[],[],'Public demo: live recall requires owner login',new Date('2026-10-26T12:00:00Z'))])),memories:[],wallets:[],audit:[],preferences:DEFAULT_PREFERENCES,integrations:{database:false,memory:false,tatum:false},confirmedPayments:0,usedMemoryIds:[]};
+ return {mode:'public-demo',storage:'Read-only sample dataset', invoices, assessments:Object.fromEntries(invoices.map(i=>[i.id,evaluate(i,invoices,DEFAULT_PREFERENCES,[],[],'Public demo: live recall requires owner login',new Date('2026-10-26T12:00:00Z'))])),memories:[],wallets:[],audit:[],preferences:DEFAULT_PREFERENCES,integrations:{database:false,memory:false,tatum:false},confirmedPayments:0,usedMemoryIds:[],vendorProfiles:demoProfiles()};
 }
 export const seedEvents = [
  { vendor:0,kind:'verify_address',text:'Always independently verify a changed payout address for this vendor.' },
@@ -35,3 +35,5 @@ export const seedEvents = [
  { vendor:2,kind:'exception',text:'A rush legal consultation was a one-time exception; do not infer blanket approval.' },
  { vendor:3,kind:'escalate',text:'Escalate repeated billing or recipient mismatches for research engagements.' },
 ] as const;
+
+export function demoProfiles():VendorTrust[]{return [...new Map(demoInvoices().map(i=>[i.vendorId,i])).values()].map(i=>({vendorId:i.vendorId,name:i.vendor,trustedRecipient:sampleAddress,emailDomain:i.vendor.toLowerCase().replaceAll(' ','')+'.example',contactLabel:'Established accounts contact (sample)',contactMethod:'phone',contactReference:'+1 202-555-0142 (synthetic)',establishedAt:'2026-07-01T12:00:00.000Z',revision:1,isDemo:true}));}

@@ -1,6 +1,7 @@
 import { z } from 'zod';
+import { fromBase58 } from '@mysten/sui/utils';
 export const address = z.string().regex(/^0x[a-fA-F0-9]{64}$/, 'Use a full 0x-prefixed 32-byte Sui address').transform(s => s.toLowerCase());
-export const digestSchema = z.string().regex(/^[1-9A-HJ-NP-Za-km-z]{43,44}$/, 'Enter a valid base58 Sui transaction digest');
+export const digestSchema = z.string().regex(/^[1-9A-HJ-NP-Za-km-z]{43,44}$/, 'Enter a valid base58 Sui transaction digest').refine(s=>{try{return fromBase58(s).length===32;}catch{return false;}},'Digest must encode 32 bytes');
 export const decimal = z.string().regex(/^(0|[1-9]\d{0,17})(\.\d{1,18})?$/, 'Use a positive decimal amount, without commas').refine(s => /[1-9]/.test(s), 'Amount must be greater than zero');
 const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(s => !isNaN(Date.parse(s)) && new Date(s).toISOString().slice(0,10) === s, 'Use a valid date');
 export const coinType = z.string().max(220).regex(/^0x[a-fA-F0-9]{1,64}::[A-Za-z_][A-Za-z0-9_]*::[A-Za-z_][A-Za-z0-9_]*$/, 'Use a Sui coin type');

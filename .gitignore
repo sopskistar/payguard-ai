@@ -158,3 +158,8 @@ node_modules/
 test-results/
 playwright-report/
 .vercel/
+# Editor swap / backup files can contain credentials.
+*.swp
+*.swo
+*~
+.*.swp

@@ -11,6 +11,7 @@ import { snapshot, saveInvoice, changeStatus, deleteInvoice, seedDemo, resetDemo
 import { address, correctionInput, digestSchema, invoiceInput, settingsInput } from '@/lib/validation';
 import { assess, memoryClient, memoryConfigured, prepareSeed, processMemoryJob, recallMemories, recordCorrection } from '@/lib/integrations/memory';
 import { chainHealth, inspectTransaction, verifyInvoice, watchWallet } from '@/lib/integrations/tatum';
+import { profileInput, instructionInput, humanInput, saveTrust, saveInstructions, recordHumanCheck, trustContext } from '@/lib/verify-store';
 import { extractInvoice, MAX_UPLOAD } from '@/lib/intake';
 export const runtime='nodejs';
 export const dynamic='force-dynamic';
@@ -31,6 +32,10 @@ async function handle(req:NextRequest,context:{params:Promise<{path:string[]}>})
   if(route==='auth/logout'&&method==='POST') {await logout();return json({ok:true});}
   const tenantId=await requireOwner();
   if(method!=='GET') await rateLimit(`${tenantId}:requests`,250);
+  if(route==='vendors/trust'&&method==='POST'){await saveTrust(tenantId,profileInput.parse(await body(req)));return json({ok:true});}
+  if(route==='instructions'&&method==='POST'){await saveInstructions(tenantId,instructionInput.parse(await body(req)));return json({ok:true});}
+  if(route==='instructions/verify'&&method==='POST')return json(await recordHumanCheck(tenantId,humanInput.parse(await body(req))));
+  if(route==='instructions/context'&&method==='POST'){const input=z.object({invoiceId:z.string().uuid()}).parse(await body(req));return json(await trustContext(tenantId,await ownedInvoice(tenantId,input.invoiceId)));}
   if(route==='invoices'&&method==='POST') {
    const input=invoiceInput.parse(await body(req)); const id=await saveInvoice(tenantId,input); const assessment=await assess(tenantId,id,true); return json({id,assessment},201);
   }
@@ -63,7 +68,7 @@ async function handle(req:NextRequest,context:{params:Promise<{path:string[]}>})
   if(route==='wallets'&&method==='POST') {const input=z.object({address,label:z.string().trim().min(2).max(80)}).parse(await body(req));const [wallet]=await (await db()).insert(s.watchedWallets).values({...input,tenantId}).onConflictDoUpdate({target:[s.watchedWallets.tenantId,s.watchedWallets.address],set:{label:input.label}}).returning();await audit(tenantId,'wallet.watched',wallet.id,{watchOnly:true});return json(wallet);}
   if(route==='wallets/remove'&&method==='POST') {const input=z.object({id:z.string().uuid()}).parse(await body(req));const removed=await (await db()).delete(s.watchedWallets).where(and(eq(s.watchedWallets.tenantId,tenantId),eq(s.watchedWallets.id,input.id))).returning();if(!removed.length)throw new AppError(404,'NOT_FOUND','Wallet not found.');await audit(tenantId,'wallet.removed',input.id,{});return json({ok:true});}
   if(route==='wallets/refresh'&&method==='POST') {
-   const input=z.object({id:z.string().uuid(),cursor:digestSchema.nullable().default(null),direction:z.enum(['incoming','outgoing']).default('incoming')}).parse(await body(req));
+   const input=z.object({id:z.string().uuid(),cursor:z.string().max(2048).regex(/^[A-Za-z0-9+/=]+$/).nullable().default(null),direction:z.enum(['incoming','outgoing']).default('incoming')}).parse(await body(req));
    const [wallet]=await (await db()).select().from(s.watchedWallets).where(and(eq(s.watchedWallets.tenantId,tenantId),eq(s.watchedWallets.id,input.id)));if(!wallet)throw new AppError(404,'NOT_FOUND','Wallet not found.');
    await rateLimit(`${tenantId}:rpc`,Number(process.env.RPC_REQUESTS_PER_HOUR)||120);
    const result=await watchWallet(wallet.address,input.cursor,input.direction);await (await db()).update(s.watchedWallets).set({balance:result.balance.totalBalance,refreshedAt:new Date()}).where(eq(s.watchedWallets.id,wallet.id));await audit(tenantId,'wallet.refreshed',wallet.id,{chainId:result.chainId,transactions:result.transactions.data.length});return json(result);

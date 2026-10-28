@@ -3,24 +3,29 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "next dev --webpack",
+    "build": "next build --webpack",
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test": "vitest run",
     "test:e2e": "playwright test",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "NODE_OPTIONS=--conditions=react-server tsx scripts/migrate.ts",
-    "db:seed-demo": "NODE_OPTIONS=--conditions=react-server tsx scripts/seed.ts",
-    "proof:export": "NODE_OPTIONS=--conditions=react-server tsx scripts/proof.ts"
+    "db:migrate": "node --conditions=react-server --import tsx scripts/migrate.ts",
+    "db:seed-demo": "node --conditions=react-server --import tsx scripts/seed.ts",
+    "proof:export": "node --conditions=react-server --import tsx scripts/proof.ts",
+    "check:live": "node --conditions=react-server --import tsx scripts/check-live.ts",
+    "memory:seed": "node --conditions=react-server --import tsx scripts/seed-memory.ts",
+    "memory:prove-recall": "node --conditions=react-server --import tsx scripts/recall-proof.ts"
   },
   "dependencies": {
     "@fontsource/manrope": "^5.2.8",
+    "@grpc/grpc-js": "^1.14.6",
     "@mysten-incubation/memwal": "0.1.10",
     "@mysten/seal": "1.5.2",
     "@mysten/sui": "2.38.0",
     "@neondatabase/serverless": "^1.0.2",
+    "@protobuf-ts/grpc-transport": "^2.11.1",
     "csv-parse": "^7.0.3",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.4",
@@ -49,8 +54,7 @@
     "vitest": "^4.0.3"
   },
   "overrides": {
-    "@esbuild-kit/core-utils": {
-      "esbuild": "^0.25.12"
-    }
-  }
+    "esbuild": "^0.28.2"
+  },
+  "type": "module"
 }
