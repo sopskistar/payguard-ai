@@ -1,6 +1,6 @@
 # PayGuard Verify: 2–3 minute demo
 
-Preflight: configure Neon, owner auth, Walrus Mainnet and Tatum. Seed sample invoices and confirm at least ten real memories. Have two separate authenticated browser contexts ready and a real public transaction digest with explicit expected recipient/coin/token amount. If a gate is unavailable, say so; do not substitute mocked proof.
+Preflight: configure Neon, owner auth, Walrus Mainnet and Tatum. Seed sample invoices and confirm at least ten real memories. Have two separate authenticated browser contexts ready. The proof ledger currently contains 13 confirmed memories. Use the real digest `os1iG8zow278c6hqxbuyxnvMUjzThsD8GTY8atdfzW6` for the documented negative reconciliation; do not suggest it pays Northstar. If a gate is unavailable, say so; do not substitute mocked proof.
 
 **0:00–0:25 — The problem.** Open the landing page: “The invoice is familiar. The recipient changed. Verify before you pay.” Open Attack Replay Lab. Choose the compromised-thread replay. Show how a familiar email domain does not excuse bypassing verification. Label the correspondence synthetic and point to the FBI source.
 

@@ -1,0 +1,10 @@
+node_modules
+.next
+.data
+drizzle/meta
+package-lock.json
+PAYGUARD_AI_CODEX_MASTER_PROMPT.md
+public
+playwright-report
+test-results
+.env*

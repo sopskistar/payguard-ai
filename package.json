@@ -16,7 +16,9 @@
     "proof:export": "node --conditions=react-server --import tsx scripts/proof.ts",
     "check:live": "node --conditions=react-server --import tsx scripts/check-live.ts",
     "memory:seed": "node --conditions=react-server --import tsx scripts/seed-memory.ts",
-    "memory:prove-recall": "node --conditions=react-server --import tsx scripts/recall-proof.ts"
+    "memory:prove-recall": "node --conditions=react-server --import tsx scripts/recall-proof.ts",
+    "format": "prettier --write src scripts tests docs README.md CONTRIBUTING.md *.config.* package.json",
+    "format:check": "prettier --check src scripts tests docs README.md CONTRIBUTING.md *.config.* package.json"
   },
   "dependencies": {
     "@fontsource/manrope": "^5.2.8",
@@ -48,6 +50,7 @@
     "drizzle-kit": "^0.31.5",
     "eslint": "^9.38.0",
     "eslint-config-next": "^16.0.0",
+    "prettier": "^3.9.10",
     "tailwindcss": "^4.1.16",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",

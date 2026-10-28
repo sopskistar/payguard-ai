@@ -1,0 +1,91 @@
+{
+  "purpose": "Negative reconciliation: unrelated public transaction against a synthetic invoice. No payment sent or recorded.",
+  "status": "Mismatch",
+  "digest": "os1iG8zow278c6hqxbuyxnvMUjzThsD8GTY8atdfzW6",
+  "network": "Sui Mainnet",
+  "chainId": "35834a8a",
+  "criteria": [
+    {
+      "label": "Sui Mainnet",
+      "passed": true,
+      "detail": "35834a8a"
+    },
+    {
+      "label": "Finalized checkpoint",
+      "passed": true,
+      "detail": "339078672"
+    },
+    {
+      "label": "Successful execution",
+      "passed": true,
+      "detail": "success"
+    },
+    {
+      "label": "Complete balance evidence",
+      "passed": true,
+      "detail": "Balance changes requested from chain"
+    },
+    {
+      "label": "Intended recipient",
+      "passed": true,
+      "detail": "0x2222222222222222222222222222222222222222222222222222222222222222"
+    },
+    {
+      "label": "Recipient is distinct from sender and gas payer",
+      "passed": true,
+      "detail": "Sender/gas-payer net changes can include rebates and are not accepted as payment evidence."
+    },
+    {
+      "label": "Agreed coin and amount",
+      "passed": true,
+      "detail": "500 0x2::sui::SUI"
+    },
+    {
+      "label": "Coin decimals",
+      "passed": true,
+      "detail": "9"
+    },
+    {
+      "label": "Exact positive recipient credit",
+      "passed": false,
+      "detail": "Received 0 atomic units; expected 500000000000. Over/underpayments require review."
+    },
+    {
+      "label": "Unique invoice match",
+      "passed": true,
+      "detail": "Uniqueness is enforced again when saving."
+    }
+  ],
+  "transaction": {
+    "digest": "os1iG8zow278c6hqxbuyxnvMUjzThsD8GTY8atdfzW6",
+    "effects": {
+      "status": {
+        "status": "success"
+      }
+    },
+    "balanceChanges": [
+      {
+        "owner": {
+          "AddressOwner": "0x545b5ec1a8470d410bcb2ecaa700b5c0690a341943bcf5fcc708e3b0125fe817"
+        },
+        "coinType": "0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI",
+        "amount": "-101473"
+      }
+    ],
+    "transaction": {
+      "data": {
+        "sender": "0x545b5ec1a8470d410bcb2ecaa700b5c0690a341943bcf5fcc708e3b0125fe817",
+        "gasData": {
+          "owner": "0x545b5ec1a8470d410bcb2ecaa700b5c0690a341943bcf5fcc708e3b0125fe817"
+        }
+      }
+    },
+    "timestampMs": "1793196732519",
+    "checkpoint": "339078672"
+  },
+  "decimals": 9,
+  "expectedAtomic": "500000000000",
+  "receivedAtomic": "0",
+  "explorer": "https://suiscan.xyz/mainnet/tx/os1iG8zow278c6hqxbuyxnvMUjzThsD8GTY8atdfzW6",
+  "checkedAt": "2026-10-28T14:20:27.441Z"
+}

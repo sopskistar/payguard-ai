@@ -33,13 +33,13 @@ Create a Tatum Mainnet API key with Sui gRPC access. Configure `TATUM_API_KEY` s
 
 Implementation uses `SuiGrpcClient` generated v2 services with `@protobuf-ts/grpc-transport` and `@grpc/grpc-js`. This avoids vendoring a partial proto tree. Signatures and protobuf fields are checked against the installed SDK source.
 
-| Service/method | Purpose |
-| --- | --- |
-| LedgerService/GetServiceInfo | Chain name, genesis digest and checkpoint; derive and validate Mainnet identifier |
-| LedgerService/GetTransaction | Digest, sender, gas payer, effects, balance changes, checkpoint and timestamp via explicit field mask |
-| StateService/GetCoinInfo | Correct coin metadata and decimals |
-| StateService/GetBalance | Live spendable SUI balance |
-| LedgerService/ListTransactions | Bounded candidate stream; sender or affected-address filter and opaque cursor |
+| Service/method                 | Purpose                                                                                               |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| LedgerService/GetServiceInfo   | Chain name, genesis digest and checkpoint; derive and validate Mainnet identifier                     |
+| LedgerService/GetTransaction   | Digest, sender, gas payer, effects, balance changes, checkpoint and timestamp via explicit field mask |
+| StateService/GetCoinInfo       | Correct coin metadata and decimals                                                                    |
+| StateService/GetBalance        | Live spendable SUI balance                                                                            |
+| LedgerService/ListTransactions | Bounded candidate stream; sender or affected-address filter and opaque cursor                         |
 
 [Official Tatum gRPC guide](https://docs.tatum.io/oa/reference/sui-grpc) and [Tatum method listing](https://docs.tatum.io/reference/rpc-sui). The provider may not enable every listed method on every plan. Unsupported/pruned/rate-limited operations surface an error. Incoming discovery uses affected addresses plus positive-credit filtering, not a false equivalent of legacy ToAddress. Candidate streams need a terminal frame; incomplete streams are not treated as complete history.
 
@@ -54,3 +54,11 @@ For Vercel, import the repository as a Next.js project or authenticate the Verce
 Recommended deployment checks: landing/public replay; owner login; DB import/reload; live integration health; memory write completion; actual new-session recall; real digest inspection; unauthorized and cross-origin denial. No hosted URL should be announced until the deployment succeeds and these endpoints are checked.
 
 `OPENAI_API_KEY`, `GUEST_LIVE_WRITES` and `ENABLE_AGENT_PAYMENTS` are reserved configuration only. This build uses no LLM, grants no anonymous writes and implements no supplier or optional agent payment execution.
+
+## Verified recovery notes
+
+On October 28, all twelve seed jobs confirmed and a separate live browser correction brought the total to thirteen. Resume with `npm run memory:seed`; do not delete the durable jobs or resubmit successful memories. `npm run memory:prove-recall` creates a later synthetic invoice in a fresh process and writes the OFF/ON evidence. The explicit live browser test separately proves logout/new-context recall. See [the proof ledger](MAINNET_PROOF.md).
+
+`check:live` now exits nonzero when transaction inspection is unverified, even if service health succeeded. Known-digest inspection is preferred when automatic checkpoint discovery is intermittent. Set `TATUM_TEST_DIGEST` privately or use the public digest from the proof ledger; no payment is initiated.
+
+The repository has a Vercel GitHub status integration. A normal push may trigger deployment; verify the new commit's status and live page. The old repository homepage was 404 during inspection. If CLI deployment is necessary, authenticate Vercel locally or set `VERCEL_TOKEN` privately, then link the existing project. Configure `DATABASE_URL`, `AUTH_SECRET`, `OWNER_PASSWORD`, `APP_URL`, `MEMWAL_ACCOUNT_ID`, `MEMWAL_PRIVATE_KEY`, `MEMWAL_SERVER_URL`, and `TATUM_API_KEY` in the Vercel project. Never assume `.env.local` was transferred. Redeploy after configuration and run hosted smoke tests.

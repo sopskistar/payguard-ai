@@ -1,0 +1,99 @@
+{
+  "checkedAt": "2026-10-28T14:17:01.855Z",
+  "writesAttempted": false,
+  "tatum": {
+    "status": "connected",
+    "evidence": {
+      "chainId": "35834a8a",
+      "genesisDigest": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+      "checkpoint": "339079915",
+      "network": "Sui Mainnet",
+      "transport": "native gRPC over HTTP/2 + TLS",
+      "endpoint": "https://sui-mainnet-grpc.gateway.tatum.io",
+      "checkedAt": "2026-10-28T14:17:02.956Z"
+    }
+  },
+  "walrus": {
+    "status": "connected",
+    "evidence": {
+      "status": "ok",
+      "version": "0.1.0",
+      "relayerVersion": "0.1.0",
+      "apiVersion": "1.0.0",
+      "minSupportedSdk": {
+        "typescript": "0.0.4",
+        "python": "0.1.0",
+        "mcp": "0.0.1"
+      },
+      "featureFlags": {
+        "auth.accountBoundNonce": true,
+        "auth.sealSessionHeader": true,
+        "config.publicDeploymentMetadata": true,
+        "remember.asyncJobs": true,
+        "remember.bulk": true,
+        "runtime.versionEndpoint": true
+      },
+      "deprecations": [
+        {
+          "surface": "header:x-delegate-key",
+          "deprecatedSince": "1.0.0",
+          "removalApiVersion": "2.0.0",
+          "guidance": "Use x-seal-session for relayer-managed SEAL decrypt flows; manual-mode requests should send no decrypt credential."
+        },
+        {
+          "surface": "env:SEAL_KEY_SERVERS",
+          "deprecatedSince": "1.0.0",
+          "removalApiVersion": "2.0.0",
+          "guidance": "Use SEAL_SERVER_CONFIGS so independent and committee key-server configs share one JSON schema."
+        }
+      ],
+      "build": {
+        "commit": "89cdddcaeb0d3d9281952ec87732612018980ae7"
+      },
+      "mode": "production",
+      "prompt_versions": {
+        "extract": "extract.v7",
+        "ask": "ask.v2"
+      },
+      "write_ready": true,
+      "writes": "ok"
+    }
+  },
+  "transaction": {
+    "chainId": "35834a8a",
+    "genesisDigest": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+    "checkpoint": "339079923",
+    "network": "Sui Mainnet",
+    "transport": "native gRPC over HTTP/2 + TLS",
+    "endpoint": "https://sui-mainnet-grpc.gateway.tatum.io",
+    "checkedAt": "2026-10-28T14:17:06.221Z",
+    "transaction": {
+      "digest": "os1iG8zow278c6hqxbuyxnvMUjzThsD8GTY8atdfzW6",
+      "effects": {
+        "status": {
+          "status": "success"
+        }
+      },
+      "balanceChanges": [
+        {
+          "owner": {
+            "AddressOwner": "0x545b5ec1a8470d410bcb2ecaa700b5c0690a341943bcf5fcc708e3b0125fe817"
+          },
+          "coinType": "0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI",
+          "amount": "-101473"
+        }
+      ],
+      "transaction": {
+        "data": {
+          "sender": "0x545b5ec1a8470d410bcb2ecaa700b5c0690a341943bcf5fcc708e3b0125fe817",
+          "gasData": {
+            "owner": "0x545b5ec1a8470d410bcb2ecaa700b5c0690a341943bcf5fcc708e3b0125fe817"
+          }
+        }
+      },
+      "timestampMs": "1793196732519",
+      "checkpoint": "339078672"
+    },
+    "explorer": "https://suiscan.xyz/mainnet/tx/os1iG8zow278c6hqxbuyxnvMUjzThsD8GTY8atdfzW6"
+  }
+}

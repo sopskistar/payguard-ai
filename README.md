@@ -1,10 +1,10 @@
 # PayGuard Verify
 
-**Verify the instruction before trusting the payment.** Built on the existing PayGuard AI application and official branding.
+**Verify before you pay. Remember what nearly went wrong.** Built on the existing PayGuard AI application and official branding.
 
 PayGuard Verify helps a human reviewer investigate supplier payment-instruction changes. It compares proposed recipients with independently established vendor profiles, flags observable business email compromise (BEC) patterns, records out-of-band verification, and recalls approved policies from Walrus Memory. Tatum Sui Mainnet gRPC supplies separate chain evidence. **A successful transfer does not establish supplier identity or authorize an instruction.** No supplier payment is ever initiated.
 
-This is a working implementation under verification, not a claim of completed Mainnet acceptance. There is no deployed URL or fabricated proof. See [Mainnet evidence](docs/MAINNET_PROOF.md) and [handoff](docs/HANDOFF.md) for the current gates. The root master prompt currently still contains the original specification; the owner's subsequent PayGuard Verify direction is implemented and documented in [scope](docs/VERIFY_SCOPE.md).
+The application is implemented and locally production-tested. **13 Walrus Mainnet memories are confirmed; real semantic recall passed across a fresh owner browser session; Tatum gRPC inspected a real transaction and correctly rejected a false invoice match.** See [the proof ledger](docs/MAINNET_PROOF.md), [test results](docs/TEST_RESULTS.md), and [handoff](docs/CODEX_HANDOFF.md). Deployment validation is tracked separately; no supplier payment or positive live payment match is claimed. The updated October 27 PayGuard Verify specification was merged safely from GitHub.
 
 ## What is implemented
 
@@ -14,7 +14,7 @@ This is a working implementation under verification, not a claim of completed Ma
 - Payment instruction capture: sender/reply-to, received time, request-supplied contact and message. These are user-entered records, not authenticated email headers.
 - Recipient comparison, domain/reply-to mismatch, urgency/secrecy and verification-bypass signals. Findings cite evidence and require human action; they are not fraud probabilities.
 - Human callback/in-person/established-portal attestation. Changes to invoice terms, instructions or trust-profile revision invalidate prior verification. Row locks protect approval/verification against concurrent edits.
-- Attack Replay Lab with four clearly synthetic scenarios, including a normal control. Patterns are grounded in [FBI BEC guidance](https://www.fbi.gov/how-we-can-help-you/common-frauds-and-scams/business-email-compromise).
+- Attack Replay Lab with seven clearly synthetic scenarios, including a normal control. Patterns are grounded in [FBI BEC guidance](https://www.fbi.gov/how-we-can-help-you/common-frauds-and-scams/business-email-compromise).
 - Editable manual/PDF/TXT/CSV intake; exact/possible duplicate checks, threshold rules and amount history. Raw uploads are not retained or sent to Walrus.
 - Neon + Drizzle persistence, 19 tables, additive migrations, tenant-scoped records, append-only application audit, idempotent sample seeding.
 - Walrus SDK 0.1.10 adapter: durable operation keys, accepted-job persistence, pending/confirmed/failed states, resumable polling, exact provenance checks on recall, 12 distinct synthetic-event write jobs.
@@ -57,7 +57,7 @@ npm run check:live       # Read-only; reports missing credentials honestly
 npm run proof:export     # Neon evidence → gitignored .data/mainnet-proof.json
 ```
 
-Unit/integration tests use synthetic chain responses and a mocked Walrus provider. They test correctness, not actual Mainnet writes. Browser tests are also not proof of live cross-session Walrus learning. See [validation](docs/VALIDATION.md).
+Unit/integration tests use synthetic chain responses and a mocked Walrus provider. They test correctness, not actual Mainnet writes. The separately enabled `LIVE_MEMORY_TEST=1` browser test uses real Mainnet and passed; ordinary browser tests do not prove it. See [test results](docs/TEST_RESULTS.md).
 
 ## Architecture
 
@@ -84,7 +84,7 @@ No architecture path signs or submits a supplier payment. A human review approva
 
 Follow [the 2–3 minute demo script](docs/DEMO_SCRIPT.md). The crucial live sequence is: Memory OFF → changed supplier instruction → human correction → **completed Walrus job with blob ID** → later invoice → fresh authenticated browser session → actual semantic recall → Memory ON/OFF comparison.
 
-At least ten completed Mainnet memories and a real Tatum response remain submission gates until evidence is recorded in [MAINNET_PROOF.md](docs/MAINNET_PROOF.md). The [article draft](docs/HACKATHON_ARTICLE_DRAFT.md) must be completed with real evidence before publication. No x402/MPP bonus is claimed.
+The ten-memory gate and fresh-session recall are evidenced in [MAINNET_PROOF.md](docs/MAINNET_PROOF.md). Public deployment, article publication and a recorded video remain separately tracked submission gates. The [article draft](docs/HACKATHON_ARTICLE_DRAFT.md) must be completed with real evidence before publication. No x402/MPP bonus is claimed.
 
 ## Security and limitations
 

@@ -1,0 +1,71 @@
+{
+  "checkedAt": "2026-10-28T14:06:45.669Z",
+  "source": "New server process, persistent Neon and live Walrus recall (browser-session gate is separate)",
+  "invoiceId": "175e2984-a3b1-41f9-9969-5ebd18c7d2ed",
+  "syntheticInvoice": true,
+  "off": {
+    "level": "Needs review",
+    "memoryStatus": "Off: learned soft policies excluded; mandatory user rules remain active",
+    "findings": [
+      {
+        "id": "trusted-recipient-change"
+      },
+      {
+        "id": "near-duplicate"
+      },
+      {
+        "id": "recipient-change"
+      },
+      {
+        "id": "due-soon"
+      }
+    ]
+  },
+  "on": {
+    "level": "High risk / verification required",
+    "memoryStatus": "Recalled 12 confirmed Mainnet memories",
+    "findings": [
+      {
+        "id": "trusted-recipient-change"
+      },
+      {
+        "id": "near-duplicate"
+      },
+      {
+        "id": "recipient-change"
+      },
+      {
+        "id": "due-soon"
+      },
+      {
+        "id": "policy-6651bfb1-0b09-4ac4-b126-a55555ed3dd1",
+        "memoryId": "1adbf8f0-4e31-47c0-b451-fadc4fa57337"
+      },
+      {
+        "id": "policy-272da366-0028-456b-9af0-2959eb001433",
+        "memoryId": "273fae59-2855-4cf6-a2ea-1079a11cf84b"
+      },
+      {
+        "id": "policy-48f13c23-23d5-4424-aa1f-c70bc35e5b20",
+        "memoryId": "a58c7a99-5d7e-40e3-bf81-d3fb62f99454"
+      }
+    ],
+    "citations": [
+      {
+        "id": "a58c7a99-5d7e-40e3-bf81-d3fb62f99454",
+        "blobId": "k_VAehYdw7pjBjGTW4X4gOjCS4xDIheFZoItuHWMHyQ",
+        "policyId": "48f13c23-23d5-4424-aa1f-c70bc35e5b20"
+      },
+      {
+        "id": "1adbf8f0-4e31-47c0-b451-fadc4fa57337",
+        "blobId": "pPYsV-RKCESYlutuJDdc9lj9pxV2ixSA_zMHRDr2CM4",
+        "policyId": "6651bfb1-0b09-4ac4-b126-a55555ed3dd1"
+      },
+      {
+        "id": "273fae59-2855-4cf6-a2ea-1079a11cf84b",
+        "blobId": "i3nSnl9ix5Es129QXaW1gUggnN6t0NaNAZubOMyb-G4",
+        "policyId": "272da366-0028-456b-9af0-2959eb001433"
+      }
+    ]
+  }
+}
