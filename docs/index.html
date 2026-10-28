@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="How PayGuard Verify uses genuine Walrus Mainnet memory and Tatum Sui gRPC to review supplier payment-instruction changes."
+    />
+    <title>The invoice was familiar. The recipient was not. — PayGuard Verify</title>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #07141e;
+        color: #dae9ec;
+        font:
+          17px/1.8 system-ui,
+          sans-serif;
+      }
+      header,
+      main,
+      footer {
+        max-width: 860px;
+        margin: auto;
+        padding: 30px 24px;
+      }
+      header {
+        border-bottom: 1px solid #27414b;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #56e8c1;
+      }
+      header a {
+        font-size: 14px;
+      }
+      main {
+        padding-top: 40px;
+      }
+      h1 {
+        font-size: clamp(32px, 5vw, 52px);
+        line-height: 1.16;
+        letter-spacing: -0.04em;
+        color: #f0fcf9;
+      }
+      h2 {
+        font-size: 27px;
+        line-height: 1.3;
+        margin-top: 48px;
+        color: #d8fff4;
+      }
+      a {
+        color: #59ddc2;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 4px;
+      }
+      a:hover {
+        color: white;
+      }
+      a:focus-visible {
+        outline: 2px solid #59ddc2;
+        outline-offset: 4px;
+      }
+      img {
+        max-width: 100%;
+        height: auto;
+        border: 1px solid #27414b;
+        border-radius: 14px;
+      }
+      code {
+        background: #152c37;
+        border-radius: 4px;
+        padding: 2px 5px;
+        font-size: 0.83em;
+        overflow-wrap: anywhere;
+      }
+      p,
+      li {
+        overflow-wrap: anywhere;
+      }
+      strong {
+        color: #f2fbfa;
+      }
+      footer {
+        font-size: 14px;
+        color: #98b1bc;
+        border-top: 1px solid #27414b;
+      }
+      .anchor {
+        display: none;
+      }
+      em {
+        color: #9db8c2;
+      }
+      table {
+        display: block;
+        overflow-x: auto;
+      }
+      td,
+      th {
+        padding: 10px;
+        border: 1px solid #27414b;
+      }
+      blockquote {
+        margin: 20px 0;
+        padding: 12px 20px;
+        border-left: 3px solid #59ddc2;
+        background: #102631;
+      }
+      @media (prefers-reduced-motion: no-preference) {
+        a {
+          transition: color 0.15s;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <strong>PayGuard Verify · Engineering</strong
+      ><a href="https://github.com/sopskistar/payguard-ai">Source &amp; evidence ↗</a>
+    </header>
+    <main>
+      <h1 dir="auto">The invoice was familiar. The recipient was not.</h1>
+      <p dir="auto">
+        <em
+          >Draft: add verified proof and deployment links before publication. This draft does not
+          claim completed Mainnet acceptance.</em
+        >
+      </p>
+      <p dir="auto">
+        A payment request can look routine while changing the one detail that matters: who gets
+        paid. The FBI's
+        <a
+          href="https://www.fbi.gov/how-we-can-help-you/common-frauds-and-scams/business-email-compromise"
+          rel="nofollow"
+          >business email compromise guidance</a
+        >
+        describes vendor impersonation, subtle address changes and compromised correspondence. It
+        recommends independently verifying changes using a known channel. PayGuard Verify turns that
+        review practice into an observable workflow.
+      </p>
+      <h2 dir="auto">Start with a reference, not a score</h2>
+      <p dir="auto">
+        The application records a vendor's established recipient, email domain and independent
+        contact. A new instruction is compared against that reference. Changed recipients,
+        mismatched reply-to details, urgency and instructions to skip verification become explicit
+        findings. We do not call the resulting rule score a fraud probability. A matching email
+        domain does not authenticate a message, and a syntactically valid wallet does not prove
+        supplier control.
+      </p>
+      <h2 dir="auto">The human establishes the fact</h2>
+      <p dir="auto">
+        A reviewer contacts the supplier through the previously established channel and records what
+        happened. The attestation is bound to an instruction snapshot and vendor-profile revision.
+        Editing either invalidates it; concurrent edits and approvals use database row locks. These
+        records are human assertions, not claims that our app observed a phone call. No supplier
+        payment is initiated.
+      </p>
+      <h2 dir="auto">Walrus remembers why</h2>
+      <p dir="auto">
+        Corrections become minimized policy templates with pseudonymous references. Raw invoice
+        documents, correspondence, contacts and detailed explanations are not sent to Walrus. The
+        server uses the Walrus Memory delegate SDK, records an accepted job ID durably, and waits
+        for a completed result before showing a confirmed blob. A timeout remains pending and
+        resumes the same job.
+      </p>
+      <p dir="auto">
+        When a later invoice is reviewed, semantic recall queries the owner's stable namespace.
+        Returned content is untrusted until it matches the exact confirmed tenant-owned payload. The
+        deterministic engine then applies the matching authoritative policy, with a visible
+        citation. Memory OFF removes learned soft-policy application while retaining mandatory
+        checks. An empty recall result produces no invented improvement.
+      </p>
+      <p dir="auto">
+        On October 28 we confirmed all twelve distinct seeded policies on Walrus Mainnet. These are
+        fictional business events with real storage receipts. The first seed's job was
+        <code class="notranslate">4d590890-db79-4329-986f-10f52d32d5c7</code>, returning blob
+        <code class="notranslate">pPYsV-RKCESYlutuJDdc9lj9pxV2ixSA_zMHRDr2CM4</code>. Interrupted
+        writes resumed their accepted IDs; no pending job entered the confirmed count.
+      </p>
+      <p dir="auto">
+        A new server process reviewed a later Northstar sample invoice at
+        <code class="notranslate">2026-10-28T14:06:45.669Z</code>. OFF retained recipient-change
+        warnings. ON retrieved twelve confirmed memories and applied three matching vendor policies,
+        moving the review from “Needs review” to “High risk / verification required.” The proof file
+        records the exact returned citations; this was not a local policy lookup dressed as recall.
+      </p>
+      <p dir="auto">
+        A separate browser experiment then created a thirteenth confirmed memory, logged out, closed
+        the first context, signed in through a new context, and reviewed a later invoice. The test
+        passed in 56.8 seconds: the new assessment cited the exact blob written in the first
+        session. Neither OFF nor ON bypasses the independent-verification gate.
+        <a href="https://github.com/sopskistar/payguard-ai/blob/main/docs/MAINNET_PROOF.md"
+          >Completion and recall evidence</a
+        >
+        includes all thirteen job/blob pairs.
+      </p>
+      <h2 dir="auto">Tatum supplies a different kind of evidence</h2>
+      <p dir="auto">
+        The backend uses native Sui Mainnet gRPC through Tatum, with TLS and a server-only API key.
+        It verifies service identity, fetches transaction effects and balance changes, resolves coin
+        decimals, and compares exact atomic units. Gas-payer rebates are excluded from payment
+        matching. Fiat invoices need an explicitly agreed token amount. Database uniqueness protects
+        against digest reuse.
+      </p>
+      <p dir="auto">
+        This chain evidence answers whether the expected address received the expected token amount.
+        It does not answer whether the supplier authorized the instruction. Keeping those questions
+        separate is central to the product.
+      </p>
+      <p dir="auto">
+        Tatum identified Sui Mainnet as <code class="notranslate">35834a8a</code> and reported
+        service checkpoint <code class="notranslate">339079915</code>. We inspected the real public
+        digest <code class="notranslate">os1iG8zow278c6hqxbuyxnvMUjzThsD8GTY8atdfzW6</code>,
+        finalized in checkpoint <code class="notranslate">339078672</code>. Its successful execution
+        did not prove a payment to our sample vendor: the transaction showed a SUI debit from its
+        sender, while the sample recipient received zero. Live coin metadata returned nine decimals.
+        Our reconciliation returned <strong>Mismatch</strong> against the synthetic expectation of
+        <code class="notranslate">500000000000</code> atomic units.
+      </p>
+      <p dir="auto">
+        That negative result is useful. A successful transaction pasted into a review must not
+        become a fabricated receipt. No transfer was sent and no invoice was marked paid. Positive
+        matching remains covered by synthetic fixtures; this article makes no claim of a real
+        positive supplier payment. Tip discovery was intermittent, so the demo uses the actual known
+        digest with honest provider failures.
+      </p>
+      <h2 dir="auto">What we tested and what remains</h2>
+      <p dir="auto">
+        The automated suite covers attack replay controls, changed-recipient gates, stale human
+        verification, parsing, reconciliation edge cases and durable memory state transitions.
+        Provider fixtures are explicitly synthetic. Local PostgreSQL tests establish application
+        behavior, not Neon or Mainnet connectivity. Fresh-session learning was demonstrated
+        separately with live credentials; hosted deployment validation is recorded independently in
+        the test ledger.
+      </p>
+      <p dir="auto">
+        Memory is subject to retention epochs and semantic indexing delays. Deterministic patterns
+        can miss attacks or flag legitimate requests. Our audit is append-only through the app, not
+        immutable against a database administrator. These limits remain visible rather than hidden
+        behind a confidence badge.
+      </p>
+      <p dir="auto">
+        The narrow MVP deliberately uses a single active supplier reference with invoice-scoped
+        attestations, rather than claiming a complete vendor identity system. The replay includes
+        changed recipients, lookalike domains, compromised threads, a negative control, duplicates,
+        legitimate exception context and the exact prompt-injection phrase from our adversarial
+        test. New exception memories require a current independent attestation, remain
+        invoice-scoped and expire after thirty days.
+      </p>
+      <p dir="auto">
+        <a target="_blank" rel="noopener noreferrer" href="screenshots/verification.png"
+          ><img
+            src="screenshots/verification.png"
+            alt="Instruction comparison"
+            style="max-width: 100%"
+        /></a>
+      </p>
+      <p dir="auto">
+        The remaining submission work is hosted application verification, a short recorded
+        demonstration, and the required account/dashboard details. This report is published directly
+        from the public source repository. The repository contains the application, reproducible
+        checks and reviewed real evidence. No x402/MPP settlement or payment bonus is claimed.
+      </p>
+    </main>
+    <footer>
+      Published from the PayGuard Verify source repository. Synthetic business scenarios; genuine
+      Mainnet storage and read-only chain evidence. No supplier payments are initiated.
+    </footer>
+  </body>
+</html>
