@@ -68,3 +68,9 @@ Final local continuation checks: **63 unit tests across 9 files passed; TypeScri
 A publish scan checked 259 repository/client-bundle files against configured secret values with zero matches. Final dependency installation/audit reported zero vulnerabilities after removal of the rejected payment SDK. Public Vercel owner workflows remain untested because deployment protection requires owner action. The service payment has no real settlement receipt; its tests are synthetic provider fixtures.
 
 The final service-method security guard was rebuilt and rechecked: authenticated GET on a service action returns 405, while the full independent-verification/edit-invalidation browser workflow still passed (38.9 seconds). This was a focused regression after the 8/8 complete run.
+
+## Hosted judge release verification
+
+Release `aaf0ceb` was pushed normally and Vercel reported a successful deployment. GitHub Pages built that commit. The public judge at https://sopskistar.github.io/payguard-ai/try/ returned HTTP 200; the served JavaScript SHA-256 matched the locally tested bundle. A real hosted browser run completed all seven steps, tested 390px mobile layout, displayed 30 confirmed records, and observed zero page errors and zero POST requests. [Raw hosted smoke evidence](evidence/hosted-judge-smoke.json). The updated article remains public at https://sopskistar.github.io/payguard-ai/.
+
+The Next.js app's project alias still requires Vercel authentication. No hosted owner or paid-service success is claimed through that gate. Local production workflows and the public static judge were verified independently.

@@ -2,7 +2,7 @@
 
 **Verify before you pay. Remember what nearly went wrong.**
 
-Open the [public judge sandbox](https://sopskistar.github.io/payguard-ai/try/). It requires no account, wallet or funds. The same component is also served at `/try` on the Next.js app. The public GitHub Pages copy is available independently while the Vercel app requires Vercel authentication.
+Open the [public judge sandbox](https://sopskistar.github.io/payguard-ai/try/). It requires no account, wallet or funds. The published page passed its real hosted desktop/mobile walkthrough with zero page errors and zero POST requests; see [hosted evidence](evidence/hosted-judge-smoke.json). The same component is also served at `/try` on the Next.js app. The public GitHub Pages copy is available independently while the Vercel app requires Vercel authentication.
 
 1. **Open the invoice.** Northstar's synthetic retainer is $1,250 with a separately agreed synthetic 500 SUI amount. Nothing is being charged or transferred. Open the supplier reference.
 2. **Find the switch.** Compare the full established `0x111…` recipient with proposed `0x222…`. A familiar document or email domain does not authenticate the new wallet.

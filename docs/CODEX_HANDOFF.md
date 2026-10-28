@@ -1,5 +1,7 @@
 # Current continuation — read this first
 
+Code release `aaf0ceb` is pushed. GitHub Pages judge is LIVE and hosted-smoke-tested at https://sopskistar.github.io/payguard-ai/try/; its bundle matched the locally tested artifact. Vercel reported the same code release Ready, but its project alias still requires login. See `docs/evidence/hosted-judge-smoke.json`. The following documentation-only checkpoint preserves this verified status.
+
 Continue the existing repo; no reset or res scaffold. The owner explicitly forbids creating or recording any demo video. Maintain only written outlines.
 
 The `652a397` baseline was reverified. Original 13 jobs were confirmed through SDK status; bounded expansion added 17 unique sponsored policies. **30 memories confirmed, zero pending/failed.** No Mainnet payment or renewal transaction was sent. Provider receipts and live quality results are in `docs/evidence/`. Four supplier reviews retained baseline checks and applied relevant policies; stale/wrong-scope application and added critical control warnings were zero.
