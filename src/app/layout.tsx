@@ -1,0 +1,9 @@
+import type { Metadata } from 'next';
+import '@fontsource/manrope/400.css';
+import '@fontsource/manrope/500.css';
+import '@fontsource/manrope/600.css';
+import '@fontsource/manrope/700.css';
+import '@fontsource/manrope/800.css';
+import './globals.css';
+export const metadata:Metadata={title:{default:'PayGuard AI | The payment guardian that remembers',template:'%s | PayGuard AI'},description:'Review invoices, verify Sui payments, and teach a payment guardian your rules through Walrus Memory.',icons:{icon:'/brand/icon.png',apple:'/brand/icon.png'},manifest:'/manifest.webmanifest'};
+export default function RootLayout({children}:{children:React.ReactNode}) {return <html lang="en"><body><a className="skip-link" href="#main">Skip to content</a>{children}</body></html>;}

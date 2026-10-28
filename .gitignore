@@ -147,3 +147,14 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# PayGuard local runtime and secrets
+.env*
+!.env.example
+.next/
+node_modules/
+*.tsbuildinfo
+.data/
+test-results/
+playwright-report/
+.vercel/
