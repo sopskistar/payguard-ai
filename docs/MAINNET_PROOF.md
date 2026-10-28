@@ -38,7 +38,7 @@ The opt-in Playwright live test also **passed in 56.8 seconds** against the loca
 
 Real inspected transaction: [os1iG8zow278c6hqxbuyxnvMUjzThsD8GTY8atdfzW6](https://suiscan.xyz/mainnet/tx/os1iG8zow278c6hqxbuyxnvMUjzThsD8GTY8atdfzW6), finalized in checkpoint `339078672`. It executed successfully and reported a sender SUI debit of `101473` atomic units; it did **not** pay the sample supplier.
 
-[Live reconciliation](evidence/tatum-reconciliation.json) correctly returned **Mismatch**. Coin metadata returned 9 decimals; the synthetic invoice expected `500000000000` atomic units and received zero. No invoice was marked paid. Positive-match and uniqueness paths are covered by synthetic unit/database tests; no live positive supplier payment is claimed.
+[Live reconciliation](evidence/tatum-reconciliation.json) correctly returned **Mismatch**. Coin metadata returned 9 decimals; the synthetic invoice expected `500000000000` atomic units and received zero. No invoice was marked paid. The real Tatum browser test also passed through Transaction Inspector and Verify payment in the production UI, displaying this mismatch. Positive-match and uniqueness paths are covered by synthetic unit/database tests; no live positive supplier payment is claimed.
 
 Latest-checkpoint discovery was intermittent and is not a complete history indexer. Manual digest inspection and live coin-metadata reconciliation succeeded. Missing/pruned/provider failures remain visible; no fixture fallback exists.
 

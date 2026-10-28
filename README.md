@@ -4,7 +4,7 @@
 
 PayGuard Verify helps a human reviewer investigate supplier payment-instruction changes. It compares proposed recipients with independently established vendor profiles, flags observable business email compromise (BEC) patterns, records out-of-band verification, and recalls approved policies from Walrus Memory. Tatum Sui Mainnet gRPC supplies separate chain evidence. **A successful transfer does not establish supplier identity or authorize an instruction.** No supplier payment is ever initiated.
 
-The application is implemented and locally production-tested. **13 Walrus Mainnet memories are confirmed; real semantic recall passed across a fresh owner browser session; Tatum gRPC inspected a real transaction and correctly rejected a false invoice match.** See [the proof ledger](docs/MAINNET_PROOF.md), [test results](docs/TEST_RESULTS.md), and [handoff](docs/CODEX_HANDOFF.md). Deployment validation is tracked separately; no supplier payment or positive live payment match is claimed. The updated October 27 PayGuard Verify specification was merged safely from GitHub.
+The application is implemented and locally production-tested. **13 Walrus Mainnet memories are confirmed; real semantic recall passed across a fresh owner browser session; Tatum gRPC inspected a real transaction and correctly rejected a false invoice match.** See [the proof ledger](docs/MAINNET_PROOF.md), [test results](docs/TEST_RESULTS.md), and [handoff](docs/CODEX_HANDOFF.md). Vercel built the application successfully, but its project aliases currently require Vercel login, so the public demo gate is blocked on deployment protection/domain configuration. No supplier payment or positive live payment match is claimed. The updated October 27 PayGuard Verify specification was merged safely from GitHub.
 
 ## What is implemented
 
@@ -84,7 +84,7 @@ No architecture path signs or submits a supplier payment. A human review approva
 
 Follow [the 2–3 minute demo script](docs/DEMO_SCRIPT.md). The crucial live sequence is: Memory OFF → changed supplier instruction → human correction → **completed Walrus job with blob ID** → later invoice → fresh authenticated browser session → actual semantic recall → Memory ON/OFF comparison.
 
-The ten-memory gate and fresh-session recall are evidenced in [MAINNET_PROOF.md](docs/MAINNET_PROOF.md). Public deployment, article publication and a recorded video remain separately tracked submission gates. The [article draft](docs/HACKATHON_ARTICLE_DRAFT.md) must be completed with real evidence before publication. No x402/MPP bonus is claimed.
+The ten-memory gate and fresh-session recall are evidenced in [MAINNET_PROOF.md](docs/MAINNET_PROOF.md). The [technical article is published](https://sopskistar.github.io/payguard-ai/). Public app access and a recorded video remain submission gates. The [article source](docs/HACKATHON_ARTICLE_DRAFT.md) includes measured results and genuine screenshots. No x402/MPP bonus is claimed.
 
 ## Security and limitations
 

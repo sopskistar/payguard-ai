@@ -1,6 +1,10 @@
 # The invoice was familiar. The recipient was not.
 
-_Draft: add verified proof and deployment links before publication. This draft does not claim completed Mainnet acceptance._
+_Technical article source, updated October 28, 2026. Mainnet results are measured; see the test ledger for hosted deployment status._
+
+[Repository](https://github.com/sopskistar/payguard-ai) · [Proof ledger](MAINNET_PROOF.md) · [Test results](TEST_RESULTS.md)
+
+![PayGuard Verify](screenshots/landing.png)
 
 A payment request can look routine while changing the one detail that matters: who gets paid. The FBI's [business email compromise guidance](https://www.fbi.gov/how-we-can-help-you/common-frauds-and-scams/business-email-compromise) describes vendor impersonation, subtle address changes and compromised correspondence. It recommends independently verifying changes using a known channel. PayGuard Verify turns that review practice into an observable workflow.
 
@@ -44,4 +48,4 @@ The narrow MVP deliberately uses a single active supplier reference with invoice
 
 ![Instruction comparison](screenshots/verification.png)
 
-The remaining submission work is a verified public deployment, publication of this article to the chosen blog platform, a short recorded demonstration, and the required account/dashboard details. The repository contains the application, reproducible checks and reviewed real evidence. No x402/MPP settlement or payment bonus is claimed.
+This article is [published on GitHub Pages](https://sopskistar.github.io/payguard-ai/). Vercel built the application successfully, but project aliases still require Vercel authentication. The remaining submission work is public app access and hosted smoke testing, a short recorded demonstration, and the required account/dashboard details. The repository contains the application, reproducible checks and reviewed real evidence. No x402/MPP settlement or payment bonus is claimed.
