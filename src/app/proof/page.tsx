@@ -7,6 +7,8 @@ import recall from '../../../docs/evidence/judge-recall.json';
 import quality from '../../../docs/evidence/memory-quality.json';
 import chain from '../../../docs/evidence/tatum-reconciliation.json';
 import recheck from '../../../docs/evidence/provider-recheck.json';
+import tenants from '../../../docs/evidence/two-tenant-mainnet-memory.json';
+import tenantRecheck from '../../../docs/evidence/two-tenant-provider-recheck.json';
 export const metadata: Metadata = { title: 'Read-only Mainnet evidence' };
 const repo = 'https://github.com/sopskistar/payguard-ai/blob/main/docs/';
 export default function ProofPage() {
@@ -108,6 +110,72 @@ export default function ProofPage() {
             </a>
             <a href={repo + 'evidence/provider-recheck.json'} target="_blank" rel="noreferrer">
               SDK recheck <ExternalLink size={13} />
+            </a>
+          </div>
+        </section>
+        <section id="isolation" className="proof-section">
+          <span className="site-eyebrow">TWO SEPARATE CUSTOMER SCOPES · CONTROLLED LIVE PROOF</span>
+          <h2>Two accounts. Two remembered corrections.</h2>
+          <p>
+            The original 30-record owner collection is preserved. Two additional sponsored Mainnet
+            memories were confirmed for independently authenticated, unfunded test identities using
+            the local application with real Neon and Walrus. Each later session recalled its own
+            correction and applied it to a new synthetic invoice. Both directions rejected foreign
+            invoice and memory access. This brings the tracked confirmed total to 32.
+          </p>
+          <div className="proof-mode">
+            <ShieldCheck size={18} />
+            <span>
+              Controlled API proof does not clear Slush, certify a physical wallet, or establish
+              production registration. The shared operator remains trusted; these are
+              server-enforced customer boundaries, not separate customer-held encryption keys.
+            </span>
+          </div>
+          <div className="proof-receipts">
+            {tenants.tenants.map((t) => (
+              <article key={t.memoryId}>
+                <span>{t.tenant}</span>
+                <div>
+                  <strong>
+                    New session: 0 citations OFF → {t.rememberedCitations} owned citation ON
+                  </strong>
+                  <p>Confirmed policy produced a learned finding on the later synthetic review.</p>
+                  <dl>
+                    <div>
+                      <dt>Job</dt>
+                      <dd>
+                        <code>{t.jobId}</code>
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>Blob</dt>
+                      <dd>
+                        <code>{t.blobId}</code>
+                      </dd>
+                    </div>
+                  </dl>
+                </div>
+                <Check size={16} />
+              </article>
+            ))}
+          </div>
+          <p>
+            Both provider jobs independently rechecked through the SDK at {tenantRecheck.checkedAt}.
+          </p>
+          <div className="proof-links">
+            <a
+              href={repo + 'evidence/two-tenant-mainnet-memory.json'}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Authorization and recall evidence <ExternalLink size={13} />
+            </a>
+            <a
+              href={repo + 'evidence/two-tenant-provider-recheck.json'}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Independent provider recheck <ExternalLink size={13} />
             </a>
           </div>
         </section>

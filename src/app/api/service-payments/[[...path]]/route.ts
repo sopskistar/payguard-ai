@@ -1,17 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { requireOwner, checkOrigin, rateLimit } from '@/lib/auth';
+import { requireOwner, currentActor, checkOrigin, rateLimit } from '@/lib/auth';
 import { AppError, safeError } from '@/lib/errors';
-import { address } from '@/lib/validation';
 import { walletOnboardingAllowed } from '@/lib/wallet-policy';
 import {
+  SERVICE_SESSION_CAP,
+  serviceAddressSchema,
+  decodeServicePaymentHeader,
+} from '@/lib/service-protocol';
+import {
   serviceReady,
+  serviceMode,
+  serviceSettlementEnabled,
   listServiceIntents,
   quoteService,
   approveService,
   fulfillService,
   rememberService,
   cancelService,
+  servicePreflight,
+  ownedService,
 } from '@/lib/service-payments';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -20,9 +28,16 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
   try {
     if (req.method !== 'GET') checkOrigin(req);
     const tenantId = await requireOwner();
+    const actor = await currentActor();
     if (req.method !== 'GET') await rateLimit(tenantId + ':service-payments', 30);
     const path = (await params).path || [];
     if (path.length > 2) throw new AppError(404, 'NOT_FOUND', 'Unknown service action');
+    if (req.method === 'GET' && path.length === 1 && path[0] === 'preflight') {
+      await rateLimit(tenantId + ':service-preflight', 15);
+      return NextResponse.json(await servicePreflight(), {
+        headers: { 'Cache-Control': 'private, no-store' },
+      });
+    }
     if (req.method === 'GET' && path.length)
       throw new AppError(
         405,
@@ -32,9 +47,15 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
     if (req.method === 'GET' && !path.length)
       return NextResponse.json({
         configured: serviceReady(),
-        network: 'sui:testnet',
-        mainnetEnabled: false,
-        signingAllowed: walletOnboardingAllowed(),
+        network: serviceMode(),
+        mainnetImplemented: true,
+        mainnetEnabled: serviceMode() === 'sui:mainnet' && serviceSettlementEnabled(),
+        signingAllowed: serviceSettlementEnabled(),
+        securityCleared: walletOnboardingAllowed(),
+        sessionCapAtomic: SERVICE_SESSION_CAP,
+        dedicatedPayer: serviceAddressSchema.safeParse(process.env.SERVICE_PAYMENT_PAYER).success
+          ? process.env.SERVICE_PAYMENT_PAYER
+          : null,
         intents: await listServiceIntents(tenantId),
       });
     let size = 0;
@@ -45,7 +66,7 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
         const p = await reader.read();
         if (p.done) break;
         size += p.value.byteLength;
-        if (size > 20000) {
+        if (size > 40000) {
           await reader.cancel();
           throw new AppError(413, 'BODY_SIZE', 'Payment payload too large.');
         }
@@ -71,8 +92,11 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
     const id = z.string().uuid().parse(path[0]);
     if (path[1] === 'cancel') return NextResponse.json(await cancelService(tenantId, id));
     if (path[1] === 'approve') {
-      const input = z.object({ payer: address, approved: z.literal(true) }).parse(data);
-      return NextResponse.json(await approveService(tenantId, id, input.payer));
+      const input = z
+        .object({ payer: serviceAddressSchema, approved: z.literal(true) })
+        .strict()
+        .parse(data);
+      return NextResponse.json(await approveService(tenantId, id, input.payer, actor?.sessionKey));
     }
     if (path[1] === 'remember') {
       z.object({ consent: z.literal(true) }).parse(data);
@@ -80,7 +104,45 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
     }
     if (path[1] && path[1] !== 'resume')
       throw new AppError(404, 'NOT_FOUND', 'Unknown service action');
-    const result = await fulfillService(tenantId, id, path[1] === 'resume' ? undefined : data);
+    const paymentHeader = req.headers.get('PAYMENT-SIGNATURE');
+    let payment: unknown =
+      data && typeof data === 'object' && 'x402Version' in data ? data : undefined;
+    if (paymentHeader) {
+      if (data && typeof data === 'object' && 'x402Version' in data)
+        throw new AppError(
+          400,
+          'AMBIGUOUS_PAYMENT',
+          'Supply the payment through one transport only.',
+        );
+      try {
+        payment = decodeServicePaymentHeader(paymentHeader);
+      } catch {
+        throw new AppError(
+          400,
+          'PAYMENT_HEADER',
+          'Invalid PAYMENT-SIGNATURE header. Nothing submitted.',
+        );
+      }
+    }
+    const result = await fulfillService(
+      tenantId,
+      id,
+      path[1] === 'resume' ? undefined : payment,
+      actor?.sessionKey,
+    );
+    if (!path[1] && ['quoted', 'approved'].includes(result.state)) {
+      const intent = await ownedService(tenantId, id);
+      return NextResponse.json(
+        { id, expiresAt: intent.expiresAt, ...(intent.challenge as object) },
+        {
+          status: 402,
+          headers: {
+            'PAYMENT-REQUIRED': Buffer.from(JSON.stringify(intent.challenge)).toString('base64'),
+            'Cache-Control': 'private, no-store',
+          },
+        },
+      );
+    }
     return NextResponse.json(result, {
       status: result.state === 'pending' ? 202 : 200,
       headers: {
@@ -90,7 +152,7 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
               'PAYMENT-RESPONSE': Buffer.from(
                 JSON.stringify({
                   success: true,
-                  network: 'sui:testnet',
+                  network: result.receipt?.network,
                   transaction: result.receipt?.digest,
                 }),
               ).toString('base64'),

@@ -1,3 +1,19 @@
+# Current continuation handoff — Sui Mainnet implementation
+
+This section supersedes historical checkpoints below. Started from e9781c2 with only the preserved untracked `.gitignore.save`. Do not remove that backup. No reset, force push, credential output or video.
+
+Mainnet exact x402 now supports full genesis, native SUI 9 decimals, 1,000,000-MIST exact fee, 3,000,000-MIST authenticated-session cap, 2,000,000-MIST sponsor budget and zero payer gas. Mainnet is primary; development Testnet remains. Durable additive migration 0006 applied to Neon. Signing and settlement remain independently disabled; hosted Slush pause cannot be overridden by environment. Tentacle actual support and Tatum chain/coin preflight passed; no funded signature or settlement occurred. Dedicated SERVICE_PAYMENT_PAYER and SERVICE_PAYMENT_RECIPIENT are missing; exact financial approval is not ready. The owner already submitted Slush review; wait for outcome only for security-paused physical workflows, continue other engineering.
+
+Original 30 memories preserved and provider-reconfirmed. Two new controlled tenant accounts each confirmed one real sponsored Mainnet correction, logged out/returned, and recalled it on a later synthetic invoice. Both-direction API authorization passed. Total tracked confirmed records: 32, of which 30 remain the original owner collection. See two-tenant-mainnet-memory.json and two-tenant-provider-recheck.json. Never rerun `prove-tenant-memory.ts` to create more copies; it refuses an existing ignored proof state. Recheck uses `recheck-tenant-memory.ts --http`, with no writes. Ephemeral fixture keys were never stored. Controlled loopback/provider proof does not certify physical hosted wallets.
+
+Local browser 14 passed / 3 intentional skips. Hosted HTTP/1.1 run improved to 12 passed / 1 transport failure / 3 security-paused wallet skips; retain failures until the final deployed rerun. HTTP/2 diagnostic had real JS/font network resets, whereas HTTP/1.1 public probe loaded all five routes. No TLS or wallet safety was disabled. See current TEST_RESULTS and RELEASE_STATUS for final validation.
+
+Review/payment details: AGENT_PAYMENTS.md, mainnet-service-preflight.json, mainnet-http-challenge.json. Read-only proof `/proof#isolation` now explains 30+2 records. Updated article source remains docs/index.html. No final submission form or video should be created.
+
+---
+
+## Historical handoffs follow
+
 # Active security gate — Slush domain review
 
 The owner now reports Slush's malicious-website warning on production `/connect`. Hosted wallet onboarding and new service-payment approval/signing/settlement are intentionally paused in page/API code. There is no environment bypass; controlled loopback fixtures remain enabled. `/try`, read-only proof and password-based owner administration remain working paths. Do not override wallet protections, switch domains/wallets to evade them, or declare the site safe from an exact-list check. `SLUSH_SECURITY_REVIEW.md` contains primary sources, recorded script hashes/headers, limitations and a ready review request for the owner to submit via official Slush support. No physical extension was available to reproduce/clear the report.

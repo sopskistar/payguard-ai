@@ -9,11 +9,14 @@ import * as s from '@/db/schema';
 import { ownedInvoice, audit } from './store';
 import { trustContext } from './verify-store';
 import { AppError } from './errors';
-import { address } from './validation';
 import {
   SERVICE_NETWORK,
   SERVICE_AMOUNT,
   SERVICE_ASSET,
+  SERVICE_SESSION_CAP,
+  serviceAddressSchema,
+  serviceNetworkInfo,
+  type ServiceNetwork,
   FACILITATOR,
   servicePayloadSchema,
   serviceTermsSchema,
@@ -21,15 +24,39 @@ import {
   analyzeInstructionConsistency,
   type ServiceChallenge,
 } from './service-protocol';
-import { inspectServiceSettlement } from './integrations/service-tatum';
+import { inspectServiceSettlement, serviceChainPreflight } from './integrations/service-tatum';
 import { recordCorrection } from './integrations/memory';
 import { walletOnboardingAllowed, WALLET_REVIEW_MESSAGE } from './wallet-policy';
+export const serviceMode = (): ServiceNetwork =>
+  process.env.ENABLE_AGENT_PAYMENTS === 'testnet' ? 'sui:testnet' : SERVICE_NETWORK;
 export const serviceReady = () =>
-  process.env.ENABLE_AGENT_PAYMENTS === 'testnet' &&
-  address.safeParse(process.env.SERVICE_PAYMENT_RECIPIENT).success &&
+  ['mainnet', 'testnet'].includes(process.env.ENABLE_AGENT_PAYMENTS || '') &&
+  serviceAddressSchema.safeParse(process.env.SERVICE_PAYMENT_RECIPIENT).success &&
   !!process.env.TATUM_API_KEY;
+export const serviceSettlementEnabled = () =>
+  serviceReady() &&
+  process.env.SERVICE_PAYMENT_SETTLEMENT_ENABLED === 'true' &&
+  walletOnboardingAllowed();
+function requireNewSpend() {
+  if (!walletOnboardingAllowed())
+    throw new AppError(503, 'WALLET_SECURITY_REVIEW', WALLET_REVIEW_MESSAGE);
+  if (!serviceSettlementEnabled())
+    throw new AppError(
+      503,
+      'SPENDING_DISABLED',
+      'Settlement is disabled. Prepare and approve exact terms before enabling SERVICE_PAYMENT_SETTLEMENT_ENABLED.',
+    );
+}
+function budgetId(tenantId: string, sessionKey: string | undefined, network: string) {
+  if (!sessionKey || sessionKey.length < 32)
+    throw new AppError(403, 'SPENDING_SESSION', 'An authenticated spending session is required.');
+  return createHash('sha256')
+    .update(tenantId + ':' + sessionKey + ':' + network)
+    .digest('hex');
+}
 async function facilitator(path: string, body?: unknown) {
   const r = await fetch(FACILITATOR + path, {
+    redirect: 'error',
     method: body ? 'POST' : 'GET',
     headers: body ? { 'Content-Type': 'application/json' } : undefined,
     body: body ? JSON.stringify(body) : undefined,
@@ -43,12 +70,90 @@ async function facilitator(path: string, body?: unknown) {
     );
   return r.json();
 }
+export async function servicePreflight() {
+  const network = serviceMode();
+  const supported = await facilitator('/supported');
+  const kind = supported.kinds?.find(
+    (k: { network: string; scheme: string; x402Version: number }) =>
+      k.network === network && k.scheme === 'exact' && k.x402Version === 2,
+  );
+  const sponsor = serviceAddressSchema.safeParse(kind?.extra?.gasOwner);
+  if (!sponsor.success || kind.extra.gasBudget !== '2000000')
+    throw new AppError(
+      503,
+      'FACILITATOR_TERMS',
+      'Selected network or sponsor terms unavailable. No payment proposed.',
+    );
+  const chain = await serviceChainPreflight(network);
+  const payer = serviceAddressSchema.safeParse(process.env.SERVICE_PAYMENT_PAYER);
+  const recipient = serviceAddressSchema.safeParse(process.env.SERVICE_PAYMENT_RECIPIENT);
+  const missing = [
+    ...(!payer.success ? ['SERVICE_PAYMENT_PAYER'] : []),
+    ...(!recipient.success ? ['SERVICE_PAYMENT_RECIPIENT'] : []),
+  ];
+  const validParties =
+    payer.success &&
+    recipient.success &&
+    payer.data !== recipient.data &&
+    payer.data !== sponsor.data &&
+    recipient.data !== sponsor.data;
+  return {
+    checkedAt: new Date().toISOString(),
+    spending: false,
+    readyForExactApproval: missing.length === 0 && validParties,
+    missing,
+    partiesDistinct: !!validParties,
+    payer: payer.success ? payer.data : null,
+    recipient: recipient.success ? recipient.data : null,
+    network,
+    genesis: chain.genesis,
+    asset: SERVICE_ASSET,
+    decimals: 9,
+    amountAtomic: SERVICE_AMOUNT,
+    amount: '0.001 SUI',
+    sessionCapAtomic: SERVICE_SESSION_CAP,
+    provider: 'PayGuard first-party consistency analysis',
+    independentThirdPartyPurchase: false,
+    resourceOrigin: process.env.APP_URL ? new URL(process.env.APP_URL).origin : null,
+    facilitator: FACILITATOR,
+    sponsor: sponsor.data,
+    maxSponsorGasAtomic: '2000000',
+    maxPayerGasAtomic: '0',
+    purpose:
+      'Analyze contradictory invoice recipient mentions, embedded link domains and instruction-bypass language. Human supplier verification remains required.',
+    expectedResult:
+      'A persisted consistency report with concrete findings, transaction receipt and unchanged supplier-approval safeguards.',
+    risks: [
+      'First-party buyer/seller relationship; not independent supplier identity verification.',
+      'Facilitator availability, sponsorship and full wallet compatibility remain unproven until an authorized settlement.',
+      'Signed transaction can be relayed; cancellation is only available before PayGuard submits it.',
+      'No service result is released until Tatum independently confirms exact finalized credit.',
+    ],
+    chain,
+    securityCleared: walletOnboardingAllowed(),
+    settlementEnabled: serviceSettlementEnabled(),
+  };
+}
+function configuredTerms(terms: import('./service-protocol').ServiceTerms, payer: string) {
+  if (terms.network !== serviceMode() || terms.payTo !== process.env.SERVICE_PAYMENT_RECIPIENT)
+    throw new AppError(
+      409,
+      'CONFIG_CHANGED',
+      'Network or merchant configuration changed. Review a fresh quote.',
+    );
+  if (terms.network === 'sui:mainnet' && process.env.SERVICE_PAYMENT_PAYER !== payer)
+    throw new AppError(
+      403,
+      'PAYER_ALLOWLIST',
+      'Mainnet approval requires the dedicated SERVICE_PAYMENT_PAYER.',
+    );
+}
 export async function quoteService(tenantId: string, invoiceId: string, operationKey: string) {
   if (!serviceReady())
     throw new AppError(
       503,
       'SERVICE_DISABLED',
-      'Testnet service payments require ENABLE_AGENT_PAYMENTS, SERVICE_PAYMENT_RECIPIENT and TATUM_API_KEY. Mainnet payments are disabled.',
+      'Service quotes require ENABLE_AGENT_PAYMENTS, SERVICE_PAYMENT_RECIPIENT and TATUM_API_KEY. Settlement has a separate disabled-by-default switch.',
     );
   const d = await db();
   const [old] = await d
@@ -77,21 +182,22 @@ export async function quoteService(tenantId: string, invoiceId: string, operatio
       'NO_ANALYSIS_NEED',
       'No instruction anomaly currently requires supplemental consistency analysis.',
     );
+  const network = serviceMode();
   const supported = await facilitator('/supported');
   const kind = supported.kinds?.find(
     (k: { x402Version: number; network: string; scheme: string }) =>
-      k.x402Version === 2 && k.network === SERVICE_NETWORK && k.scheme === 'exact',
+      k.x402Version === 2 && k.network === network && k.scheme === 'exact',
   );
   if (!kind)
     throw new AppError(
       503,
       'FACILITATOR_UNSUPPORTED',
-      'Facilitator does not advertise x402 v2 exact Sui Testnet. No payment was requested.',
+      'Facilitator does not advertise the selected x402 v2 exact Sui network. No payment was requested.',
     );
   const id = randomUUID();
   const terms = serviceTermsSchema.parse({
     scheme: 'exact',
-    network: SERVICE_NETWORK,
+    network,
     asset: SERVICE_ASSET,
     amount: SERVICE_AMOUNT,
     payTo: process.env.SERVICE_PAYMENT_RECIPIENT,
@@ -132,7 +238,7 @@ export async function quoteService(tenantId: string, invoiceId: string, operatio
     })
     .returning();
   await audit(tenantId, 'service.challenge', id, {
-    network: SERVICE_NETWORK,
+    network,
     amountAtomic: SERVICE_AMOUNT,
     firstParty: true,
     need: context.signals.map((f) => f.id),
@@ -149,73 +255,161 @@ export async function ownedService(tenantId: string, id: string) {
   if (!row) throw new AppError(404, 'NOT_FOUND', 'Service intent not found.');
   return row;
 }
-export async function approveService(tenantId: string, id: string, payer: string) {
-  const row = await ownedService(tenantId, id);
-  if (!walletOnboardingAllowed())
-    throw new AppError(503, 'WALLET_SECURITY_REVIEW', WALLET_REVIEW_MESSAGE);
-  const challenge = row.challenge as ServiceChallenge;
-  if (row.state === 'approved' && row.payer === payer && row.expiresAt > new Date())
-    return { approved: true };
-  if (!serviceReady() || row.expiresAt < new Date() || row.state !== 'quoted')
-    throw new AppError(
-      409,
-      'QUOTE_STATE',
-      'Quote expired or approval already recorded. Resume the existing payment instead.',
-    );
-  if (payer === challenge.accepts[0].payTo || payer === challenge.accepts[0].extra.gasOwner)
-    throw new AppError(400, 'PAYER', 'Payer must differ from merchant and gas sponsor.');
-  const [approved] = await (
-    await db()
-  )
-    .update(s.servicePaymentIntents)
-    .set({ state: 'approved', payer, approvedAt: new Date() })
-    .where(
-      and(
-        eq(s.servicePaymentIntents.id, id),
-        eq(s.servicePaymentIntents.tenantId, tenantId),
-        eq(s.servicePaymentIntents.state, 'quoted'),
-      ),
+export async function approveService(
+  tenantId: string,
+  id: string,
+  payer: string,
+  sessionKey?: string,
+) {
+  requireNewSpend();
+  const d = await db();
+  return d.transaction(async (tx) => {
+    const [row] = await tx
+      .select()
+      .from(s.servicePaymentIntents)
+      .where(
+        and(eq(s.servicePaymentIntents.id, id), eq(s.servicePaymentIntents.tenantId, tenantId)),
+      )
+      .for('update');
+    if (!row) throw new AppError(404, 'NOT_FOUND', 'Service intent not found.');
+    const challenge = row.challenge as ServiceChallenge;
+    const terms = serviceTermsSchema.parse(challenge.accepts[0]);
+    configuredTerms(terms, payer);
+    const budget = budgetId(tenantId, sessionKey, terms.network);
+    if (
+      row.state === 'approved' &&
+      row.payer === payer &&
+      row.spendingSessionId === budget &&
+      row.expiresAt > new Date()
     )
-    .returning();
-  if (!approved)
-    throw new AppError(409, 'QUOTE_STATE', 'Approval state changed. Reload the existing intent.');
-  await audit(tenantId, 'service.approved', id, {
-    network: SERVICE_NETWORK,
-    amountAtomic: SERVICE_AMOUNT,
-    purpose: challenge.resource.description,
-    payer,
-    recipient: challenge.accepts[0].payTo,
+      return { approved: true };
+    if (row.expiresAt < new Date() || row.state !== 'quoted' || terms.network !== serviceMode())
+      throw new AppError(
+        409,
+        'QUOTE_STATE',
+        'Quote expired or approval already recorded. Resume the existing payment instead.',
+      );
+    if (payer === terms.payTo || payer === terms.extra.gasOwner)
+      throw new AppError(400, 'PAYER', 'Payer must differ from merchant and gas sponsor.');
+    await tx
+      .insert(s.serviceSpendingSessions)
+      .values({
+        id: budget,
+        tenantId,
+        network: terms.network,
+        asset: terms.asset,
+        payer,
+        capAtomic: SERVICE_SESSION_CAP,
+      })
+      .onConflictDoNothing();
+    const [spend] = await tx
+      .select()
+      .from(s.serviceSpendingSessions)
+      .where(
+        and(
+          eq(s.serviceSpendingSessions.id, budget),
+          eq(s.serviceSpendingSessions.tenantId, tenantId),
+        ),
+      )
+      .for('update');
+    if (
+      !spend ||
+      spend.payer !== payer ||
+      spend.asset !== terms.asset ||
+      BigInt(spend.reservedAtomic) + BigInt(terms.amount) > BigInt(spend.capAtomic)
+    )
+      throw new AppError(
+        409,
+        'SESSION_CAP',
+        'Session spending cap reached or payer changed. No new payment approved.',
+      );
+    await tx
+      .update(s.serviceSpendingSessions)
+      .set({ reservedAtomic: (BigInt(spend.reservedAtomic) + BigInt(terms.amount)).toString() })
+      .where(eq(s.serviceSpendingSessions.id, budget));
+    const approval = {
+      network: terms.network,
+      genesis: serviceNetworkInfo(terms.network).genesis,
+      asset: terms.asset,
+      amountAtomic: terms.amount,
+      payer,
+      recipient: terms.payTo,
+      resource: challenge.resource.url,
+      provider: 'PayGuard first-party consistency analysis',
+      facilitator: FACILITATOR,
+      gasOwner: terms.extra.gasOwner,
+      maxSponsorGasAtomic: terms.extra.gasBudget,
+      maxPayerGasAtomic: '0',
+      purpose: challenge.resource.description,
+      sessionCapAtomic: SERVICE_SESSION_CAP,
+    };
+    await tx
+      .update(s.servicePaymentIntents)
+      .set({
+        state: 'approved',
+        payer,
+        approvedAt: new Date(),
+        spendingSessionId: budget,
+        approval,
+      })
+      .where(eq(s.servicePaymentIntents.id, id));
+    await tx
+      .insert(s.auditEvents)
+      .values({ tenantId, type: 'service.approved', entityId: id, detail: approval });
+    return { approved: true };
   });
-  return { approved: true };
 }
 export async function cancelService(tenantId: string, id: string) {
-  const row = await ownedService(tenantId, id);
-  if (row.state === 'cancelled') return { state: 'cancelled' };
-  if (!['quoted', 'approved'].includes(row.state))
-    throw new AppError(
-      409,
-      'ALREADY_SUBMITTED',
-      'A submitted payment cannot be cancelled. Reconcile the existing digest; do not pay again.',
-    );
-  const [cancelled] = await (
-    await db()
-  )
-    .update(s.servicePaymentIntents)
-    .set({ state: 'cancelled' })
-    .where(
-      and(
-        eq(s.servicePaymentIntents.id, id),
-        eq(s.servicePaymentIntents.tenantId, tenantId),
-        eq(s.servicePaymentIntents.state, row.state),
-      ),
-    )
-    .returning();
-  if (!cancelled)
-    throw new AppError(409, 'QUOTE_STATE', 'Payment state changed. Resume the existing intent.');
-  await audit(tenantId, 'service.cancelled', id, { submitted: false });
-  return { state: 'cancelled' };
+  return (await db()).transaction(async (tx) => {
+    const [row] = await tx
+      .select()
+      .from(s.servicePaymentIntents)
+      .where(
+        and(eq(s.servicePaymentIntents.id, id), eq(s.servicePaymentIntents.tenantId, tenantId)),
+      )
+      .for('update');
+    if (!row) throw new AppError(404, 'NOT_FOUND', 'Service intent not found.');
+    if (row.state === 'cancelled') return { state: 'cancelled' };
+    if (!['quoted', 'approved'].includes(row.state))
+      throw new AppError(
+        409,
+        'ALREADY_SUBMITTED',
+        'A submitted payment cannot be cancelled. Reconcile the existing digest; do not pay again.',
+      );
+    if (row.state === 'approved' && row.spendingSessionId) {
+      const [budget] = await tx
+        .select()
+        .from(s.serviceSpendingSessions)
+        .where(eq(s.serviceSpendingSessions.id, row.spendingSessionId))
+        .for('update');
+      const terms = serviceTermsSchema.parse((row.challenge as ServiceChallenge).accepts[0]);
+      if (
+        !budget ||
+        budget.tenantId !== tenantId ||
+        BigInt(budget.reservedAtomic) < BigInt(terms.amount)
+      )
+        throw new AppError(409, 'BUDGET_STATE', 'Spending reservation cannot be reconciled.');
+      await tx
+        .update(s.serviceSpendingSessions)
+        .set({ reservedAtomic: (BigInt(budget.reservedAtomic) - BigInt(terms.amount)).toString() })
+        .where(eq(s.serviceSpendingSessions.id, budget.id));
+    }
+    await tx
+      .update(s.servicePaymentIntents)
+      .set({ state: 'cancelled' })
+      .where(eq(s.servicePaymentIntents.id, id));
+    await tx
+      .insert(s.auditEvents)
+      .values({ tenantId, type: 'service.cancelled', entityId: id, detail: { submitted: false } });
+    return { state: 'cancelled' };
+  });
 }
-export async function fulfillService(tenantId: string, id: string, raw?: unknown) {
+export async function fulfillService(
+  tenantId: string,
+  id: string,
+  raw?: unknown,
+  sessionKey?: string,
+) {
   let row = await ownedService(tenantId, id);
   const d = await db();
   const [receipt] = await d
@@ -225,12 +419,7 @@ export async function fulfillService(tenantId: string, id: string, raw?: unknown
   if (receipt) return { state: 'settled', receipt };
   const challenge = row.challenge as ServiceChallenge;
   const terms = serviceTermsSchema.parse(challenge.accepts[0]);
-  if (!serviceReady())
-    throw new AppError(
-      503,
-      'SERVICE_DISABLED',
-      'Service settlement disabled. No Mainnet payment is supported.',
-    );
+
   const invoice = await ownedInvoice(tenantId, row.invoiceId);
   const context = await trustContext(tenantId, invoice);
   if (row.state !== 'settling' && context.instructionHash !== row.instructionHash)
@@ -240,8 +429,25 @@ export async function fulfillService(tenantId: string, id: string, raw?: unknown
       'Invoice instructions changed; the old quote cannot fulfill a new review.',
     );
   if (row.state === 'approved') {
-    if (!walletOnboardingAllowed())
-      throw new AppError(503, 'WALLET_SECURITY_REVIEW', WALLET_REVIEW_MESSAGE);
+    if (raw === undefined)
+      return {
+        state: 'approved',
+        message: 'Exact terms are approved; no signed payment has been submitted.',
+      };
+    requireNewSpend();
+    configuredTerms(terms, row.payer!);
+    if (row.spendingSessionId !== budgetId(tenantId, sessionKey, terms.network) || !row.approval)
+      throw new AppError(
+        403,
+        'SPENDING_SESSION',
+        'Approve this exact payment in the current authenticated session.',
+      );
+    if (terms.network !== serviceMode())
+      throw new AppError(
+        409,
+        'NETWORK_CHANGED',
+        'Configured payment network changed. Cancel the unsubmitted intent and review a fresh quote.',
+      );
     if (row.expiresAt < new Date())
       throw new AppError(409, 'QUOTE_EXPIRED', 'Quote expired; nothing was submitted.');
     const payload = servicePayloadSchema.parse(raw);
@@ -258,6 +464,7 @@ export async function fulfillService(tenantId: string, id: string, raw?: unknown
     const key = await verifyTransactionSignature(
       fromBase64(payload.payload.transaction),
       payload.payload.signature,
+      { address: row.payer! },
     );
     if (key.toSuiAddress() !== row.payer)
       throw new AppError(400, 'SIGNER', 'Unexpected wallet signer');
@@ -269,7 +476,7 @@ export async function fulfillService(tenantId: string, id: string, raw?: unknown
       paymentPayload: payload,
       paymentRequirements: terms,
     });
-    if (verify.isValid !== true)
+    if (verify.isValid !== true || (verify.payer && verify.payer !== row.payer))
       throw new AppError(
         400,
         'PAYMENT_INVALID',
@@ -280,11 +487,16 @@ export async function fulfillService(tenantId: string, id: string, raw?: unknown
       .set({ state: 'settling', digest, payloadHash })
       .where(and(eq(s.servicePaymentIntents.id, id), eq(s.servicePaymentIntents.state, 'approved')))
       .returning();
-    if (!claimed)
+    if (!claimed) {
+      const current = await ownedService(tenantId, id);
       return {
-        state: 'pending',
-        message: 'Another request owns this exact settlement. Resume status.',
+        state: ['cancelled', 'failed'].includes(current.state) ? current.state : 'pending',
+        message:
+          current.state === 'cancelled'
+            ? 'This unpaid intent was cancelled. Nothing submitted by this request.'
+            : 'Another request owns this exact settlement. Resume status.',
       };
+    }
     row = claimed;
     try {
       const settled = await facilitator('/settle', {
@@ -296,8 +508,17 @@ export async function fulfillService(tenantId: string, id: string, raw?: unknown
         success: settled.success === true,
         digest: row.digest,
         reportedDigest: settled.transaction || null,
+        reportedNetwork: typeof settled.network === 'string' ? settled.network.slice(0, 100) : null,
+        reportedPayer: typeof settled.payer === 'string' ? settled.payer.slice(0, 100) : null,
+        provider: FACILITATOR,
+        authoritative: false,
       });
     } catch {
+      await audit(tenantId, 'service.settlement_indeterminate', id, {
+        digest: row.digest,
+        provider: FACILITATOR,
+        retrySettlement: false,
+      });
       /* Submission can have succeeded. Reconcile the exact digest; never sign a replacement. */
     }
   }
@@ -356,10 +577,30 @@ export async function fulfillService(tenantId: string, id: string, raw?: unknown
       })
       .onConflictDoNothing()
       .returning();
+    if (!r) {
+      const [existing] = await tx
+        .select()
+        .from(s.servicePaymentReceipts)
+        .where(
+          and(
+            eq(s.servicePaymentReceipts.intentId, id),
+            eq(s.servicePaymentReceipts.tenantId, tenantId),
+          ),
+        );
+      if (!existing)
+        throw new AppError(
+          409,
+          'RECEIPT_CONFLICT',
+          'A settlement receipt conflict requires reconciliation. No service success assumed.',
+        );
+      return existing;
+    }
     await tx
       .update(s.servicePaymentIntents)
       .set({ state: 'settled' })
-      .where(eq(s.servicePaymentIntents.id, id));
+      .where(
+        and(eq(s.servicePaymentIntents.id, id), eq(s.servicePaymentIntents.tenantId, tenantId)),
+      );
     await tx.insert(s.auditEvents).values({
       tenantId,
       type: 'service.review_completed',

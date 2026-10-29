@@ -3,31 +3,63 @@ import { Transaction } from '@mysten/sui/transactions';
 import { bcs } from '@mysten/sui/bcs';
 import { fromBase64, normalizeSuiAddress, normalizeStructTag } from '@mysten/sui/utils';
 export const TESTNET_GENESIS = '69WiPg3DAQiwdxfncX6wYQ2siKwAe6L9BZthQea3JNMD';
-export const SERVICE_NETWORK = 'sui:testnet' as const;
+export const MAINNET_GENESIS = '4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S';
+export const serviceNetworkSchema = z.enum(['sui:mainnet', 'sui:testnet']);
+export type ServiceNetwork = z.infer<typeof serviceNetworkSchema>;
+export const SERVICE_NETWORK = 'sui:mainnet' as const;
 export const SERVICE_AMOUNT = '1000000';
+export const SERVICE_SESSION_CAP = '3000000';
 export const SERVICE_ASSET = '0x2::sui::SUI';
+export const SERVICE_DECIMALS = 9;
 export const FACILITATOR = 'https://facilitator.tentaclepay.com';
-export const serviceTermsSchema = z.object({
-  scheme: z.literal('exact'),
-  network: z.literal(SERVICE_NETWORK),
-  asset: z.literal(SERVICE_ASSET),
-  amount: z.literal(SERVICE_AMOUNT),
-  payTo: z.string().regex(/^0x[a-f0-9]{64}$/),
-  maxTimeoutSeconds: z.literal(300),
-  extra: z.object({
-    gasOwner: z.string().regex(/^0x[a-f0-9]{64}$/),
-    gasBudget: z.literal('2000000'),
-    quoteId: z.string().uuid(),
-    instructionHash: z.string().regex(/^[a-f0-9]{64}$/),
-  }),
-});
+export const serviceAddressSchema = z
+  .string()
+  .regex(/^0x[a-f0-9]{64}$/)
+  .refine((a) => a !== '0x' + '0'.repeat(64), 'Zero address is not a service-payment party');
+export function serviceNetworkInfo(network: ServiceNetwork) {
+  return network === 'sui:mainnet'
+    ? {
+        name: 'Sui Mainnet',
+        sdk: 'mainnet' as const,
+        genesis: MAINNET_GENESIS,
+        grpc: 'https://fullnode.mainnet.sui.io:443',
+        tatum: 'sui-mainnet-grpc.gateway.tatum.io:443',
+      }
+    : {
+        name: 'Sui Testnet',
+        sdk: 'testnet' as const,
+        genesis: TESTNET_GENESIS,
+        grpc: 'https://fullnode.testnet.sui.io:443',
+        tatum: 'sui-testnet-grpc.gateway.tatum.io:443',
+      };
+}
+export const serviceTermsSchema = z
+  .object({
+    scheme: z.literal('exact'),
+    network: serviceNetworkSchema,
+    asset: z.literal(SERVICE_ASSET),
+    amount: z.literal(SERVICE_AMOUNT),
+    payTo: serviceAddressSchema,
+    maxTimeoutSeconds: z.literal(300),
+    extra: z.object({
+      gasOwner: serviceAddressSchema,
+      gasBudget: z.literal('2000000'),
+      quoteId: z.string().uuid(),
+      instructionHash: z.string().regex(/^[a-f0-9]{64}$/),
+    }),
+  })
+  .refine((t) => t.payTo !== t.extra.gasOwner, 'Merchant must differ from gas sponsor');
 export type ServiceTerms = z.infer<typeof serviceTermsSchema>;
 export type ServiceChallenge = {
   x402Version: 2;
   resource: { url: string; description: string; mimeType: string };
   accepts: ServiceTerms[];
 };
-export function parseServiceChallenge(raw: unknown, expectedOrigin: string): ServiceChallenge {
+export function parseServiceChallenge(
+  raw: unknown,
+  expectedOrigin: string,
+  expectedNetwork?: ServiceNetwork,
+): ServiceChallenge {
   const challenge = z
     .object({
       x402Version: z.literal(2),
@@ -51,6 +83,7 @@ export function parseServiceChallenge(raw: unknown, expectedOrigin: string): Ser
     resource.username ||
     resource.password ||
     resource.pathname !== '/api/service-payments/' + terms.extra.quoteId ||
+    (expectedNetwork && terms.network !== expectedNetwork) ||
     terms.payTo === terms.extra.gasOwner
   )
     throw new Error('Unexpected service origin, quote or recipient');
@@ -67,10 +100,24 @@ export const servicePayloadSchema = z.object({
       .regex(/^[A-Za-z0-9+/=]+$/),
     signature: z
       .string()
-      .max(400)
+      .max(12000)
       .regex(/^[A-Za-z0-9+/=]+$/),
   }),
 });
+export function encodeServicePaymentHeader(raw: unknown) {
+  const payload = servicePayloadSchema.parse(raw);
+  const encoded = btoa(String.fromCharCode(...new TextEncoder().encode(JSON.stringify(payload))));
+  if (encoded.length > 12000)
+    throw new Error('Payment signature exceeds the HTTP header limit. No transaction submitted.');
+  return encoded;
+}
+export function decodeServicePaymentHeader(encoded: string) {
+  if (!encoded || encoded.length > 12000 || !/^[A-Za-z0-9+/=]+$/.test(encoded))
+    throw new Error('Invalid PAYMENT-SIGNATURE header');
+  return servicePayloadSchema.parse(
+    JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(encoded), (c) => c.charCodeAt(0)))),
+  );
+}
 // This local allowlist is stricter than the facilitator: one destination, no arbitrary app calls.
 export function validateServiceTransaction(bytes: string, terms: ServiceTerms, payer: string) {
   const d = Transaction.from(fromBase64(bytes)).getData();
@@ -81,8 +128,16 @@ export function validateServiceTransaction(bytes: string, terms: ServiceTerms, p
     d.gasData.budget !== terms.extra.gasBudget
   )
     throw new Error('Sender or gas terms differ from approval');
-  if (d.expiration?.$kind !== 'ValidDuring' || d.expiration.ValidDuring.chain !== TESTNET_GENESIS)
-    throw new Error('Transaction is not bound to Sui Testnet');
+  if (
+    d.expiration?.$kind !== 'ValidDuring' ||
+    d.expiration.ValidDuring.chain !== serviceNetworkInfo(terms.network).genesis
+  )
+    throw new Error('Transaction is not bound to the approved Sui network');
+  if (
+    normalizeSuiAddress(payer) === terms.extra.gasOwner ||
+    normalizeSuiAddress(payer) === terms.payTo
+  )
+    throw new Error('Payer must differ from merchant and sponsor');
   const validity = d.expiration.ValidDuring;
   if (
     validity.minEpoch == null ||
@@ -91,7 +146,9 @@ export function validateServiceTransaction(bytes: string, terms: ServiceTerms, p
   )
     throw new Error('Payment must expire within one epoch');
   let withdrawals = 0n;
-  for (const input of d.inputs)
+  for (const input of d.inputs) {
+    if (input.$kind !== 'Pure' && input.$kind !== 'FundsWithdrawal')
+      throw new Error('Service payment cannot access arbitrary objects');
     if (input.$kind === 'FundsWithdrawal') {
       const w = input.FundsWithdrawal;
       if (
@@ -101,7 +158,9 @@ export function validateServiceTransaction(bytes: string, terms: ServiceTerms, p
         throw new Error('Only approved payer/asset withdrawals are allowed');
       withdrawals += BigInt(w.reservation.MaxAmountU64);
     }
+  }
   if (withdrawals > BigInt(terms.amount)) throw new Error('Withdrawals exceed the approved cap');
+  if (withdrawals !== BigInt(terms.amount)) throw new Error('Exact sender withdrawal required');
   const nonce = bcs.string().serialize(terms.extra.quoteId).toBase64();
   if (!d.inputs.some((i) => i.$kind === 'Pure' && i.Pure.bytes === nonce))
     throw new Error('Quote nonce missing from signed transaction');
@@ -112,7 +171,46 @@ export function validateServiceTransaction(bytes: string, terms: ServiceTerms, p
       c.MoveCall.function === 'send_funds',
   );
   if (sends.length !== 1) throw new Error('Exactly one service payment required');
+  const redeem = d.commands[0],
+    last = d.commands[1];
+  if (
+    d.commands.length !== 2 ||
+    redeem?.$kind !== 'MoveCall' ||
+    redeem.MoveCall.module !== 'balance' ||
+    redeem.MoveCall.function !== 'redeem_funds' ||
+    last?.$kind !== 'MoveCall' ||
+    last.MoveCall.module !== 'balance' ||
+    last.MoveCall.function !== 'send_funds'
+  )
+    throw new Error('Unexpected payment template: redeem the withdrawal, then send its balance');
+  const withdrawalArg = redeem.MoveCall.arguments[0];
+  if (
+    withdrawalArg?.$kind !== 'Input' ||
+    d.inputs[withdrawalArg.Input]?.$kind !== 'FundsWithdrawal'
+  )
+    throw new Error('Redemption must consume the approved sender withdrawal');
+  const balanceArg = last.MoveCall.arguments[0];
+  if (
+    !balanceArg ||
+    !(
+      (balanceArg.$kind === 'Result' && balanceArg.Result === 0) ||
+      (balanceArg.$kind === 'NestedResult' &&
+        balanceArg.NestedResult[0] === 0 &&
+        balanceArg.NestedResult[1] === 0)
+    )
+  )
+    throw new Error('Send must consume the exact redeemed balance');
   for (const c of d.commands) {
+    const args =
+      c.$kind === 'MoveCall'
+        ? c.MoveCall.arguments
+        : c.$kind === 'SplitCoins'
+          ? [c.SplitCoins.coin, ...c.SplitCoins.amounts]
+          : c.$kind === 'MergeCoins'
+            ? [c.MergeCoins.destination, ...c.MergeCoins.sources]
+            : [];
+    if (args.some((a) => a.$kind === 'GasCoin'))
+      throw new Error('Service commands cannot spend sponsor gas');
     if (c.$kind === 'SplitCoins' || c.$kind === 'MergeCoins') continue;
     if (
       c.$kind !== 'MoveCall' ||

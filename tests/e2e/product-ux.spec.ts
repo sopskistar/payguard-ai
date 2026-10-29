@@ -81,7 +81,8 @@ test('landing CTAs, FAQ, proof and mobile layouts are deliberate and functional'
   await visit(page, '/proof');
   await expect(page.getByRole('heading', { name: '30 confirmed memories.' })).toBeVisible();
   await page.getByText('Inspect all job IDs, blobs and completion times', { exact: true }).click();
-  await expect(page.locator('.proof-receipts article')).toHaveCount(30);
+  await expect(page.locator('#memory .proof-receipts article')).toHaveCount(30);
+  await expect(page.locator('#isolation .proof-receipts article')).toHaveCount(2);
   await page.setViewportSize({ width: 390, height: 844 });
   for (const path of [
     '/',

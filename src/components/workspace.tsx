@@ -1356,7 +1356,7 @@ function TransactionPane({
       {invoice && owner && (
         <p>
           <Link className="inline-link" href="/services">
-            Request supplemental consistency analysis · Testnet service payment
+            Request supplemental analysis · Mainnet service proposal
           </Link>
         </p>
       )}

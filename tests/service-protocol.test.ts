@@ -5,6 +5,8 @@ import {
   validateServiceTransaction,
   analyzeInstructionConsistency,
   parseServiceChallenge,
+  encodeServicePaymentHeader,
+  decodeServicePaymentHeader,
 } from '@/lib/service-protocol';
 const payer = '0x' + '1'.repeat(64),
   merchant = '0x' + '2'.repeat(64),
@@ -23,7 +25,7 @@ const terms = serviceTermsSchema.parse({
     instructionHash: 'a'.repeat(64),
   },
 });
-async function fixture(change?: (tx: Transaction) => void) {
+async function fixture(change?: (tx: Transaction) => void, redeem = true) {
   const tx = new Transaction();
   tx.setSender(payer);
   tx.setGasOwner(gas);
@@ -40,7 +42,14 @@ async function fixture(change?: (tx: Transaction) => void) {
       nonce: 123,
     },
   });
-  const balance = tx.withdrawal({ type: terms.asset, amount: 1000000n });
+  const withdrawal = tx.withdrawal({ type: terms.asset, amount: 1000000n });
+  const balance = redeem
+    ? tx.moveCall({
+        target: '0x2::balance::redeem_funds',
+        typeArguments: [terms.asset],
+        arguments: [withdrawal],
+      })
+    : withdrawal;
   tx.moveCall({
     target: '0x2::balance::send_funds',
     typeArguments: [terms.asset],
@@ -77,23 +86,24 @@ describe('capped Testnet service authorization (synthetic transaction bytes; no 
       { ...valid, accepts: [{ ...terms, network: 'sui:mainnet' }] },
       { ...valid, accepts: [{ ...terms, payTo: gas }] },
     ])
-      expect(() => parseServiceChallenge(bad, origin)).toThrow();
+      expect(() => parseServiceChallenge(bad, origin, 'sui:testnet')).toThrow();
   });
-  it('rejects Mainnet, changed amount, recipient format and gas cap', () => {
+  it('rejects unsupported network, changed amount, recipient format and gas cap', () => {
     for (const diff of [
-      { network: 'sui:mainnet' },
+      { network: 'sui:devnet' },
       { amount: '1000001' },
       { payTo: '0xabc' },
       { extra: { ...terms.extra, gasBudget: '9000000' } },
+      { payTo: gas },
     ])
       expect(serviceTermsSchema.safeParse({ ...terms, ...diff }).success).toBe(false);
   });
   it('validates exact quote-bound signed terms before any facilitator request', async () => {
     const bytes = await fixture();
     expect(() => validateServiceTransaction(bytes, terms, payer)).not.toThrow();
-    expect(() => validateServiceTransaction(bytes, { ...terms, payTo: payer }, payer)).toThrow(
-      'Recipient',
-    );
+    expect(() =>
+      validateServiceTransaction(bytes, { ...terms, payTo: '0x' + '4'.repeat(64) }, payer),
+    ).toThrow('Recipient');
     expect(() =>
       validateServiceTransaction(
         bytes,
@@ -102,10 +112,16 @@ describe('capped Testnet service authorization (synthetic transaction bytes; no 
       ),
     ).toThrow('nonce');
   });
+  it('requires the framework withdrawal-to-balance redemption before sending', async () => {
+    // Withdrawal<Balance<SUI>> is not a Balance<SUI>; syntactically valid BCS alone is insufficient.
+    const invalid = await fixture(undefined, false);
+    expect(() => validateServiceTransaction(invalid, terms, payer)).toThrow('template');
+  });
   it('rejects additional executable commands and changed gas or network', async () => {
     for (const change of [
       (tx: Transaction) => tx.moveCall({ target: '0x2::sui::anything', arguments: [] }),
       (tx: Transaction) => tx.setGasBudget(3000000),
+      (tx: Transaction) => tx.splitCoins(tx.gas, [tx.pure.u64(1)]),
       (tx: Transaction) =>
         tx.setExpiration({
           ValidDuring: {
@@ -155,4 +171,38 @@ describe('capped Testnet service authorization (synthetic transaction bytes; no 
     );
     expect(() => validateServiceTransaction(long, terms, payer)).toThrow('epoch');
   });
+});
+
+it('binds approved Mainnet terms to Mainnet genesis and rejects Testnet bytes', async () => {
+  const mainnet = serviceTermsSchema.parse({ ...terms, network: 'sui:mainnet' });
+  const bytes = await fixture();
+  expect(() => validateServiceTransaction(bytes, mainnet, payer)).toThrow('approved Sui network');
+  const mainnetBytes = await fixture((tx) =>
+    tx.setExpiration({
+      ValidDuring: {
+        chain: '4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S',
+        minEpoch: 1,
+        maxEpoch: 2,
+        minTimestamp: null,
+        maxTimestamp: null,
+        nonce: 123,
+      },
+    }),
+  );
+  expect(() => validateServiceTransaction(mainnetBytes, mainnet, payer)).not.toThrow();
+  expect(() => validateServiceTransaction(mainnetBytes, terms, payer)).toThrow(
+    'approved Sui network',
+  );
+});
+
+it('round-trips the x402 v2 HTTP payment header and rejects malformed/oversized headers', async () => {
+  const payload = {
+    x402Version: 2,
+    resource: { url: 'https://payguard.example/api/service-payments/' + terms.extra.quoteId },
+    accepted: terms,
+    payload: { transaction: await fixture(), signature: 'a'.repeat(88) },
+  };
+  expect(decodeServicePaymentHeader(encodeServicePaymentHeader(payload))).toEqual(payload);
+  for (const raw of ['', 'invalid~', 'a'.repeat(12001), btoa('{}')])
+    expect(() => decodeServicePaymentHeader(raw)).toThrow();
 });

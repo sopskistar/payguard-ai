@@ -35,7 +35,7 @@ const faqs = [
   ],
   [
     'Can anyone create an account or connect a wallet?',
-    'Wallet accounts use server-verified personal-message signatures and separate records, tested in controlled environments. Production wallet onboarding is paused while Slush reviews a reported malicious-website warning. Do not override that warning. Owner Sign In remains administrator-only; the public demo needs neither. The separate Testnet service-payment pilot has no proven settlement.',
+    'Wallet accounts use server-verified personal-message signatures and separate records, tested in controlled environments. Production wallet onboarding is paused while Slush reviews a reported malicious-website warning. Do not override that warning. Owner Sign In remains administrator-only; the public demo needs neither. The separate Mainnet service-payment implementation remains security-gated and has no proven settlement.',
   ],
   [
     'What are the limits?',

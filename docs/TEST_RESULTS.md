@@ -1,3 +1,15 @@
+# Current Mainnet continuation results — October 29
+
+Current tests supersede the historical ledgers below: 107 unit tests / 16 files passed, including the framework withdrawal-redemption regression; lint, TypeScript and Webpack build passed. Local browser rerun: **14 passed / 3 intentional skips** (two live-provider cases and hosted-only pause). Prior hosted HTTP/1.1 run: **12 passed / 1 transport-navigation failure / 3 intentional hosted-wallet skips**. Final updated source and deployed runs are recorded in the next ledger update.
+
+Actual integrations: original **30/30** SDK jobs/blobs reconfirmed; **two new controlled tenant memories confirmed and separately rechecked**, genuine later-session recall and both-direction access controls passed. Four genuine recalls met **18/18** synthetic learning contracts. Tatum verified Mainnet genesis and native SUI metadata. An authentic first-party Mainnet HTTP 402 was received using synthetic unfunded QA parties, and the disabled-spend gate rejected approval. No wallet transaction signature, settlement or paid receipt occurred. Npm audit reported **zero advisories**.
+
+Harness fixes were not counted as product successes before rerun: JSONB key ordering required canonical parsing in the unsigned-challenge script; the proof-page test now separately counts 30 owner plus two tenant records. The hosted transport comparison retained the failing HTTP/2 evidence. HTTP/1.1 preserves HTTPS and assertions, and is selected only with `E2E_HTTP1=1`. No broad retry, TLS bypass or skipped application assertion was introduced.
+
+---
+
+## Historical validation ledgers (dated, not current status)
+
 # October 29 — security, learning and interaction continuation
 
 Final local checks: **93 unit tests / 15 files passed; lint, TypeScript, formatting and Webpack production build passed.** Isolated local PostgreSQL browser suite: **13 passed / 3 explicit skips**, including real ephemeral personal-message signatures, nonce/expiry/replay/returning accounts, interrupted account-switch logout, two-user HTTP authorization, seven judge steps plus pre-hydration disabled controls/native reload, mobile CTA spacing, Refresh failure/retry, owner persistence and human-verification invalidation. Skips are the two disabled live-provider cases and the hosted-only wallet pause. One unit run concurrent with the build hit the PostgreSQL-WASM setup timeout (88 passed / 5 skipped / one failed suite); the isolated rerun passed all 93. The first sandbox build was blocked at TypeScript subprocess inspection; the authorized build completed.

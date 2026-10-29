@@ -82,3 +82,7 @@ Shared operator-sponsored memory writes are globally capped by `MEMORY_GLOBAL_WR
 ### Session-version migration
 
 Apply forward migration `0005` before deploying the password-rotation guard. The default migrator uses transactional WebSocket PostgreSQL. On a network that blocks that transport, `npm run db:migrate -- --http` uses the official Neon HTTP migrator; use this explicitly only after reviewing pending migrations for idempotence because that adapter executes statements separately. The new one-column migration is idempotent. This changes the migration transport only, not runtime database persistence.
+
+## Mainnet service-payment quote mode
+
+[Mainnet x402 design and gates](AGENT_PAYMENTS.md) now supports `sui:mainnet` as primary, with native SUI and full genesis verification. Additional names are `ENABLE_AGENT_PAYMENTS`, `SERVICE_PAYMENT_PAYER`, `SERVICE_PAYMENT_RECIPIENT`, `SERVICE_PAYMENT_SETTLEMENT_ENABLED`. Keep settlement disabled until security clearance and separate exact financial authorization. Migration `0006` adds session spending reservations without changing existing records. The native sponsored path requires address-balance SUI, not just coin-object holdings. No service settlement is claimed.

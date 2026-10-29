@@ -1,5 +1,7 @@
 # Mainnet proof ledger
 
+**October 29 continuation:** all original 30 provider jobs/blobs were independently reconfirmed. Two additional sponsored records belong to separate controlled tenant identities, bringing the tracked total to **32**. They are separate from the original owner collection below. Both later authenticated sessions recalled their own confirmed correction on a new synthetic invoice; foreign invoice/memory access was denied in both directions. [Live controlled API proof](evidence/two-tenant-mainnet-memory.json) · [independent SDK job/blob/namespace recheck](evidence/two-tenant-provider-recheck.json). This used a loopback application with real Neon/Walrus, not a physical hosted wallet or a cleared Slush domain. No reseed, renewal or financial transaction was submitted.
+
 Verified on October 28, 2026. **30 distinct confirmed Walrus memories**, including the original 12 seeds, the original cross-session correction and 17 new learning events. Expansion confirmed at `2026-10-28T23:00:52.070Z`, with zero pending or failed records. The business scenarios are synthetic; the Mainnet writes and returned IDs below are real. No pending job is counted.
 
 Memory account: `0x7cf55b418a403dc667fcd98296fb05d894faef3b3a96657e06ef8108e45ff301`. Namespace and returned completion evidence are in [the reviewed JSON export](evidence/walrus-confirmed.json). These are SDK/provider completion records persisted in Neon, not a promise of indefinite retention. Public delegate identity for the submission dashboard still needs owner verification (`MEMWAL_AGENT_ID`).

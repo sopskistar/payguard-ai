@@ -11,9 +11,11 @@ export default defineConfig({
     trace: 'off',
     screenshot: 'off',
     video: 'off',
-    launchOptions: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE
-      ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE }
-      : undefined,
+    launchOptions: {
+      executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || undefined,
+      // Transport diagnostic only: keeps HTTPS, assertions and wallet safety intact.
+      args: process.env.E2E_HTTP1 === '1' ? ['--disable-http2'] : [],
+    },
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   reporter: [['./tests/credential-redaction-reporter.ts'], ['list'], ['html', { open: 'never' }]],

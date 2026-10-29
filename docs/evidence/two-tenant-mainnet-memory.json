@@ -1,0 +1,81 @@
+{
+  "checkedAt": "2026-10-29T19:59:26.866Z",
+  "execution": "Controlled loopback application; real Neon and Walrus Mainnet; ephemeral simulated wallet identities",
+  "physicalWalletTest": false,
+  "productionOnboardingCleared": false,
+  "originalOwnerMemoriesModified": false,
+  "paymentSettlementAttempted": false,
+  "writeLimit": 2,
+  "retention": "Managed sponsored provider retention; no renewal or funding submitted",
+  "quota": "Two operations maximum; tenant and global server quotas enforced; stop on provider errors",
+  "tenants": [
+    {
+      "tenant": 1,
+      "walletAddress": "0xc2b79b5598e5eeaec20dc1bbfeae3dd9e7e2a6266958ad4e3e6270096978f2f1",
+      "invoiceId": "a511d851-677b-49aa-9302-78318d39b8dd",
+      "vendorId": "22c11ced-35ce-4df7-9768-e3e3644d7ff1",
+      "memoryId": "877a26c7-0ec1-4817-9491-35a93d845aa8",
+      "jobId": "ef3e4ea6-a861-44d9-915f-fc4ade0426fa",
+      "blobId": "16kkgENm8MHYZIH22JGkUpb2gT64IZ2mYatqAhgSVXM",
+      "status": "confirmed",
+      "operationKey": "4e7fee5b-cf59-46a9-9789-a7c86d52532d",
+      "namespace": "payguard-v1-216235c9bc44a8065d2342d5c2226b37",
+      "newAccountWasEmpty": true,
+      "role": "member",
+      "laterInvoiceId": "85c17b4e-5e63-434e-96f8-d076b783bad2",
+      "ownedCitation": true,
+      "learnedFinding": true,
+      "baselineCitations": 0,
+      "rememberedCitations": 1,
+      "returningAccountRecognized": true,
+      "logoutVerified": true,
+      "replayRejected": true
+    },
+    {
+      "tenant": 2,
+      "walletAddress": "0x855a57a2b1a5bb7abc342966e6b8e2877d163c00646a41916fd91c30f3cc6f58",
+      "invoiceId": "950fcf33-52e2-4a6a-ac07-977cfa296a46",
+      "vendorId": "bd0eaca9-70f4-4854-b1ce-d2bdd560f7e2",
+      "memoryId": "9ceee17b-f662-46b1-9958-52d1e7c014d5",
+      "jobId": "8bd18554-45c4-458d-9691-9e2b163147b7",
+      "blobId": "1fRsUulhj08ztFzG1MJPQ3BfB3EN3_7gVI4Z0qKnsBk",
+      "status": "confirmed",
+      "operationKey": "aad4261f-2456-4186-b95a-c1a136117a96",
+      "namespace": "payguard-v1-b4b0a678ac3c16b4f10e7199c61c4342",
+      "newAccountWasEmpty": true,
+      "role": "member",
+      "laterInvoiceId": "4ac823e0-9453-47e0-9218-d50bf8b2786a",
+      "ownedCitation": true,
+      "learnedFinding": true,
+      "baselineCitations": 0,
+      "rememberedCitations": 1,
+      "returningAccountRecognized": true,
+      "logoutVerified": true,
+      "replayRejected": true
+    }
+  ],
+  "boundaries": [
+    {
+      "tenant": 1,
+      "foreignInvoiceReadDenied": true,
+      "foreignApprovalDenied": true,
+      "foreignDeleteDenied": true,
+      "foreignMemoryResumeDenied": true,
+      "foreignRecallExcluded": true,
+      "adminAndPaymentDenied": true,
+      "foreignSnapshotRecordsExcluded": true
+    },
+    {
+      "tenant": 2,
+      "foreignInvoiceReadDenied": true,
+      "foreignApprovalDenied": true,
+      "foreignDeleteDenied": true,
+      "foreignMemoryResumeDenied": true,
+      "foreignRecallExcluded": true,
+      "adminAndPaymentDenied": true,
+      "foreignSnapshotRecordsExcluded": true
+    }
+  ],
+  "confirmedAdditionalMemories": 2,
+  "ok": true
+}

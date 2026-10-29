@@ -59,6 +59,7 @@ export async function currentActor() {
     await db()
   )
     .select({
+      sessionKey: sessions.id,
       tenantId: sessions.tenantId,
       role: users.role,
       walletAddress: users.walletAddress,
@@ -75,7 +76,12 @@ export async function currentActor() {
     .limit(1);
   if (!r || (r.role === 'owner' && (!r.authVersion || r.authVersion !== ownerVersion())))
     return null;
-  return { tenantId: r.tenantId, role: r.role, walletAddress: r.walletAddress };
+  return {
+    tenantId: r.tenantId,
+    role: r.role,
+    walletAddress: r.walletAddress,
+    sessionKey: r.sessionKey,
+  };
 }
 export async function currentUser() {
   return (await currentActor())?.tenantId ?? null;

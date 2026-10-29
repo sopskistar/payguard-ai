@@ -8,7 +8,11 @@ import { toBase64 } from '@mysten/sui/utils';
 import {
   serviceTermsSchema,
   parseServiceChallenge,
-  TESTNET_GENESIS,
+  serviceNetworkInfo,
+  SERVICE_SESSION_CAP,
+  FACILITATOR,
+  encodeServicePaymentHeader,
+  type ServiceNetwork,
   validateServiceTransaction,
   type ServiceChallenge,
 } from '@/lib/service-protocol';
@@ -22,15 +26,19 @@ type WalletFeatures = {
     signTransaction: (input: {
       transaction: Transaction;
       account: WalletAccount;
-      chain: 'sui:testnet';
+      chain: ServiceNetwork;
     }) => Promise<{ bytes: string; signature: string }>;
   };
 };
 async function request(path: string, body: unknown) {
+  const payment = !!body && typeof body === 'object' && 'x402Version' in body;
   const r = await fetch('/api/service-payments' + path, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
+    headers: {
+      'Content-Type': 'application/json',
+      ...(payment ? { 'PAYMENT-SIGNATURE': encodeServicePaymentHeader(body) } : {}),
+    },
+    body: JSON.stringify(payment ? {} : body),
   });
   const result = await r.json();
   if (!r.ok && r.status !== 402) throw new Error(result.error || 'Service request unavailable');
@@ -59,6 +67,12 @@ export function ServicePayment() {
     [quote, setQuote] = useState<ServiceChallenge & { id: string; expiresAt: string }>(),
     [configured, setConfigured] = useState(false),
     [signingAllowed, setSigningAllowed] = useState(false),
+    [network, setNetwork] = useState<ServiceNetwork>('sui:mainnet'),
+    [proposal, setProposal] = useState<Record<string, unknown>>(),
+    [walletNames, setWalletNames] = useState<string[]>([]),
+    [walletName, setWalletName] = useState(''),
+    [dedicatedPayer, setDedicatedPayer] = useState<string | null>(null),
+    [securityCleared, setSecurityCleared] = useState(false),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(''),
     [receipt, setReceipt] = useState<Record<string, unknown>>(),
@@ -83,18 +97,44 @@ export function ServicePayment() {
           s.invoices.find((i) => i.isDemo && i.number === 'NS-1048')?.id || s.invoices[0]?.id || '',
         );
         if (s.mode === 'owner')
-          api<{ configured: boolean; signingAllowed: boolean; intents: typeof saved }>(
-            'service-payments',
-          )
+          api<{
+            configured: boolean;
+            signingAllowed: boolean;
+            securityCleared: boolean;
+            network: ServiceNetwork;
+            dedicatedPayer: string | null;
+            intents: typeof saved;
+          }>('service-payments')
             .then((r) => {
               setConfigured(r.configured);
               setSigningAllowed(r.signingAllowed);
+              setNetwork(r.network);
+              setDedicatedPayer(r.dedicatedPayer);
+              setSecurityCleared(r.securityCleared);
               setSaved(r.intents);
             })
             .catch((e) => setError(e.message));
       })
       .catch((e) => setError(e.message));
   }, []);
+  useEffect(() => {
+    if (!signingAllowed) return;
+    const registry = getWallets();
+    const update = () =>
+      setWalletNames(
+        registry
+          .get()
+          .filter((w) => w.chains.includes(network) && w.features['sui:signTransaction'])
+          .map((w) => w.name),
+      );
+    update();
+    const offRegister = registry.on('register', update);
+    const offUnregister = registry.on('unregister', update);
+    return () => {
+      offRegister();
+      offUnregister();
+    };
+  }, [signingAllowed, network]);
   async function run(fn: () => Promise<void>) {
     setBusy(true);
     setError('');
@@ -110,36 +150,52 @@ export function ServicePayment() {
     if (!signingAllowed) throw new Error(WALLET_REVIEW_MESSAGE);
     if (!quote || !consent) throw new Error('Review and approve every term first');
     const terms = serviceTermsSchema.parse(quote.accepts[0]);
+    if (terms.network !== network)
+      throw new Error('Quote network differs from the selected server mode. Request fresh terms.');
+    const chain = serviceNetworkInfo(terms.network);
     const wallets = getWallets()
       .get()
-      .filter((w) => w.chains.includes('sui:testnet') && w.features['sui:signTransaction']);
+      .filter((w) => w.chains.includes(terms.network) && w.features['sui:signTransaction']);
     if (!wallets.length)
       throw new Error(
-        'Install a Sui wallet supporting Testnet and signTransaction. No keys should be entered in PayGuard.',
+        'A compatible wallet must support the approved Sui network and transaction signing. No keys should be entered in PayGuard.',
       );
-    const features = wallets[0].features as WalletFeatures;
+    const selectedWallet = wallets.find((w) => w.name === walletName);
+    if (!selectedWallet) throw new Error('Choose the compatible wallet you intend to use.');
+    const features = selectedWallet.features as WalletFeatures;
     const accounts = (await features['standard:connect']!.connect()).accounts;
-    const account = accounts.find((a) => a.chains.includes('sui:testnet'));
-    if (!account) throw new Error('Select a Sui Testnet account in the wallet');
-    await request('/' + quote.id + '/approve', { approved: true, payer: account.address });
+    const account = accounts.find(
+      (a) =>
+        a.chains.includes(terms.network) &&
+        (terms.network !== 'sui:mainnet' || a.address === dedicatedPayer),
+    );
+    if (!account)
+      throw new Error('Select the dedicated approved payer on the specified Sui network.');
     const client = new SuiGrpcClient({
-      network: 'testnet',
-      baseUrl: 'https://fullnode.testnet.sui.io:443',
+      network: chain.sdk,
+      baseUrl: chain.grpc,
     });
-    const [{ systemState }, { chainIdentifier }] = await Promise.all([
+    const [{ systemState }, { chainIdentifier }, { balance }] = await Promise.all([
       client.core.getCurrentSystemState(),
       client.core.getChainIdentifier(),
+      client.core.getBalance({ owner: account.address, coinType: terms.asset }),
     ]);
-    if (chainIdentifier !== TESTNET_GENESIS) throw new Error('Unexpected Testnet chain identifier');
+    if (chainIdentifier !== chain.genesis) throw new Error('Unexpected Sui chain identifier');
+    if (BigInt(balance.addressBalance) < BigInt(terms.amount))
+      throw new Error(
+        'The dedicated wallet needs sufficient native SUI address balance for this sponsored protocol. Coin-object holdings alone do not qualify. No deposit or payment was initiated.',
+      );
     const tx = new Transaction();
     tx.setSender(account.address);
+    const redeemed = tx.moveCall({
+      target: '0x2::balance::redeem_funds',
+      typeArguments: [terms.asset],
+      arguments: [tx.withdrawal({ type: terms.asset, amount: BigInt(terms.amount) })],
+    });
     tx.moveCall({
       target: '0x2::balance::send_funds',
       typeArguments: [terms.asset],
-      arguments: [
-        tx.balance({ type: terms.asset, balance: BigInt(terms.amount), useGasCoin: false }),
-        tx.pure.address(terms.payTo),
-      ],
+      arguments: [redeemed, tx.pure.address(terms.payTo)],
     });
     tx.pure.string(terms.extra.quoteId);
     const epoch = Number(systemState.epoch);
@@ -159,10 +215,11 @@ export function ServicePayment() {
     tx.setGasPayment([]);
     const bytes = toBase64(await tx.build({ client }));
     validateServiceTransaction(bytes, terms, account.address);
+    await request('/' + quote.id + '/approve', { approved: true, payer: account.address });
     const signed = await features['sui:signTransaction']!.signTransaction({
       transaction: Transaction.from(bytes),
       account,
-      chain: 'sui:testnet',
+      chain: terms.network,
     });
     if (signed.bytes !== bytes)
       throw new Error(
@@ -186,7 +243,7 @@ export function ServicePayment() {
     <div className="judge-shell">
       <header className="judge-header">
         <Link href="/app/review">← Verify Instructions</Link>
-        <Badge tone="amber">Controlled Testnet feature</Badge>
+        <Badge tone="amber">Mainnet implementation · spending gated</Badge>
       </header>
       <main id="main" className="judge-intro">
         <h1>Pay for deeper evidence.</h1>
@@ -196,13 +253,16 @@ export function ServicePayment() {
           preserves the human verification hold.
         </p>
         <div className="notice">
-          Supplier payments remain unavailable. This feature supports a capped Testnet service fee
-          only. Mainnet settlement is disabled and no bonus settlement has yet been proven.
+          This buys a PayGuard first-party analysis report, not supplier payment or independent
+          identity verification. Mainnet and development Testnet are supported. No genuine service
+          settlement has been demonstrated yet.
         </div>
         {!signingAllowed && (
           <div role="status" className="notice">
-            {WALLET_REVIEW_MESSAGE} Service terms may be prepared, but wallet signing and new
-            settlement are blocked.
+            {!securityCleared
+              ? WALLET_REVIEW_MESSAGE
+              : 'Settlement remains disabled pending exact owner authorization.'}{' '}
+            Service terms may be prepared, but wallet signing and new settlement are blocked.
           </div>
         )}
         {!data ? (
@@ -221,6 +281,59 @@ export function ServicePayment() {
         ) : (
           <section className="panel">
             <h2>First-party invoice consistency analysis</h2>
+            <button
+              className="button outline"
+              disabled={busy}
+              onClick={() =>
+                void run(async () =>
+                  setProposal(await api<Record<string, unknown>>('service-payments/preflight')),
+                )
+              }
+            >
+              Check Mainnet proposal · no signing
+            </button>
+            {proposal && (
+              <section className="notice">
+                <h3>Read-only purchase preflight</h3>
+                <p>
+                  This is a proposal, not permission to spend. Buyer and seller may both be
+                  controlled by the project; this is not an independent third-party identity check.
+                </p>
+                <dl className="detail-list">
+                  {[
+                    ['Network', proposal.network],
+                    ['Exact service fee', `${proposal.amount} · ${proposal.amountAtomic} MIST`],
+                    ['Coin type', proposal.asset],
+                    ['Dedicated payer', proposal.payer || 'Not configured'],
+                    ['Merchant recipient', proposal.recipient || 'Not configured'],
+                    ['Provider', proposal.provider],
+                    ['Service origin', proposal.resourceOrigin],
+                    ['Facilitator', proposal.facilitator],
+                    [
+                      'Payer network fee cap',
+                      `${proposal.maxPayerGasAtomic} MIST · facilitator sponsors gas`,
+                    ],
+                    ['Sponsor budget cap', `${proposal.maxSponsorGasAtomic} MIST`],
+                    ['Reason for purchase', proposal.purpose],
+                    ['Expected result', proposal.expectedResult],
+                  ].map(([label, value]) => (
+                    <div key={String(label)}>
+                      <dt>{String(label)}</dt>
+                      <dd>{String(value ?? 'Unavailable')}</dd>
+                    </div>
+                  ))}
+                </dl>
+                <p role="status">
+                  {proposal.readyForExactApproval
+                    ? 'Parties are configured. Exact owner approval and wallet-security clearance are still required before signing.'
+                    : `Proposal is incomplete. Configure public address names: ${Array.isArray(proposal.missing) ? proposal.missing.join(', ') : 'review server configuration'}. All parties must differ.`}
+                </p>
+                <details>
+                  <summary>Read-only chain proof and risk details</summary>
+                  <pre className="service-result">{JSON.stringify(proposal, null, 2)}</pre>
+                </details>
+              </section>
+            )}
             {saved
               .filter((i) => ['settling', 'settled', 'failed'].includes(i.state))
               .map((i) => (
@@ -248,13 +361,16 @@ export function ServicePayment() {
               ))}
             <p>
               Deterministic supplemental analysis, not an independent identity check or a phone
-              call. No spending key is stored by PayGuard.
+              call. No spending key is stored by PayGuard. The sponsored native-SUI protocol
+              requires address-balance funds; ordinary coin-object holdings alone are insufficient.
+              PayGuard never moves funds into address balance automatically.
             </p>
             {!configured && (
               <div role="status" className="notice">
                 Not configured. Owner environment names: ENABLE_AGENT_PAYMENTS,
-                SERVICE_PAYMENT_RECIPIENT, TATUM_API_KEY. Use a separate Testnet wallet and
-                merchant; no Mainnet approval is enabled.
+                SERVICE_PAYMENT_RECIPIENT, TATUM_API_KEY. Mainnet additionally requires the
+                dedicated public SERVICE_PAYMENT_PAYER. Settlement remains separately disabled by
+                default.
               </div>
             )}
             <Field label="Invoice requiring additional review">
@@ -278,6 +394,11 @@ export function ServicePayment() {
               onClick={() =>
                 void run(async () => {
                   const r = await request('', { invoiceId, operationKey: crypto.randomUUID() });
+                  parseServiceChallenge(
+                    { x402Version: r.x402Version, resource: r.resource, accepts: r.accepts },
+                    window.location.origin,
+                    network,
+                  );
                   setQuote(r);
                   setPaymentState('quoted');
                 })
@@ -306,8 +427,36 @@ export function ServicePayment() {
                 )}
                 <dl className="detail-list">
                   <div>
+                    <dt>Provider and purpose</dt>
+                    <dd>
+                      PayGuard first-party invoice consistency analysis. This does not verify
+                      supplier identity.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Service URL</dt>
+                    <dd>
+                      <code>{quote.resource.url}</code>
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Payer</dt>
+                    <dd>
+                      <code>
+                        {dedicatedPayer || 'Configure the dedicated payer before Mainnet approval.'}
+                      </code>
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Facilitator</dt>
+                    <dd>{FACILITATOR}</dd>
+                  </div>
+                  <div>
                     <dt>Network</dt>
-                    <dd>Sui Testnet · sui:testnet</dd>
+                    <dd>
+                      {serviceNetworkInfo(quote.accepts[0].network).name} ·{' '}
+                      {quote.accepts[0].network}
+                    </dd>
                   </div>
                   <div>
                     <dt>Asset</dt>
@@ -317,7 +466,16 @@ export function ServicePayment() {
                   </div>
                   <div>
                     <dt>Exact service fee / cap</dt>
-                    <dd>0.001 Testnet SUI (1,000,000 atomic units)</dd>
+                    <dd>
+                      0.001 {quote.accepts[0].network === 'sui:testnet' ? 'Testnet ' : ''}SUI
+                      (1,000,000 MIST; 9 decimals)
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Total session cap</dt>
+                    <dd>
+                      0.003 SUI ({SERVICE_SESSION_CAP} MIST); pending payments reserve this cap.
+                    </dd>
                   </div>
                   <div>
                     <dt>Recipient</dt>
@@ -327,7 +485,10 @@ export function ServicePayment() {
                   </div>
                   <div>
                     <dt>Gas</dt>
-                    <dd>Facilitator-sponsored, maximum budget 2,000,000 MIST</dd>
+                    <dd>
+                      Facilitator-sponsored, maximum budget 2,000,000 MIST. Payer fee cap: 0 MIST.
+                      Sponsor: <code>{quote.accepts[0].extra.gasOwner}</code>
+                    </dd>
                   </div>
                   <div>
                     <dt>Quote expires</dt>
@@ -340,9 +501,21 @@ export function ServicePayment() {
                     onChange={(e) => setConsent(e.target.checked)}
                     type="checkbox"
                   />
-                  I explicitly approve only these Testnet terms for this first-party report. The
-                  wallet will separately request my signature.
+                  I explicitly approve only these exact network, recipient, amount and sponsor terms
+                  for this first-party report. The wallet will separately request my signature.
                 </label>
+                {signingAllowed && (
+                  <Field label="Signing wallet">
+                    <select value={walletName} onChange={(e) => setWalletName(e.target.value)}>
+                      <option value="">Choose a compatible wallet</option>
+                      {walletNames.map((name) => (
+                        <option key={name} value={name}>
+                          {name}
+                        </option>
+                      ))}
+                    </select>
+                  </Field>
+                )}
                 <button
                   className="button primary"
                   disabled={
@@ -355,7 +528,7 @@ export function ServicePayment() {
                   }
                   onClick={() => void run(sign)}
                 >
-                  {busy ? 'Checking…' : 'Approve terms & sign in Testnet wallet'}
+                  {busy ? 'Checking…' : 'Approve exact terms & sign in wallet'}
                 </button>
                 {pending && (
                   <>

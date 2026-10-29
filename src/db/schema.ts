@@ -286,6 +286,8 @@ export const servicePaymentIntents = pgTable(
     payloadHash: text('payload_hash'),
     digest: text('digest'),
     approvedAt: timestamp('approved_at', { withTimezone: true }),
+    spendingSessionId: text('spending_session_id'),
+    approval: jsonb('approval'),
     expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
     createdAt: time(),
   },
@@ -314,6 +316,18 @@ export const servicePaymentReceipts = pgTable(
     uniqueIndex('service_receipt_digest').on(t.network, t.digest),
   ],
 );
+
+// Server-derived session keys are never returned through the public API.
+export const serviceSpendingSessions = pgTable('service_spending_sessions', {
+  id: text('id').primaryKey(),
+  tenantId: tenant(),
+  network: text('network').notNull(),
+  asset: text('asset').notNull(),
+  payer: text('payer').notNull(),
+  reservedAtomic: numeric('reserved_atomic', { precision: 38, scale: 0 }).notNull().default('0'),
+  capAtomic: numeric('cap_atomic', { precision: 38, scale: 0 }).notNull(),
+  createdAt: time(),
+});
 
 // A challenge is bound to one browser and can be consumed once, atomically.
 export const walletChallenges = pgTable('wallet_challenges', {

@@ -354,6 +354,49 @@ export async function assess(tenantId: string, invoiceId: string, memoryOn: bool
     context.signals,
     context.profile?.trustedRecipient,
   );
+  // A purchased report adds auditable context. It never releases the human-verification gate.
+  const serviceReports = await (
+    await db()
+  )
+    .select({
+      id: s.servicePaymentReceipts.id,
+      result: s.servicePaymentReceipts.result,
+      digest: s.servicePaymentReceipts.digest,
+      instructionHash: s.servicePaymentIntents.instructionHash,
+    })
+    .from(s.servicePaymentReceipts)
+    .innerJoin(
+      s.servicePaymentIntents,
+      eq(s.servicePaymentIntents.id, s.servicePaymentReceipts.intentId),
+    )
+    .where(
+      and(
+        eq(s.servicePaymentReceipts.tenantId, tenantId),
+        eq(s.servicePaymentIntents.tenantId, tenantId),
+        eq(s.servicePaymentIntents.invoiceId, invoiceId),
+        eq(s.servicePaymentIntents.state, 'settled'),
+      ),
+    );
+  for (const report of serviceReports) {
+    if (report.instructionHash !== context.instructionHash) continue;
+    const result = report.result as {
+      recommendation?: string;
+      independentIdentityVerification?: boolean;
+    };
+    if (
+      typeof result.recommendation !== 'string' ||
+      result.independentIdentityVerification !== false
+    )
+      continue;
+    assessment.findings.push({
+      id: `service-analysis-${report.id}`,
+      title: 'Purchased first-party analysis',
+      evidence: `Tatum-verified service receipt ${report.digest}. ${result.recommendation}`,
+      severity: 'info',
+      action:
+        'Use this supplementary result alongside the independent human verification. It does not prove supplier identity or authorize a payment.',
+    });
+  }
   await (
     await db()
   )

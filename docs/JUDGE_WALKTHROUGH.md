@@ -28,7 +28,7 @@ Hosted [wallet onboarding](https://payguard-ai-henna.vercel.app/connect) is **pa
 
 ## Owner workflow
 
-The [Next.js app](https://payguard-ai-henna.vercel.app) has protected owner intake, vendor profiles, exact-instruction human attestations, live recall and chain inspection. Public samples do not expose owner records or admin operations. The optional `/services` flow quotes a tightly capped first-party Testnet analysis service; it is disabled until configured and has no proven settlement. [Status and exact controls](AGENT_PAYMENTS.md).
+The [Next.js app](https://payguard-ai-henna.vercel.app) has protected owner intake, vendor profiles, exact-instruction human attestations, live recall and chain inspection. Public samples do not expose owner records or admin operations. The optional `/services` flow quotes a tightly capped first-party Mainnet analysis service with a retained Testnet development option; signing/settlement remain disabled and no settlement is claimed. [Status and exact controls](AGENT_PAYMENTS.md).
 
 ## Troubleshooting
 
@@ -40,3 +40,5 @@ The [Next.js app](https://payguard-ai-henna.vercel.app) has protected owner inta
 - **Static page stale:** refresh after a new GitHub Pages deployment. The recorded capture date and raw JSON link identify the evidence version.
 
 No demo video was generated or recorded. The owner will arrange it separately.
+
+The read-only proof page now separates the original 30 owner records from two additional real controlled customer records. Open `/proof#isolation` for separate-session OFF/ON citations, actual jobs/blobs and both-direction authorization checks. Synthetic users and business scenarios are clearly labeled; the application used real Neon/Walrus. This does not clear the hosted wallet warning.

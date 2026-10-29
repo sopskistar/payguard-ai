@@ -1,0 +1,29 @@
+{
+  "checkedAt": "2026-10-29T20:23:00.758Z",
+  "writes": false,
+  "operatorReadOnly": true,
+  "originalOwnerConfirmed": 30,
+  "additionalChecks": [
+    {
+      "memoryId": "877a26c7-0ec1-4817-9491-35a93d845aa8",
+      "jobId": "ef3e4ea6-a861-44d9-915f-fc4ade0426fa",
+      "blobId": "16kkgENm8MHYZIH22JGkUpb2gT64IZ2mYatqAhgSVXM",
+      "namespace": "payguard-v1-216235c9bc44a8065d2342d5c2226b37",
+      "completedAt": "2026-10-29T20:00:11.173Z",
+      "providerStatus": "done",
+      "matchingBlob": true,
+      "matchingNamespace": true
+    },
+    {
+      "memoryId": "9ceee17b-f662-46b1-9958-52d1e7c014d5",
+      "jobId": "8bd18554-45c4-458d-9691-9e2b163147b7",
+      "blobId": "1fRsUulhj08ztFzG1MJPQ3BfB3EN3_7gVI4Z0qKnsBk",
+      "namespace": "payguard-v1-b4b0a678ac3c16b4f10e7199c61c4342",
+      "completedAt": "2026-10-29T20:01:19.518Z",
+      "providerStatus": "done",
+      "matchingBlob": true,
+      "matchingNamespace": true
+    }
+  ],
+  "ok": true
+}

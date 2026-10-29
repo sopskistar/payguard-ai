@@ -1,0 +1,55 @@
+{
+  "checkedAt": "2026-10-29T20:17:42.441Z",
+  "execution": "Controlled loopback application, real Neon and facilitator supported read",
+  "syntheticUnfundedParties": true,
+  "financialApprovalGranted": false,
+  "signatureRequested": false,
+  "settlementAttempted": false,
+  "metadata": {
+    "status": 200,
+    "configured": true,
+    "network": "sui:mainnet",
+    "signingAllowed": false
+  },
+  "snapshot": {
+    "status": 200,
+    "mode": "owner",
+    "invoiceCount": 27
+  },
+  "challengeStatus": 402,
+  "headerMatchesBody": true,
+  "status": 402,
+  "resourceStatus": 402,
+  "challenge": {
+    "x402Version": 2,
+    "resource": {
+      "url": "http://localhost:3004/api/service-payments/1a518579-6e12-4f62-856a-631866ce4120",
+      "description": "First-party invoice consistency analysis; does not verify supplier identity.",
+      "mimeType": "application/json"
+    },
+    "accepts": [
+      {
+        "scheme": "exact",
+        "network": "sui:mainnet",
+        "asset": "0x2::sui::SUI",
+        "amount": "1000000",
+        "payTo": "0x8888888888888888888888888888888888888888888888888888888888888888",
+        "maxTimeoutSeconds": 300,
+        "extra": {
+          "gasOwner": "0x6d8c6e978808e81344b6ddcc741b06d2b2b1106066d218683e0161f696878b61",
+          "gasBudget": "2000000",
+          "quoteId": "1a518579-6e12-4f62-856a-631866ce4120",
+          "instructionHash": "40104c2793de27093c7ba3dcb558dbf05392e4a91c1be0bb73a855877ff0ea78"
+        }
+      }
+    ]
+  },
+  "quoteId": "1a518579-6e12-4f62-856a-631866ce4120",
+  "expiresAt": "2026-10-29T20:22:49.519Z",
+  "spendGateStatus": 503,
+  "cancelledStatus": 200,
+  "preflightNetwork": "sui:mainnet",
+  "tatumGenesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+  "payerGasAtomic": "0",
+  "ok": true
+}
