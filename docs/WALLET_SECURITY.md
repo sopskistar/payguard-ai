@@ -1,5 +1,7 @@
 # Wallet authentication and private accounts
 
+**Current release gate:** hosted onboarding is blocked pending investigation of the owner's Slush malicious-website warning. [Review case and owner action](SLUSH_SECURITY_REVIEW.md). Both wallet login endpoints reject hosted requests before issuing/consuming a challenge. The connection SDK is not loaded by the paused connection page or hosted session monitor. New service-payment approval and settlement also fail closed; read-only reconciliation of an already submitted digest remains possible. There is no production environment bypass. Tests on loopback use unfunded controlled fixtures, not an overridden wallet warning. Previous deployed fixture results do not certify physical Slush onboarding.
+
 This is an operator-managed application, not decentralized identity certification or end-to-end encrypted personal storage. Wallet login proves signing control only. It never grants administrator rights or authorizes supplier payments.
 
 ## Sign-in

@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { WalletEntry } from '@/components/wallet-entry';
+import { walletOnboardingAllowed, WALLET_REVIEW_MESSAGE } from '@/lib/wallet-policy';
+export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Connect Sui Wallet' };
 export default function ConnectPage() {
   return (
@@ -21,8 +23,8 @@ export default function ConnectPage() {
             <em>Your review history.</em>
           </h1>
           <p>
-            Prove that you control a Sui wallet to create or return to an individual account. No
-            email, password or funded wallet required.
+            A verified personal-message signature creates or opens an individual account. Hosted
+            wallet onboarding is currently paused pending a Slush security review.
           </p>
           <ol>
             <li>Connect a compatible wallet.</li>
@@ -39,7 +41,23 @@ export default function ConnectPage() {
         </div>
         <section className="panel">
           <h2>Connect Sui Wallet</h2>
-          <WalletEntry />
+          {walletOnboardingAllowed() ? (
+            <WalletEntry />
+          ) : (
+            <div className="wallet-security-pause" role="status">
+              <h3>Wallet security review in progress</h3>
+              <p>{WALLET_REVIEW_MESSAGE}</p>
+              <Link className="button primary full" href="/try">
+                Try without a wallet
+              </Link>
+              <a
+                className="inline-link"
+                href="https://github.com/sopskistar/payguard-ai/blob/main/docs/SLUSH_SECURITY_REVIEW.md"
+              >
+                Review findings and limitations ↗
+              </a>
+            </div>
+          )}
           <p className="muted">
             Your minimized learning policies use the application’s managed Walrus account. Raw
             invoices and private contact details stay in Neon. Read{' '}

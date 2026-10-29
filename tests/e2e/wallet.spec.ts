@@ -2,6 +2,15 @@ import { visit } from './browser-helpers';
 import { test, expect, type BrowserContext, type Page } from '@playwright/test';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 const origin = process.env.E2E_BASE_URL || 'http://localhost:3000';
+// Hosted onboarding is intentionally paused. Never use fixtures to evade a wallet warning.
+test.beforeEach(async ({ request }) => {
+  const status = await request.get('/api/auth/wallet/status');
+  expect(status.status()).toBe(200);
+  test.skip(
+    !(await status.json()).allowed,
+    'Hosted wallet onboarding blocked pending Slush review; fixtures run on controlled loopback only.',
+  );
+});
 async function authenticate(context: BrowserContext, key: Ed25519Keypair) {
   const challengeResponse = await context.request.post('/api/auth/wallet/challenge', {
     headers: { origin },

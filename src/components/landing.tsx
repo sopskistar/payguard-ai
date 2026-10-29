@@ -35,7 +35,7 @@ const faqs = [
   ],
   [
     'Can anyone create an account or connect a wallet?',
-    'Connect Sui Wallet creates an individual account after a server-verified personal-message signature. Each account has separate records. Owner Sign In is reserved for the administrator. The public demo requires neither. Wallet Watch is read-only. The separate, disabled-by-default Testnet service-payment pilot supports wallet signing and has no proven settlement yet.',
+    'Wallet accounts use server-verified personal-message signatures and separate records, tested in controlled environments. Production wallet onboarding is paused while Slush reviews a reported malicious-website warning. Do not override that warning. Owner Sign In remains administrator-only; the public demo needs neither. The separate Testnet service-payment pilot has no proven settlement.',
   ],
   [
     'What are the limits?',
@@ -84,18 +84,20 @@ export function Landing() {
                 A convincing invoice can send you to the wrong wallet. Compare the payment details,
                 verify changes through a known contact, and remember the rule for next time.
               </p>
-              <Link href="/try" className="button primary site-cta">
-                Try Interactive Demo <ArrowRight size={18} />
-              </Link>
-              <Link href="/connect" className="button outline site-cta">
-                Connect Sui Wallet <ArrowUpRight size={16} />
-              </Link>
+              <div className="site-hero-actions">
+                <Link href="/try" className="button primary site-cta">
+                  Try Interactive Demo <ArrowRight size={18} />
+                </Link>
+                <Link href="/connect" className="button outline site-cta">
+                  Connect Sui Wallet <ArrowUpRight size={16} />
+                </Link>
+              </div>
               <div className="site-hero-note">
                 <Check size={14} /> Three minutes <span>·</span> No account, wallet or funds needed
               </div>
               <p className="site-owner-note">
-                Review your own invoices in a private wallet account. Owner Sign In is administrator
-                access.
+                Practice publicly without a wallet. Private wallet onboarding is paused for a Slush
+                security review. Owner Sign In is administrator access.
               </p>
             </motion.div>
             <motion.div

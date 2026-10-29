@@ -13,7 +13,13 @@ vi.mock('@/lib/integrations/service-tatum', () => ({ inspectServiceSettlement: m
 import { db } from '@/db';
 import { seedDemo, listInvoices } from '@/lib/store';
 import { OWNER_ID } from '@/lib/demo';
-import { quoteService, approveService, fulfillService, ownedService } from '@/lib/service-payments';
+import {
+  quoteService,
+  approveService,
+  fulfillService,
+  ownedService,
+  cancelService,
+} from '@/lib/service-payments';
 import { TESTNET_GENESIS, type ServiceChallenge } from '@/lib/service-protocol';
 let directory: string;
 let settles = 0;
@@ -38,6 +44,7 @@ beforeAll(async () => {
               ? {
                   kinds: [
                     {
+                      x402Version: 2,
                       network: 'sui:testnet',
                       scheme: 'exact',
                       extra: { gasOwner: '0x' + '3'.repeat(64), gasBudget: '2000000' },
@@ -133,4 +140,26 @@ it('Mainnet configuration cannot enable settlement', async () => {
   vi.stubEnv('ENABLE_AGENT_PAYMENTS', 'mainnet');
   await expect(quote()).rejects.toThrow('disabled');
   vi.stubEnv('ENABLE_AGENT_PAYMENTS', 'testnet');
+});
+it('cancels an approved intent durably and never settles a cancelled proof', async () => {
+  const row = await quote();
+  await approveService(OWNER_ID, row.id, payer.toSuiAddress());
+  const before = settles;
+  expect((await cancelService(OWNER_ID, row.id)).state).toBe('cancelled');
+  expect((await cancelService(OWNER_ID, row.id)).state).toBe('cancelled');
+  await expect(approveService(OWNER_ID, row.id, payer.toSuiAddress())).rejects.toThrow(
+    'Quote expired',
+  );
+  expect((await fulfillService(OWNER_ID, row.id, await payload(row))).state).toBe('cancelled');
+  expect(settles).toBe(before);
+});
+it('blocks hosted wallet approval and settlement while Slush review is unresolved', async () => {
+  const row = await quote();
+  await approveService(OWNER_ID, row.id, payer.toSuiAddress());
+  vi.stubEnv('VERCEL', '1');
+  const before = settles;
+  await expect(approveService(OWNER_ID, row.id, payer.toSuiAddress())).rejects.toThrow('paused');
+  await expect(fulfillService(OWNER_ID, row.id, await payload(row))).rejects.toThrow('paused');
+  expect(settles).toBe(before);
+  vi.stubEnv('VERCEL', '');
 });

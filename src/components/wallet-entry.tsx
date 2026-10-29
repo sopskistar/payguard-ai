@@ -1,5 +1,7 @@
 'use client';
 import dynamic from 'next/dynamic';
+import { useEffect, useState } from 'react';
+import { api } from './ui';
 function LoadingWallet() {
   return (
     <div className="wallet-connect-flow">
@@ -21,5 +23,12 @@ export function WalletEntry() {
   return <WalletKit />;
 }
 export function WalletSessionMonitor() {
-  return <Monitor monitor />;
+  const [allowed, setAllowed] = useState(false);
+  useEffect(() => {
+    void api<{ allowed: boolean }>('auth/wallet/status')
+      .then((status) => setAllowed(status.allowed))
+      .catch(() => setAllowed(false));
+  }, []);
+  // Do not load/auto-connect the SDK on a hosted origin under security review.
+  return allowed ? <Monitor monitor /> : null;
 }

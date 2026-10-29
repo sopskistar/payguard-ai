@@ -112,6 +112,10 @@ async function handle(req: NextRequest, context: { params: Promise<{ path: strin
           : { authenticated: false },
       );
     }
+    if (route === 'auth/wallet/status' && method === 'GET') {
+      const { walletOnboardingAllowed } = await import('@/lib/wallet-policy');
+      return json({ allowed: walletOnboardingAllowed(), review: 'Slush domain review pending' });
+    }
     if (route === 'auth/wallet/challenge' && method === 'POST') {
       const input = z
         .object({ address: walletAddressInput })

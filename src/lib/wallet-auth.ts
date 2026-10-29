@@ -10,6 +10,12 @@ import { walletChallenges, users, auditEvents } from '@/db/schema';
 import { createSession, rateLimit } from './auth';
 import { AppError, unavailable } from './errors';
 import { DEFAULT_PREFERENCES } from './types';
+import { walletOnboardingAllowed, WALLET_REVIEW_MESSAGE } from './wallet-policy';
+
+function requireWalletOnboarding() {
+  if (!walletOnboardingAllowed())
+    throw new AppError(503, 'WALLET_SECURITY_REVIEW', WALLET_REVIEW_MESSAGE);
+}
 
 const bindingCookie = 'payguard_wallet_challenge';
 const hash = (value: string) => createHash('sha256').update(value).digest('hex');
@@ -40,6 +46,7 @@ function invalid(): never {
   );
 }
 export async function issueWalletChallenge(address: string) {
+  requireWalletOnboarding();
   const normalized = walletAddressInput.parse(address);
   await rateLimit('wallet:challenges:global', 300, 900);
   await rateLimit(`wallet:challenge:${normalized}`, 12, 900);
@@ -82,6 +89,7 @@ export async function issueWalletChallenge(address: string) {
   return { id, address: normalized, message, expiresAt: expiresAt.toISOString() };
 }
 export async function verifyWalletLogin(input: z.infer<typeof walletProofInput>) {
+  requireWalletOnboarding();
   await rateLimit('wallet:verify:global', 500, 900);
   await rateLimit(`wallet:verify:${input.address}`, 20, 900);
   const binding = (await cookies()).get(bindingCookie)?.value;

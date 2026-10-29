@@ -2,6 +2,8 @@
 
 **Implemented and fixture-tested: controlled Sui Testnet x402 v2 flow. No real Testnet or Mainnet payment has settled through this feature. No bonus completion is claimed.**
 
+**Security pause:** the reported Slush domain warning blocks hosted approval/signing/new settlement even if pilot environment variables are configured. Do not override it, change wallets or move domains to evade it. Exact quotes can be prepared, unpaid intents can be durably cancelled, and already-submitted digests can be reconciled read-only. [Provider review case](SLUSH_SECURITY_REVIEW.md). The current release additionally requires the facilitator to advertise version 2 explicitly and uses atomic approval/cancellation state transitions. Any controlled funded test requires the owner's explicit approval of exact terms first.
+
 The agent identifies instruction anomalies and requests a useful **first-party PayGuard consistency analysis**. The report checks contradictory recipient mentions, embedded link domains and injection directives, then recommends the required independent channel. It is deterministic supplemental analysis, not an external identity verification service or a third-party purchase.
 
 ## Flow and controls

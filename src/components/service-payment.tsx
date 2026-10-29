@@ -13,6 +13,7 @@ import {
 } from '@/lib/service-protocol';
 import type { Invoice, Snapshot } from '@/lib/types';
 import { api, Badge, Field } from './ui';
+import { WALLET_REVIEW_MESSAGE } from '@/lib/wallet-policy';
 type WalletAccount = { address: string; chains: readonly string[] };
 type WalletFeatures = {
   'standard:connect'?: { connect: () => Promise<{ accounts: WalletAccount[] }> };
@@ -29,6 +30,7 @@ export function ServicePayment() {
     [invoiceId, setInvoice] = useState(''),
     [quote, setQuote] = useState<ServiceChallenge & { id: string; expiresAt: string }>(),
     [configured, setConfigured] = useState(false),
+    [signingAllowed, setSigningAllowed] = useState(false),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(''),
     [receipt, setReceipt] = useState<Record<string, unknown>>(),
@@ -52,9 +54,12 @@ export function ServicePayment() {
           s.invoices.find((i) => i.isDemo && i.number === 'NS-1048')?.id || s.invoices[0]?.id || '',
         );
         if (s.mode === 'owner')
-          api<{ configured: boolean; intents: typeof saved }>('service-payments')
+          api<{ configured: boolean; signingAllowed: boolean; intents: typeof saved }>(
+            'service-payments',
+          )
             .then((r) => {
               setConfigured(r.configured);
+              setSigningAllowed(r.signingAllowed);
               setSaved(r.intents);
             })
             .catch((e) => setError(e.message));
@@ -83,6 +88,7 @@ export function ServicePayment() {
     }
   }
   async function sign() {
+    if (!signingAllowed) throw new Error(WALLET_REVIEW_MESSAGE);
     if (!quote || !consent) throw new Error('Review and approve every term first');
     const terms = serviceTermsSchema.parse(quote.accepts[0]);
     const wallets = getWallets()
@@ -169,6 +175,12 @@ export function ServicePayment() {
           Supplier payments remain unavailable. This feature supports a capped Testnet service fee
           only. Mainnet settlement is disabled and no bonus settlement has yet been proven.
         </div>
+        {!signingAllowed && (
+          <div role="status" className="notice">
+            {WALLET_REVIEW_MESSAGE} Service terms may be prepared, but wallet signing and new
+            settlement are blocked.
+          </div>
+        )}
         {!data ? (
           <p>Loading owner workspace…</p>
         ) : data.mode !== 'owner' ? (
@@ -249,10 +261,14 @@ export function ServicePayment() {
                 {!pending && !receipt && (
                   <button
                     className="button outline small"
-                    onClick={() => {
-                      setQuote(undefined);
-                      setConsent(false);
-                    }}
+                    disabled={busy}
+                    onClick={() =>
+                      void run(async () => {
+                        await request('/' + quote.id + '/cancel', {});
+                        setQuote(undefined);
+                        setConsent(false);
+                      })
+                    }
                   >
                     Close unpaid quote
                   </button>
@@ -298,7 +314,7 @@ export function ServicePayment() {
                 </label>
                 <button
                   className="button primary"
-                  disabled={busy || !consent || pending || !!receipt}
+                  disabled={!signingAllowed || busy || !consent || pending || !!receipt}
                   onClick={() => void run(sign)}
                 >
                   {busy ? 'Checking…' : 'Approve terms & sign in Testnet wallet'}

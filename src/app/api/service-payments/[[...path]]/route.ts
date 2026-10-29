@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { requireOwner, checkOrigin, rateLimit } from '@/lib/auth';
 import { AppError, safeError } from '@/lib/errors';
 import { address } from '@/lib/validation';
+import { walletOnboardingAllowed } from '@/lib/wallet-policy';
 import {
   serviceReady,
   listServiceIntents,
@@ -10,6 +11,7 @@ import {
   approveService,
   fulfillService,
   rememberService,
+  cancelService,
 } from '@/lib/service-payments';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -20,6 +22,7 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
     const tenantId = await requireOwner();
     if (req.method !== 'GET') await rateLimit(tenantId + ':service-payments', 30);
     const path = (await params).path || [];
+    if (path.length > 2) throw new AppError(404, 'NOT_FOUND', 'Unknown service action');
     if (req.method === 'GET' && path.length)
       throw new AppError(
         405,
@@ -31,6 +34,7 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
         configured: serviceReady(),
         network: 'sui:testnet',
         mainnetEnabled: false,
+        signingAllowed: walletOnboardingAllowed(),
         intents: await listServiceIntents(tenantId),
       });
     let size = 0;
@@ -65,6 +69,7 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
       );
     }
     const id = z.string().uuid().parse(path[0]);
+    if (path[1] === 'cancel') return NextResponse.json(await cancelService(tenantId, id));
     if (path[1] === 'approve') {
       const input = z.object({ payer: address, approved: z.literal(true) }).parse(data);
       return NextResponse.json(await approveService(tenantId, id, input.payer));

@@ -23,6 +23,7 @@ import {
 } from './service-protocol';
 import { inspectServiceSettlement } from './integrations/service-tatum';
 import { recordCorrection } from './integrations/memory';
+import { walletOnboardingAllowed, WALLET_REVIEW_MESSAGE } from './wallet-policy';
 export const serviceReady = () =>
   process.env.ENABLE_AGENT_PAYMENTS === 'testnet' &&
   address.safeParse(process.env.SERVICE_PAYMENT_RECIPIENT).success &&
@@ -59,7 +60,15 @@ export async function quoteService(tenantId: string, invoiceId: string, operatio
         eq(s.servicePaymentIntents.operationKey, operationKey),
       ),
     );
-  if (old) return old;
+  if (old) {
+    if (old.invoiceId !== invoiceId)
+      throw new AppError(
+        409,
+        'OPERATION_REUSED',
+        'This operation already belongs to another invoice.',
+      );
+    return old;
+  }
   const invoice = await ownedInvoice(tenantId, invoiceId);
   const context = await trustContext(tenantId, invoice);
   if (!context.signals.length)
@@ -70,9 +79,15 @@ export async function quoteService(tenantId: string, invoiceId: string, operatio
     );
   const supported = await facilitator('/supported');
   const kind = supported.kinds?.find(
-    (k: { network: string; scheme: string }) =>
-      k.network === SERVICE_NETWORK && k.scheme === 'exact',
+    (k: { x402Version: number; network: string; scheme: string }) =>
+      k.x402Version === 2 && k.network === SERVICE_NETWORK && k.scheme === 'exact',
   );
+  if (!kind)
+    throw new AppError(
+      503,
+      'FACILITATOR_UNSUPPORTED',
+      'Facilitator does not advertise x402 v2 exact Sui Testnet. No payment was requested.',
+    );
   const id = randomUUID();
   const terms = serviceTermsSchema.parse({
     scheme: 'exact',
@@ -136,6 +151,8 @@ export async function ownedService(tenantId: string, id: string) {
 }
 export async function approveService(tenantId: string, id: string, payer: string) {
   const row = await ownedService(tenantId, id);
+  if (!walletOnboardingAllowed())
+    throw new AppError(503, 'WALLET_SECURITY_REVIEW', WALLET_REVIEW_MESSAGE);
   const challenge = row.challenge as ServiceChallenge;
   if (row.state === 'approved' && row.payer === payer && row.expiresAt > new Date())
     return { approved: true };
@@ -147,12 +164,21 @@ export async function approveService(tenantId: string, id: string, payer: string
     );
   if (payer === challenge.accepts[0].payTo || payer === challenge.accepts[0].extra.gasOwner)
     throw new AppError(400, 'PAYER', 'Payer must differ from merchant and gas sponsor.');
-  await (
+  const [approved] = await (
     await db()
   )
     .update(s.servicePaymentIntents)
     .set({ state: 'approved', payer, approvedAt: new Date() })
-    .where(and(eq(s.servicePaymentIntents.id, id), eq(s.servicePaymentIntents.state, 'quoted')));
+    .where(
+      and(
+        eq(s.servicePaymentIntents.id, id),
+        eq(s.servicePaymentIntents.tenantId, tenantId),
+        eq(s.servicePaymentIntents.state, 'quoted'),
+      ),
+    )
+    .returning();
+  if (!approved)
+    throw new AppError(409, 'QUOTE_STATE', 'Approval state changed. Reload the existing intent.');
   await audit(tenantId, 'service.approved', id, {
     network: SERVICE_NETWORK,
     amountAtomic: SERVICE_AMOUNT,
@@ -161,6 +187,33 @@ export async function approveService(tenantId: string, id: string, payer: string
     recipient: challenge.accepts[0].payTo,
   });
   return { approved: true };
+}
+export async function cancelService(tenantId: string, id: string) {
+  const row = await ownedService(tenantId, id);
+  if (row.state === 'cancelled') return { state: 'cancelled' };
+  if (!['quoted', 'approved'].includes(row.state))
+    throw new AppError(
+      409,
+      'ALREADY_SUBMITTED',
+      'A submitted payment cannot be cancelled. Reconcile the existing digest; do not pay again.',
+    );
+  const [cancelled] = await (
+    await db()
+  )
+    .update(s.servicePaymentIntents)
+    .set({ state: 'cancelled' })
+    .where(
+      and(
+        eq(s.servicePaymentIntents.id, id),
+        eq(s.servicePaymentIntents.tenantId, tenantId),
+        eq(s.servicePaymentIntents.state, row.state),
+      ),
+    )
+    .returning();
+  if (!cancelled)
+    throw new AppError(409, 'QUOTE_STATE', 'Payment state changed. Resume the existing intent.');
+  await audit(tenantId, 'service.cancelled', id, { submitted: false });
+  return { state: 'cancelled' };
 }
 export async function fulfillService(tenantId: string, id: string, raw?: unknown) {
   let row = await ownedService(tenantId, id);
@@ -187,6 +240,8 @@ export async function fulfillService(tenantId: string, id: string, raw?: unknown
       'Invoice instructions changed; the old quote cannot fulfill a new review.',
     );
   if (row.state === 'approved') {
+    if (!walletOnboardingAllowed())
+      throw new AppError(503, 'WALLET_SECURITY_REVIEW', WALLET_REVIEW_MESSAGE);
     if (row.expiresAt < new Date())
       throw new AppError(409, 'QUOTE_EXPIRED', 'Quote expired; nothing was submitted.');
     const payload = servicePayloadSchema.parse(raw);

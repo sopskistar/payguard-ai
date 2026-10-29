@@ -57,7 +57,23 @@ test('landing CTAs, FAQ, proof and mobile layouts are deliberate and functional'
   await page
     .getByText('Can anyone create an account or connect a wallet?', { exact: true })
     .click();
-  await expect(page.getByText(/Connect Sui Wallet creates an individual account/)).toBeVisible();
+  await expect(page.getByText(/Production wallet onboarding is paused/)).toBeVisible();
+  const actions = page.locator('.site-hero-actions');
+  const primary = await actions.getByRole('link').nth(0).boundingBox();
+  const secondary = await actions.getByRole('link').nth(1).boundingBox();
+  expect(primary).not.toBeNull();
+  expect(secondary).not.toBeNull();
+  const spacing = Math.max(
+    secondary!.x - primary!.x - primary!.width,
+    secondary!.y - primary!.y - primary!.height,
+  );
+  expect(spacing).toBeGreaterThanOrEqual(19);
+  expect(primary!.height).toBeGreaterThanOrEqual(44);
+  await page.setViewportSize({ width: 390, height: 844 });
+  const mobilePrimary = await actions.getByRole('link').nth(0).boundingBox();
+  const mobileSecondary = await actions.getByRole('link').nth(1).boundingBox();
+  expect(mobileSecondary!.y - mobilePrimary!.y - mobilePrimary!.height).toBeGreaterThanOrEqual(19);
+  await page.setViewportSize({ width: 1280, height: 900 });
   await page.getByRole('link', { name: 'Owner Sign In', exact: true }).first().click();
   await expect(page.getByRole('dialog')).toBeVisible();
   await expect(page.getByRole('dialog')).toContainText('public demo');
