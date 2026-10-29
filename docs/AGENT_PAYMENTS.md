@@ -8,6 +8,8 @@ The agent identifies instruction anomalies and requests a useful **first-party P
 
 ## Flow and controls
 
+Additional continuation checks reject cross-origin or ambiguous payment challenges, altered quote IDs, header/body disagreement, unexpected expiry, over-cap or sponsor withdrawals, long-lived transaction validity, and cyclic command references. The client marks an attempted submission indeterminate before sending it so a lost response leads to Resume, not another signature. A finalized failed execution reported by Tatum is persisted as failed with no service receipt or automatic resettlement. Unpaid quoted/approved intents can be cancelled atomically. These are tested contracts; physical-wallet/facilitator settlement remains unproven.
+
 1. An authenticated owner requests a quote for an invoice with instruction anomalies. The service responds HTTP **402**, `PAYMENT-REQUIRED`, x402 version 2, a resource URL and exact terms.
 2. The only supported network is **Sui Testnet**. The fee/cap is **0.001 Testnet SUI / 1,000,000 atomic units**, paid to privately configured `SERVICE_PAYMENT_RECIPIENT`. No recipient default exists. The merchant must differ from payer and sponsor.
 3. The UI displays network, asset, amount, recipient, purpose, five-minute expiry and facilitator gas budget of at most **2,000,000 MIST**. An explicit owner checkbox precedes wallet connection/signing.

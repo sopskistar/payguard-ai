@@ -24,6 +24,7 @@ The application is implemented and locally production-tested. **30 Walrus Mainne
 | Verification and architecture     | [Tests](docs/TEST_RESULTS.md) · [Architecture](docs/ARCHITECTURE.md)                                                                                                              |
 | Technical article                 | [Published engineering report](https://sopskistar.github.io/payguard-ai/)                                                                                                         |
 | Agent-service payments            | [Controlled Testnet feature and blockers](docs/AGENT_PAYMENTS.md) — no settled-payment award claim                                                                                |
+| Release and security status       | [Feature-by-feature completion and blockers](docs/RELEASE_STATUS.md) · [Slush review case](docs/SLUSH_SECURITY_REVIEW.md)                                                         |
 
 The public practice uses synthetic invoices and a synthetic callback. Its Walrus citations and Tatum receipt are dated, authentic captured results. It performs no guest memory writes, provider requests or supplier payments. Real owner review decisions are stored in Neon; the sandbox audit is local practice state.
 

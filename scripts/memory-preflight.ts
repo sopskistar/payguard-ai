@@ -1,8 +1,10 @@
 import { config } from 'dotenv';
 import { writeFile } from 'node:fs/promises';
 import { eq } from 'drizzle-orm';
+import { initializeScriptHttpDatabase } from './neon-http';
 config({ path: '.env.local', quiet: true });
 async function main() {
+  await initializeScriptHttpDatabase();
   const { db } = await import('../src/db');
   const s = await import('../src/db/schema');
   const { OWNER_ID } = await import('../src/lib/demo');

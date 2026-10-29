@@ -7,6 +7,7 @@ import { Transaction } from '@mysten/sui/transactions';
 import { toBase64 } from '@mysten/sui/utils';
 import {
   serviceTermsSchema,
+  parseServiceChallenge,
   TESTNET_GENESIS,
   validateServiceTransaction,
   type ServiceChallenge,
@@ -25,6 +26,33 @@ type WalletFeatures = {
     }) => Promise<{ bytes: string; signature: string }>;
   };
 };
+async function request(path: string, body: unknown) {
+  const r = await fetch('/api/service-payments' + path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  const result = await r.json();
+  if (!r.ok && r.status !== 402) throw new Error(result.error || 'Service request unavailable');
+  if (r.status === 402) {
+    const encoded = r.headers.get('PAYMENT-REQUIRED');
+    if (!encoded || encoded.length > 12000)
+      throw new Error('Missing or oversized service challenge');
+    const challenge = parseServiceChallenge(JSON.parse(atob(encoded)), window.location.origin);
+    const { id, expiresAt, ...bodyChallenge } = result;
+    const body = parseServiceChallenge(bodyChallenge, window.location.origin);
+    if (
+      JSON.stringify(body) !== JSON.stringify(challenge) ||
+      id !== challenge.accepts[0].extra.quoteId ||
+      !Number.isFinite(Date.parse(expiresAt)) ||
+      Date.parse(expiresAt) <= Date.now() ||
+      Date.parse(expiresAt) > Date.now() + 301000
+    )
+      throw new Error('Service challenge headers, quote or expiry differ');
+  }
+  return result;
+}
+
 export function ServicePayment() {
   const [data, setData] = useState<Snapshot>(),
     [invoiceId, setInvoice] = useState(''),
@@ -35,6 +63,7 @@ export function ServicePayment() {
     [error, setError] = useState(''),
     [receipt, setReceipt] = useState<Record<string, unknown>>(),
     [pending, setPending] = useState(false),
+    [paymentState, setPaymentState] = useState(''),
     [consent, setConsent] = useState(false),
     [memory, setMemory] = useState(''),
     [saved, setSaved] = useState<
@@ -66,16 +95,6 @@ export function ServicePayment() {
       })
       .catch((e) => setError(e.message));
   }, []);
-  async function request(path: string, body: unknown) {
-    const r = await fetch('/api/service-payments' + path, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-    const result = await r.json();
-    if (!r.ok && r.status !== 402) throw new Error(result.error || 'Service request unavailable');
-    return result;
-  }
   async function run(fn: () => Promise<void>) {
     setBusy(true);
     setError('');
@@ -149,6 +168,8 @@ export function ServicePayment() {
       throw new Error(
         'Wallet changed approved transaction bytes; nothing was submitted by PayGuard',
       );
+    // A lost response is indeterminate. Resume the same intent instead of signing/paying again.
+    setPending(true);
     const r = await request('/' + quote.id, {
       x402Version: 2,
       resource: quote.resource,
@@ -156,6 +177,9 @@ export function ServicePayment() {
       payload: { transaction: signed.bytes, signature: signed.signature },
     });
     setPending(r.state === 'pending');
+    setPaymentState(r.state);
+    if (r.state === 'failed')
+      setError(r.message || 'Tatum confirmed failed execution. No service receipt was created.');
     if (r.receipt) setReceipt(r.receipt);
   }
   return (
@@ -198,7 +222,7 @@ export function ServicePayment() {
           <section className="panel">
             <h2>First-party invoice consistency analysis</h2>
             {saved
-              .filter((i) => i.state === 'settling' || i.state === 'settled')
+              .filter((i) => ['settling', 'settled', 'failed'].includes(i.state))
               .map((i) => (
                 <button
                   className="button outline"
@@ -210,6 +234,11 @@ export function ServicePayment() {
                       setInvoice(i.invoiceId);
                       const r = await request('/' + i.id + '/resume', {});
                       setPending(r.state === 'pending');
+                      setPaymentState(r.state);
+                      if (r.state === 'failed')
+                        setError(
+                          'Tatum confirmed failed execution. No service receipt was created.',
+                        );
                       if (r.receipt) setReceipt(r.receipt);
                     })
                   }
@@ -250,6 +279,7 @@ export function ServicePayment() {
                 void run(async () => {
                   const r = await request('', { invoiceId, operationKey: crypto.randomUUID() });
                   setQuote(r);
+                  setPaymentState('quoted');
                 })
               }
             >
@@ -264,13 +294,14 @@ export function ServicePayment() {
                     disabled={busy}
                     onClick={() =>
                       void run(async () => {
-                        await request('/' + quote.id + '/cancel', {});
+                        if (paymentState !== 'failed')
+                          await request('/' + quote.id + '/cancel', {});
                         setQuote(undefined);
                         setConsent(false);
                       })
                     }
                   >
-                    Close unpaid quote
+                    {paymentState === 'failed' ? 'Close failed record' : 'Cancel unpaid quote'}
                   </button>
                 )}
                 <dl className="detail-list">
@@ -314,7 +345,14 @@ export function ServicePayment() {
                 </label>
                 <button
                   className="button primary"
-                  disabled={!signingAllowed || busy || !consent || pending || !!receipt}
+                  disabled={
+                    !signingAllowed ||
+                    busy ||
+                    !consent ||
+                    pending ||
+                    !!receipt ||
+                    paymentState === 'failed'
+                  }
                   onClick={() => void run(sign)}
                 >
                   {busy ? 'Checking…' : 'Approve terms & sign in Testnet wallet'}
@@ -332,6 +370,9 @@ export function ServicePayment() {
                         void run(async () => {
                           const r = await request('/' + quote.id + '/resume', {});
                           setPending(r.state === 'pending');
+                          setPaymentState(r.state);
+                          if (r.state === 'failed')
+                            setError(r.message || 'Tatum confirmed failed execution.');
                           if (r.receipt) setReceipt(r.receipt);
                         })
                       }

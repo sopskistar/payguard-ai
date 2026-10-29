@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-29T01:06:34.643Z",
+  "checkedAt": "2026-10-29T15:18:05.776Z",
   "method": "Four live SDK recalls reused across 18 synthetic cases to limit quota; no writes. Correct measures specified gate/signal/provenance contracts, not fraud detection accuracy. Exception and supersession inputs are explicitly synthetic.",
   "metrics": {
     "cases": 18,
@@ -12,7 +12,13 @@
     "controls": 4,
     "controlsWithAddedCritical": 0,
     "staleOrWrongScopeApplied": 0,
-    "applicableCitationFraction": 0.10925925925925926
+    "applicableCitationFraction": 0.10925925925925926,
+    "expectedHolds": 11,
+    "expectedAllowed": 7,
+    "falseApprovalHolds": 0,
+    "missedApprovalHolds": 0,
+    "appliedCandidateCasePairs": 59,
+    "unappliedCandidateCasePairs": 481
   },
   "retrievals": [
     {

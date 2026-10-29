@@ -163,6 +163,45 @@ test('wallet sign-in uses a real personal signature; logout, replay and cross-us
     const id = (await created.json()).id;
     await authenticate(b, bob);
     expect((await (await b.request.get('/api/snapshot')).json()).invoices).toHaveLength(0);
+    const watch = await a.request.post('/api/wallets', {
+      headers: { origin },
+      data: { address: '0x' + '3'.repeat(64), label: 'Synthetic private watch' },
+    });
+    expect(watch.status()).toBe(200);
+    const watchId = (await watch.json()).id;
+    for (const route of ['wallets/refresh', 'wallets/remove'])
+      expect(
+        (
+          await b.request.post('/api/' + route, { headers: { origin }, data: { id: watchId } })
+        ).status(),
+      ).toBe(404);
+    expect((await (await b.request.get('/api/snapshot')).json()).wallets).toHaveLength(0);
+    expect(
+      (
+        await b.request.post('/api/invoices/status', {
+          headers: { origin },
+          data: { invoiceId: id, status: 'approved', reason: 'Synthetic foreign-record attempt' },
+        })
+      ).status(),
+    ).toBe(404);
+    expect(
+      (
+        await b.request.post('/api/payments/verify', {
+          headers: { origin },
+          data: { invoiceId: id, digest: 'os1iG8zow278c6hqxbuyxnvMUjzThsD8GTY8atdfzW6' },
+        })
+      ).status(),
+    ).toBe(404);
+    for (const route of ['approve', 'cancel', 'remember', 'resume'])
+      expect(
+        (
+          await b.request.post('/api/service-payments/' + id + '/' + route, {
+            headers: { origin },
+            data: {},
+          })
+        ).status(),
+      ).toBe(403);
+    await a.request.post('/api/wallets/remove', { headers: { origin }, data: { id: watchId } });
     for (const route of ['review', 'instructions/context', 'corrections']) {
       const data =
         route === 'review'
@@ -281,10 +320,15 @@ test('Wallet Standard connect UI signs in, switches accounts safely and fits mob
       true,
     );
     // Standard wallet account-change event must revoke the previous session.
+    await page.route('**/api/auth/logout', (route) => route.abort('failed'), { times: 1 });
     await page.evaluate(() =>
       (window as unknown as { switchTestWallet: () => void }).switchTestWallet(),
     );
-    await expect(page).toHaveURL(/changed=1/);
+    await expect(
+      page.getByRole('heading', { name: 'Private data hidden', exact: true }),
+    ).toBeVisible();
+    await page.getByRole('button', { name: 'Retry sign-out', exact: true }).click();
+    await expect(page.getByText('Public demo', { exact: true })).toBeVisible();
     expect((await (await context.request.get('/api/auth/session')).json()).authenticated).toBe(
       false,
     );

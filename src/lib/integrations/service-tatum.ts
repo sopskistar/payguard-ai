@@ -5,6 +5,8 @@ import { credentials } from '@grpc/grpc-js';
 import { normalizeGrpcTransaction } from './tatum';
 import { canonicalCoin } from '../validation';
 import type { ServiceTerms } from '../service-protocol';
+import { TESTNET_GENESIS } from '../service-protocol';
+import { AppError } from '../errors';
 export async function inspectServiceSettlement(digest: string, terms: ServiceTerms, payer: string) {
   if (terms.network !== 'sui:testnet' || !process.env.TATUM_API_KEY)
     throw new Error('Testnet Tatum configuration required');
@@ -17,7 +19,8 @@ export async function inspectServiceSettlement(digest: string, terms: ServiceTer
   try {
     const client = new SuiGrpcClient({ network: 'testnet', transport });
     const { response: info } = await client.ledgerService.getServiceInfo({});
-    if (info.chain !== 'testnet') throw new Error('Wrong verification network');
+    if (info.chain !== 'testnet' || info.chainId !== TESTNET_GENESIS)
+      throw new Error('Wrong verification network');
     const { response } = await client.ledgerService.getTransaction({
       digest,
       readMask: {
@@ -33,6 +36,12 @@ export async function inspectServiceSettlement(digest: string, terms: ServiceTer
     });
     if (!response.transaction) throw new Error('No finalized transaction');
     const tx = normalizeGrpcTransaction(response.transaction);
+    if (tx.checkpoint && tx.effects?.status.status === 'failure')
+      throw new AppError(
+        409,
+        'SETTLEMENT_FAILED',
+        'Tatum confirmed that the service transaction failed. No service receipt was created.',
+      );
     const credit = (tx.balanceChanges || [])
       .filter(
         (c) =>

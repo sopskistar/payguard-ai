@@ -22,7 +22,7 @@ const Monitor = dynamic(() => import('./wallet-kit'), { ssr: false });
 export function WalletEntry() {
   return <WalletKit />;
 }
-export function WalletSessionMonitor() {
+export function WalletSessionMonitor({ expectedAddress }: { expectedAddress: string }) {
   const [allowed, setAllowed] = useState(false);
   useEffect(() => {
     void api<{ allowed: boolean }>('auth/wallet/status')
@@ -30,5 +30,5 @@ export function WalletSessionMonitor() {
       .catch(() => setAllowed(false));
   }, []);
   // Do not load/auto-connect the SDK on a hosted origin under security review.
-  return allowed ? <Monitor monitor /> : null;
+  return allowed ? <Monitor monitor expectedAddress={expectedAddress} /> : null;
 }

@@ -24,7 +24,7 @@ The step buttons allow direct exploration on desktop or mobile. Use keyboard Tab
 
 ## Real workspace versus public practice
 
-Use [Connect Sui Wallet](https://payguard-ai-henna.vercel.app/connect) for an individual account with an empty workspace and seven onboarding milestones. A personal message signs you in; it cannot authorize a transaction. Owner Sign In is separate administrator access. A new account having zero private memories does not contradict the 30 confirmed published project records. The [read-only proof](https://payguard-ai-henna.vercel.app/proof) includes the 18-case learning report.
+Hosted [wallet onboarding](https://payguard-ai-henna.vercel.app/connect) is **paused pending Slush security review**. Do not override wallet warnings or connect a funded wallet. Registration and seven onboarding milestones are implemented and tested with controlled local identities; no physical-wallet production certification is claimed. Owner Sign In remains separate administrator access. New accounts start empty; zero personal memories does not contradict the 30 confirmed published project records. The [read-only proof](https://payguard-ai-henna.vercel.app/proof) includes the 18-case learning report and requires no wallet.
 
 ## Owner workflow
 
@@ -32,7 +32,7 @@ The [Next.js app](https://payguard-ai-henna.vercel.app) has protected owner inta
 
 ## Troubleshooting
 
-- **A sign-in prompt appears:** `/try` needs no sign-in. Owner Sign In protects administrator operations; Connect Sui Wallet creates a separate personal workspace. Public practice does not access private records.
+- **A sign-in prompt appears:** `/try` needs no sign-in. Owner Sign In protects administrator operations; hosted wallet registration is paused for security review. Public practice does not access private records.
 - **No remembered difference:** use the recorded evidence in step 5. In the live owner app, wait for a confirmed blob and indexing; resume the original job rather than rewrite it. No returned applicable citation means no soft learned policy is applied.
 - **Invoice changed:** repeat independent verification against the current instruction hash and profile revision. A prior callback does not cover edited terms.
 - **Chain mismatch:** expected for this unrelated public digest. Do not treat the sample supplier as paid. Exact amount, coin, network, positive recipient credit and uniqueness are required.

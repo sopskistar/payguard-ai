@@ -21,6 +21,7 @@ import {
   cancelService,
 } from '@/lib/service-payments';
 import { TESTNET_GENESIS, type ServiceChallenge } from '@/lib/service-protocol';
+import { AppError } from '@/lib/errors';
 let directory: string;
 let settles = 0;
 const payer = Ed25519Keypair.generate();
@@ -140,6 +141,18 @@ it('Mainnet configuration cannot enable settlement', async () => {
   vi.stubEnv('ENABLE_AGENT_PAYMENTS', 'mainnet');
   await expect(quote()).rejects.toThrow('disabled');
   vi.stubEnv('ENABLE_AGENT_PAYMENTS', 'testnet');
+});
+it('records a finalized failed transaction without a receipt or resettlement', async () => {
+  const row = await quote();
+  await approveService(OWNER_ID, row.id, payer.toSuiAddress());
+  mock.inspect.mockRejectedValueOnce(
+    new AppError(409, 'SETTLEMENT_FAILED', 'Tatum confirmed failure'),
+  );
+  const before = settles;
+  expect((await fulfillService(OWNER_ID, row.id, await payload(row))).state).toBe('failed');
+  expect((await fulfillService(OWNER_ID, row.id)).state).toBe('failed');
+  expect(settles - before).toBe(1);
+  await expect(cancelService(OWNER_ID, row.id)).rejects.toThrow('cannot be cancelled');
 });
 it('cancels an approved intent durably and never settles a cancelled proof', async () => {
   const row = await quote();

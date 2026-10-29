@@ -45,6 +45,18 @@ export function LearningReport() {
         do not measure real-world fraud accuracy or prove ranking quality.
       </p>
       <details>
+        <summary>Approval and retrieval counts within these scenarios</summary>
+        <p>
+          {report.metrics.expectedHolds} scenarios require a hold; {report.metrics.expectedAllowed}{' '}
+          permit approval after the specified evidence. False holds:{' '}
+          {report.metrics.falseApprovalHolds}. Missed holds: {report.metrics.missedApprovalHolds}.
+          Across all case/candidate combinations, {report.metrics.appliedCandidateCasePairs}{' '}
+          citations were applied and {report.metrics.unappliedCandidateCasePairs} were excluded by
+          applicability checks. Excluded candidates are not a semantic-irrelevance score; they
+          include stale, superseded and out-of-scope policies.
+        </p>
+      </details>
+      <details>
         <summary>Inspect every scenario and outcome</summary>
         <div className="table-scroll">
           <table>

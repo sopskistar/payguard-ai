@@ -1,7 +1,10 @@
 import { config } from 'dotenv';
 import { writeFile } from 'node:fs/promises';
+import { initializeScriptHttpDatabase } from './neon-http';
+import { learningMetrics, type LearningCase } from '../src/lib/learning-metrics';
 config({ path: '.env.local', quiet: true });
 async function main() {
+  await initializeScriptHttpDatabase();
   const { OWNER_ID } = await import('../src/lib/demo');
   const { listInvoices, policies, preferences } = await import('../src/lib/store');
   const { recallMemories, vendorReference } = await import('../src/lib/integrations/memory');
@@ -15,8 +18,9 @@ async function main() {
     listTrust(OWNER_ID),
   ]);
   const now = new Date();
-  const rows: Record<string, unknown>[] = [];
-  const retrievals: Record<string, unknown>[] = [];
+  const rows: LearningCase[] = [];
+  const retrievals: { supplier: string; status: string; returned: number; blobIds: string[] }[] =
+    [];
   for (const name of ['Northstar Studio', 'Orbit Hosting', 'Forma Legal', 'Lumen Research']) {
     const source = all.find((i) => i.isDemo && i.vendor === name)!;
     const profile = profiles.find((p) => p.vendorId === source.vendorId)!;
@@ -234,29 +238,11 @@ async function main() {
     }
   }
   const correct = rows.filter((r) => r.correct).length;
-  const controls = rows.filter((r) => r.control);
   const output = {
     checkedAt: now.toISOString(),
     method:
       'Four live SDK recalls reused across 18 synthetic cases to limit quota; no writes. Correct measures specified gate/signal/provenance contracts, not fraud detection accuracy. Exception and supersession inputs are explicitly synthetic.',
-    metrics: {
-      cases: rows.length,
-      correct,
-      failed: rows.length - correct,
-      baselinePreserved: rows.filter((r) => r.baselinePreserved).length,
-      recallQueries: retrievals.length,
-      successfulRecalls: retrievals.filter((r) => Number(r.returned) > 0).length,
-      scenariosWithAppliedMemory: rows.filter((r) => Number(r.applied) > 0).length,
-      controls: controls.length,
-      controlsWithAddedCritical: controls.filter((r) => Number(r.addedCritical) > 0).length,
-      staleOrWrongScopeApplied: rows.reduce(
-        (n, r) => n + Number(r.staleApplied) + Number(r.wrongScopeApplied),
-        0,
-      ),
-      applicableCitationFraction:
-        rows.reduce((n, r) => n + Number(r.applied), 0) /
-        rows.reduce((n, r) => n + Number(r.returned), 0),
-    },
+    metrics: learningMetrics(rows, retrievals),
     retrievals,
     results: rows,
     limitations: [
@@ -280,7 +266,9 @@ async function main() {
       2,
     ),
   );
-  process.exit(correct === rows.length ? 0 : 2);
+  process.exit(
+    correct === rows.length && output.metrics.successfulRecalls === retrievals.length ? 0 : 2,
+  );
 }
 main().catch(() => {
   console.error(

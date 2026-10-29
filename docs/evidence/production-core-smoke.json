@@ -1,0 +1,82 @@
+{
+  "checkedAt": "2026-10-29T15:26:31.366Z",
+  "base": "https://payguard-ai-henna.vercel.app",
+  "memoryWrites": false,
+  "paymentsSent": false,
+  "release": {
+    "application": "PayGuard Verify",
+    "commit": "7128c11862b6ff943a0ca6dc8c7c72e1b0c7a4f3",
+    "recordedProofCount": 30,
+    "proofExportedAt": "2026-10-28T23:01:40.457Z",
+    "modes": ["public-demo", "owner-admin", "wallet-member", "recorded-proof"]
+  },
+  "walletAccess": {
+    "allowed": false,
+    "review": "Slush domain review pending"
+  },
+  "cookie": {
+    "secure": true,
+    "httpOnly": true,
+    "sameSiteStrict": true
+  },
+  "session": {
+    "authenticated": true,
+    "role": "owner",
+    "walletAddress": null
+  },
+  "workspace": {
+    "status": 200,
+    "mode": "owner",
+    "storage": "Neon Postgres",
+    "confirmedMemories": 30,
+    "configured": {
+      "database": true,
+      "memory": true,
+      "tatum": true
+    }
+  },
+  "health": {
+    "database": {
+      "status": "Connected"
+    },
+    "walrus": {
+      "status": "Connected"
+    },
+    "tatum": {
+      "status": "Connected"
+    }
+  },
+  "tatum": {
+    "status": 200,
+    "chainId": "35834a8a",
+    "checkpoint": "339460501",
+    "digest": "os1iG8zow278c6hqxbuyxnvMUjzThsD8GTY8atdfzW6"
+  },
+  "revokedCookieRejected": true,
+  "recall": {
+    "offStatus": 200,
+    "onStatus": 200,
+    "newSessionStatus": 200,
+    "offCitations": 0,
+    "firstCitations": 7,
+    "newSessionCitations": 7,
+    "ownedCitations": true,
+    "baselinePreserved": true,
+    "auditPersisted": true,
+    "blobIds": [
+      "3WogKM2IAtehjpvTCgIWpi3S7-Ciy5rJw4usKe-bf2g",
+      "56SOSxSVJVwSkZGFmCN7Sx2DUMBLlovypLYfSFrMoW4",
+      "v8OD2R59cXEjANkoV5UY9HSIInE-SY1tOBzZY7uerYQ",
+      "k_VAehYdw7pjBjGTW4X4gOjCS4xDIheFZoItuHWMHyQ",
+      "pPYsV-RKCESYlutuJDdc9lj9pxV2ixSA_zMHRDr2CM4",
+      "i3nSnl9ix5Es129QXaW1gUggnN6t0NaNAZubOMyb-G4",
+      "T5Zlt_7PXvQaySFPOIY0VqmTxz4n8WZYZV2MAgb5p1U"
+    ]
+  },
+  "service": {
+    "configured": false,
+    "signingAllowed": false,
+    "mainnetEnabled": false
+  },
+  "ok": true
+}

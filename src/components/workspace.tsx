@@ -170,38 +170,51 @@ export function Workspace({
   const assessment = invoice
     ? comparisons[invoice.id]?.[memoryOn ? 'on' : 'off'] || data?.assessments[invoice.id]
     : undefined;
-  async function act<T>(path: string, payload?: unknown, message?: string): Promise<T | undefined> {
-    setBusy(true);
-    const signingOut = path === 'auth/logout';
-    if (signingOut) {
-      snapshotGeneration.current++;
-      privacyLock.current = true;
-      setLogoutPending(true);
-      setData(undefined);
-      setComparisons({});
-      setSelected('');
-    }
-    try {
-      const r = await api<T>(path, payload);
+  const act = useCallback(
+    async <T,>(path: string, payload?: unknown, message?: string): Promise<T | undefined> => {
+      setBusy(true);
+      const signingOut = path === 'auth/logout';
       if (signingOut) {
-        privacyLock.current = false;
-        setLogoutPending(false);
+        snapshotGeneration.current++;
+        privacyLock.current = true;
+        setLogoutPending(true);
+        setData(undefined);
+        setComparisons({});
+        setSelected('');
       }
-      const refreshed = await refresh();
-      if (!refreshed)
-        notify(
-          'The action completed, but the workspace could not refresh. Retry Refresh to load current records.',
-          true,
-        );
-      else if (message) notify(message);
-      return r;
-    } catch (e) {
-      notify((e as Error).message, true);
-      return undefined;
-    } finally {
-      setBusy(false);
-    }
-  }
+      try {
+        const r = await api<T>(path, payload);
+        if (signingOut) {
+          privacyLock.current = false;
+          setLogoutPending(false);
+        }
+        const refreshed = await refresh();
+        if (!refreshed)
+          notify(
+            'The action completed, but the workspace could not refresh. Retry Refresh to load current records.',
+            true,
+          );
+        else if (message) notify(message);
+        return r;
+      } catch (e) {
+        notify((e as Error).message, true);
+        return undefined;
+      } finally {
+        setBusy(false);
+      }
+    },
+    [notify, refresh],
+  );
+  useEffect(() => {
+    const changed = () => {
+      // Lock immediately, including when logout is interrupted. Never wait for another session read.
+      void act('auth/logout', {}, 'Wallet changed; sign in again.').then((result) => {
+        if (result) router.replace('/connect?changed=1');
+      });
+    };
+    window.addEventListener('payguard:wallet-session-changed', changed);
+    return () => window.removeEventListener('payguard:wallet-session-changed', changed);
+  }, [act, router]);
   async function recheck(on = memoryOn) {
     if (!invoice) return;
     if (!owner) {
@@ -422,7 +435,7 @@ export function Workspace({
             )}
             {data?.mode === 'member' && (
               <>
-                <WalletSessionMonitor />
+                <WalletSessionMonitor expectedAddress={data.identity?.walletAddress || ''} />
                 {view === 'overview' && <Onboarding data={data} />}
               </>
             )}

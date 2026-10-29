@@ -27,6 +27,35 @@ export type ServiceChallenge = {
   resource: { url: string; description: string; mimeType: string };
   accepts: ServiceTerms[];
 };
+export function parseServiceChallenge(raw: unknown, expectedOrigin: string): ServiceChallenge {
+  const challenge = z
+    .object({
+      x402Version: z.literal(2),
+      resource: z
+        .object({
+          url: z.string().url().max(500),
+          description: z.string().max(500),
+          mimeType: z.literal('application/json'),
+        })
+        .strict(),
+      accepts: z.array(serviceTermsSchema).length(1),
+    })
+    .strict()
+    .parse(raw);
+  const resource = new URL(challenge.resource.url);
+  const terms = challenge.accepts[0];
+  if (
+    resource.origin !== new URL(expectedOrigin).origin ||
+    resource.search ||
+    resource.hash ||
+    resource.username ||
+    resource.password ||
+    resource.pathname !== '/api/service-payments/' + terms.extra.quoteId ||
+    terms.payTo === terms.extra.gasOwner
+  )
+    throw new Error('Unexpected service origin, quote or recipient');
+  return challenge;
+}
 export const servicePayloadSchema = z.object({
   x402Version: z.literal(2),
   resource: z.object({ url: z.string().max(500) }),
@@ -54,6 +83,25 @@ export function validateServiceTransaction(bytes: string, terms: ServiceTerms, p
     throw new Error('Sender or gas terms differ from approval');
   if (d.expiration?.$kind !== 'ValidDuring' || d.expiration.ValidDuring.chain !== TESTNET_GENESIS)
     throw new Error('Transaction is not bound to Sui Testnet');
+  const validity = d.expiration.ValidDuring;
+  if (
+    validity.minEpoch == null ||
+    validity.maxEpoch == null ||
+    BigInt(validity.maxEpoch) - BigInt(validity.minEpoch) !== 1n
+  )
+    throw new Error('Payment must expire within one epoch');
+  let withdrawals = 0n;
+  for (const input of d.inputs)
+    if (input.$kind === 'FundsWithdrawal') {
+      const w = input.FundsWithdrawal;
+      if (
+        w.withdrawFrom.$kind !== 'Sender' ||
+        normalizeStructTag(w.typeArg.Balance) !== normalizeStructTag(terms.asset)
+      )
+        throw new Error('Only approved payer/asset withdrawals are allowed');
+      withdrawals += BigInt(w.reservation.MaxAmountU64);
+    }
+  if (withdrawals > BigInt(terms.amount)) throw new Error('Withdrawals exceed the approved cap');
   const nonce = bcs.string().serialize(terms.extra.quoteId).toBase64();
   if (!d.inputs.some((i) => i.$kind === 'Pure' && i.Pure.bytes === nonce))
     throw new Error('Quote nonce missing from signed transaction');
@@ -74,6 +122,12 @@ export function validateServiceTransaction(bytes: string, terms: ServiceTerms, p
       )
     )
       throw new Error('Unexpected transaction command');
+    if (
+      c.MoveCall.typeArguments.length !== 1 ||
+      normalizeStructTag(c.MoveCall.typeArguments[0]) !== normalizeStructTag(terms.asset) ||
+      c.MoveCall.arguments.length !== (c.MoveCall.function === 'send_funds' ? 2 : 1)
+    )
+      throw new Error('Unexpected payment command arguments or asset');
   }
   const send = sends[0];
   if (send.$kind !== 'MoveCall') throw new Error('Invalid send');
@@ -89,6 +143,7 @@ export function validateServiceTransaction(bytes: string, terms: ServiceTerms, p
     recipientInput.Pure.bytes !== bcs.Address.serialize(terms.payTo).toBase64()
   )
     throw new Error('Recipient differs from approved terms');
+  const seen = new Set<number>();
   const getAmount = (arg: typeof balance): bigint => {
     if (arg.$kind === 'Input') {
       const i = d.inputs[arg.Input];
@@ -106,6 +161,8 @@ export function validateServiceTransaction(bytes: string, terms: ServiceTerms, p
           ? arg.NestedResult[0]
           : -1;
     const c = d.commands[index];
+    if (seen.has(index)) throw new Error('Cyclic payment command reference');
+    seen.add(index);
     if (c?.$kind === 'MoveCall' && ['redeem_funds', 'into_balance'].includes(c.MoveCall.function))
       return getAmount(c.MoveCall.arguments[0]);
     if (c?.$kind === 'SplitCoins' && c.SplitCoins.amounts.length === 1) {

@@ -302,11 +302,35 @@ export async function fulfillService(tenantId: string, id: string, raw?: unknown
     }
   }
   if (row.state !== 'settling' || !row.digest || !row.payer)
-    return { state: row.state, message: 'Approve the exact terms before signing.' };
+    return {
+      state: row.state,
+      message:
+        row.state === 'failed'
+          ? 'Tatum confirmed failed execution. No service receipt or replacement payment was created.'
+          : 'Approve the exact terms before signing.',
+    };
   let evidence;
   try {
     evidence = await inspectServiceSettlement(row.digest, terms, row.payer);
-  } catch {
+  } catch (error) {
+    if (error instanceof AppError && error.code === 'SETTLEMENT_FAILED') {
+      await d
+        .update(s.servicePaymentIntents)
+        .set({ state: 'failed' })
+        .where(
+          and(
+            eq(s.servicePaymentIntents.id, id),
+            eq(s.servicePaymentIntents.tenantId, tenantId),
+            eq(s.servicePaymentIntents.state, 'settling'),
+          ),
+        );
+      await audit(tenantId, 'service.failed', id, {
+        digest: row.digest,
+        source: 'Tatum finalized execution status',
+        noServiceReceipt: true,
+      });
+      return { state: 'failed', digest: row.digest, message: error.message };
+    }
     return {
       state: 'pending',
       digest: row.digest,

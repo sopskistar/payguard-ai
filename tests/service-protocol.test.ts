@@ -4,6 +4,7 @@ import {
   serviceTermsSchema,
   validateServiceTransaction,
   analyzeInstructionConsistency,
+  parseServiceChallenge,
 } from '@/lib/service-protocol';
 const payer = '0x' + '1'.repeat(64),
   merchant = '0x' + '2'.repeat(64),
@@ -50,6 +51,34 @@ async function fixture(change?: (tx: Transaction) => void) {
   return Buffer.from(await tx.build()).toString('base64');
 }
 describe('capped Testnet service authorization (synthetic transaction bytes; no settlement)', () => {
+  it('rejects cross-origin, ambiguous, substituted and Mainnet service challenges before signing', () => {
+    const origin = 'https://payguard.example';
+    const valid = {
+      x402Version: 2,
+      resource: {
+        url: origin + '/api/service-payments/' + terms.extra.quoteId,
+        description: 'Synthetic first-party consistency report',
+        mimeType: 'application/json',
+      },
+      accepts: [terms],
+    };
+    expect(parseServiceChallenge(valid, origin)).toEqual(valid);
+    for (const bad of [
+      { ...valid, x402Version: 1 },
+      { ...valid, accepts: [terms, terms] },
+      {
+        ...valid,
+        resource: {
+          ...valid.resource,
+          url: 'https://untrusted.example/api/service-payments/' + terms.extra.quoteId,
+        },
+      },
+      { ...valid, resource: { ...valid.resource, url: valid.resource.url + '?redirect=unknown' } },
+      { ...valid, accepts: [{ ...terms, network: 'sui:mainnet' }] },
+      { ...valid, accepts: [{ ...terms, payTo: gas }] },
+    ])
+      expect(() => parseServiceChallenge(bad, origin)).toThrow();
+  });
   it('rejects Mainnet, changed amount, recipient format and gas cap', () => {
     for (const diff of [
       { network: 'sui:mainnet' },
@@ -102,5 +131,28 @@ describe('capped Testnet service authorization (synthetic transaction bytes; no 
     expect(report.linkDomains).toEqual(['billing.example']);
     expect(report.independentIdentityVerification).toBe(false);
     expect(report.injectionDirective).toBe(true);
+  });
+  it('rejects hidden excess withdrawals and overlong validity', async () => {
+    const excess = await fixture((tx) => {
+      tx.withdrawal({ type: terms.asset, amount: 1n });
+    });
+    expect(() => validateServiceTransaction(excess, terms, payer)).toThrow('cap');
+    const sponsor = await fixture((tx) => {
+      tx.withdrawal({ type: terms.asset, amount: 0n, from: 'sponsor' });
+    });
+    expect(() => validateServiceTransaction(sponsor, terms, payer)).toThrow('payer');
+    const long = await fixture((tx) =>
+      tx.setExpiration({
+        ValidDuring: {
+          chain: '69WiPg3DAQiwdxfncX6wYQ2siKwAe6L9BZthQea3JNMD',
+          minEpoch: 1,
+          maxEpoch: 200,
+          minTimestamp: null,
+          maxTimestamp: null,
+          nonce: 123,
+        },
+      }),
+    );
+    expect(() => validateServiceTransaction(long, terms, payer)).toThrow('epoch');
   });
 });

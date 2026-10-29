@@ -1,7 +1,31 @@
 import { test, expect, type Page } from '@playwright/test';
+const transportFailures = new Map<Page, { method: string; path: string; error: string }[]>();
+test.afterEach(async ({}, info) => {
+  if (info.status !== info.expectedStatus) {
+    const failures = [...transportFailures.values()].flat();
+    if (failures.length)
+      await info.attach('transport-failures', {
+        body: JSON.stringify(failures),
+        contentType: 'application/json',
+      });
+  }
+  transportFailures.clear();
+});
 
 // Retry only a browser transport reset during a read-only navigation. Application errors still fail.
 export async function visit(page: Page, url: string, options?: Parameters<Page['goto']>[1]) {
+  if (!transportFailures.has(page)) {
+    const failures: { method: string; path: string; error: string }[] = [];
+    transportFailures.set(page, failures);
+    page.on('requestfailed', (request) => {
+      const error = request.failure()?.errorText || '';
+      failures.push({
+        method: request.method(),
+        path: new URL(request.url()).pathname.replace(/[0-9a-f-]{36}/gi, '[id]'),
+        error: /net::[A-Z_]+/.exec(error)?.[0] || 'transport failure',
+      });
+    });
+  }
   try {
     return await page.goto(url, options);
   } catch (error) {
@@ -10,7 +34,13 @@ export async function visit(page: Page, url: string, options?: Parameters<Page['
       type: 'transport-retry',
       description: 'One read-only navigation retried after browser ERR_NETWORK_CHANGED.',
     });
-    await page.goto('about:blank');
+    // Stop the failed navigation before Chrome's delayed error page can interrupt recovery.
+    const session = await page.context().newCDPSession(page);
+    try {
+      await session.send('Page.stopLoading');
+    } finally {
+      await session.detach();
+    }
     return page.goto(url, options);
   }
 }

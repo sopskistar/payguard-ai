@@ -17,7 +17,13 @@ const kit = createDAppKit({
     new SuiGrpcClient({ network, baseUrl: 'https://fullnode.mainnet.sui.io:443' }),
 });
 // Signing is personal-message authentication only. No transaction action is called here.
-function Connection({ monitor = false }: { monitor?: boolean }) {
+function Connection({
+  monitor = false,
+  expectedAddress,
+}: {
+  monitor?: boolean;
+  expectedAddress?: string;
+}) {
   const router = useRouter();
   const account = useCurrentAccount({ dAppKit: kit });
   const dapp = useDAppKit(kit);
@@ -34,6 +40,11 @@ function Connection({ monitor = false }: { monitor?: boolean }) {
     const address = account?.address ?? null;
     const old = previous.current;
     previous.current = address;
+    if (monitor) {
+      if ((address && address !== expectedAddress) || (old && address === null))
+        window.dispatchEvent(new Event('payguard:wallet-session-changed'));
+      return;
+    }
     let active = true;
     // Initial disconnected state is not evidence of an account switch; restore may be pending.
     if (address || (old && address === null)) {
@@ -57,7 +68,7 @@ function Connection({ monitor = false }: { monitor?: boolean }) {
     return () => {
       active = false;
     };
-  }, [account?.address, router]);
+  }, [account?.address, router, monitor, expectedAddress]);
   if (monitor) return null;
   async function prepare() {
     if (!account) return;
@@ -133,10 +144,16 @@ function Connection({ monitor = false }: { monitor?: boolean }) {
     </div>
   );
 }
-export default function WalletKit({ monitor = false }: { monitor?: boolean }) {
+export default function WalletKit({
+  monitor = false,
+  expectedAddress,
+}: {
+  monitor?: boolean;
+  expectedAddress?: string;
+}) {
   return (
     <DAppKitProvider dAppKit={kit}>
-      <Connection monitor={monitor} />
+      <Connection monitor={monitor} expectedAddress={expectedAddress} />
     </DAppKitProvider>
   );
 }
