@@ -1,5 +1,7 @@
+import { registerBrowserDiagnostics } from './browser-helpers';
 import { test, expect } from '@playwright/test';
 import { visit } from './browser-helpers';
+registerBrowserDiagnostics();
 test('hosted wallet pause is visible and both signature endpoints fail closed', async ({
   page,
   request,

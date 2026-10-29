@@ -1,3 +1,4 @@
+import { registerBrowserDiagnostics } from './browser-helpers';
 import { visit } from './browser-helpers';
 import { test, expect, type BrowserContext, type Page } from '@playwright/test';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
@@ -109,6 +110,7 @@ async function injectWallet(page: Page, key: Ed25519Keypair) {
     },
   );
 }
+registerBrowserDiagnostics();
 test('wallet sign-in uses a real personal signature; logout, replay and cross-user APIs are enforced', async ({
   browser,
 }) => {

@@ -1,54 +1,48 @@
 {
-  "checkedAt": "2026-10-29T16:09:04.523Z",
-  "results": [
+  "checkedAt": "2026-10-29T23:15:09.861Z",
+  "credentialsUsed": false,
+  "links": [
     {
       "url": "https://payguard-ai-henna.vercel.app/",
-      "status": 200
+      "status": 200,
+      "finalUrl": "https://payguard-ai-henna.vercel.app/"
     },
     {
       "url": "https://payguard-ai-henna.vercel.app/try",
-      "status": 200
+      "status": 200,
+      "finalUrl": "https://payguard-ai-henna.vercel.app/try"
     },
     {
       "url": "https://payguard-ai-henna.vercel.app/proof",
-      "status": 200
-    },
-    {
-      "url": "https://payguard-ai-henna.vercel.app/connect",
-      "status": 200
+      "status": 200,
+      "finalUrl": "https://payguard-ai-henna.vercel.app/proof"
     },
     {
       "url": "https://sopskistar.github.io/payguard-ai/",
       "status": 200,
-      "articleCurrent": true
-    },
-    {
-      "url": "https://sopskistar.github.io/payguard-ai/try/",
-      "status": 200
+      "finalUrl": "https://sopskistar.github.io/payguard-ai/",
+      "twoCustomerUpdatePublished": true
     },
     {
       "url": "https://github.com/sopskistar/payguard-ai",
-      "status": 200
+      "status": 200,
+      "finalUrl": "https://github.com/sopskistar/payguard-ai"
     },
     {
       "url": "https://github.com/sopskistar/payguard-ai/blob/main/docs/JUDGE_WALKTHROUGH.md",
-      "status": 200
+      "status": 200,
+      "finalUrl": "https://github.com/sopskistar/payguard-ai/blob/main/docs/JUDGE_WALKTHROUGH.md"
     },
     {
       "url": "https://github.com/sopskistar/payguard-ai/blob/main/docs/MAINNET_PROOF.md",
-      "status": 200
+      "status": 200,
+      "finalUrl": "https://github.com/sopskistar/payguard-ai/blob/main/docs/MAINNET_PROOF.md"
     },
     {
-      "url": "https://github.com/sopskistar/payguard-ai/blob/main/docs/WALLET_SECURITY.md",
-      "status": 200
-    },
-    {
-      "url": "https://github.com/sopskistar/payguard-ai/blob/main/docs/SLUSH_SECURITY_REVIEW.md",
-      "status": 200
-    },
-    {
-      "url": "https://github.com/sopskistar/payguard-ai/blob/main/docs/RELEASE_STATUS.md",
-      "status": 200
+      "url": "https://github.com/sopskistar/payguard-ai/blob/main/docs/evidence/tatum-reconciliation.json",
+      "status": 200,
+      "finalUrl": "https://github.com/sopskistar/payguard-ai/blob/main/docs/evidence/tatum-reconciliation.json"
     }
-  ]
+  ],
+  "ok": true
 }

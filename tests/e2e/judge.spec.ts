@@ -1,9 +1,17 @@
+import { registerBrowserDiagnostics } from './browser-helpers';
 import { visit } from './browser-helpers';
 import { test, expect } from '@playwright/test';
+registerBrowserDiagnostics();
 test('judge never presents active walkthrough buttons before client readiness', async ({
-  browser,
-}) => {
-  const context = await browser.newContext({ javaScriptEnabled: false });
+  playwright,
+  browserName,
+}, info) => {
+  // Keep disabled-script CDP state and cancelled resources out of the shared interactive browser.
+  const browser = await playwright[browserName].launch(info.project.use.launchOptions);
+  const context = await browser.newContext({
+    javaScriptEnabled: false,
+    baseURL: info.project.use.baseURL,
+  });
   try {
     const page = await context.newPage();
     await visit(page, '/try');
@@ -14,6 +22,7 @@ test('judge never presents active walkthrough buttons before client readiness', 
     await expect(page.getByRole('button', { name: 'Next Step', exact: true })).toBeDisabled();
   } finally {
     await context.close();
+    await browser.close();
   }
 });
 test('judge completes all seven clear steps, with back navigation, real evidence and no account', async ({
@@ -24,6 +33,7 @@ test('judge completes all seven clear steps, with back navigation, real evidence
   await visit(page, '/try');
   await expect(page.getByRole('heading', { name: /Follow the invoice/ })).toBeVisible();
   const next = page.getByRole('button', { name: 'Next Step', exact: true });
+  await expect(next).toBeEnabled({ timeout: 15000 });
   await next.click();
   await expect(page.getByText('PROPOSED RECIPIENT', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Back', exact: true }).click();

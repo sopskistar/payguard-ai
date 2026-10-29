@@ -1,6 +1,8 @@
+import { registerBrowserDiagnostics } from './browser-helpers';
 import { visit } from './browser-helpers';
 import { test, expect } from '@playwright/test';
 const origin = process.env.E2E_BASE_URL || 'http://localhost:3000';
+registerBrowserDiagnostics();
 test('LIVE Tatum transaction inspector rejects an unrelated sample payment', async ({
   browser,
 }) => {

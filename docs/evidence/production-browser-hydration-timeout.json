@@ -1,0 +1,21 @@
+{
+  "startedAt": "2026-10-29T23:16:33.976Z",
+  "finishedAt": "2026-10-29T23:19:13.855Z",
+  "exitCode": 1,
+  "actualProduction": true,
+  "liveMemoryReuse": true,
+  "video": false,
+  "commit": "d1649da12841cd1fcecbdd62b2a25cb69213c84f",
+  "passed": 13,
+  "failed": 1,
+  "skipped": 3,
+  "failure": {
+    "test": "Judge seven-step walkthrough",
+    "lastAction": "First Next Step waited for client readiness",
+    "classification": "Readiness timeout; initial run lacked pending-resource diagnostics"
+  },
+  "laterDiagnostic": "A controlled public probe reproduced ERR_NETWORK_CHANGED between contexts; not proof of an application defect",
+  "followup": "No-JavaScript test given a dedicated browser; three repeated complete judge files passed 9/9",
+  "credentialsUsed": true,
+  "secretsPrinted": false
+}

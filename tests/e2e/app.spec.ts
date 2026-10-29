@@ -1,6 +1,8 @@
+import { registerBrowserDiagnostics } from './browser-helpers';
 import { visit, signInOwner } from './browser-helpers';
 import { test, expect } from '@playwright/test';
 const origin = process.env.E2E_BASE_URL || 'http://localhost:3000';
+registerBrowserDiagnostics();
 test('public Verify journey, replay controls and responsive navigation', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));

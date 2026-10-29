@@ -1,0 +1,172 @@
+{
+  "checkedAt": "2026-10-29T23:36:33.878Z",
+  "origin": "https://payguard-ai-henna.vercel.app",
+  "credentialsUsed": false,
+  "results": [
+    {
+      "label": "initial JS control",
+      "javascript": true,
+      "status": 200,
+      "ready": true,
+      "dom": {
+        "documentReady": "complete",
+        "disabled": false,
+        "scriptCount": 9,
+        "flightQueue": true,
+        "scriptResources": 10
+      },
+      "pending": [
+        {
+          "path": "/",
+          "type": "fetch"
+        },
+        {
+          "path": "/proof",
+          "type": "fetch"
+        }
+      ],
+      "failures": [],
+      "badStatus": [],
+      "runtime": []
+    },
+    {
+      "label": "no-JS predecessor 0",
+      "javascript": false,
+      "status": 200,
+      "ready": true,
+      "dom": {
+        "documentReady": "complete",
+        "disabled": true,
+        "scriptCount": 14,
+        "flightQueue": false,
+        "scriptResources": 11
+      },
+      "pending": [],
+      "failures": [
+        {
+          "path": "/_next/static/chunks/webpack-9bcc601f81e7f32b.js",
+          "type": "script",
+          "code": "csp"
+        }
+      ],
+      "badStatus": [],
+      "runtime": []
+    },
+    {
+      "label": "JS after no-JS 0",
+      "javascript": true,
+      "ready": false,
+      "dom": {
+        "unavailable": "navigation replaced its execution context"
+      },
+      "pending": [],
+      "failures": [
+        {
+          "path": "/try",
+          "type": "document",
+          "code": "net::ERR_NETWORK_CHANGED"
+        }
+      ],
+      "badStatus": [],
+      "runtime": []
+    },
+    {
+      "label": "no-JS predecessor 1",
+      "javascript": false,
+      "status": 200,
+      "ready": true,
+      "dom": {
+        "documentReady": "complete",
+        "disabled": true,
+        "scriptCount": 14,
+        "flightQueue": false,
+        "scriptResources": 11
+      },
+      "pending": [],
+      "failures": [
+        {
+          "path": "/_next/static/chunks/webpack-9bcc601f81e7f32b.js",
+          "type": "script",
+          "code": "csp"
+        }
+      ],
+      "badStatus": [],
+      "runtime": []
+    },
+    {
+      "label": "JS after no-JS 1",
+      "javascript": true,
+      "status": 200,
+      "ready": true,
+      "dom": {
+        "documentReady": "complete",
+        "disabled": false,
+        "scriptCount": 7,
+        "flightQueue": true,
+        "scriptResources": 10
+      },
+      "pending": [
+        {
+          "path": "/",
+          "type": "fetch"
+        },
+        {
+          "path": "/proof",
+          "type": "fetch"
+        }
+      ],
+      "failures": [],
+      "badStatus": [],
+      "runtime": []
+    },
+    {
+      "label": "no-JS predecessor 2",
+      "javascript": false,
+      "status": 200,
+      "ready": true,
+      "dom": {
+        "documentReady": "complete",
+        "disabled": true,
+        "scriptCount": 14,
+        "flightQueue": false,
+        "scriptResources": 11
+      },
+      "pending": [],
+      "failures": [
+        {
+          "path": "/_next/static/chunks/webpack-9bcc601f81e7f32b.js",
+          "type": "script",
+          "code": "csp"
+        }
+      ],
+      "badStatus": [],
+      "runtime": []
+    },
+    {
+      "label": "JS after no-JS 2",
+      "javascript": true,
+      "status": 200,
+      "ready": true,
+      "dom": {
+        "documentReady": "complete",
+        "disabled": false,
+        "scriptCount": 9,
+        "flightQueue": true,
+        "scriptResources": 10
+      },
+      "pending": [
+        {
+          "path": "/",
+          "type": "fetch"
+        },
+        {
+          "path": "/proof",
+          "type": "fetch"
+        }
+      ],
+      "failures": [],
+      "badStatus": [],
+      "runtime": []
+    }
+  ]
+}

@@ -14,6 +14,8 @@ Review/payment details: AGENT_PAYMENTS.md, mainnet-service-preflight.json, mainn
 
 Payment follow-up: claim the durable digest before `/verify` as well as `/settle`, retain the cap on rejected/interrupted verification, and do not allow cancellation after disclosure. Sui timestamp expiration is unsupported; the UI distinguishes the five-minute application quote from the current/next-epoch signed chain lifetime. This is an explicit approval risk, not a fake five-minute onchain guarantee.
 
+Final UI guard: VerificationPanel binds context to invoice/mode/trust revision/edit revision; old state is hidden while fresh context loads, and attestation is disabled. Browser regression holds the actual context request to prove this. Public Refresh waits for its real initial snapshot. No-JavaScript judge checks use their own browser; 3 repeated judge files passed 9/9. Per-file diagnostic registration records pending resource paths/statuses with no secrets. Preserve failed hosted ledgers and publish the final result honestly.
+
 ## Historical handoffs follow
 
 # Active security gate — Slush domain review

@@ -1,9 +1,19 @@
+import { registerBrowserDiagnostics } from './browser-helpers';
 import { visit } from './browser-helpers';
 import { test, expect } from '@playwright/test';
+registerBrowserDiagnostics();
 test('refresh shows loading, honest success, timestamp and failure; public actions explain owner access', async ({
   page,
 }) => {
+  const initialSnapshot = page.waitForResponse(
+    async (r) =>
+      r.url().endsWith('/api/snapshot') &&
+      r.status() === 200 &&
+      (await r.json()).mode === 'public-demo',
+    { timeout: 20000 },
+  );
   await visit(page, '/app');
+  await initialSnapshot;
   await expect(page.getByText('Public demo', { exact: true })).toBeVisible();
   await expect(page.getByText('Published Mainnet proof', { exact: false })).toBeVisible();
   let release: () => void = () => {};

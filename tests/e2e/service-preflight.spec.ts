@@ -1,7 +1,9 @@
+import { registerBrowserDiagnostics } from './browser-helpers';
 import { test, expect } from '@playwright/test';
 import { visit } from './browser-helpers';
 import recordedPreflight from '../../docs/evidence/production-payment-preflight.json' with { type: 'json' };
 const origin = process.env.E2E_BASE_URL || 'http://localhost:3000';
+registerBrowserDiagnostics();
 test('owner service page explains exact Mainnet proposal and keeps spending disabled', async ({
   browser,
 }) => {

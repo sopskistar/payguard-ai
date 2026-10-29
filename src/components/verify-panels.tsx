@@ -42,16 +42,27 @@ export function VerificationPanel({
   notify: (s: string, error?: boolean) => void;
   onChanged: () => void;
 }) {
-  const [context, setContext] = useState<Context>();
+  const [loaded, setLoaded] = useState<{ key: string; value: Context }>();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [revision, setRevision] = useState(0);
+  const contextKey = JSON.stringify([
+    data.mode,
+    invoice,
+    data.vendorProfiles.find((p) => p.vendorId === invoice.vendorId)?.revision,
+    revision,
+  ]);
+  const context = loaded?.key === contextKey ? loaded.value : undefined;
+  const waitingContext = data.mode !== 'public-demo' && !context;
   useEffect(() => {
     let active = true;
     if (data.mode !== 'public-demo') {
       api<Context>('instructions/context', { invoiceId: invoice.id })
         .then((c) => {
-          if (active) setContext(c);
+          if (active) {
+            setLoaded({ key: contextKey, value: c });
+            setError('');
+          }
         })
         .catch((e) => {
           if (active) setError(e.message);
@@ -60,7 +71,7 @@ export function VerificationPanel({
     return () => {
       active = false;
     };
-  }, [invoice.id, data.mode, revision]);
+  }, [invoice.id, data.mode, contextKey]);
   const profile =
     context?.profile || data.vendorProfiles.find((p) => p.vendorId === invoice.vendorId);
   const owner = data.mode !== 'public-demo';
@@ -90,7 +101,13 @@ export function VerificationPanel({
   }
   async function attest(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!context?.profile) return;
+    if (!context?.profile) {
+      notify(
+        'Wait for the current instruction version and established profile before verifying.',
+        true,
+      );
+      return;
+    }
     setBusy(true);
     try {
       const f = new FormData(e.currentTarget);
@@ -124,6 +141,12 @@ export function VerificationPanel({
         Compare the proposed recipient with the established vendor record. Blockchain evidence
         proves a transfer, not the supplier’s identity or consent.
       </p>
+      {waitingContext && (
+        <p className="small-text muted" aria-live="polite">
+          Loading the current instruction version. Verification controls will unlock when it is
+          ready.
+        </p>
+      )}
       <div className="recipient-comparison">
         <div>
           <span className="eyebrow">ESTABLISHED RECIPIENT</span>
@@ -227,7 +250,7 @@ export function VerificationPanel({
               User-entered correspondence, not authenticated email headers. Raw message text never
               enters Walrus.
             </p>
-            <Submit busy={busy} disabled={!owner || invoice.status !== 'open'}>
+            <Submit busy={busy} disabled={!owner || waitingContext || invoice.status !== 'open'}>
               Save instruction
             </Submit>
           </form>

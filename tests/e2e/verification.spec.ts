@@ -1,7 +1,9 @@
+import { registerBrowserDiagnostics } from './browser-helpers';
 import { visit } from './browser-helpers';
 import { test, expect } from '@playwright/test';
 import { randomUUID } from 'node:crypto';
 const origin = process.env.E2E_BASE_URL || 'http://localhost:3000';
+registerBrowserDiagnostics();
 test('owner records independent verification; edited instructions invalidate approval', async ({
   browser,
 }) => {
@@ -67,8 +69,25 @@ test('owner records independent verification; edited instructions invalidate app
     await page
       .getByLabel('Payment instruction text')
       .fill('Synthetic QA: please review the changed recipient using the established contact.');
+    let releaseContext!: () => void;
+    const contextGate = new Promise<void>((resolve) => {
+      releaseContext = resolve;
+    });
+    await page.route('**/api/instructions/context', async (route) => {
+      await contextGate;
+      await route.continue();
+    });
     await page.getByRole('button', { name: 'Save instruction', exact: true }).click();
     await expect(page.getByRole('status')).toContainText('Instructions saved', { timeout: 15000 });
+    await page.getByText('Record out-of-band verification', { exact: true }).click();
+    await expect(
+      page.getByRole('button', { name: 'Record verification', exact: true }),
+    ).toBeDisabled();
+    releaseContext();
+    await expect(
+      page.getByRole('button', { name: 'Record verification', exact: true }),
+    ).toBeEnabled({ timeout: 20000 });
+    await page.unroute('**/api/instructions/context');
     const held = await context.request.post('/api/invoices/status', {
       headers: { origin },
       data: {
@@ -78,7 +97,6 @@ test('owner records independent verification; edited instructions invalidate app
       },
     });
     expect(held.status()).toBe(409);
-    await page.getByText('Record out-of-band verification', { exact: true }).click();
     await page.getByLabel('Human outcome').selectOption('confirmed');
     await page
       .getByLabel('Verification note')
@@ -86,7 +104,12 @@ test('owner records independent verification; edited instructions invalidate app
         'Synthetic QA attestation only: established contact confirmed these exact sample instructions. No actual call was placed.',
       );
     await page.getByLabel(/I used the profile/).check();
+    const verified = page.waitForResponse(
+      (r) => r.url().endsWith('/api/instructions/verify') && r.request().method() === 'POST',
+      { timeout: 30000 },
+    );
     await page.getByRole('button', { name: 'Record verification', exact: true }).click();
+    expect((await verified).status()).toBe(200);
     await expect(page.getByRole('status')).toContainText('Human verification recorded', {
       timeout: 15000,
     });

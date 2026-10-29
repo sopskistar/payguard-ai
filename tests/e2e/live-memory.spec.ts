@@ -1,6 +1,8 @@
+import { registerBrowserDiagnostics } from './browser-helpers';
 import { test, expect } from '@playwright/test';
 import { randomUUID } from 'node:crypto';
 const origin = process.env.E2E_BASE_URL || 'http://localhost:3000';
+registerBrowserDiagnostics();
 test('LIVE Mainnet correction is recalled in a separate owner session', async ({ browser }) => {
   test.skip(
     process.env.LIVE_MEMORY_TEST !== '1' || !process.env.E2E_OWNER_PASSWORD,
