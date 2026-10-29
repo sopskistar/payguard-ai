@@ -95,3 +95,17 @@ Preserved upstream `49e4cfd` and all existing work/evidence. Neon additive migra
 Secret-value scan found zero matches across 195 candidate source/documentation/assets. Values were never printed. Browser trace/video capture is disabled; no demo video was created.
 
 Final complete local browser run: **12/12 passed in 2.6 minutes**, including the real read-only Tatum and preserved-correction cross-session Walrus tests. No new Mainnet write was made.
+
+### Deployed production checks
+
+Vercel reported commit `f26f5a722dd46a068797f42c925b9108f4085d80` Ready and `/api/release` matched it. [Sanitized actual production evidence](evidence/production-release.json):
+
+- Actual owner **browser form** login passed. Cookie was Secure, HttpOnly, SameSite Strict.
+- Authenticated Neon snapshot returned owner mode and 30 confirmed jobs. A review audit persisted through logout and a new authenticated browser context.
+- Live Walrus recall returned 30 matched confirmed candidates; seven applicable owned citations influenced the review, versus zero OFF. Every baseline finding was retained.
+- Actual Tatum Mainnet gRPC returned chain `35834a8a`, checkpoint `339250059` and the genuine digest; reconciliation remained correctly **Mismatch**.
+- Deployed public/authorization/judge/Refresh/desktop/mobile/proof checks passed. Wallet HTTP registration, returning persistence, logout and A/B isolation passed. Wallet Standard connection → genuine signed personal message → authenticated workspace → account-switch revocation also passed against Vercel.
+
+Repeated browser runs initially saw two interruptions: a five-second assertion ran before the authenticated snapshot completed (the test now awaits that actual response), and `net::ERR_NETWORK_CHANGED` prevented runtime/font assets from loading. A public-asset-only diagnostic identified the latter; later deployed wallet UI retest passed in 7.9 seconds. No server configuration was missing and no failed attempt was reported as a successful login. A native reload form now provides recovery if wallet runtime loading is interrupted. Full production browser results after that follow-up are recorded below when completed.
+
+The source and final client-bundle scan covered 295 files with zero configured credential matches. Formatting passed after fixing two whitespace-only warnings. No wallet signing key was stored, no service payment settled, and no video was made.

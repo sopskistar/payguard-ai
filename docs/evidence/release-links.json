@@ -1,0 +1,46 @@
+{
+  "checkedAt": "2026-10-29T01:36:11.167Z",
+  "results": [
+    {
+      "url": "https://payguard-ai-henna.vercel.app/",
+      "status": 200
+    },
+    {
+      "url": "https://payguard-ai-henna.vercel.app/try",
+      "status": 200
+    },
+    {
+      "url": "https://payguard-ai-henna.vercel.app/proof",
+      "status": 200
+    },
+    {
+      "url": "https://payguard-ai-henna.vercel.app/connect",
+      "status": 200
+    },
+    {
+      "url": "https://sopskistar.github.io/payguard-ai/",
+      "status": 200,
+      "articleCurrent": true
+    },
+    {
+      "url": "https://sopskistar.github.io/payguard-ai/try/",
+      "status": 200
+    },
+    {
+      "url": "https://github.com/sopskistar/payguard-ai",
+      "status": 200
+    },
+    {
+      "url": "https://github.com/sopskistar/payguard-ai/blob/main/docs/JUDGE_WALKTHROUGH.md",
+      "status": 200
+    },
+    {
+      "url": "https://github.com/sopskistar/payguard-ai/blob/main/docs/MAINNET_PROOF.md",
+      "status": 200
+    },
+    {
+      "url": "https://github.com/sopskistar/payguard-ai/blob/main/docs/WALLET_SECURITY.md",
+      "status": 200
+    }
+  ]
+}

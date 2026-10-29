@@ -48,7 +48,7 @@ The narrow MVP deliberately uses a single active supplier reference with invoice
 
 ![Instruction comparison](screenshots/verification.png)
 
-This article is [published on GitHub Pages](https://sopskistar.github.io/payguard-ai/). Vercel built the application successfully, but project aliases still require Vercel authentication. The remaining submission work is public app access and hosted smoke testing, a short recorded demonstration, and the required account/dashboard details. The repository contains the application, reproducible checks and reviewed real evidence. No x402/MPP settlement or payment bonus is claimed.
+This article is [published on GitHub Pages](https://sopskistar.github.io/payguard-ai/). Production is public at https://payguard-ai-henna.vercel.app/ and hosted owner/Neon/Walrus/Tatum smoke testing has passed. The remaining submission work includes the owner-arranged demonstration and required account/dashboard details. The repository contains the application, reproducible checks and reviewed real evidence. No x402/MPP settlement or payment bonus is claimed.
 
 ## Follow-up: thirty memories and a public judge journey
 

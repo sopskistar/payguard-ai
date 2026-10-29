@@ -1,0 +1,61 @@
+{
+  "checkedAt": "2026-10-29T01:27:40.717Z",
+  "base": "https://payguard-ai-henna.vercel.app",
+  "paymentsSent": false,
+  "memoryWrites": false,
+  "release": {
+    "application": "PayGuard Verify",
+    "commit": "f26f5a722dd46a068797f42c925b9108f4085d80",
+    "recordedProofCount": 30,
+    "proofExportedAt": "2026-10-28T23:01:40.457Z",
+    "modes": ["public-demo", "owner-admin", "wallet-member", "recorded-proof"]
+  },
+  "ownerBrowserLogin": true,
+  "cookie": {
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "Strict"
+  },
+  "owner": {
+    "mode": "owner",
+    "storage": "Neon Postgres",
+    "confirmedMemories": 30
+  },
+  "health": {
+    "database": {
+      "status": "Connected"
+    },
+    "walrus": {
+      "status": "Connected"
+    },
+    "tatum": {
+      "status": "Connected",
+      "chainId": "35834a8a"
+    }
+  },
+  "recall": {
+    "offStatus": 200,
+    "onStatus": 200,
+    "offCitations": 0,
+    "onCitations": 7,
+    "memoryStatus": "Recalled 30 confirmed Mainnet memories",
+    "ownedCitations": true,
+    "baselinePreserved": true
+  },
+  "tatum": {
+    "httpStatus": 200,
+    "chainId": "35834a8a",
+    "checkpoint": "339250059",
+    "digest": "os1iG8zow278c6hqxbuyxnvMUjzThsD8GTY8atdfzW6"
+  },
+  "reconciliation": {
+    "httpStatus": 200,
+    "status": "Mismatch"
+  },
+  "newSession": {
+    "owner": true,
+    "auditPersisted": true,
+    "confirmedMemories": 30
+  },
+  "ok": true
+}

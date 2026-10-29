@@ -198,8 +198,17 @@ test('wallet sign-in uses a real personal signature; logout, replay and cross-us
       ).status(),
     ).toBe(404);
     const p = await a.newPage();
+    const loaded = p.waitForResponse(
+      (r) => r.url().endsWith('/api/snapshot') && r.request().method() === 'GET',
+      { timeout: 30000 },
+    );
     await p.goto('/app');
-    await expect(p.getByText('Your wallet workspace', { exact: true })).toBeVisible();
+    const response = await loaded;
+    expect(response.status()).toBe(200);
+    expect((await response.json()).mode).toBe('member');
+    await expect(p.getByText('Your wallet workspace', { exact: true })).toBeVisible({
+      timeout: 15000,
+    });
     await expect(p.getByRole('heading', { name: 'Your first payment review' })).toBeVisible();
     await p.getByRole('button', { name: 'Sign out', exact: true }).click();
     await expect(p.getByText('Public demo', { exact: true })).toBeVisible();
@@ -251,6 +260,22 @@ test('Wallet Standard connect UI signs in, switches accounts safely and fits mob
     expect((await (await context.request.get('/api/auth/session')).json()).authenticated).toBe(
       false,
     );
+  } finally {
+    await context.close();
+  }
+});
+
+test('wallet loading provides native recovery when JavaScript cannot load', async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  try {
+    const page = await context.newPage();
+    await page.goto('/connect');
+    await expect(page.getByRole('heading', { name: 'Connect Sui Wallet' })).toBeVisible();
+    const reload = page.getByRole('button', { name: 'Reload wallet connection' });
+    await expect(reload).toBeVisible();
+    await Promise.all([page.waitForNavigation(), reload.click()]);
+    await expect(page).toHaveURL(/\/connect\??$/);
+    await expect(reload).toBeVisible();
   } finally {
     await context.close();
   }
