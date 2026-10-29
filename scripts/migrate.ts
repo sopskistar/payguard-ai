@@ -2,7 +2,13 @@ import { config } from 'dotenv';
 config({ path: '.env.local', quiet: true });
 async function main() {
   const { db } = await import('../src/db');
-  if (process.env.DATABASE_URL) {
+  if (process.env.DATABASE_URL && process.argv.includes('--http')) {
+    // Explicit fallback for networks that block WebSockets. New migrations must be idempotent.
+    const { neon } = await import('@neondatabase/serverless');
+    const { drizzle } = await import('drizzle-orm/neon-http');
+    const { migrate } = await import('drizzle-orm/neon-http/migrator');
+    await migrate(drizzle(neon(process.env.DATABASE_URL)), { migrationsFolder: 'drizzle' });
+  } else if (process.env.DATABASE_URL) {
     const { migrate } = await import('drizzle-orm/neon-serverless/migrator');
     await migrate((await db()) as never, { migrationsFolder: 'drizzle' });
   } else if (process.env.LOCAL_DATABASE_PATH && !process.env.VERCEL) {

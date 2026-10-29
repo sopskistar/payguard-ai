@@ -724,6 +724,7 @@ export function Workspace({
               onSubmit={async (e: FormEvent<HTMLFormElement>) => {
                 e.preventDefault();
                 const password = new FormData(e.currentTarget).get('password');
+                e.currentTarget.reset(); // Do not retain credentials in DOM snapshots after submission.
                 const result = await act('auth/login', { password });
                 if (result) {
                   setModal(null);

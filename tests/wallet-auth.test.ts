@@ -249,3 +249,24 @@ it('retains separate administrator login and blocks cross-origin writes', async 
   await logout();
   expect(await currentActor()).toBeNull();
 });
+
+it('invalidates owner sessions immediately on password rotation while retaining wallet sessions', async () => {
+  await verifyWalletLogin(await signed(alice));
+  const memberToken = browser.jar.get('payguard_session')!;
+  browser.jar.delete('payguard_session'); // Simulate a separate browser's independent wallet session.
+  await login('test-only-owner-password-for-isolated-tests');
+  const adminToken = browser.jar.get('payguard_session')!;
+  expect((await currentActor())?.role).toBe('owner');
+  vi.stubEnv('OWNER_PASSWORD', 'rotated-test-only-password-not-used-in-production');
+  expect(await currentActor()).toBeNull();
+  await expect(requireOwner()).rejects.toThrow('Sign in');
+  await expect(login('test-only-owner-password-for-isolated-tests')).rejects.toThrow('Incorrect');
+  // The wallet's independent session remains valid across an administrator password rotation.
+  browser.jar.set('payguard_session', memberToken);
+  expect((await currentActor())?.role).toBe('member');
+  browser.jar.set('payguard_session', adminToken);
+  await login('rotated-test-only-password-not-used-in-production');
+  expect((await currentActor())?.role).toBe('owner');
+  await logout();
+  vi.stubEnv('OWNER_PASSWORD', 'test-only-owner-password-for-isolated-tests');
+});

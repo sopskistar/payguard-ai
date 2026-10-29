@@ -28,6 +28,7 @@ const tenant = () =>
 export const sessions = pgTable('sessions', {
   id: text('id').primaryKey(),
   tenantId: tenant(),
+  authVersion: text('auth_version'),
   expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
   createdAt: time(),
 });

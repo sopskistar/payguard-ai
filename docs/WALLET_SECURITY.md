@@ -23,3 +23,11 @@ Walrus uses a backend-managed operator account. The browser never receives its d
 `tests/e2e/wallet.spec.ts` exercises actual HTTP cookies/APIs and a Wallet Standard browser test wallet. The private key stays in the Node test process and is never sent to the browser or persisted. No test spends funds or writes new memories. Existing owner and live read-only provider regressions remain separate.
 
 Account recovery/export/deletion, teams, delegated reviewers, multi-factor administrator login, durable operational monitoring and external penetration testing remain future work. Losing wallet signing access loses normal account access. A valid wallet signature does not authenticate a business or human. Global quotas limit shared integration usage but do not replace production abuse monitoring.
+
+Browser QA disables automatic DOM failure snapshots, trace, screenshot and video artifacts because entered credentials may appear in diagnostic DOM snapshots even when the UI masks them. The owner password form clears its input immediately after submission. Explicit synthetic-page still images are reviewed separately; private authenticated forms are never published.
+
+## Password rotations and diagnostic redaction
+
+Additive migration `0005` stores a keyed administrator credential version on sessions. Every owner request checks it against the currently configured password version. Changing `OWNER_PASSWORD` makes previously issued owner cookies unauthenticated; legacy owner sessions without a version also fail closed. Wallet sessions have independent identities and are not invalidated by an administrator password rotation. No raw password is stored in Neon.
+
+A credential-redaction reporter runs before Playwright console/HTML reporters and cleans known private values from errors and text attachments before embedding. Unit tests cover nested errors and attachments using synthetic values. Automatic DOM snapshots, traces, screenshots and video remain disabled. The login input clears immediately on submission. This is defense in depth; application/test code must continue to avoid logging credentials.

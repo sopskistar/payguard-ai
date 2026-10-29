@@ -87,3 +87,26 @@ test('landing CTAs, FAQ, proof and mobile layouts are deliberate and functional'
   await page.getByRole('link', { name: 'Try Interactive Demo', exact: true }).first().click();
   await expect(page).toHaveURL(/\/try$/);
 });
+
+test('owner sign-in clears submitted credentials while the request is pending', async ({
+  page,
+}) => {
+  let release: () => void = () => {};
+  const gate = new Promise<void>((r) => (release = r));
+  await page.route('**/api/auth/login', async (route) => {
+    await gate;
+    await route.fulfill({
+      status: 401,
+      contentType: 'application/json',
+      body: JSON.stringify({ error: 'Incorrect owner password.' }),
+    });
+  });
+  await page.goto('/app?signin=1');
+  const input = page.getByLabel('Owner password');
+  await input.fill('synthetic-test-only-not-a-real-password');
+  await page.getByRole('button', { name: 'Sign in securely' }).click();
+  await expect(input).toHaveValue('');
+  release();
+  await expect(page.locator('.toast')).toContainText('Incorrect owner password');
+  await expect(input).toHaveValue('');
+});

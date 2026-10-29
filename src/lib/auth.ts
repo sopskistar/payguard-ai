@@ -13,6 +13,13 @@ function secret() {
   if (!s || s.length < 32) unavailable('Session secret');
   return s;
 }
+function ownerVersion() {
+  const password = process.env.OWNER_PASSWORD;
+  if (!password || password.length < 16) return null;
+  return createHmac('sha256', secret())
+    .update('payguard:owner-version:' + password)
+    .digest('hex');
+}
 const hash = (s: string) => createHash('sha256').update(s).digest('hex');
 export async function rateLimit(key: string, limit: number, seconds = 3600) {
   const d = await db();
@@ -51,7 +58,12 @@ export async function currentActor() {
   const [r] = await (
     await db()
   )
-    .select({ tenantId: sessions.tenantId, role: users.role, walletAddress: users.walletAddress })
+    .select({
+      tenantId: sessions.tenantId,
+      role: users.role,
+      walletAddress: users.walletAddress,
+      authVersion: sessions.authVersion,
+    })
     .from(sessions)
     .innerJoin(users, eq(users.id, sessions.tenantId))
     .where(
@@ -61,7 +73,9 @@ export async function currentActor() {
       ),
     )
     .limit(1);
-  return r ?? null;
+  if (!r || (r.role === 'owner' && (!r.authVersion || r.authVersion !== ownerVersion())))
+    return null;
+  return { tenantId: r.tenantId, role: r.role, walletAddress: r.walletAddress };
 }
 export async function currentUser() {
   return (await currentActor())?.tenantId ?? null;
@@ -88,6 +102,7 @@ export async function createSession(tenantId: string) {
   await (await db()).insert(sessions).values({
     id: hash(createHmac('sha256', secret()).update(token).digest('hex')),
     tenantId,
+    authVersion: tenantId === OWNER_ID ? ownerVersion() : null,
     expiresAt: new Date(Date.now() + 8 * 3600000),
   });
   (await cookies()).set(cookieName, token, {

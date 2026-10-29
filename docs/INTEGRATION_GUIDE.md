@@ -78,3 +78,7 @@ Apply additive migration `0004` before deploying the wallet release (`npm run db
 The modern `@mysten/dapp-kit-react` and Wallet Standard select a wallet; server signature verification creates the account. Connection alone is insufficient. Each account starts empty. Supplier-first onboarding and privacy details are available at `/connect`, `/app` and `/privacy`. Browser tests exercise a registered Wallet Standard test wallet with real personal signatures; physical mobile wallet certification remains manual.
 
 Shared operator-sponsored memory writes are globally capped by `MEMORY_GLOBAL_WRITES_PER_HOUR` (default 40, maximum 100) and per-account `MEMORY_WRITES_PER_HOUR` (default 24, maximum 100). Provider availability, quota and retention still apply. No anonymous writes exist.
+
+### Session-version migration
+
+Apply forward migration `0005` before deploying the password-rotation guard. The default migrator uses transactional WebSocket PostgreSQL. On a network that blocks that transport, `npm run db:migrate -- --http` uses the official Neon HTTP migrator; use this explicitly only after reviewing pending migrations for idempotence because that adapter executes statements separately. The new one-column migration is idempotent. This changes the migration transport only, not runtime database persistence.
