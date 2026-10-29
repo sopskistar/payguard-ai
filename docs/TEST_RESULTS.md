@@ -137,3 +137,9 @@ Automatic DOM snapshots, trace, screenshots and video are disabled. The password
 - Production narrow reruns verified the public/mobile paths, human attestation and no-JavaScript reload. The broad owner-intake browser case remains intermittently interrupted by the runner's network resets. A request-metadata-only diagnostic measured a genuine 201 save in 4.8 seconds; another explicitly recorded its POST failing with ERR_NETWORK_CHANGED. No mutation retry was added. These are not counted as a clean full production suite.
 
 No customer records, verified memories or blockchain proof were reset. No new Mainnet write, service payment or video was created.
+
+### Final deployed privacy smoke
+
+Application release `35d2327` was Ready. The real deployed wallet registration/isolation/interrupted-logout test **passed in 14.4 seconds**: an aborted logout hid private data, explicit retry revoked the session, a failed refresh did not restore private records, and public refresh recovered. [Sanitized evidence](evidence/production-privacy-regression.json). No owner password was used in that test.
+
+The final production password recheck again returned old **401 INVALID_LOGIN**, rotated **200**, secure cookie flags and rejection of the logged-out cookie. The final credential audit covered **803 files and ten decoded report archives**, with zero credential matches outside the approved private environment file and zero Git-history matches. No full green production-suite claim is made; the earlier broad-run network failures remain documented.

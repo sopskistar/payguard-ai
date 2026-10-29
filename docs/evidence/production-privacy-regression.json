@@ -1,0 +1,19 @@
+{
+  "checkedAt": "2026-10-29T12:29:40.387Z",
+  "applicationCommit": "35d23279125e8f99331b5ced55da37406f7bf256",
+  "base": "https://payguard-ai-henna.vercel.app",
+  "result": "passed",
+  "tests": 1,
+  "scope": [
+    "real personal-message wallet registration",
+    "cross-user API isolation",
+    "private data hidden after aborted logout",
+    "failed snapshot refresh without stale private data",
+    "explicit sign-out retry and revoked session"
+  ],
+  "businessScenario": "Synthetic controlled test invoice",
+  "ownerPasswordUsed": false,
+  "memoryWrites": false,
+  "payments": false,
+  "video": false
+}

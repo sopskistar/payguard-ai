@@ -1,3 +1,15 @@
+# Final verified checkpoint
+
+Application release `35d2327` is pushed and Vercel Ready. The final deployed wallet-isolation/interrupted-logout/private-cache test passed (14.4 seconds); evidence/production-privacy-regression.json records the scope. Latest production credential recheck: old password 401 INVALID_LOGIN, rotated password 200, Secure/HttpOnly/Strict session, logout 200 and revoked cookie rejected. Legacy and superseded owner-session guards also passed on production. No additional credential configuration is requested. All 30 confirmed Mainnet memories remain preserved; live production recall and Tatum inspection passed in the broader run.
+
+Latest checks: 83 unit tests passed; lint, TypeScript, formatting and build passed; isolated local PostgreSQL QA 12 browser tests passed with two explicit live-provider skips. Production has documented ERR_NETWORK_CHANGED interruptions and no single clean full 14-case run; do not erase that limitation. The final deployed privacy regression is green. Safe workspace/Git audit: zero configured credential matches, including ten decoded report archives. `.env.local` is intentionally excluded. The original conversation history cannot be erased through project cleanup; the previous credential is no longer accepted on production.
+
+Code, docs and sanitized evidence are checkpointed; preserve untracked .gitignore.save. Never print passwords or private keys, recreate memories, reset Neon, force-push, or create video. Optional agent-payment settlement is still unproven; needs a controlled Testnet merchant/signer setup and explicit terms approval. Mainnet spending remains disabled and requires separate exact authorization.
+
+Earlier chronological handoffs below remain for provenance.
+
+---
+
 # Latest continuation checkpoint — session privacy and transport recovery
 
 The rotated password and old-password rejection are verified on production, as are legacy/superseded-session denial. No credentials are printed or committed. The latest frontend immediately hides private data on a logout attempt; if server sign-out fails it stays locked behind Retry sign-out. Failed post-logout refresh cannot restore private records. Snapshot generations discard late responses from an older login/session. Login distinguishes authentication success from workspace-load failure. Read-only network failures get one bounded retry; mutations/payments are never automatically retried. A missing explicitly selected invoice no longer silently falls back to another invoice.
