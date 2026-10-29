@@ -28,6 +28,7 @@ it('cleans text attachments and test failures before downstream reporters embed 
     reporter.onBegin();
     const result = {
       errors: [{ message: 'Login failed ' + secret }],
+      steps: [{ title: 'Fill ' + secret, steps: [], error: { message: secret } }],
       attachments: [
         {
           name: 'error-context',
@@ -38,9 +39,11 @@ it('cleans text attachments and test failures before downstream reporters embed 
     };
     reporter.onTestEnd(
       {} as Parameters<typeof reporter.onTestEnd>[0],
-      result as Parameters<typeof reporter.onTestEnd>[1],
+      result as unknown as Parameters<typeof reporter.onTestEnd>[1],
     );
     expect(result.errors[0].message).toBe('Login failed [REDACTED]');
+    expect(result.steps[0].title).toBe('Fill [REDACTED]');
+    expect(result.steps[0].error.message).toBe('[REDACTED]');
     expect(result.attachments[0].body.toString()).toBe('entered password: [REDACTED]');
   } finally {
     vi.unstubAllEnvs();

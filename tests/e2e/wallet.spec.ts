@@ -1,3 +1,4 @@
+import { visit } from './browser-helpers';
 import { test, expect, type BrowserContext, type Page } from '@playwright/test';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 const origin = process.env.E2E_BASE_URL || 'http://localhost:3000';
@@ -202,7 +203,7 @@ test('wallet sign-in uses a real personal signature; logout, replay and cross-us
       (r) => r.url().endsWith('/api/snapshot') && r.request().method() === 'GET',
       { timeout: 30000 },
     );
-    await p.goto('/app');
+    await visit(p, '/app');
     const response = await loaded;
     expect(response.status()).toBe(200);
     expect((await response.json()).mode).toBe('member');
@@ -233,7 +234,7 @@ test('Wallet Standard connect UI signs in, switches accounts safely and fits mob
   const key = Ed25519Keypair.generate();
   await injectWallet(page, key);
   try {
-    await page.goto('/connect');
+    await visit(page, '/connect');
     await expect(page.getByRole('heading', { name: 'Connect Sui Wallet' })).toBeVisible();
     await page.getByRole('button', { name: 'Connect Wallet', exact: true }).click();
     await page.getByText('PayGuard Test Wallet', { exact: true }).click();
@@ -269,13 +270,18 @@ test('wallet loading provides native recovery when JavaScript cannot load', asyn
   const context = await browser.newContext({ javaScriptEnabled: false });
   try {
     const page = await context.newPage();
-    await page.goto('/connect');
+    await visit(page, '/connect');
     await expect(page.getByRole('heading', { name: 'Connect Sui Wallet' })).toBeVisible();
     const reload = page.getByRole('button', { name: 'Reload wallet connection' });
     await expect(reload).toBeVisible();
     await Promise.all([page.waitForNavigation(), reload.click()]);
     await expect(page).toHaveURL(/\/connect\??$/);
     await expect(reload).toBeVisible();
+    await visit(page, '/app');
+    await expect(page.getByRole('heading', { name: 'Preparing your workspace' })).toBeVisible();
+    const workspaceReload = page.getByRole('button', { name: 'Reload workspace', exact: true });
+    await Promise.all([page.waitForNavigation(), workspaceReload.click()]);
+    await expect(workspaceReload).toBeVisible();
   } finally {
     await context.close();
   }

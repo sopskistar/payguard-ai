@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import { useClientReady } from './client-ready';
 import { WalletSessionMonitor } from './wallet-entry';
 import { Onboarding } from './onboarding';
 import { PublicMemoryLab, publishedMemoryCount } from './mode-notice';
@@ -89,6 +90,7 @@ export function Workspace({
   initialSignIn?: boolean;
 }) {
   const router = useRouter();
+  const ready = useClientReady();
   const [data, setData] = useState<Snapshot>();
   const [loadError, setLoadError] = useState('');
   const [busy, setBusy] = useState(false);
@@ -214,6 +216,26 @@ export function Workspace({
     view === 'settings/integrations'
       ? 'Integration diagnostics'
       : nav.find((n) => n.id === view)?.label || 'Overview';
+  if (!ready)
+    return (
+      <main id="main" className="workspace-loading">
+        <img src="/brand/icon.png" alt="PayGuard shield" width={44} height={44} />
+        <h1>Preparing your workspace</h1>
+        <noscript>Enable JavaScript to use the private workspace.</noscript>
+        <p role="status">
+          Loading the controls for your account. If this takes longer than expected, reload the
+          workspace and check your connection.
+        </p>
+        <form action={view === 'overview' ? '/app' : `/app/${view}`} method="get">
+          <button className="button outline" type="submit">
+            Reload workspace
+          </button>
+        </form>
+        <Link href="/try" className="inline-link">
+          Try the public interactive demo ↗
+        </Link>
+      </main>
+    );
   return (
     <MotionConfig reducedMotion="user">
       <div className="app-shell">
@@ -368,7 +390,7 @@ export function Workspace({
                 {view === 'overview' && <Onboarding data={data} />}
               </>
             )}
-            {!owner && (
+            {data?.mode === 'public-demo' && (
               <div className="demo-banner">
                 <FlaskConical size={17} />
                 <span>

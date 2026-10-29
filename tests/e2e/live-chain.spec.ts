@@ -1,3 +1,4 @@
+import { visit } from './browser-helpers';
 import { test, expect } from '@playwright/test';
 const origin = process.env.E2E_BASE_URL || 'http://localhost:3000';
 test('LIVE Tatum transaction inspector rejects an unrelated sample payment', async ({
@@ -20,7 +21,7 @@ test('LIVE Tatum transaction inspector rejects an unrelated sample payment', asy
     ).ok(),
   ).toBe(true);
   const page = await context.newPage();
-  await page.goto('/app/wallets');
+  await visit(page, '/app/wallets');
   await page.getByLabel('Transaction digest').fill(process.env.TATUM_TEST_DIGEST!);
   const inspected = page.waitForResponse((r) => r.url().endsWith('/api/transactions/inspect'), {
     timeout: 45000,
@@ -36,7 +37,7 @@ test('LIVE Tatum transaction inspector rejects an unrelated sample payment', asy
     (i: { number: string; isDemo: boolean }) => i.isDemo && i.number === 'NS-1048',
   );
   expect(invoice).toBeTruthy();
-  await page.goto('/app/review');
+  await visit(page, '/app/review');
   await page.getByLabel('Invoice to review').selectOption(invoice.id);
   await page.getByLabel('Transaction digest').fill(process.env.TATUM_TEST_DIGEST!);
   const verified = page.waitForResponse((r) => r.url().endsWith('/api/payments/verify'), {

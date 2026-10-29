@@ -1,8 +1,9 @@
+import { visit } from './browser-helpers';
 import { test, expect } from '@playwright/test';
 test('refresh shows loading, honest success, timestamp and failure; public actions explain owner access', async ({
   page,
 }) => {
-  await page.goto('/app');
+  await visit(page, '/app');
   await expect(page.getByText('Public demo', { exact: true })).toBeVisible();
   await expect(page.getByText('Published Mainnet proof', { exact: false })).toBeVisible();
   let release: () => void = () => {};
@@ -49,7 +50,7 @@ test('refresh shows loading, honest success, timestamp and failure; public actio
 test('landing CTAs, FAQ, proof and mobile layouts are deliberate and functional', async ({
   page,
 }) => {
-  await page.goto('/');
+  await visit(page, '/');
   await expect(page.getByRole('heading', { name: /Same supplier/ })).toBeVisible();
   await page.getByRole('button', { name: 'Memory ON', exact: true }).click();
   await expect(page.locator('.site-citation code')).toBeVisible();
@@ -61,7 +62,7 @@ test('landing CTAs, FAQ, proof and mobile layouts are deliberate and functional'
   await expect(page.getByRole('dialog')).toBeVisible();
   await expect(page.getByRole('dialog')).toContainText('public demo');
   await page.getByRole('button', { name: 'Close dialog' }).click();
-  await page.goto('/proof');
+  await visit(page, '/proof');
   await expect(page.getByRole('heading', { name: '30 confirmed memories.' })).toBeVisible();
   await page.getByText('Inspect all job IDs, blobs and completion times', { exact: true }).click();
   await expect(page.locator('.proof-receipts article')).toHaveCount(30);
@@ -76,14 +77,14 @@ test('landing CTAs, FAQ, proof and mobile layouts are deliberate and functional'
     '/connect',
     '/privacy',
   ]) {
-    await page.goto(path);
+    await visit(page, path);
     await expect(page.locator('h1')).toBeVisible();
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
       path,
     ).toBe(true);
   }
-  await page.goto('/');
+  await visit(page, '/');
   await page.getByRole('link', { name: 'Try Interactive Demo', exact: true }).first().click();
   await expect(page).toHaveURL(/\/try$/);
 });
@@ -101,7 +102,7 @@ test('owner sign-in clears submitted credentials while the request is pending', 
       body: JSON.stringify({ error: 'Incorrect owner password.' }),
     });
   });
-  await page.goto('/app?signin=1');
+  await visit(page, '/app?signin=1');
   const input = page.getByLabel('Owner password');
   await input.fill('synthetic-test-only-not-a-real-password');
   await page.getByRole('button', { name: 'Sign in securely' }).click();

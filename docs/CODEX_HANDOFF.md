@@ -1,3 +1,17 @@
+# Current verified state — security rotation resolved
+
+Production deployment `c92f608` picked up the owner's rotated configuration: the previous password now receives 401 INVALID_LOGIN; the distinct current password receives 200, creates an authenticated owner session with Secure/HttpOnly/Strict cookie, and its cookie is rejected after logout. No values were displayed or persisted by the check. [evidence/password-rotation.json](evidence/password-rotation.json) and [evidence/session-rotation.json](evidence/session-rotation.json) contain only status/boolean proof. The deployed guard rejected a temporary legacy session and a superseded-version session (private API 401), accepted the restored current version, and removed the test session. No additional password rotation is currently requested.
+
+All 80 unit tests pass. Lint, TypeScript, formatting and production build pass. Final isolated local PostgreSQL QA passed 12/12 applicable browser tests with two live-provider cases explicitly skipped. Production's broad 14-case run passed actual live Walrus recall, Tatum inspection, wallet login/isolation, judge flow, credential clearing and Refresh; five cases failed on network resets/timing. Three of those passed focused reruns after improving response waits and owning the verification fixture. The remaining owner UI stall exposed controls available before hydration; current frontend adds an explicit loading/native-reload state until handlers exist, and landing memory buttons wait for readiness. Validate those two cases after deploying the loading fix; do not invent a single clean 14-test production run.
+
+The artifact audit includes decoded report ZIPs: zero current/previous password or configured credential matches in project artifacts and Git history; `.env.local` is the intentionally excluded private credential file. A synthetic failing canary verified redaction of console output, attachments, step titles and the decoded HTML archive. Original conversation history is outside repository cleanup scope; the obsolete credential is rejected by current Production. Existing Mainnet proof remains 30 records, and no new memory or payment was sent.
+
+Optional agent-payment settlement remains unproven. Needs private ENABLE_AGENT_PAYMENTS and SERVICE_PAYMENT_RECIPIENT setup plus a controlled funded Testnet wallet and explicit displayed terms approval. Mainnet is disabled; no supplier payment path exists. Physical mobile wallet certification and external security audit remain manual/future work. No video is authorized.
+
+Older chronological notes below are preserved, including the initial deployment mismatch that the fresh deployment resolved.
+
+---
+
 # Security continuation — October 29 UTC
 
 The owner rotated OWNER_PASSWORD in .env.local and reports rotating Production. The first actual production comparison still accepted the previous diagnostic credential (HTTP 200) and rejected the distinct new local value (401). No values were printed or copied into project files. There is no Vercel token/tool authorization; force a new GitHub deployment and recheck before asking for dashboard correction. Safe evidence is in evidence/password-rotation.json. The previous credential is read only in memory from this thread's immutable historical diagnostic for the authorized rejection test; never copy it into a file or response. Project-generated diagnostics were removed. The original conversation history cannot be erased through repository cleanup.

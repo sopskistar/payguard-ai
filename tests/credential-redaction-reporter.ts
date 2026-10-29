@@ -1,4 +1,4 @@
-import type { Reporter, TestCase, TestResult } from '@playwright/test/reporter';
+import type { Reporter, TestCase, TestResult, TestStep } from '@playwright/test/reporter';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { parse } from 'dotenv';
 
@@ -41,10 +41,30 @@ export default class CredentialRedactionReporter implements Reporter {
       )
       .map(([, value]) => value!);
   }
+  private cleanStep(step: TestStep) {
+    step.title = redactText(step.title, this.secrets);
+    if (step.error) redactError(step.error, this.secrets);
+    for (const child of step.steps) this.cleanStep(child);
+  }
+  onStepBegin(_test: TestCase, _result: TestResult, step: TestStep) {
+    this.cleanStep(step);
+  }
+  onStepEnd(_test: TestCase, _result: TestResult, step: TestStep) {
+    this.cleanStep(step);
+  }
   onError(error: unknown) {
     redactError(error, this.secrets);
   }
   onTestEnd(_test: TestCase, result: TestResult) {
+    for (const step of result.steps || []) this.cleanStep(step);
+    for (const stream of [result.stdout, result.stderr]) {
+      if (!stream) continue;
+      for (let i = 0; i < stream.length; i++) {
+        const value = stream[i];
+        const text = redactText(value.toString(), this.secrets);
+        stream[i] = typeof value === 'string' ? text : Buffer.from(text);
+      }
+    }
     for (const error of result.errors) redactError(error, this.secrets);
     for (const attachment of result.attachments) {
       // Trace/video/screenshots are disabled. Text attachments are cleaned before HTML embeds them.

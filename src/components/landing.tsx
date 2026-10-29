@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import { useClientReady } from './client-ready';
 import { motion, MotionConfig } from 'motion/react';
 import { useState } from 'react';
 import {
@@ -42,6 +43,7 @@ const faqs = [
   ],
 ];
 export function Landing() {
+  const ready = useClientReady();
   const [memory, setMemory] = useState(false);
   const review = judgeReview(memory, recall.policies as Policy[], recall.citations);
   return (
@@ -256,6 +258,7 @@ export function Landing() {
                 </span>
                 <div className="segmented" aria-label="Recorded memory comparison">
                   <button
+                    disabled={!ready}
                     onClick={() => setMemory(false)}
                     aria-pressed={!memory}
                     className={!memory ? 'active' : ''}
@@ -263,6 +266,7 @@ export function Landing() {
                     Memory OFF
                   </button>
                   <button
+                    disabled={!ready}
                     onClick={() => setMemory(true)}
                     aria-pressed={memory}
                     className={memory ? 'active mint-active' : ''}

@@ -1,11 +1,12 @@
+import { visit, signInOwner } from './browser-helpers';
 import { test, expect } from '@playwright/test';
 const origin = process.env.E2E_BASE_URL || 'http://localhost:3000';
 test('public Verify journey, replay controls and responsive navigation', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
-  await page.goto('/');
+  await visit(page, '/');
   await expect(page.getByRole('heading', { name: /Same supplier/ })).toBeVisible();
-  await page.goto('/app/replay');
+  await visit(page, '/app/replay');
   await expect(page.getByRole('heading', { name: 'Attack Replay Lab', exact: true })).toBeVisible();
   await page.getByRole('button', { name: /Lookalike sender/ }).click();
   await expect(page.getByText('Sender domain differs from the established domain')).toBeVisible();
@@ -13,10 +14,10 @@ test('public Verify journey, replay controls and responsive navigation', async (
   await expect(page.getByText('Use the established contact', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: /Unchanged recurring instruction/ }).click();
   await expect(page.getByText('No instruction-change signal was detected')).toBeVisible();
-  await page.goto('/app/invoices');
+  await visit(page, '/app/invoices');
   await page.getByRole('textbox', { name: 'Search invoices' }).fill('Northstar');
   await expect(page.locator('tbody tr')).toHaveCount(3);
-  await page.goto('/app/review');
+  await visit(page, '/app/review');
   await expect(page.getByRole('heading', { name: 'Verify supplier instructions' })).toBeVisible();
   await page.getByRole('button', { name: 'Memory OFF', exact: true }).click();
   await page.getByRole('button', { name: 'Memory ON', exact: true }).click();
@@ -27,7 +28,7 @@ test('public Verify journey, replay controls and responsive navigation', async (
   await expect(page.getByRole('heading', { name: 'Vendor Trust', exact: true })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   for (const path of ['/app', '/app/invoices', '/app/review', '/app/replay', '/app/memory']) {
-    await page.goto(path);
+    await visit(page, path);
     await expect(page.locator('main h1')).toBeVisible();
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
@@ -64,11 +65,9 @@ test('owner intake persists through a fresh browser context, with no fictional m
   );
   const context = await browser.newContext();
   const page = await context.newPage();
-  await page.goto('/app');
+  await visit(page, '/app');
   await page.getByRole('button', { name: 'Owner login', exact: true }).first().click();
-  await page.getByLabel('Owner password').fill(process.env.E2E_OWNER_PASSWORD!);
-  await page.getByRole('button', { name: 'Sign in securely' }).click();
-  await expect(page.getByRole('button', { name: 'Sign out' })).toBeVisible();
+  await signInOwner(page, process.env.E2E_OWNER_PASSWORD!);
   await page.getByRole('button', { name: 'Add invoice', exact: true }).click();
   await page.getByLabel('Vendor / merchant').fill('E2E supplier');
   const number = `QA-${Date.now()}`;
@@ -85,11 +84,9 @@ test('owner intake persists through a fresh browser context, with no fictional m
   await context.close();
   const fresh = await browser.newContext();
   const next = await fresh.newPage();
-  await next.goto('/app/invoices');
+  await visit(next, '/app/invoices');
   await next.getByRole('button', { name: 'Owner login', exact: true }).first().click();
-  await next.getByLabel('Owner password').fill(process.env.E2E_OWNER_PASSWORD!);
-  await next.getByRole('button', { name: 'Sign in securely' }).click();
-  await expect(next.getByRole('button', { name: 'Sign out' })).toBeVisible();
+  await signInOwner(next, process.env.E2E_OWNER_PASSWORD!);
   await next.getByRole('textbox', { name: 'Search invoices' }).fill(number);
   await expect(next.locator('tbody tr')).toHaveCount(1);
   await expect(next.locator('tbody')).toContainText('$42.50');

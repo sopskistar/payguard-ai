@@ -1,3 +1,4 @@
+import { visit } from './browser-helpers';
 import { test, expect } from '@playwright/test';
 import { randomUUID } from 'node:crypto';
 const origin = process.env.E2E_BASE_URL || 'http://localhost:3000';
@@ -29,6 +30,7 @@ test('owner records independent verification; edited instructions invalidate app
     headers: { origin },
     data: {
       ...source,
+      vendor: 'QA verification supplier (synthetic)',
       number: 'QA-verification-' + Date.now(),
       importKey: randomUUID(),
       source: 'manual',
@@ -37,13 +39,30 @@ test('owner records independent verification; edited instructions invalidate app
   });
   expect(created.status()).toBe(201);
   const { id } = await created.json();
+  // Own the synthetic trust fixture; never depend on or edit the demo supplier's current reference.
+  const fixtureSnapshot = await (await context.request.get('/api/snapshot')).json();
+  const fixture = fixtureSnapshot.invoices.find((i: { id: string }) => i.id === id);
+  const profile = await context.request.post('/api/vendors/trust', {
+    headers: { origin },
+    data: {
+      vendorId: fixture.vendorId,
+      trustedRecipient: '0x' + '1'.repeat(64),
+      emailDomain: 'qa-verify.example',
+      contactLabel: 'Synthetic established contact',
+      contactMethod: 'phone',
+      contactReference: 'Synthetic test directory reference; no real call',
+      establishedAt: '2026-10-01T00:00:00.000Z',
+      independentlySourced: true,
+    },
+  });
+  expect(profile.status()).toBe(200);
   try {
     const page = await context.newPage();
-    await page.goto('/app/review');
+    await visit(page, '/app/review');
     await page.getByLabel('Invoice to review').selectOption(id);
     await expect(page.getByRole('heading', { name: 'Verify supplier instructions' })).toBeVisible();
     await page.getByText('Capture the payment instruction', { exact: false }).click();
-    await page.getByLabel('Sender email (as reported)').fill('accounts@northstarstudio.example');
+    await page.getByLabel('Sender email (as reported)').fill('accounts@qa-verify.example');
     await page.getByLabel('Received at').fill('2026-10-24T12:00');
     await page
       .getByLabel('Payment instruction text')
@@ -97,7 +116,7 @@ test('owner records independent verification; edited instructions invalidate app
           headers: { origin },
           data: {
             invoiceId: id,
-            senderEmail: 'accounts@northstarstudio.example',
+            senderEmail: 'accounts@qa-verify.example',
             replyTo: '',
             receivedAt: '2026-10-24T12:00:00.000Z',
             requestedContact: '',
@@ -117,7 +136,13 @@ test('owner records independent verification; edited instructions invalidate app
     expect(stale.status()).toBe(409);
   } finally {
     expect(
-      (await context.request.delete(`/api/invoices/${id}`, { headers: { origin }, data: {} })).ok(),
+      (
+        await context.request.delete(`/api/invoices/${id}`, {
+          headers: { origin },
+          data: {},
+          timeout: 15000,
+        })
+      ).ok(),
     ).toBe(true);
     await context.close();
   }

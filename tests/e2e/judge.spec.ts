@@ -1,10 +1,11 @@
+import { visit } from './browser-helpers';
 import { test, expect } from '@playwright/test';
 test('judge completes all seven clear steps, with back navigation, real evidence and no account', async ({
   page,
 }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
-  await page.goto('/try');
+  await visit(page, '/try');
   await expect(page.getByRole('heading', { name: /Follow the invoice/ })).toBeVisible();
   const next = page.getByRole('button', { name: 'Next Step', exact: true });
   await next.click();
