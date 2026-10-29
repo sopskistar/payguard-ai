@@ -1,0 +1,44 @@
+{
+  "checkedAt": "2026-10-29T16:41:13.856Z",
+  "recording": "Summarized from observed credential-redacted Playwright output; not an onchain proof.",
+  "broadRuns": [
+    {
+      "commit": "7128c11",
+      "passed": 7,
+      "failed": 5,
+      "skipped": 3
+    },
+    {
+      "commit": "f5de472",
+      "passed": 7,
+      "failed": 5,
+      "skipped": 3
+    }
+  ],
+  "focusedRun": {
+    "commit": "e607f992aa8d37729b9ee3848605fb9e9ea5d8de",
+    "passed": 4,
+    "failed": 3,
+    "skipped": 0,
+    "passedCases": [
+      "Judge pre-hydration disabled controls and native reload",
+      "Guest service-payment authorization",
+      "Refresh loading, success, failure and retry",
+      "Hosted wallet security pause and API rejection"
+    ],
+    "failedCases": [
+      "Seven-step journey: navigation interrupted by chrome-error page",
+      "Landing/mobile tour: navigation interrupted by chrome-error page",
+      "Credential clearing fixture: navigation interrupted by chrome-error page"
+    ]
+  },
+  "local": {
+    "unitPassed": 93,
+    "browserPassed": 13,
+    "browserSkipped": 3
+  },
+  "allHostedTestsPassed": false,
+  "paymentsSent": false,
+  "memoryWrites": false,
+  "video": false
+}
