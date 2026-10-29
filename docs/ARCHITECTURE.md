@@ -1,6 +1,6 @@
 # Architecture
 
-PayGuard Verify is a single-owner Next.js application. Public routes return explicitly synthetic fixtures. Server routes validate the session, origin, tenant ownership, input schema and quotas before touching owner records or providers. There is no transaction-signing path.
+PayGuard Verify is a Next.js application with individual wallet-authenticated accounts and separate owner administration. Public routes return explicitly synthetic fixtures. Server routes validate the session, origin, tenant ownership, input schema and quotas before touching owner records or providers. Supplier payments have no transaction-signing path. The separate first-party service-payment pilot is owner-only and Testnet-only.
 
 ```mermaid
 flowchart TD
@@ -30,7 +30,7 @@ flowchart TD
 
 ## Persistence and concurrency
 
-Migrations `0000` and `0001` are additive; they were applied successfully to configured Neon. The original 19 tables retain invoices, vendor references, payment instructions, human attestations, decisions, policy JSON, memory jobs/recalls, candidates/matches, rate limits and audit events. Existing migrations were not rewritten. Additive `0002`/`0003` bring the total to 21 tables with service intents and receipts.
+Migrations `0000` and `0001` are additive; they were applied successfully to configured Neon. The original 19 tables retain invoices, vendor references, payment instructions, human attestations, decisions, policy JSON, memory jobs/recalls, candidates/matches, rate limits and audit events. Existing migrations were not rewritten. Additive `0002`/`0003` bring the total to 21 tables; additive `0004` adds wallet challenges and a unique wallet identity (22 tables) with service intents and receipts.
 
 `vendor_trust_profiles` is the current established reference. Each update increments its revision and records previous/current recipients in the audit trail. `human_verifications` binds an outcome to the full invoice/instruction hash and that revision; a later change invalidates the attestation. These are human assertions, not cryptographic vendor identity. This MVP uses a single active reference per vendor plus invoice-scoped attestations rather than a general multi-destination registry with all five destination lifecycle statuses.
 
@@ -55,3 +55,7 @@ A local PGlite fallback exists only for explicit local QA, is labeled, and canno
 `/try` uses the existing deterministic rules and approval gate with synthetic input and a whitelisted captured recall artifact. The same React component is bundled for the public GitHub Pages sandbox; it performs no anonymous provider calls or writes. The capture script queries the authenticated SDK and publishes only synthetic scoped policies with exact confirmed citations. Public replay and live owner recall are explicitly distinguished.
 
 Two additive service tables preserve owner-approved x402 Testnet intents and unique receipts. A signed nonce, frozen instruction snapshot, exact term allowlist and pre-settlement claim prevent rebinding or duplicate charges. Finality is independently checked through Tatum before a result is delivered. Service fees are isolated from supplier invoices; no supplier payment path exists. Mainnet service settlement is unconditionally disabled. See [agent payments](AGENT_PAYMENTS.md).
+
+## Wallet identity and isolation
+
+See [the security design and tests](WALLET_SECURITY.md). A browser-bound, single-use, five-minute personal-message challenge is verified by Mysten's SDK before a member profile and opaque session are created. Session ownership is authoritative; client tenant IDs are never accepted. Role checks separately protect seeding, resets, diagnostics and the Testnet payment pilot. All invoice, vendor, rule, audit, wallet, correction and memory operations use server-derived ownership. Operator-managed Walrus credentials stay server-side, and exact owned blob/text/policy checks protect recall even when a provider returns foreign results. Namespaces alone are not authorization.

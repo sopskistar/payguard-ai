@@ -12,7 +12,7 @@ The application treats all imported text and recalled memories as untrusted data
 
 ## Defender controls
 
-- Only the authenticated owner can import private records, establish references, attest, seed memory or inspect integrations.
+- Authenticated users can access only their own records, references, attestations and memories. Only the owner administrator can seed/reset the project dataset, inspect credential diagnostics or use the service-payment pilot.
 - Every mutation checks the exact configured browser origin. Cookies are HttpOnly, SameSite strict, and Secure on HTTPS; session identifiers are stored by hash and expire.
 - Changed instructions require a human attestation bound to the exact invoice fields, message and profile revision. A request-supplied contact cannot establish an independent reference.
 - Baseline rules remain on with memory disabled. The recalled policy must be confirmed, tenant-owned, exact-content matched and applicable.
@@ -21,7 +21,7 @@ The application treats all imported text and recalled memories as untrusted data
 
 ## Limits
 
-The app cannot authenticate email headers, observe a phone call, prove a supplier's identity, prevent an owner from entering false attestations, or stop transfers made elsewhere. It has one owner role, not multi-organization onboarding or separation-of-duty approvals. The current trust model supports one active vendor reference and invoice-scoped checks, not a full destination lifecycle registry.
+The app cannot authenticate email headers, observe a phone call, prove a supplier's identity, prevent an owner from entering false attestations, or stop transfers made elsewhere. Wallet members and a separate owner role are implemented; multi-organization teams and separation-of-duty approvals are not. The current trust model supports one active vendor reference and invoice-scoped checks, not a full destination lifecycle registry.
 
 Patterns can miss attacks and flag legitimate requests. Semantic recall can lag or omit relevant context. Walrus retention needs operational management; deleting an invoice is not global blob erasure. Audit records are append-only through the app but mutable by a database administrator. Rate limits may reduce availability during abuse; dependency security and provider uptime require continued monitoring. No guarantee of fraud prevention or production certification is made.
 

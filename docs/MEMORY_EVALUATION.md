@@ -1,3 +1,19 @@
+# Memory Learning Report — current release
+
+The new 18-case suite performs four genuine SDK semantic recalls against the preserved confirmed Mainnet records, then reuses those exact results across explicitly synthetic invoice/instruction variants. No new memories are written. Run `npm run memory:evaluate-learning` in a fresh process.
+
+[Initial result](evidence/learning-before.json): 15/18 contracts met; three of four unchanged controls gained unnecessary critical address warnings. [Corrected result](evidence/learning-report.json): **18/18 contracts met, 18/18 baseline findings preserved, 4/4 recalls returned confirmed candidates, 0/4 unchanged controls gained critical warnings, zero stale/wrong-scope applications**. Sixteen cases applied remembered context. Only 10.9% of candidate/case combinations were applicable; broad retrieval remains a limitation and scope filtering is essential.
+
+The initial failing controls revealed that the learned address rule compared against sparse invoice history even when the proposed address matched the established supplier reference. The correction uses that canonical reference for the learned change condition while preserving baseline checks and the separate hard approval gate. Three new regression cases lock in that behavior.
+
+Cases cover four suppliers, changed and unchanged recipients, invoice directives and verification bypass attempts, an exact synthetic human-verified exception, expiration, edits after verification, duplicates, thresholds and local policy supersession. The latter uses a synthetic superseded local policy input while retaining actual retrieved citations. No provider record was edited. Separate unit cases cover contradictory exception text, later-session variants and narrow invoice scope.
+
+These are authored contract checks, not real-world fraud detection accuracy, a randomized experiment or a semantic ranking precision score. A human-verified exception can permit review approval while informational/critical contextual findings remain visible. No reduction in actual financial loss is claimed. The public [learning report](https://payguard-ai-henna.vercel.app/proof#learning) includes every measured case.
+
+---
+
+## Earlier four-supplier evaluation (preserved)
+
 # Measured learning quality
 
 The [October 28 live run](evidence/memory-quality.json) used five real SDK semantic recalls in a fresh process against the configured owner's namespace. Four supplier scenarios and one unchanged-invoice control are synthetic. Exact confirmed text/blob provenance, tenant ownership, scope, active/superseded state, expiry and currency constrain application.

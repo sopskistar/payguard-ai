@@ -48,7 +48,7 @@ export function VerificationPanel({
   const [revision, setRevision] = useState(0);
   useEffect(() => {
     let active = true;
-    if (data.mode === 'owner') {
+    if (data.mode !== 'public-demo') {
       api<Context>('instructions/context', { invoiceId: invoice.id })
         .then((c) => {
           if (active) setContext(c);
@@ -63,7 +63,7 @@ export function VerificationPanel({
   }, [invoice.id, data.mode, revision]);
   const profile =
     context?.profile || data.vendorProfiles.find((p) => p.vendorId === invoice.vendorId);
-  const owner = data.mode === 'owner';
+  const owner = data.mode !== 'public-demo';
   async function instructions(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setBusy(true);
@@ -278,7 +278,7 @@ export function VendorProfiles({
   notify: (s: string, error?: boolean) => void;
   onChanged: () => void;
 }) {
-  const vendors = [
+  const vendors = data.vendors || [
     ...new Map(
       data.invoices.map((i) => [i.vendorId, { id: i.vendorId, name: i.vendor, isDemo: i.isDemo }]),
     ).values(),
@@ -318,6 +318,37 @@ export function VendorProfiles({
           recipient and contact independently established before an instruction change.
         </span>
       </div>
+      {data.mode !== 'public-demo' && (
+        <section className="panel">
+          <h2>Create a supplier</h2>
+          <form
+            className="wallet-form"
+            onSubmit={async (e) => {
+              e.preventDefault();
+              const form = e.currentTarget;
+              setBusy(true);
+              try {
+                const r = await api<{ id: string }>('vendors', {
+                  name: new FormData(form).get('name'),
+                });
+                setVendorId(r.id);
+                onChanged();
+                form.reset();
+                notify('Supplier created. Establish its independent trust reference next.');
+              } catch (e) {
+                notify((e as Error).message, true);
+              } finally {
+                setBusy(false);
+              }
+            }}
+          >
+            <Field label="Supplier business name">
+              <input name="name" required minLength={2} maxLength={120} />
+            </Field>
+            <Submit busy={busy}>Create supplier</Submit>
+          </form>
+        </section>
+      )}
       <div className="settings-grid">
         <section className="panel">
           <h2>Vendor trust profiles</h2>
@@ -399,7 +430,7 @@ export function VendorProfiles({
               <input name="independent" type="checkbox" required />I obtained this reference
               independently, not from the instruction under review.
             </label>
-            <Submit busy={busy} disabled={data.mode !== 'owner' || !vendorId}>
+            <Submit busy={busy} disabled={data.mode === 'public-demo' || !vendorId}>
               Save trust profile
             </Submit>
             <p className="small-text muted">

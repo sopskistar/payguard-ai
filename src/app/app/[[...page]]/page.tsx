@@ -5,7 +5,7 @@ export default async function Page({
   searchParams,
 }: {
   params: Promise<{ page?: string[] }>;
-  searchParams: Promise<{ invoice?: string }>;
+  searchParams: Promise<{ invoice?: string; signin?: string }>;
 }) {
   const { page } = await params;
   const view = page?.join('/') || 'overview';
@@ -24,5 +24,8 @@ export default async function Page({
     ].includes(view)
   )
     notFound();
-  return <Workspace view={view} initialInvoice={(await searchParams).invoice} />;
+  const query = await searchParams;
+  return (
+    <Workspace view={view} initialInvoice={query.invoice} initialSignIn={query.signin === '1'} />
+  );
 }

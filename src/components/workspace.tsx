@@ -1,5 +1,8 @@
 'use client';
 import Link from 'next/link';
+import { WalletSessionMonitor } from './wallet-entry';
+import { Onboarding } from './onboarding';
+import { PublicMemoryLab, publishedMemoryCount } from './mode-notice';
 import { VerificationPanel, VendorProfiles, AttackReplayLab } from './verify-panels';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState, type FormEvent, type ReactNode } from 'react';
@@ -76,14 +79,26 @@ const subtitles: Record<string, string> = {
   'settings/integrations': 'Connection diagnostics, configuration and proof.',
 };
 type Toast = { text: string; error: boolean };
-export function Workspace({ view, initialInvoice }: { view: string; initialInvoice?: string }) {
+export function Workspace({
+  view,
+  initialInvoice,
+  initialSignIn = false,
+}: {
+  view: string;
+  initialInvoice?: string;
+  initialSignIn?: boolean;
+}) {
   const router = useRouter();
   const [data, setData] = useState<Snapshot>();
   const [loadError, setLoadError] = useState('');
   const [busy, setBusy] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [lastRefresh, setLastRefresh] = useState<string>();
   const [drawer, setDrawer] = useState(false);
   const [toast, setToast] = useState<Toast>();
-  const [modal, setModal] = useState<'login' | 'invoice' | 'correction' | 'status' | null>(null);
+  const [modal, setModal] = useState<'login' | 'invoice' | 'correction' | 'status' | null>(
+    initialSignIn ? 'login' : null,
+  );
   const [edit, setEdit] = useState<Invoice>();
   const [selected, setSelected] = useState(initialInvoice || '');
   const [comparisons, setComparisons] = useState<
@@ -91,19 +106,40 @@ export function Workspace({ view, initialInvoice }: { view: string; initialInvoi
   >({});
   const [memoryOn, setMemoryOn] = useState(true);
   const notify = useCallback((text: string, error = false) => setToast({ text, error }), []);
-  const refresh = useCallback(async () => {
-    try {
-      setData(await api<Snapshot>('snapshot'));
-      setLoadError('');
-    } catch (e) {
-      setLoadError((e as Error).message);
-    }
-  }, []);
+  const refresh = useCallback(
+    async (feedback = false) => {
+      setRefreshing(true);
+      try {
+        const snapshot = await api<Snapshot>('snapshot');
+        setData(snapshot);
+        setLoadError('');
+        setLastRefresh(new Date().toISOString());
+        if (feedback)
+          notify(
+            snapshot.mode === 'public-demo'
+              ? 'Sample data is up to date.'
+              : 'Your workspace is up to date.',
+          );
+        return true;
+      } catch (e) {
+        const message = (e as Error).message;
+        setLoadError(message);
+        if (feedback) notify('Refresh failed. ' + message, true);
+        return false;
+      } finally {
+        setRefreshing(false);
+      }
+    },
+    [notify],
+  );
   useEffect(() => {
     let active = true;
     void api<Snapshot>('snapshot')
       .then((value) => {
-        if (active) setData(value);
+        if (active) {
+          setData(value);
+          setLastRefresh(new Date().toISOString());
+        }
       })
       .catch((error) => {
         if (active) setLoadError(error.message);
@@ -118,7 +154,7 @@ export function Workspace({ view, initialInvoice }: { view: string; initialInvoi
       return () => clearTimeout(t);
     }
   }, [toast]);
-  const owner = data?.mode === 'owner';
+  const owner = !!data && data.mode !== 'public-demo';
   const invoice = data?.invoices.find((i) => i.id === selected) || data?.invoices[0];
   const assessment = invoice
     ? comparisons[invoice.id]?.[memoryOn ? 'on' : 'off'] || data?.assessments[invoice.id]
@@ -127,8 +163,17 @@ export function Workspace({ view, initialInvoice }: { view: string; initialInvoi
     setBusy(true);
     try {
       const r = await api<T>(path, payload);
-      await refresh();
-      if (message) notify(message);
+      if (path === 'auth/logout') {
+        setComparisons({});
+        setSelected('');
+      }
+      const refreshed = await refresh();
+      if (!refreshed)
+        notify(
+          'The action completed, but the workspace could not refresh. Retry Refresh to load current records.',
+          true,
+        );
+      else if (message) notify(message);
       return r;
     } catch (e) {
       notify((e as Error).message, true);
@@ -143,7 +188,7 @@ export function Workspace({ view, initialInvoice }: { view: string; initialInvoi
       setMemoryOn(on);
       notify(
         on
-          ? 'Public sample: live recall requires owner login. The baseline remains unchanged.'
+          ? 'Public sample: live recall requires sign-in. Connect a wallet or use Owner Sign In. The baseline remains unchanged.'
           : 'Memory OFF: deterministic baseline only.',
       );
       return;
@@ -182,7 +227,14 @@ export function Workspace({ view, initialInvoice }: { view: string; initialInvoi
           <div className="workspace-label">
             <span className="workspace-avatar">P</span>
             <div>
-              PayGuard workspace<small>{owner ? 'Owner workspace' : 'Public guided demo'}</small>
+              PayGuard workspace
+              <small>
+                {data?.mode === 'member'
+                  ? 'Your wallet workspace'
+                  : owner
+                    ? 'Owner workspace'
+                    : 'Public guided demo'}
+              </small>
             </div>
             <span className="tiny-dot" />
           </div>
@@ -283,26 +335,48 @@ export function Workspace({ view, initialInvoice }: { view: string; initialInvoi
               <div className="page-actions">
                 <button
                   className="button outline small"
-                  onClick={() => void refresh()}
+                  onClick={() => void refresh(true)}
                   aria-label="Refresh workspace"
-                  disabled={busy}
+                  aria-busy={refreshing}
+                  disabled={busy || refreshing}
                 >
-                  <RefreshCw size={15} />
-                  <span>Refresh</span>
+                  <RefreshCw size={15} className={refreshing ? 'spin' : ''} />
+                  <span>{refreshing ? 'Refreshing…' : 'Refresh'}</span>
                 </button>
                 {['overview', 'invoices'].includes(view) && (
-                  <button className="button primary small" onClick={() => openInvoice()}>
+                  <button
+                    className="button primary small"
+                    title={
+                      owner ? 'Add a private invoice' : 'Owner sign-in is required to add invoices'
+                    }
+                    onClick={() => openInvoice()}
+                  >
                     <Plus size={17} /> Add invoice
                   </button>
                 )}
               </div>
             </div>
+            {lastRefresh && (
+              <p className="workspace-refresh-time">
+                {refreshing ? 'Checking for current data…' : 'Last successful refresh: '}
+                <time dateTime={lastRefresh}>{new Date(lastRefresh).toLocaleTimeString()}</time>
+              </p>
+            )}
+            {data?.mode === 'member' && (
+              <>
+                <WalletSessionMonitor />
+                {view === 'overview' && <Onboarding data={data} />}
+              </>
+            )}
             {!owner && (
               <div className="demo-banner">
                 <FlaskConical size={17} />
                 <span>
-                  <strong>Sample data</strong> · Explore a read-only guided demo. No payments or
-                  Mainnet memories are simulated as real.
+                  <strong>Public demo</strong> · Synthetic invoices, no private writes.{' '}
+                  <Link href="/proof">
+                    {publishedMemoryCount} confirmed Mainnet memories are in the separate proof set
+                    ↗
+                  </Link>
                 </span>
                 <button onClick={() => setModal('login')}>
                   Owner login <ArrowRight size={14} />
@@ -312,10 +386,16 @@ export function Workspace({ view, initialInvoice }: { view: string; initialInvoi
             {loadError && (
               <div role="alert" className="error-banner">
                 {loadError}
-                <button className="button outline small" onClick={() => void refresh()}>
+                <button className="button outline small" onClick={() => void refresh(true)}>
                   Retry
                 </button>
               </div>
+            )}
+            {data?.mode === 'member' && (
+              <p className="notice">
+                Private wallet account · No administrator privileges ·{' '}
+                <Link href="/connect">Switch wallet</Link>
+              </p>
             )}
             {!data && !loadError && (
               <div className="skeleton-grid" aria-label="Loading workspace" aria-busy="true">
@@ -588,16 +668,19 @@ export function Workspace({ view, initialInvoice }: { view: string; initialInvoi
                 {view === 'wallets' && (
                   <WalletWatch data={data} busy={busy} act={act} notify={notify} />
                 )}
-                {view === 'memory' && (
-                  <MemoryLab
-                    data={data}
-                    busy={busy}
-                    setBusy={setBusy}
-                    refresh={refresh}
-                    notify={notify}
-                    act={act}
-                  />
-                )}
+                {view === 'memory' &&
+                  (data.mode === 'public-demo' ? (
+                    <PublicMemoryLab />
+                  ) : (
+                    <MemoryLab
+                      data={data}
+                      busy={busy}
+                      setBusy={setBusy}
+                      refresh={refresh}
+                      notify={notify}
+                      act={act}
+                    />
+                  ))}
                 {view === 'activity' && <Audit data={data} />}
                 {view === 'settings' && (
                   <Settings data={data} busy={busy} act={act} onLogin={() => setModal('login')} />
@@ -635,7 +718,7 @@ export function Workspace({ view, initialInvoice }: { view: string; initialInvoi
           </div>
         )}
         {modal === 'login' && (
-          <Modal title="Open your owner workspace" onClose={() => setModal(null)}>
+          <Modal title="Owner administrator sign in" onClose={() => setModal(null)}>
             <form
               className="form-stack"
               onSubmit={async (e: FormEvent<HTMLFormElement>) => {
@@ -652,8 +735,10 @@ export function Workspace({ view, initialInvoice }: { view: string; initialInvoi
                 <LockKeyhole size={27} />
               </div>
               <p>
-                Owner access protects private invoices, live integrations and memory writes. The
-                public sample demo is available without signing in.
+                The public demo uses synthetic invoices and needs no account. Owner mode protects
+                private invoice reviews and live integrations. Wallet users can create a separate
+                personal account using Connect Sui Wallet. This password form is for the
+                administrator.
               </p>
               <Field label="Owner password">
                 <input
@@ -665,6 +750,9 @@ export function Workspace({ view, initialInvoice }: { view: string; initialInvoi
                 />
               </Field>
               <Submit busy={busy}>Sign in securely</Submit>
+              <Link href="/connect" className="button outline full">
+                Connect Sui Wallet for a personal account
+              </Link>
               <p className="small-text muted">
                 For setup, configure DATABASE_URL, AUTH_SECRET, OWNER_PASSWORD and APP_URL privately
                 on the server. Never enter a wallet seed or private key here.
@@ -760,9 +848,12 @@ function Overview({ data, onAdd }: { data: Snapshot; onAdd: () => void }) {
   const confirmed = data.memories.filter((m) => m.status === 'confirmed');
   const metrics = [
     {
-      label: 'Invoices in workspace',
+      label: data.mode === 'public-demo' ? 'Sample invoices' : 'Invoices in workspace',
       value: data.invoices.length,
-      sub: `${open.length} awaiting a decision`,
+      sub:
+        data.mode === 'public-demo'
+          ? 'Synthetic practice dataset'
+          : `${open.length} awaiting a decision`,
       icon: FileText,
       tone: 'cyan',
     },
@@ -781,9 +872,12 @@ function Overview({ data, onAdd }: { data: Snapshot; onAdd: () => void }) {
       tone: 'danger',
     },
     {
-      label: 'Confirmed Sui payments',
-      value: data.confirmedPayments,
-      sub: 'Matched to live chain evidence',
+      label: data.mode === 'public-demo' ? 'Supplier payments' : 'Confirmed Sui payments',
+      value: data.mode === 'public-demo' ? '—' : data.confirmedPayments,
+      sub:
+        data.mode === 'public-demo'
+          ? 'No transfers in public practice'
+          : 'Matched to live chain evidence',
       icon: Wallet,
       tone: 'mint',
     },
@@ -799,7 +893,9 @@ function Overview({ data, onAdd }: { data: Snapshot; onAdd: () => void }) {
                 <m.icon size={18} />
               </span>
             </div>
-            <strong>{m.value.toString().padStart(2, '0')}</strong>
+            <strong>
+              {typeof m.value === 'number' ? m.value.toString().padStart(2, '0') : m.value}
+            </strong>
             <small>{m.sub}</small>
           </section>
         ))}
@@ -851,13 +947,23 @@ function Overview({ data, onAdd }: { data: Snapshot; onAdd: () => void }) {
             <Badge tone="cyan">Walrus</Badge>
           </div>
           <div className="memory-count">
-            <strong>{confirmed.length.toString().padStart(2, '0')}</strong>
+            <strong>
+              {(data.mode === 'public-demo' ? publishedMemoryCount : confirmed.length)
+                .toString()
+                .padStart(2, '0')}
+            </strong>
             <div>
-              confirmed Mainnet memories
-              <small>
-                {data.memories.filter((m) => m.status === 'pending').length} pending ·{' '}
-                {data.memories.filter((m) => m.status === 'failed').length} failed
-              </small>
+              {data.mode === 'public-demo'
+                ? 'Published Mainnet proof'
+                : 'Your confirmed Mainnet memories'}
+              {data.mode === 'public-demo' ? (
+                <small>Recorded evidence · separate from sample data</small>
+              ) : (
+                <small>
+                  {data.memories.filter((m) => m.status === 'pending').length} pending ·{' '}
+                  {data.memories.filter((m) => m.status === 'failed').length} failed
+                </small>
+              )}
             </div>
           </div>
           <div className="memory-flow">
@@ -870,12 +976,18 @@ function Overview({ data, onAdd }: { data: Snapshot; onAdd: () => void }) {
             <Sparkles size={21} />
           </div>
           <p>
-            {confirmed.length
-              ? 'Your verified corrections are ready for semantic recall.'
-              : 'Every guardian starts somewhere. Save a correction to begin the learning loop.'}
+            {data.mode === 'public-demo'
+              ? 'The project’s confirmed receipts are available in the read-only evidence view. Public practice creates no memories.'
+              : confirmed.length
+                ? 'Your verified corrections are ready for semantic recall.'
+                : 'Every guardian starts somewhere. Save a correction to begin the learning loop.'}
           </p>
-          <Link className="button outline full" href="/app/memory">
-            Open Memory Lab <ArrowRight size={16} />
+          <Link
+            className="button outline full"
+            href={data.mode === 'public-demo' ? '/proof#memory' : '/app/memory'}
+          >
+            {data.mode === 'public-demo' ? 'Inspect published memory proof' : 'Open Memory Lab'}{' '}
+            <ArrowRight size={16} />
           </Link>
         </section>
       </div>
@@ -1340,7 +1452,7 @@ function WalletWatch({
           <Field label="Full Sui address">
             <input name="address" required pattern="0x[a-fA-F0-9]{64}" placeholder="0x…" />
           </Field>
-          <Submit busy={busy} disabled={data.mode !== 'owner'}>
+          <Submit busy={busy} disabled={data.mode === 'public-demo'}>
             Add watch-only wallet
           </Submit>
         </form>
@@ -1452,7 +1564,7 @@ function WalletWatch({
           </div>
         )}
       </section>
-      <TransactionPane owner={data.mode === 'owner'} busy={busy} act={act} />
+      <TransactionPane owner={data.mode !== 'public-demo'} busy={busy} act={act} />
     </>
   );
 }
@@ -1467,7 +1579,7 @@ function MemoryLab({
   data: Snapshot;
   busy: boolean;
   setBusy: (b: boolean) => void;
-  refresh: () => Promise<void>;
+  refresh: () => Promise<boolean>;
   notify: (s: string, error?: boolean) => void;
   act: Act;
 }) {
@@ -1651,57 +1763,77 @@ function MemoryLab({
             </div>
           )}
         </section>
-        <section className="panel proof-panel">
-          <div className="panel-top">
-            <h2>
-              <Fingerprint size={20} /> Mainnet proof
-            </h2>
-            <Badge tone={count('confirmed') >= 10 ? 'mint' : 'amber'}>
-              {count('confirmed')} / 10 required
-            </Badge>
-          </div>
-          <p>Only SDK-completed Mainnet writes with blob IDs count toward the submission.</p>
-          <div className="proof-progress">
-            <span style={{ width: `${Math.min(100, count('confirmed') * 10)}%` }} />
-          </div>
-          <dl className="detail-list">
-            <div>
-              <dt>Account ID</dt>
-              <dd>
-                <code>{data.accountId ? short(data.accountId) : 'Not configured'}</code>
-              </dd>
-            </div>
-            <div>
-              <dt>Network</dt>
-              <dd>Walrus Mainnet</dd>
-            </div>
-            <div>
-              <dt>Proof status</dt>
-              <dd>
-                {count('confirmed') >= 10
-                  ? 'Memory count reached; verify recall too'
-                  : 'Incomplete'}
-              </dd>
-            </div>
-          </dl>
-          <button
-            className="button primary full"
-            onClick={() => void seed()}
-            disabled={busy || !data.integrations.memory}
-          >
-            {busy ? <LoaderCircle className="spin" size={16} /> : <Plus size={16} />} Seed / resume
-            12 demo memories
-          </button>
-          {progress && (
-            <p role="status" className="small-text">
-              {progress}
+        {data.mode === 'member' ? (
+          <section className="panel proof-panel">
+            <h2>Your private learning record</h2>
+            <p>
+              You have {count('confirmed')} confirmed memories in this account. No memories from
+              other accounts are shared here.
             </p>
-          )}
-          <small>
-            Twelve distinct synthetic business events. One request at a time. Repeated runs reuse
-            durable operation keys.
-          </small>
-        </section>
+            <p>
+              The hackathon’s separate proof set contains {publishedMemoryCount} confirmed records.
+              Your new account starts empty.
+            </p>
+            <Link href="/proof" className="inline-link">
+              Read published Mainnet evidence ↗
+            </Link>
+            <Link href="/app/review" className="button outline full">
+              Save a correction after a review
+            </Link>
+          </section>
+        ) : (
+          <section className="panel proof-panel">
+            <div className="panel-top">
+              <h2>
+                <Fingerprint size={20} /> Mainnet proof
+              </h2>
+              <Badge tone={count('confirmed') >= 10 ? 'mint' : 'amber'}>
+                {count('confirmed')} / 10 required
+              </Badge>
+            </div>
+            <p>Only SDK-completed Mainnet writes with blob IDs count toward the submission.</p>
+            <div className="proof-progress">
+              <span style={{ width: `${Math.min(100, count('confirmed') * 10)}%` }} />
+            </div>
+            <dl className="detail-list">
+              <div>
+                <dt>Account ID</dt>
+                <dd>
+                  <code>{data.accountId ? short(data.accountId) : 'Not configured'}</code>
+                </dd>
+              </div>
+              <div>
+                <dt>Network</dt>
+                <dd>Walrus Mainnet</dd>
+              </div>
+              <div>
+                <dt>Proof status</dt>
+                <dd>
+                  {count('confirmed') >= 10
+                    ? 'Memory count reached; verify recall too'
+                    : 'Incomplete'}
+                </dd>
+              </div>
+            </dl>
+            <button
+              className="button primary full"
+              onClick={() => void seed()}
+              disabled={busy || !data.integrations.memory}
+            >
+              {busy ? <LoaderCircle className="spin" size={16} /> : <Plus size={16} />} Seed /
+              resume 12 demo memories
+            </button>
+            {progress && (
+              <p role="status" className="small-text">
+                {progress}
+              </p>
+            )}
+            <small>
+              Twelve distinct synthetic business events. One request at a time. Repeated runs reuse
+              durable operation keys.
+            </small>
+          </section>
+        )}
       </div>
       <section className="panel">
         <div className="panel-top">
@@ -1868,7 +2000,7 @@ function Settings({
   act: Act;
   onLogin: () => void;
 }) {
-  const owner = data.mode === 'owner';
+  const owner = data.mode !== 'public-demo';
   return (
     <div className="settings-grid">
       <section className="panel">
@@ -1934,13 +2066,20 @@ function Settings({
       <div>
         <section className="panel">
           <h2>Workspace access</h2>
+          <Link className="button outline full" href="/connect">
+            Connect Sui Wallet / switch account
+          </Link>
           <p>
             {owner
-              ? 'Authenticated owner session. Sessions expire after eight hours.'
+              ? 'Authenticated private session. Sessions expire after eight hours.'
               : 'You are exploring the public sample workspace.'}
           </p>
           <Badge tone={owner ? 'mint' : 'neutral'}>
-            {owner ? 'Owner authenticated' : 'Read-only public demo'}
+            {data.mode === 'member'
+              ? 'Wallet authenticated'
+              : owner
+                ? 'Owner authenticated'
+                : 'Read-only public demo'}
           </Badge>
           {!owner && (
             <button className="button primary full" onClick={onLogin}>
@@ -1961,7 +2100,7 @@ function Settings({
           <div className="stack-actions">
             <button
               className="button outline"
-              disabled={!owner || busy}
+              disabled={data.mode !== 'owner' || busy}
               onClick={() => void act('demo/seed', {}, 'Sample invoices loaded idempotently.')}
             >
               <FlaskConical size={16} />
@@ -1969,7 +2108,7 @@ function Settings({
             </button>
             <button
               className="button danger-button"
-              disabled={!owner || busy}
+              disabled={data.mode !== 'owner' || busy}
               onClick={() => {
                 if (
                   confirm(

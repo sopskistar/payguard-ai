@@ -74,3 +74,24 @@ The final service-method security guard was rebuilt and rechecked: authenticated
 Release `aaf0ceb` was pushed normally and Vercel reported a successful deployment. GitHub Pages built that commit. The public judge at https://sopskistar.github.io/payguard-ai/try/ returned HTTP 200; the served JavaScript SHA-256 matched the locally tested bundle. A real hosted browser run completed all seven steps, tested 390px mobile layout, displayed 30 confirmed records, and observed zero page errors and zero POST requests. [Raw hosted smoke evidence](evidence/hosted-judge-smoke.json). The updated article remains public at https://sopskistar.github.io/payguard-ai/.
 
 The Next.js app's project alias still requires Vercel authentication. No hosted owner or paid-service success is claimed through that gate. Local production workflows and the public static judge were verified independently.
+
+## October 29 UTC — wallet accounts and product UX release
+
+Preserved upstream `49e4cfd` and all existing work/evidence. Neon additive migration `0004` applied successfully; no reset or seed overwrite. No new memory writes or payments were executed.
+
+- Lint: passed, zero warnings after excluding ignored local diagnostic artifacts.
+- TypeScript: passed.
+- Unit suite: **77 tests passed across 11 files**, including real personal-message signatures, one-time challenge consumption/replay/expiry/domain/browser checks, returning profiles, session expiry/rotation, role separation, foreign invoice/vendor/job/correction denial, and foreign-blob recall rejection. Three added sparse-history controls prevent learned false alarms on established recipients.
+- Production Webpack build: passed, including `/connect`, `/privacy`, `/proof`, `/api/release` and existing app routes.
+- Dependency audit: **0 vulnerabilities**.
+- Wallet Standard UI regression: passed connection → displayed personal-message challenge → server-authenticated workspace → account-change revocation, with a test wallet that throws if any transaction signature is requested. This is a browser test wallet with genuine Ed25519 personal signatures, not certification of physical mobile wallets.
+- Refresh regression: passed slow-request loading/disabled state, honest timestamped success, injected 503 with no false success, and Retry. Earlier failures were test selectors including an extra subtitle or LEARN badge, not successful request handling.
+- SDK Mainnet preflight: **30/30 existing records confirmed and matching provider blobs**. No duplicate writes, pending jobs counted as success or retention renewals.
+- Fresh native Tatum gRPC read: chain `35834a8a`, checkpoint `339239337`; inspected genuine digest `os1iG8zow278c6hqxbuyxnvMUjzThsD8GTY8atdfzW6`, finalized at `339078672`. Unrelated recipient evidence remains a mismatch, not a supplier payment claim.
+- Expanded learning evaluation: **18/18 specified synthetic contracts met**, 18 baseline findings preserved, four genuine SDK recall queries succeeded, 16 scenarios applied memory, zero stale/wrong-scope application, zero of four unchanged controls gained critical warnings. The preserved first run met 15/18 and exposed three false alarms. Applicability was 10.9% of candidate/case pairs; no real-world fraud accuracy or semantic precision is claimed.
+- Production before this code release: owner login 200; authenticated Neon snapshot 200 with 30 records; actual Walrus/Tatum health Connected. Exact deployed Git SHA and the final release's browser/auth/recall/persistence smoke are captured separately after publication.
+- Payment preflight: facilitator `/supported` HTTP 200, Sui exact v2 advertised. **No service settlement**, funded-wallet test or bonus completion is claimed. `ENABLE_AGENT_PAYMENTS` and `SERVICE_PAYMENT_RECIPIENT` remain pilot setup requirements.
+
+Secret-value scan found zero matches across 195 candidate source/documentation/assets. Values were never printed. Browser trace/video capture is disabled; no demo video was created.
+
+Final complete local browser run: **12/12 passed in 2.6 minutes**, including the real read-only Tatum and preserved-correction cross-session Walrus tests. No new Mainnet write was made.

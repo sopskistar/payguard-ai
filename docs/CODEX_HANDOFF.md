@@ -1,3 +1,23 @@
+# Current continuation — October 29 UTC release
+
+Continue this repository; never restart, reset Neon, delete the 30 confirmed memories or force-push. `.gitignore.save` is an untouched untracked owner backup. No demo video may be generated, captured or published.
+
+The public Vercel URL is https://payguard-ai-henna.vercel.app/ and `/try`. Owner fixed Framework Preset to Next.js and set Production APP_URL correctly. The pre-release production audit verified real browser/public access, owner login, Neon snapshot with all 30 confirmed records, and actual provider health calls for Walrus and Tatum. The new release exposes `/api/release` to match Vercel's Git SHA; verify it after pushing.
+
+The current staged implementation preserves baseline `49e4cfd`: redesigned branded landing, guided seven-step judge with sticky Next/Back, honest Refresh states/timestamp/errors, public/individual/admin/proof modes, read-only `/proof` with Mainnet receipts and measured learning report, modern Mysten Wallet Standard login and supplier-first onboarding. Additive migration `0004` was applied to Neon; it changes the default role to member, adds a unique wallet identity and one-time challenges. Existing owner role and evidence remain intact. See `WALLET_SECURITY.md` for domain/browser/nonce/expiry/signature/session/role/tenant boundaries and limitations. No spending keys were introduced.
+
+Actual live learning evaluation: four real SDK recalls reused across 18 synthetic cases. The initial run found three false alarms (15/18 contracts met). Correcting learned address comparison to the established supplier reference produced 18/18, with 18/18 baseline findings retained, zero added critical warnings on four unchanged controls, no stale/wrong-scope application. Both artifacts are preserved; 10.9% candidate/case applicability is explicitly not a semantic precision score. No new memory writes, retention renewals or payments were performed.
+
+Current local validation: lint, typecheck, 77 unit tests and production build passed. The wallet HTTP authorization/persistence browser test passed. The Wallet Standard UI test passed with real personal signatures and a test wallet that rejects any transaction-signing call. Refresh loading/success/injected-failure/retry passed. Final complete local suite passed 12/12 including live providers. Post-push production evidence is recorded in evidence/production-release.json when completed; do not infer deployed success from an absent artifact.
+
+Payment status: exact capped first-party Testnet analysis pilot remains administrator-only and fixture-tested. Fresh facilitator `/supported` response is HTTP 200 for Sui exact v2; this is not settlement. Production is missing pilot setup names `ENABLE_AGENT_PAYMENTS` and `SERVICE_PAYMENT_RECIPIENT`, and a controlled compatible Testnet wallet/signature test. No settlement receipt exists. Mainnet is disabled in code, and any real-value payment requires explicit approval of network, asset, amount, recipient and purpose.
+
+Commands: `npm run memory:preflight` (read-only; `--publish` refreshes sanitized evidence), `npm run memory:evaluate-learning` (four real read-only recalls), `npm run judge:publish-build`, `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`, `npm run test:e2e`. Browser uses installed Chromium via PLAYWRIGHT_CHROMIUM_EXECUTABLE; LIVE_MEMORY_REUSE=1 avoids a redundant Mainnet write. Credentials stay ignored in `.env.local`, never print values. All existing production auth/Neon/Walrus/Tatum variables were configured by the owner; no new wallet-login credential is required.
+
+Historical handoff below is retained for provenance; its old deployment-protection and single-owner descriptions are superseded by this section.
+
+---
+
 # Current continuation — read this first
 
 Code release `aaf0ceb` is pushed. GitHub Pages judge is LIVE and hosted-smoke-tested at https://sopskistar.github.io/payguard-ai/try/; its bundle matched the locally tested artifact. Vercel reported the same code release Ready, but its project alias still requires login. See `docs/evidence/hosted-judge-smoke.json`. The following documentation-only checkpoint preserves this verified status.

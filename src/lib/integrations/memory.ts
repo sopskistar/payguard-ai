@@ -196,8 +196,12 @@ export async function processMemoryJob(tenantId: string, id: string) {
         `${tenantId}:memory-write`,
         Math.min(100, Number(process.env.MEMORY_WRITES_PER_HOUR) || 24),
       );
+      await rateLimit(
+        'memory:sponsored-writes:global',
+        Math.min(100, Number(process.env.MEMORY_GLOBAL_WRITES_PER_HOUR) || 40),
+      );
       const accepted = await client.remember(job.text, job.namespace, {
-        idempotencyKey: job.operationKey,
+        idempotencyKey: `${namespaceFor(tenantId)}:${job.operationKey}`,
       });
       acceptedId = accepted.job_id;
       await d
@@ -278,6 +282,12 @@ export async function recallMemories(
     .select()
     .from(s.memoryJobs)
     .where(and(eq(s.memoryJobs.tenantId, tenantId), eq(s.memoryJobs.status, 'confirmed')));
+  if (!jobs.length)
+    return {
+      citations: [] as Citation[],
+      status: 'No confirmed memories in this account. Save a correction with consent first.',
+    };
+  await rateLimit('memory:reads:global', 400);
   const result = await client.recall({ query, namespace: namespaceFor(tenantId), limit: 30 });
   // Recalled text is untrusted. Only exact confirmed, tenant-owned records can influence policy.
   const citations: Citation[] = result.results.flatMap((item) => {
@@ -342,6 +352,7 @@ export async function assess(tenantId: string, invoiceId: string, memoryOn: bool
     status,
     new Date(),
     context.signals,
+    context.profile?.trustedRecipient,
   );
   await (
     await db()

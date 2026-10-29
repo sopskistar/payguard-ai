@@ -44,15 +44,16 @@ export function checkOrigin(request: Request) {
   )
     throw new AppError(403, 'ORIGIN', 'Request origin is not allowed.');
 }
-export async function currentUser() {
+export async function currentActor() {
   if (!databaseConfigured()) return null;
   const token = (await cookies()).get(cookieName)?.value;
   if (!token) return null;
   const [r] = await (
     await db()
   )
-    .select({ tenantId: sessions.tenantId })
+    .select({ tenantId: sessions.tenantId, role: users.role, walletAddress: users.walletAddress })
     .from(sessions)
+    .innerJoin(users, eq(users.id, sessions.tenantId))
     .where(
       and(
         eq(sessions.id, hash(createHmac('sha256', secret()).update(token).digest('hex'))),
@@ -60,17 +61,42 @@ export async function currentUser() {
       ),
     )
     .limit(1);
-  return r?.tenantId ?? null;
+  return r ?? null;
 }
-export async function requireOwner() {
-  const id = await currentUser();
-  if (!id)
+export async function currentUser() {
+  return (await currentActor())?.tenantId ?? null;
+}
+export async function requireWorkspace() {
+  const actor = await currentActor();
+  if (!actor)
     throw new AppError(
       401,
       'AUTH_REQUIRED',
-      'Owner login is required for private records and live integrations.',
+      'Sign in to access private records and live integrations.',
     );
-  return id;
+  return actor;
+}
+export async function requireOwner() {
+  const actor = await requireWorkspace();
+  if (actor.role !== 'owner')
+    throw new AppError(403, 'OWNER_REQUIRED', 'This operation requires administrator access.');
+  return actor.tenantId;
+}
+export async function createSession(tenantId: string) {
+  await logout(); // Rotate an existing session when signing in or switching identity.
+  const token = randomBytes(32).toString('hex');
+  await (await db()).insert(sessions).values({
+    id: hash(createHmac('sha256', secret()).update(token).digest('hex')),
+    tenantId,
+    expiresAt: new Date(Date.now() + 8 * 3600000),
+  });
+  (await cookies()).set(cookieName, token, {
+    httpOnly: true,
+    secure: new URL(process.env.APP_URL!).protocol === 'https:',
+    sameSite: 'strict',
+    path: '/',
+    maxAge: 8 * 3600,
+  });
 }
 export async function login(password: string) {
   if (!databaseConfigured()) unavailable('Neon database');
@@ -84,22 +110,11 @@ export async function login(password: string) {
   const d = await db();
   await d
     .insert(users)
-    .values({ id: OWNER_ID, name: 'Workspace owner', settings: DEFAULT_PREFERENCES })
+    .values({ id: OWNER_ID, name: 'Workspace owner', role: 'owner', settings: DEFAULT_PREFERENCES })
     .onConflictDoNothing();
-  const token = randomBytes(32).toString('hex');
-  await d.insert(sessions).values({
-    id: hash(createHmac('sha256', secret()).update(token).digest('hex')),
-    tenantId: OWNER_ID,
-    expiresAt: new Date(Date.now() + 8 * 3600000),
-  });
-  (await cookies()).set(cookieName, token, {
-    httpOnly: true,
-    secure: new URL(process.env.APP_URL!).protocol === 'https:',
-    sameSite: 'strict',
-    path: '/',
-    maxAge: 8 * 3600,
-  });
+  await createSession(OWNER_ID);
 }
+
 export async function logout() {
   const token = (await cookies()).get(cookieName)?.value;
   if (token && databaseConfigured())

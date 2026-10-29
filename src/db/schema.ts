@@ -16,7 +16,8 @@ const time = () => timestamp('created_at', { withTimezone: true }).defaultNow().
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
   name: text('name').notNull(),
-  role: text('role').notNull().default('owner'),
+  role: text('role').notNull().default('member'),
+  walletAddress: text('wallet_address').unique(),
   settings: jsonb('settings').$type<Preferences>().notNull(),
   createdAt: time(),
 });
@@ -312,3 +313,15 @@ export const servicePaymentReceipts = pgTable(
     uniqueIndex('service_receipt_digest').on(t.network, t.digest),
   ],
 );
+
+// A challenge is bound to one browser and can be consumed once, atomically.
+export const walletChallenges = pgTable('wallet_challenges', {
+  id: uuid('id').primaryKey(),
+  address: text('address').notNull(),
+  message: text('message').notNull(),
+  origin: text('origin').notNull(),
+  bindingHash: text('binding_hash').notNull(),
+  expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+  consumedAt: timestamp('consumed_at', { withTimezone: true }),
+  createdAt: time(),
+});

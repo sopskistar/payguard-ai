@@ -228,7 +228,12 @@ export async function seedDemo(tenantId = OWNER_ID) {
   const d = await db();
   await d
     .insert(s.users)
-    .values({ id: tenantId, name: 'Workspace owner', settings: DEFAULT_PREFERENCES })
+    .values({
+      id: tenantId,
+      name: 'Workspace owner',
+      role: tenantId === OWNER_ID ? 'owner' : 'member',
+      settings: DEFAULT_PREFERENCES,
+    })
     .onConflictDoNothing();
   for (const invoice of demoInvoices()) {
     const normalized = invoice.vendor.toLowerCase();
@@ -323,8 +328,15 @@ export async function snapshot(tenantId: string): Promise<Snapshot> {
       .limit(100),
     d.select().from(s.paymentMatches).where(eq(s.paymentMatches.tenantId, tenantId)),
   ]);
+  const [identity] = await d.select().from(s.users).where(eq(s.users.id, tenantId));
+  const supplierList = await d
+    .select({ id: s.vendors.id, name: s.vendors.name, isDemo: s.vendors.isDemo })
+    .from(s.vendors)
+    .where(eq(s.vendors.tenantId, tenantId));
   return {
-    mode: 'owner',
+    mode: identity.role === 'owner' ? 'owner' : 'member',
+    identity: { walletAddress: identity.walletAddress },
+    vendors: supplierList,
     storage: storageKind(),
     vendorProfiles,
     invoices,
@@ -343,6 +355,7 @@ export async function snapshot(tenantId: string): Promise<Snapshot> {
             i,
             vendorProfiles.find((p) => p.vendorId === i.vendorId),
           ),
+          vendorProfiles.find((p) => p.vendorId === i.vendorId)?.trustedRecipient,
         ),
       ]),
     ),
@@ -364,7 +377,7 @@ export async function snapshot(tenantId: string): Promise<Snapshot> {
       tatum: !!process.env.TATUM_API_KEY,
     },
     confirmedPayments: matches.length,
-    accountId: process.env.MEMWAL_ACCOUNT_ID,
+    accountId: identity.role === 'owner' ? process.env.MEMWAL_ACCOUNT_ID : undefined,
     usedMemoryIds: [
       ...new Set(
         events

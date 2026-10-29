@@ -10,6 +10,7 @@ export function evaluate(
   memoryStatus = 'Off',
   now = new Date(),
   instructionFindings: Finding[] = [],
+  establishedRecipient?: string,
 ): Assessment {
   const findings: Finding[] = [...instructionFindings];
   const add = (
@@ -184,7 +185,9 @@ export function evaluate(
     if (
       p.kind === 'verify_address' &&
       !!invoice.recipient &&
-      (changed || !knownRecipients.includes(invoice.recipient))
+      (establishedRecipient
+        ? invoice.recipient.toLowerCase() !== establishedRecipient.toLowerCase()
+        : changed || !knownRecipients.includes(invoice.recipient))
     )
       add(
         `policy-${p.id}`,

@@ -2,11 +2,11 @@
 
 **Verify before you pay. Remember what nearly went wrong.**
 
-Open the [public judge sandbox](https://sopskistar.github.io/payguard-ai/try/). It requires no account, wallet or funds. The published page passed its real hosted desktop/mobile walkthrough with zero page errors and zero POST requests; see [hosted evidence](evidence/hosted-judge-smoke.json). The same component is also served at `/try` on the Next.js app. The public GitHub Pages copy is available independently while the Vercel app requires Vercel authentication.
+Open the [public judge sandbox](https://payguard-ai-henna.vercel.app/try). It requires no account, wallet or funds. The prominent **Next Step** and **Back** controls guide all seven tasks. A numbered progress rail allows direct exploration. Synthetic business data and genuine dated Mainnet proof are labeled separately. The [GitHub Pages fallback](https://sopskistar.github.io/payguard-ai/try/) uses the same component.
 
 1. **Open the invoice.** Northstar's synthetic retainer is $1,250 with a separately agreed synthetic 500 SUI amount. Nothing is being charged or transferred. Open the supplier reference.
 2. **Find the switch.** Compare the full established `0x111…` recipient with proposed `0x222…`. A familiar document or email domain does not authenticate the new wallet.
-3. **Enforce the hold.** Press **Try approving this invoice**. The actual `approvalGate` function refuses approval until independent verification is recorded. The vulnerable procedure alongside it is a hypothetical failure, not an unsafe app mode.
+3. **Enforce the hold.** Use the approval-attempt control. The actual `approvalGate` function refuses approval until independent verification is recorded. The vulnerable procedure alongside it is a hypothetical failure, not an unsafe app mode.
 4. **Verify independently.** Check the explicitly synthetic practice attestation. In the owner workflow, a reviewer must actually contact the supplier through the pre-established channel; PayGuard records their assertion against exact terms and profile revision. Press **Edit instructions after verification**. The old attestation becomes invalid and approval is held. Embedded directives remain inert data. Positive attestations expire after 30 days.
 5. **Compare memory OFF / ON.** Turn memory ON. Inspect the actual recalled blob IDs and the remembered verification/escalation instructions. The engine applies those captured, confirmed policy citations. OFF retains the baseline recipient warnings. The screen states the capture timestamp: these are recorded live results, not a new anonymous SDK request on each click.
 6. **Inspect the chain.** The genuine Tatum Mainnet transaction succeeded but did not pay this sample recipient. See checkpoint, expected atomic units, zero actual credit, and **Mismatch**. Follow the SuiScan link or inspect the raw JSON. Transaction success does not establish supplier identity.
@@ -22,13 +22,17 @@ The step buttons allow direct exploration on desktop or mobile. Use keyboard Tab
 - [Actual Tatum transaction mismatch](evidence/tatum-reconciliation.json).
 - [Tests and build status](TEST_RESULTS.md), [architecture](ARCHITECTURE.md), [article](https://sopskistar.github.io/payguard-ai/).
 
+## Real workspace versus public practice
+
+Use [Connect Sui Wallet](https://payguard-ai-henna.vercel.app/connect) for an individual account with an empty workspace and seven onboarding milestones. A personal message signs you in; it cannot authorize a transaction. Owner Sign In is separate administrator access. A new account having zero private memories does not contradict the 30 confirmed published project records. The [read-only proof](https://payguard-ai-henna.vercel.app/proof) includes the 18-case learning report.
+
 ## Owner workflow
 
-The [Next.js app](https://payguard-ai-sopskistars-projects.vercel.app) has protected owner intake, vendor profiles, exact-instruction human attestations, live recall and chain inspection. Public samples do not expose owner records or admin operations. The optional `/services` flow quotes a tightly capped first-party Testnet analysis service; it is disabled until configured and has no proven settlement. [Status and exact controls](AGENT_PAYMENTS.md).
+The [Next.js app](https://payguard-ai-henna.vercel.app) has protected owner intake, vendor profiles, exact-instruction human attestations, live recall and chain inspection. Public samples do not expose owner records or admin operations. The optional `/services` flow quotes a tightly capped first-party Testnet analysis service; it is disabled until configured and has no proven settlement. [Status and exact controls](AGENT_PAYMENTS.md).
 
 ## Troubleshooting
 
-- **Vercel login appears:** this is hosting protection, not PayGuard's owner login. The owner must open Production access in Vercel → project → Settings → Deployment Protection and provide the Production domain. Keep the app's owner login enabled. Use the GitHub Pages sandbox meanwhile.
+- **A sign-in prompt appears:** `/try` needs no sign-in. Owner Sign In protects administrator operations; Connect Sui Wallet creates a separate personal workspace. Public practice does not access private records.
 - **No remembered difference:** use the recorded evidence in step 5. In the live owner app, wait for a confirmed blob and indexing; resume the original job rather than rewrite it. No returned applicable citation means no soft learned policy is applied.
 - **Invoice changed:** repeat independent verification against the current instruction hash and profile revision. A prior callback does not cover edited terms.
 - **Chain mismatch:** expected for this unrelated public digest. Do not treat the sample supplier as paid. Exact amount, coin, network, positive recipient credit and uniqueness are required.

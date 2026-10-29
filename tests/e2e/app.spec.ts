@@ -4,8 +4,8 @@ test('public Verify journey, replay controls and responsive navigation', async (
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: /The invoice is familiar/ })).toBeVisible();
-  await page.getByRole('link', { name: 'Replay an attack' }).click();
+  await expect(page.getByRole('heading', { name: /Same supplier/ })).toBeVisible();
+  await page.goto('/app/replay');
   await expect(page.getByRole('heading', { name: 'Attack Replay Lab', exact: true })).toBeVisible();
   await page.getByRole('button', { name: /Lookalike sender/ }).click();
   await expect(page.getByText('Sender domain differs from the established domain')).toBeVisible();
@@ -20,7 +20,7 @@ test('public Verify journey, replay controls and responsive navigation', async (
   await expect(page.getByRole('heading', { name: 'Verify supplier instructions' })).toBeVisible();
   await page.getByRole('button', { name: 'Memory OFF', exact: true }).click();
   await page.getByRole('button', { name: 'Memory ON', exact: true }).click();
-  await expect(page.getByRole('status')).toContainText('requires owner login');
+  await expect(page.getByRole('status')).toContainText('requires sign-in');
   await page.setViewportSize({ width: 390, height: 844 });
   await page.getByRole('button', { name: 'Open navigation' }).click();
   await page.getByRole('link', { name: 'Vendor Trust', exact: true }).click();

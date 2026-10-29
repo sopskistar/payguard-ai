@@ -19,7 +19,7 @@ await build({
       setup(b) {
         b.onResolve({ filter: /^next\/link$/ }, () => ({ path: 'link', namespace: 'pages-link' }));
         b.onLoad({ filter: /.*/, namespace: 'pages-link' }, () => ({
-          contents: `import {createElement} from 'react';export default function Link({href,children,...props}){return createElement('a',{...props,href:href.startsWith('/')?'https://payguard-ai-sopskistars-projects.vercel.app'+href:href},children)}`,
+          contents: `import {createElement} from 'react';export default function Link({href,children,...props}){return createElement('a',{...props,href:href.startsWith('/')?'https://payguard-ai-henna.vercel.app'+href:href},children)}`,
           resolveDir: process.cwd(),
           loader: 'js',
         }));

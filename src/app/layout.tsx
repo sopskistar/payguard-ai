@@ -5,6 +5,8 @@ import '@fontsource/manrope/600.css';
 import '@fontsource/manrope/700.css';
 import '@fontsource/manrope/800.css';
 import './globals.css';
+import './marketing.css';
+import './journey.css';
 export const metadata: Metadata = {
   title: {
     default: 'PayGuard Verify | Verify supplier payment instructions',

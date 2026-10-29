@@ -42,6 +42,7 @@ export function judgeReview(
         : 'Memory OFF: no recalled soft policies',
       new Date(),
       instructionSignals(invoice, profile, instruction),
+      profile.trustedRecipient,
     ),
   };
 }

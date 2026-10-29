@@ -1,0 +1,27 @@
+{
+  "checkedAt": "2026-10-29T01:13:15.208Z",
+  "endpoint": "https://facilitator.tentaclepay.com/supported",
+  "httpStatus": 200,
+  "suiKinds": [
+    {
+      "x402Version": 2,
+      "scheme": "exact",
+      "network": "sui:mainnet",
+      "extra": {
+        "gasOwner": "0x6d8c6e978808e81344b6ddcc741b06d2b2b1106066d218683e0161f696878b61",
+        "gasBudget": "2000000"
+      }
+    },
+    {
+      "x402Version": 2,
+      "scheme": "exact",
+      "network": "sui:testnet",
+      "extra": {
+        "gasOwner": "0x6d8c6e978808e81344b6ddcc741b06d2b2b1106066d218683e0161f696878b61",
+        "gasBudget": "2000000"
+      }
+    }
+  ],
+  "settlementAttempted": false,
+  "settled": false
+}

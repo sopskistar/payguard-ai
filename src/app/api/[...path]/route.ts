@@ -4,7 +4,16 @@ import { and, eq, sql } from 'drizzle-orm';
 import { randomUUID } from 'node:crypto';
 import { db, storageKind } from '@/db';
 import * as s from '@/db/schema';
-import { checkOrigin, currentUser, login, logout, rateLimit, requireOwner } from '@/lib/auth';
+import {
+  checkOrigin,
+  currentUser,
+  currentActor,
+  login,
+  logout,
+  rateLimit,
+  requireOwner,
+  requireWorkspace,
+} from '@/lib/auth';
 import { AppError, safeError } from '@/lib/errors';
 import { publicSnapshot } from '@/lib/demo';
 import {
@@ -49,6 +58,12 @@ import {
   recordHumanCheck,
   trustContext,
 } from '@/lib/verify-store';
+import {
+  issueWalletChallenge,
+  verifyWalletLogin,
+  walletAddressInput,
+  walletProofInput,
+} from '@/lib/wallet-auth';
 import { extractInvoice, MAX_UPLOAD } from '@/lib/intake';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -89,6 +104,23 @@ async function handle(req: NextRequest, context: { params: Promise<{ path: strin
       const tenantId = await currentUser();
       return json(tenantId ? await snapshot(tenantId) : publicSnapshot());
     }
+    if (route === 'auth/session' && method === 'GET') {
+      const actor = await currentActor();
+      return json(
+        actor
+          ? { authenticated: true, role: actor.role, walletAddress: actor.walletAddress }
+          : { authenticated: false },
+      );
+    }
+    if (route === 'auth/wallet/challenge' && method === 'POST') {
+      const input = z
+        .object({ address: walletAddressInput })
+        .strict()
+        .parse(await body(req));
+      return json(await issueWalletChallenge(input.address));
+    }
+    if (route === 'auth/wallet/verify' && method === 'POST')
+      return json(await verifyWalletLogin(walletProofInput.parse(await body(req))));
     if (route === 'auth/login' && method === 'POST') {
       const input = z.object({ password: z.string().max(256) }).parse(await body(req));
       await login(input.password);
@@ -98,8 +130,33 @@ async function handle(req: NextRequest, context: { params: Promise<{ path: strin
       await logout();
       return json({ ok: true });
     }
-    const tenantId = await requireOwner();
+    const { tenantId } = await requireWorkspace();
+    if (['memory/seed', 'demo/seed', 'demo/reset', 'integrations/health'].includes(route))
+      await requireOwner();
     if (method !== 'GET') await rateLimit(`${tenantId}:requests`, 250);
+    if (route === 'vendors' && method === 'POST') {
+      const input = z
+        .object({ name: z.string().trim().min(2).max(120) })
+        .strict()
+        .parse(await body(req));
+      const [vendor] = await (
+        await db()
+      )
+        .insert(s.vendors)
+        .values({
+          tenantId,
+          name: input.name,
+          normalizedName: input.name.toLowerCase(),
+          isDemo: false,
+        })
+        .onConflictDoUpdate({
+          target: [s.vendors.tenantId, s.vendors.normalizedName, s.vendors.isDemo],
+          set: { name: input.name },
+        })
+        .returning();
+      await audit(tenantId, 'vendor.created', vendor.id, { humanReferenceRequired: true });
+      return json({ id: vendor.id }, 201);
+    }
     if (route === 'vendors/trust' && method === 'POST') {
       await saveTrust(tenantId, profileInput.parse(await body(req)));
       return json({ ok: true });

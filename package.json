@@ -23,12 +23,15 @@
     "judge:evidence": "node --conditions=react-server --import tsx scripts/judge-evidence.ts",
     "memory:evaluate": "node --conditions=react-server --import tsx scripts/evaluate-memory.ts",
     "judge:publish-build": "node scripts/build-judge-pages.mjs",
-    "memory:preflight": "node --conditions=react-server --import tsx scripts/memory-preflight.ts"
+    "memory:preflight": "node --conditions=react-server --import tsx scripts/memory-preflight.ts",
+    "memory:evaluate-learning": "node --conditions=react-server --import tsx scripts/evaluate-learning.ts"
   },
   "dependencies": {
     "@fontsource/manrope": "^5.2.8",
     "@grpc/grpc-js": "^1.14.6",
     "@mysten-incubation/memwal": "0.1.10",
+    "@mysten/dapp-kit-core": "^1.6.41",
+    "@mysten/dapp-kit-react": "^2.1.43",
     "@mysten/seal": "1.5.2",
     "@mysten/sui": "2.38.0",
     "@neondatabase/serverless": "^1.0.2",

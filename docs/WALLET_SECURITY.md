@@ -1,0 +1,25 @@
+# Wallet authentication and private accounts
+
+This is an operator-managed application, not decentralized identity certification or end-to-end encrypted personal storage. Wallet login proves signing control only. It never grants administrator rights or authorizes supplier payments.
+
+## Sign-in
+
+Modern Mysten `@mysten/dapp-kit-react`/core, Sui SDK v2 and Sui Wallet Standard provide browser discovery and `signPersonalMessage`. No legacy JSON-RPC dApp Kit is used. `/connect` shows connection and authentication as separate steps and displays the exact message before signing. Compatible desktop extensions and mobile wallet browsers can connect; no broad physical-device certification is claimed.
+
+The server creates a random challenge ID, 256-bit nonce, issued time, five-minute expiry, normalized full wallet address, purpose and exact configured application origin. Another independent random value binds the row to a secure HttpOnly SameSite Strict browser cookie. The server stores the full authoritative message; verification accepts only challenge ID, address and signature, never client-provided message text, roles or tenant IDs. Origin checks protect both challenge and verification requests.
+
+Mysten verifies the personal-message intent and expected address. Atomic database consumption requires an unexpired, unused challenge. A unique wallet address identifies the automatically created member profile. Concurrent verification succeeds once; replays fail. Returning wallets reuse the same profile. The new random session rotates and revokes the previous browser session. Only hashed session identifiers are stored; the HttpOnly SameSite Strict cookie is Secure on HTTPS and expires after eight hours. Logout deletes the server row and cookie. Account changes/disconnection observed by dApp Kit revoke a member session before a new sign-in; an administrator session is not silently converted to a wallet account. Merely disconnecting a wallet outside an observed page does not revoke a previously issued cookie: use Sign out to revoke it explicitly.
+
+## Isolation
+
+The authenticated session supplies the user UUID used as the tenant. Database queries scope invoices, vendors, settings, rules, human verifications, decisions, audits, jobs, recalls, wallets and reconciliation to it. Foreign invoice/vendor/job identifiers return not found. Administrator-only routes separately check role: seed/reset, account health/credential diagnostics and all service-payment pilot operations. Wallet accounts are always members, and an existing administrator identity cannot be opened with wallet login.
+
+Walrus uses a backend-managed operator account. The browser never receives its delegate key or provider authentication. The backend derives a namespace from authenticated ownership. It additionally loads confirmed tenant-owned job records and requires an exact blob/payload match with an owned policy before a recalled result can influence a review. A foreign result returned by the SDK is discarded. The provider's shared account and namespace are not customer security boundaries; the application server and Neon ownership checks are. Raw invoice/contact/free-text correction data is never written to Walrus. Users consent to fixed minimized policy templates. Operator access and provider retention are disclosed at `/privacy`.
+
+## Tests and limits
+
+`tests/wallet-auth.test.ts` uses an isolated migrated PostgreSQL database and real ephemeral Ed25519 personal signatures for registration, returning identity, wrong signer/browser/domain, expiry, replay, concurrency, session rotation, member/admin separation and foreign-record operations. The SDK recall mock deliberately returns another user's exact blob/text; it cannot influence the second user. These mocks are authorization tests, not Mainnet evidence.
+
+`tests/e2e/wallet.spec.ts` exercises actual HTTP cookies/APIs and a Wallet Standard browser test wallet. The private key stays in the Node test process and is never sent to the browser or persisted. No test spends funds or writes new memories. Existing owner and live read-only provider regressions remain separate.
+
+Account recovery/export/deletion, teams, delegated reviewers, multi-factor administrator login, durable operational monitoring and external penetration testing remain future work. Losing wallet signing access loses normal account access. A valid wallet signature does not authenticate a business or human. Global quotas limit shared integration usage but do not replace production abuse monitoring.

@@ -63,10 +63,18 @@ On October 28, all twelve seed jobs confirmed and a separate live browser correc
 
 The repository has a Vercel GitHub status integration. A normal push may trigger deployment; verify the new commit's status and live page. The old repository homepage was 404 during inspection. If CLI deployment is necessary, authenticate Vercel locally or set `VERCEL_TOKEN` privately, then link the existing project. Configure `DATABASE_URL`, `AUTH_SECRET`, `OWNER_PASSWORD`, `APP_URL`, `MEMWAL_ACCOUNT_ID`, `MEMWAL_PRIVATE_KEY`, `MEMWAL_SERVER_URL`, and `TATUM_API_KEY` in the Vercel project. Never assume `.env.local` was transferred. Redeploy after configuration and run hosted smoke tests.
 
-The verified Vercel build is currently behind Vercel authentication. In the existing project's Deployment Protection settings, make the intended production deployment publicly accessible and confirm its production domain. Keep the app's own owner login enabled; public access to the landing page does not grant invoice or integration privileges. The GitHub Pages article is separate from the Next.js app and is not a substitute for the working app demo.
+Production is public at https://payguard-ai-henna.vercel.app. Framework Preset must be Next.js. Set APP_URL to that exact origin and redeploy after changes. Check `/api/release` for the deployed Git commit. Keep the app's own owner login enabled; public access to the landing page does not grant invoice or integration privileges. The GitHub Pages article is separate from the Next.js app and is not a substitute for the working app demo.
 
 ## Judge publication and controlled service fees
 
 `npm run judge:evidence` captures a fresh real recall of synthetic owner policies; it preserves the previous artifact if no applicable citations return. `npm run judge:publish-build` bundles the same judge component and reviewed evidence for the existing `/docs` GitHub Pages deployment. No `.env` value or provider SDK credential is included. The Next.js route remains `/try`.
 
 Service-payment configuration and signing are described in [AGENT_PAYMENTS.md](AGENT_PAYMENTS.md). `ENABLE_AGENT_PAYMENTS` defaults off. Only controlled Testnet mode is accepted; Mainnet is disabled by schema and verifier. Configure `SERVICE_PAYMENT_RECIPIENT` privately to a separate Testnet merchant. No spending key is requested. The normal Tatum key is required for independent Testnet receipt verification. Actual wallet signing/settlement must still be demonstrated before claiming the bonus.
+
+## Wallet accounts
+
+Apply additive migration `0004` before deploying the wallet release (`npm run db:migrate`). No wallet-authentication secrets or spending keys are needed. The existing `DATABASE_URL`, `AUTH_SECRET` and `APP_URL` support wallet accounts. Keep `OWNER_PASSWORD` for administrator access. `APP_URL` must match the browser origin; preview aliases cannot sign in against a different configured origin. Use HTTPS in production.
+
+The modern `@mysten/dapp-kit-react` and Wallet Standard select a wallet; server signature verification creates the account. Connection alone is insufficient. Each account starts empty. Supplier-first onboarding and privacy details are available at `/connect`, `/app` and `/privacy`. Browser tests exercise a registered Wallet Standard test wallet with real personal signatures; physical mobile wallet certification remains manual.
+
+Shared operator-sponsored memory writes are globally capped by `MEMORY_GLOBAL_WRITES_PER_HOUR` (default 40, maximum 100) and per-account `MEMORY_WRITES_PER_HOUR` (default 24, maximum 100). Provider availability, quota and retention still apply. No anonymous writes exist.

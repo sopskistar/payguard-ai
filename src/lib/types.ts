@@ -96,7 +96,9 @@ export type AuditView = {
   createdAt: string;
 };
 export type Snapshot = {
-  mode: 'public-demo' | 'owner';
+  mode: 'public-demo' | 'owner' | 'member';
+  identity?: { walletAddress: string | null };
+  vendors?: { id: string; name: string; isDemo: boolean }[];
   storage: string;
   invoices: Invoice[];
   assessments: Record<string, Assessment>;
