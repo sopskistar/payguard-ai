@@ -121,6 +121,17 @@ describe('capped Testnet service authorization (synthetic transaction bytes; no 
     for (const change of [
       (tx: Transaction) => tx.moveCall({ target: '0x2::sui::anything', arguments: [] }),
       (tx: Transaction) => tx.setGasBudget(3000000),
+      (tx: Transaction) =>
+        tx.setExpiration({
+          ValidDuring: {
+            chain: '69WiPg3DAQiwdxfncX6wYQ2siKwAe6L9BZthQea3JNMD',
+            minEpoch: 1,
+            maxEpoch: 2,
+            minTimestamp: null,
+            maxTimestamp: Date.now() + 300000,
+            nonce: 123,
+          },
+        }),
       (tx: Transaction) => tx.splitCoins(tx.gas, [tx.pure.u64(1)]),
       (tx: Transaction) =>
         tx.setExpiration({

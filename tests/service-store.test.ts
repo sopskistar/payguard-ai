@@ -19,6 +19,7 @@ import {
   fulfillService as fulfillCore,
   ownedService,
   cancelService,
+  rememberService,
 } from '@/lib/service-payments';
 import { serviceNetworkInfo, type ServiceChallenge } from '@/lib/service-protocol';
 import { AppError } from '@/lib/errors';
@@ -28,10 +29,12 @@ import * as schema from '@/db/schema';
 import { eq } from 'drizzle-orm';
 let directory: string;
 let settles = 0;
+let verifyHook: (() => Promise<Response>) | undefined;
 const payer = Ed25519Keypair.generate();
 let spendingSession = randomUUID();
 beforeEach(() => {
   spendingSession = randomUUID();
+  verifyHook = undefined;
 });
 const approveService = (tenant: string, id: string, address: string) =>
   approveCore(tenant, id, address, spendingSession);
@@ -51,26 +54,26 @@ beforeAll(async () => {
   await seedDemo();
   vi.stubGlobal(
     'fetch',
-    vi.fn(
-      async (url: string) =>
-        new Response(
-          JSON.stringify(
-            url.endsWith('/supported')
-              ? {
-                  kinds: ['sui:testnet', 'sui:mainnet'].map((network) => ({
-                    x402Version: 2,
-                    network,
-                    scheme: 'exact',
-                    extra: { gasOwner: '0x' + '3'.repeat(64), gasBudget: '2000000' },
-                  })),
-                }
-              : url.endsWith('/verify')
-                ? { isValid: true }
-                : (settles++, { success: true }),
-          ),
-          { status: 200 },
+    vi.fn(async (url: string) => {
+      if (url.endsWith('/verify') && verifyHook) return verifyHook();
+      return new Response(
+        JSON.stringify(
+          url.endsWith('/supported')
+            ? {
+                kinds: ['sui:testnet', 'sui:mainnet'].map((network) => ({
+                  x402Version: 2,
+                  network,
+                  scheme: 'exact',
+                  extra: { gasOwner: '0x' + '3'.repeat(64), gasBudget: '2000000' },
+                })),
+              }
+            : url.endsWith('/verify')
+              ? { isValid: true }
+              : (settles++, { success: true }),
         ),
-    ),
+        { status: 200 },
+      );
+    }),
   );
   mock.inspect.mockResolvedValue({
     source: 'SYNTHETIC MOCK, NOT NETWORK PROOF',
@@ -214,6 +217,45 @@ it('rejects a different authenticated session before submitting an approved sign
   );
   expect(settles).toBe(before);
 });
+it('locks cancellation and the session reservation before facilitator verification receives signed bytes', async () => {
+  const row = await quote();
+  await approveService(OWNER_ID, row.id, payer.toSuiAddress());
+  let release!: () => void, entered!: () => void;
+  const started = new Promise<void>((resolve) => {
+    entered = resolve;
+  });
+  const gate = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  verifyHook = async () => {
+    entered();
+    await gate;
+    return Response.json({ isValid: true });
+  };
+  const submission = fulfillService(OWNER_ID, row.id, await payload(row));
+  await started;
+  expect((await ownedService(OWNER_ID, row.id)).state).toBe('settling');
+  await expect(cancelService(OWNER_ID, row.id)).rejects.toThrow('cannot be cancelled');
+  release();
+  expect((await submission).state).toBe('settled');
+});
+it.each(['rejected', 'interrupted'])(
+  'never settles or releases an exposed signature after verification is %s',
+  async (kind) => {
+    const row = await quote();
+    await approveService(OWNER_ID, row.id, payer.toSuiAddress());
+    verifyHook = async () => {
+      if (kind === 'interrupted') throw new Error('Synthetic transport failure');
+      return Response.json({ isValid: false });
+    };
+    const before = settles;
+    expect((await fulfillService(OWNER_ID, row.id, await payload(row))).state).toBe('pending');
+    await expect(cancelService(OWNER_ID, row.id)).rejects.toThrow('cannot be cancelled');
+    mock.inspect.mockRejectedValueOnce(new Error('Synthetic digest not confirmed'));
+    expect((await fulfillService(OWNER_ID, row.id)).state).toBe('pending');
+    expect(settles).toBe(before);
+  },
+);
 it('serializes concurrent reservations without exceeding the authenticated session cap', async () => {
   const rows = await Promise.all([quote(), quote(), quote(), quote()]);
   const results = await Promise.allSettled(
@@ -253,6 +295,10 @@ it('uses only current, owned purchased analysis and preserves the supplier hold 
     .update(schema.servicePaymentIntents)
     .set({ instructionHash: row.instructionHash })
     .where(eq(schema.servicePaymentIntents.id, row.id));
+  await expect(fulfillService(OWNER_ID, row.id)).rejects.toThrow('owned settlement receipt');
+  await expect(rememberService(OWNER_ID, row.id)).rejects.toThrow(
+    'Tatum-confirmed service receipt',
+  );
   expect(
     (await assess(OWNER_ID, row.invoiceId, false)).findings.some(
       (f) => f.id === `service-analysis-${receipt?.id}`,

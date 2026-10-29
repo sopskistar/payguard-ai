@@ -139,6 +139,8 @@ export function validateServiceTransaction(bytes: string, terms: ServiceTerms, p
   )
     throw new Error('Payer must differ from merchant and sponsor');
   const validity = d.expiration.ValidDuring;
+  if (validity.minTimestamp != null || validity.maxTimestamp != null)
+    throw new Error('Timestamp-based Sui expiration is unsupported; use the approved epoch window');
   if (
     validity.minEpoch == null ||
     validity.maxEpoch == null ||

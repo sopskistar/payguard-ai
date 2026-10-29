@@ -12,6 +12,8 @@ Review/payment details: AGENT_PAYMENTS.md, mainnet-service-preflight.json, mainn
 
 ---
 
+Payment follow-up: claim the durable digest before `/verify` as well as `/settle`, retain the cap on rejected/interrupted verification, and do not allow cancellation after disclosure. Sui timestamp expiration is unsupported; the UI distinguishes the five-minute application quote from the current/next-epoch signed chain lifetime. This is an explicit approval risk, not a fake five-minute onchain guarantee.
+
 ## Historical handoffs follow
 
 # Active security gate — Slush domain review

@@ -335,7 +335,9 @@ export function ServicePayment() {
               </section>
             )}
             {saved
-              .filter((i) => ['settling', 'settled', 'failed'].includes(i.state))
+              .filter((i) =>
+                ['quoted', 'approved', 'settling', 'settled', 'failed'].includes(i.state),
+              )
               .map((i) => (
                 <button
                   className="button outline"
@@ -492,7 +494,18 @@ export function ServicePayment() {
                   </div>
                   <div>
                     <dt>Quote expires</dt>
-                    <dd>{new Date(quote.expiresAt).toLocaleString()}</dd>
+                    <dd>
+                      {new Date(quote.expiresAt).toLocaleString()}. This limits PayGuard submission,
+                      not the signed transaction’s chain lifetime.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Signed-transaction lifetime</dt>
+                    <dd>
+                      Current epoch through the next epoch. Sui does not currently support timestamp
+                      expiry. Once signed bytes are disclosed, they can be relayed within that
+                      window; cancellation is not revocation.
+                    </dd>
                   </div>
                 </dl>
                 <label className="checkbox">
@@ -557,6 +570,18 @@ export function ServicePayment() {
                 {receipt && (
                   <>
                     <Badge tone="mint">Tatum-confirmed service receipt</Badge>
+                    <button
+                      className="button outline"
+                      onClick={() => {
+                        setQuote(undefined);
+                        setReceipt(undefined);
+                        setConsent(false);
+                        setPaymentState('');
+                        setMemory('');
+                      }}
+                    >
+                      Review another invoice
+                    </button>
                     <pre className="service-result">{JSON.stringify(receipt, null, 2)}</pre>
                     <p>
                       Supplier approval still requires the independent human verification workflow.

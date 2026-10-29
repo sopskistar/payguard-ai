@@ -1,6 +1,6 @@
 import 'server-only';
 import { createHash, randomUUID } from 'node:crypto';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, desc } from 'drizzle-orm';
 import { verifyTransactionSignature } from '@mysten/sui/verify';
 import { Transaction } from '@mysten/sui/transactions';
 import { fromBase64 } from '@mysten/sui/utils';
@@ -126,7 +126,8 @@ export async function servicePreflight() {
     risks: [
       'First-party buyer/seller relationship; not independent supplier identity verification.',
       'Facilitator availability, sponsorship and full wallet compatibility remain unproven until an authorized settlement.',
-      'Signed transaction can be relayed; cancellation is only available before PayGuard submits it.',
+      'Signed transaction can be relayed; cancellation is only available before PayGuard discloses signed bytes to the facilitator.',
+      'The five-minute quote limits application submission. Sui timestamp expiry is unsupported; disclosed signed bytes remain relayable through the approved epoch window and cannot be revoked by cancelling a quote.',
       'No service result is released until Tatum independently confirms exact finalized credit.',
     ],
     chain,
@@ -415,8 +416,19 @@ export async function fulfillService(
   const [receipt] = await d
     .select()
     .from(s.servicePaymentReceipts)
-    .where(eq(s.servicePaymentReceipts.intentId, id));
+    .where(
+      and(
+        eq(s.servicePaymentReceipts.intentId, id),
+        eq(s.servicePaymentReceipts.tenantId, tenantId),
+      ),
+    );
   if (receipt) return { state: 'settled', receipt };
+  if (row.state === 'settled')
+    throw new AppError(
+      409,
+      'RECEIPT_MISSING',
+      'The owned settlement receipt requires reconciliation. No payment success is assumed.',
+    );
   const challenge = row.challenge as ServiceChallenge;
   const terms = serviceTermsSchema.parse(challenge.accepts[0]);
 
@@ -470,18 +482,8 @@ export async function fulfillService(
       throw new AppError(400, 'SIGNER', 'Unexpected wallet signer');
     const digest = await Transaction.from(payload.payload.transaction).getDigest();
     const payloadHash = createHash('sha256').update(payload.payload.transaction).digest('hex');
-    // Reserve the unique proof BEFORE asking the facilitator to settle. Concurrent requests cannot charge twice.
-    const verify = await facilitator('/verify', {
-      x402Version: 2,
-      paymentPayload: payload,
-      paymentRequirements: terms,
-    });
-    if (verify.isValid !== true || (verify.payer && verify.payer !== row.payer))
-      throw new AppError(
-        400,
-        'PAYMENT_INVALID',
-        'Facilitator rejected payment authorization. Nothing was submitted by PayGuard.',
-      );
+    // Lock before ANY third party receives signed bytes. Cancellation must never release
+    // the cap after a signature has left PayGuard, even if /verify times out or rejects it.
     const [claimed] = await d
       .update(s.servicePaymentIntents)
       .set({ state: 'settling', digest, payloadHash })
@@ -499,6 +501,36 @@ export async function fulfillService(
     }
     row = claimed;
     try {
+      const verify = await facilitator('/verify', {
+        x402Version: 2,
+        paymentPayload: payload,
+        paymentRequirements: terms,
+      });
+      if (verify.isValid !== true || (verify.payer && verify.payer !== row.payer)) {
+        await audit(tenantId, 'service.verification_rejected', id, {
+          digest,
+          settlementRequested: false,
+        });
+        return {
+          state: 'pending',
+          digest,
+          message:
+            'Facilitator verification was rejected. Signed bytes were disclosed; this attempt stays locked for independent reconciliation. No settlement or service result is assumed.',
+        };
+      }
+    } catch {
+      await audit(tenantId, 'service.verification_indeterminate', id, {
+        digest,
+        settlementRequested: false,
+      });
+      return {
+        state: 'pending',
+        digest,
+        message:
+          'Facilitator verification was interrupted. Resume the existing digest; do not sign or pay again.',
+      };
+    }
+    try {
       const settled = await facilitator('/settle', {
         x402Version: 2,
         paymentPayload: payload,
@@ -507,7 +539,8 @@ export async function fulfillService(
       await audit(tenantId, 'service.settlement_response', id, {
         success: settled.success === true,
         digest: row.digest,
-        reportedDigest: settled.transaction || null,
+        reportedDigest:
+          typeof settled.transaction === 'string' ? settled.transaction.slice(0, 100) : null,
         reportedNetwork: typeof settled.network === 'string' ? settled.network.slice(0, 100) : null,
         reportedPayer: typeof settled.payer === 'string' ? settled.payer.slice(0, 100) : null,
         provider: FACILITATOR,
@@ -617,14 +650,7 @@ export async function fulfillService(
   });
   return {
     state: 'settled',
-    receipt:
-      saved ||
-      (
-        await d
-          .select()
-          .from(s.servicePaymentReceipts)
-          .where(eq(s.servicePaymentReceipts.intentId, id))
-      )[0],
+    receipt: saved,
   };
 }
 export async function rememberService(tenantId: string, id: string) {
@@ -634,8 +660,13 @@ export async function rememberService(tenantId: string, id: string) {
   )
     .select()
     .from(s.servicePaymentReceipts)
-    .where(eq(s.servicePaymentReceipts.intentId, id));
-  if (!receipt)
+    .where(
+      and(
+        eq(s.servicePaymentReceipts.intentId, id),
+        eq(s.servicePaymentReceipts.tenantId, tenantId),
+      ),
+    );
+  if (!receipt || row.state !== 'settled')
     throw new AppError(409, 'NO_SETTLEMENT', 'A Tatum-confirmed service receipt is required.');
   return recordCorrection(tenantId, {
     invoiceId: row.invoiceId,
@@ -665,5 +696,6 @@ export async function listServiceIntents(tenantId: string) {
     })
     .from(s.servicePaymentIntents)
     .where(eq(s.servicePaymentIntents.tenantId, tenantId))
+    .orderBy(desc(s.servicePaymentIntents.createdAt), desc(s.servicePaymentIntents.id))
     .limit(30);
 }

@@ -107,9 +107,34 @@ try {
   const service = await call('service-payments');
   report.service = {
     configured: service.data.configured,
+    network: service.data.network,
+    mainnetImplemented: service.data.mainnetImplemented,
     signingAllowed: service.data.signingAllowed,
     mainnetEnabled: service.data.mainnetEnabled,
+    sessionCapAtomic: service.data.sessionCapAtomic,
   };
+  stage = 'production Mainnet payment preflight';
+  const preflight = await call('service-payments/preflight');
+  const { payer, recipient, ...publicPreflight } = preflight.data;
+  const safePreflight = {
+    ...publicPreflight,
+    execution: 'Authenticated production read-only preflight; no wallet connection or payment',
+    status: preflight.r.status,
+    payerConfigured: !!payer,
+    recipientConfigured: !!recipient,
+    signatureRequested: false,
+    settlementAttempted: false,
+  };
+  report.paymentPreflight = {
+    status: preflight.r.status,
+    network: preflight.data.network,
+    genesis: preflight.data.genesis,
+    spending: preflight.data.spending,
+  };
+  await writeFile(
+    'docs/evidence/production-payment-preflight.json',
+    JSON.stringify(safePreflight, null, 2) + '\n',
+  );
   report.ok =
     Object.values(report.health as Record<string, { status: string }>).every(
       (h) => h.status === 'Connected',
@@ -120,6 +145,14 @@ try {
     s.mode === 'owner' &&
     s.storage === 'Neon Postgres' &&
     confirmed.length === 30 &&
+    service.data.mainnetImplemented === true &&
+    service.data.network === 'sui:mainnet' &&
+    service.data.signingAllowed === false &&
+    service.data.sessionCapAtomic === '3000000' &&
+    preflight.r.status === 200 &&
+    preflight.data.network === 'sui:mainnet' &&
+    preflight.data.genesis === '4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S' &&
+    preflight.data.spending === false &&
     chain.r.status === 200 &&
     chain.data.chainId === '35834a8a' &&
     recalled.r.status === 200 &&
