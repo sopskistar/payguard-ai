@@ -156,8 +156,9 @@ export async function api<T = Record<string, unknown>>(
   data?: unknown,
   method?: string,
 ): Promise<T> {
-  const response = await fetch(`/api/${path}`, {
-    method: method || (data === undefined ? 'GET' : 'POST'),
+  const requestMethod = method || (data === undefined ? 'GET' : 'POST');
+  const options: RequestInit = {
+    method: requestMethod,
     headers:
       data instanceof FormData
         ? undefined
@@ -166,7 +167,16 @@ export async function api<T = Record<string, unknown>>(
           : undefined,
     body: data === undefined ? undefined : data instanceof FormData ? data : JSON.stringify(data),
     cache: 'no-store',
-  });
+    ...(requestMethod === 'GET' ? { signal: AbortSignal.timeout(15000) } : {}),
+  };
+  let response: Response;
+  try {
+    response = await fetch(`/api/${path}`, options);
+  } catch (error) {
+    // Only transport failures on reads may retry. Never repeat a mutation or a payment request.
+    if (requestMethod !== 'GET' || !(error instanceof TypeError)) throw error;
+    response = await fetch(`/api/${path}`, { ...options, signal: AbortSignal.timeout(15000) });
+  }
   const result = await response.json();
   if (!response.ok)
     throw new Error(

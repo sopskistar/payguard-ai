@@ -126,3 +126,14 @@ Production `c92f608` resolved the initial environment mismatch: previous passwor
 - [Synthetic negative-control reporter test](evidence/diagnostic-redaction-test.json): intentionally failed with a non-secret canary; console and decoded HTML archive were redacted. Actual credentials were never used in the negative control. Step titles and buffered output are also cleaned before reporting.
 
 Automatic DOM snapshots, trace, screenshots and video are disabled. The password input clears on submit. No service payment was settled or demo video created.
+
+## Final private-cache recovery regression
+
+- **83 unit tests passed across 13 files**. New transport tests prove one safe GET retry, no retry/success on HTTP errors, and no automatic mutation retry.
+- Lint, TypeScript, formatting and production build passed.
+- Latest isolated PostgreSQL QA: **12 browser tests passed, 2 live-provider skips**, 32.6 seconds. Both provider tests had passed separately against production with the rotated password.
+- Wallet isolation/logout browser test now aborts the first logout request and injects a failed refresh. Private data disappears immediately and stays hidden until sign-out retry; a later public refresh succeeds.
+- Stale snapshot responses are discarded across session transitions. Failed private-snapshot loading cannot be presented as an unlocked workspace.
+- Production narrow reruns verified the public/mobile paths, human attestation and no-JavaScript reload. The broad owner-intake browser case remains intermittently interrupted by the runner's network resets. A request-metadata-only diagnostic measured a genuine 201 save in 4.8 seconds; another explicitly recorded its POST failing with ERR_NETWORK_CHANGED. No mutation retry was added. These are not counted as a clean full production suite.
+
+No customer records, verified memories or blockchain proof were reset. No new Mainnet write, service payment or video was created.

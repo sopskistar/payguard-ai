@@ -1,3 +1,15 @@
+# Latest continuation checkpoint — session privacy and transport recovery
+
+The rotated password and old-password rejection are verified on production, as are legacy/superseded-session denial. No credentials are printed or committed. The latest frontend immediately hides private data on a logout attempt; if server sign-out fails it stays locked behind Retry sign-out. Failed post-logout refresh cannot restore private records. Snapshot generations discard late responses from an older login/session. Login distinguishes authentication success from workspace-load failure. Read-only network failures get one bounded retry; mutations/payments are never automatically retried. A missing explicitly selected invoice no longer silently falls back to another invoice.
+
+Final local validation of this change: 83 unit tests across 13 files; lint, TypeScript, formatting and production build passed. Isolated PostgreSQL QA passed 12 browser tests with the two real-provider tests explicitly skipped (32.6 seconds). The wallet browser case injected both an aborted logout and a failed refresh and verified that private data stayed hidden until retry. Earlier production live Walrus recall, Tatum inspection, wallet login/isolation and seven-step judge tests passed. Production's remaining full owner-intake browser case is intermittently blocked by ERR_NETWORK_CHANGED; a diagnostic observed auth 200, invoice 201 in 4.8 seconds and cleanup, while another captured the invoice POST itself failing with ERR_NETWORK_CHANGED. Do not claim a single clean full production browser suite. Diagnostics stay ignored under .data. Do not retry writes to hide the network problem.
+
+All 30 confirmed Mainnet memories and proof are preserved. No payment or new memory write was sent. Payment bonus still needs merchant/Testnet signer configuration and actual settlement; Mainnet requires separate exact approval and remains disabled. No demo video is authorized. Preserve .gitignore.save and ignored .env.local; never print either password.
+
+Earlier dated checkpoints and evidence below remain for provenance.
+
+---
+
 # Current verified state — security rotation resolved
 
 Production deployment `c92f608` picked up the owner's rotated configuration: the previous password now receives 401 INVALID_LOGIN; the distinct current password receives 200, creates an authenticated owner session with Secure/HttpOnly/Strict cookie, and its cookie is rejected after logout. No values were displayed or persisted by the check. [evidence/password-rotation.json](evidence/password-rotation.json) and [evidence/session-rotation.json](evidence/session-rotation.json) contain only status/boolean proof. The deployed guard rejected a temporary legacy session and a superseded-version session (private API 401), accepted the restored current version, and removed the test session. No additional password rotation is currently requested.

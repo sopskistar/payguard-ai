@@ -211,7 +211,25 @@ test('wallet sign-in uses a real personal signature; logout, replay and cross-us
       timeout: 15000,
     });
     await expect(p.getByRole('heading', { name: 'Your first payment review' })).toBeVisible();
+    await p.route('**/api/auth/logout', (route) => route.abort('failed'), { times: 1 });
+    await p.route(
+      '**/api/snapshot',
+      (route) =>
+        route.fulfill({
+          status: 503,
+          contentType: 'application/json',
+          body: JSON.stringify({ error: 'Synthetic refresh outage' }),
+        }),
+      { times: 1 },
+    );
     await p.getByRole('button', { name: 'Sign out', exact: true }).click();
+    await expect(
+      p.getByRole('heading', { name: 'Private data hidden', exact: true }),
+    ).toBeVisible();
+    await p.getByRole('button', { name: 'Retry sign-out', exact: true }).click();
+    await expect(p.locator('.toast')).toContainText('could not refresh');
+    await expect(p.getByRole('heading', { name: 'Recent invoices', exact: true })).toHaveCount(0);
+    await p.getByRole('button', { name: 'Retry', exact: true }).click();
     await expect(p.getByText('Public demo', { exact: true })).toBeVisible();
     expect((await (await a.request.get('/api/auth/session')).json()).authenticated).toBe(false);
     await authenticate(a, alice);

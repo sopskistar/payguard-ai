@@ -6,7 +6,7 @@ import { Onboarding } from './onboarding';
 import { PublicMemoryLab, publishedMemoryCount } from './mode-notice';
 import { VerificationPanel, VendorProfiles, AttackReplayLab } from './verify-panels';
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useState, type FormEvent, type ReactNode } from 'react';
+import { useCallback, useEffect, useState, useRef, type FormEvent, type ReactNode } from 'react';
 import { motion, MotionConfig } from 'motion/react';
 import {
   Activity,
@@ -92,6 +92,9 @@ export function Workspace({
   const router = useRouter();
   const ready = useClientReady();
   const [data, setData] = useState<Snapshot>();
+  const snapshotGeneration = useRef(0);
+  const privacyLock = useRef(false);
+  const [logoutPending, setLogoutPending] = useState(false);
   const [loadError, setLoadError] = useState('');
   const [busy, setBusy] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -110,9 +113,12 @@ export function Workspace({
   const notify = useCallback((text: string, error = false) => setToast({ text, error }), []);
   const refresh = useCallback(
     async (feedback = false) => {
+      if (privacyLock.current) return false;
+      const generation = snapshotGeneration.current;
       setRefreshing(true);
       try {
         const snapshot = await api<Snapshot>('snapshot');
+        if (generation !== snapshotGeneration.current || privacyLock.current) return false;
         setData(snapshot);
         setLoadError('');
         setLastRefresh(new Date().toISOString());
@@ -124,6 +130,7 @@ export function Workspace({
           );
         return true;
       } catch (e) {
+        if (generation !== snapshotGeneration.current || privacyLock.current) return false;
         const message = (e as Error).message;
         setLoadError(message);
         if (feedback) notify('Refresh failed. ' + message, true);
@@ -136,15 +143,17 @@ export function Workspace({
   );
   useEffect(() => {
     let active = true;
+    const generation = snapshotGeneration.current;
     void api<Snapshot>('snapshot')
       .then((value) => {
-        if (active) {
+        if (active && generation === snapshotGeneration.current && !privacyLock.current) {
           setData(value);
           setLastRefresh(new Date().toISOString());
         }
       })
       .catch((error) => {
-        if (active) setLoadError(error.message);
+        if (active && generation === snapshotGeneration.current && !privacyLock.current)
+          setLoadError(error.message);
       });
     return () => {
       active = false;
@@ -157,17 +166,26 @@ export function Workspace({
     }
   }, [toast]);
   const owner = !!data && data.mode !== 'public-demo';
-  const invoice = data?.invoices.find((i) => i.id === selected) || data?.invoices[0];
+  const invoice = selected ? data?.invoices.find((i) => i.id === selected) : data?.invoices[0];
   const assessment = invoice
     ? comparisons[invoice.id]?.[memoryOn ? 'on' : 'off'] || data?.assessments[invoice.id]
     : undefined;
   async function act<T>(path: string, payload?: unknown, message?: string): Promise<T | undefined> {
     setBusy(true);
+    const signingOut = path === 'auth/logout';
+    if (signingOut) {
+      snapshotGeneration.current++;
+      privacyLock.current = true;
+      setLogoutPending(true);
+      setData(undefined);
+      setComparisons({});
+      setSelected('');
+    }
     try {
       const r = await api<T>(path, payload);
-      if (path === 'auth/logout') {
-        setComparisons({});
-        setSelected('');
+      if (signingOut) {
+        privacyLock.current = false;
+        setLogoutPending(false);
       }
       const refreshed = await refresh();
       if (!refreshed)
@@ -216,6 +234,24 @@ export function Workspace({
     view === 'settings/integrations'
       ? 'Integration diagnostics'
       : nav.find((n) => n.id === view)?.label || 'Overview';
+  if (logoutPending)
+    return (
+      <main id="main" className="workspace-loading">
+        <h1>Private data hidden</h1>
+        <p role="status">
+          {busy
+            ? 'Confirming sign-out with the server…'
+            : 'Sign-out could not be confirmed. Your private data stays hidden here. Retry to revoke the server session.'}
+        </p>
+        <button
+          className="button outline"
+          disabled={busy}
+          onClick={() => void act('auth/logout', {}, 'Signed out.')}
+        >
+          Retry sign-out
+        </button>
+      </main>
+    );
   if (!ready)
     return (
       <main id="main" className="workspace-loading">
@@ -747,10 +783,24 @@ export function Workspace({
                 e.preventDefault();
                 const password = new FormData(e.currentTarget).get('password');
                 e.currentTarget.reset(); // Do not retain credentials in DOM snapshots after submission.
-                const result = await act('auth/login', { password });
-                if (result) {
+                setBusy(true);
+                try {
+                  await api('auth/login', { password });
+                  snapshotGeneration.current++;
+                  setData(undefined);
+                  setComparisons({});
                   setModal(null);
-                  notify('Owner workspace unlocked.');
+                  const loaded = await refresh();
+                  notify(
+                    loaded
+                      ? 'Owner workspace unlocked.'
+                      : 'Signed in, but the private workspace could not load. Retry Refresh.',
+                    !loaded,
+                  );
+                } catch (error) {
+                  notify((error as Error).message, true);
+                } finally {
+                  setBusy(false);
                 }
               }}
             >
