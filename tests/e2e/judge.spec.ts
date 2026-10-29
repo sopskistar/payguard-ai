@@ -1,5 +1,21 @@
 import { visit } from './browser-helpers';
 import { test, expect } from '@playwright/test';
+test('judge never presents active walkthrough buttons before client readiness', async ({
+  browser,
+}) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  try {
+    const page = await context.newPage();
+    await visit(page, '/try');
+    await expect(page.getByRole('button', { name: 'Next Step', exact: true })).toBeDisabled();
+    const reload = page.getByRole('button', { name: 'Reload walkthrough', exact: true });
+    await expect(reload).toBeEnabled();
+    await Promise.all([page.waitForNavigation(), reload.click()]);
+    await expect(page.getByRole('button', { name: 'Next Step', exact: true })).toBeDisabled();
+  } finally {
+    await context.close();
+  }
+});
 test('judge completes all seven clear steps, with back navigation, real evidence and no account', async ({
   page,
 }) => {

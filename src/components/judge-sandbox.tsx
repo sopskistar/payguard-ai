@@ -19,6 +19,7 @@ import chain from '../../docs/evidence/tatum-reconciliation.json';
 import { judgeReview, JUDGE_HASH } from '@/lib/judge';
 import type { HumanVerification, Policy } from '@/lib/types';
 import { Badge, FindingList } from './ui';
+import { useClientReady } from './client-ready';
 const steps = [
   {
     title: 'Meet the invoice',
@@ -71,6 +72,7 @@ const steps = [
   },
 ];
 export function JudgeSandbox() {
+  const ready = useClientReady();
   const [step, setStep] = useState(0),
     [on, setOn] = useState(false),
     [attestedAt, setAttestedAt] = useState<string>(),
@@ -136,7 +138,20 @@ export function JudgeSandbox() {
   }
   return (
     <MotionConfig reducedMotion="user">
-      <div className="journey">
+      {!ready && (
+        <aside className="journey-loading" role="status">
+          <p>Preparing the interactive walkthrough… Controls will unlock when ready.</p>
+          <form action="/try" method="get">
+            <button className="button outline" type="submit">
+              Reload walkthrough
+            </button>
+          </form>
+          <noscript>
+            Enable JavaScript to use the guided practice. The proof links remain readable.
+          </noscript>
+        </aside>
+      )}
+      <fieldset className="journey journey-ready-controls" disabled={!ready}>
         <header className="journey-header">
           <Link href="/" className="journey-brand">
             <img src="/brand/icon.png" alt="PayGuard shield" />
@@ -719,7 +734,7 @@ export function JudgeSandbox() {
             </p>
           </footer>
         </main>
-      </div>
+      </fieldset>
     </MotionConfig>
   );
 }

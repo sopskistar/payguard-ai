@@ -1089,3 +1089,21 @@
 .journey-stage {
   scroll-margin-top: 20px;
 }
+.journey-ready-controls {
+  border: 0;
+  min-width: 0;
+  width: 100%;
+}
+.journey-loading {
+  max-width: 1120px;
+  margin: 20px auto;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.journey-ready-controls:disabled button {
+  cursor: wait;
+  opacity: 0.55;
+}

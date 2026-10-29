@@ -34,13 +34,7 @@ export async function visit(page: Page, url: string, options?: Parameters<Page['
       type: 'transport-retry',
       description: 'One read-only navigation retried after browser ERR_NETWORK_CHANGED.',
     });
-    // Stop the failed navigation before Chrome's delayed error page can interrupt recovery.
-    const session = await page.context().newCDPSession(page);
-    try {
-      await session.send('Page.stopLoading');
-    } finally {
-      await session.detach();
-    }
+    // Retry the read directly. Error-page CDP targets may already have detached.
     return page.goto(url, options);
   }
 }

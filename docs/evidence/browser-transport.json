@@ -1,0 +1,64 @@
+{
+  "checkedAt": "2026-10-29T16:17:32.488Z",
+  "productionCommit": "f5de4724e4f4c5593bae7b780d4d4b35adfd281c",
+  "failedAt": "login",
+  "authenticationRequestObserved": false,
+  "publicAssetFailures": [
+    {
+      "path": "/_next/static/css/81660b62938fe570.css",
+      "error": "net::ERR_NETWORK_CHANGED"
+    },
+    {
+      "path": "/_next/static/css/c1adadaf64a63d43.css",
+      "error": "net::ERR_NETWORK_CHANGED"
+    },
+    {
+      "path": "/_next/static/chunks/webpack-9bcc601f81e7f32b.js",
+      "error": "net::ERR_NETWORK_CHANGED"
+    },
+    {
+      "path": "/brand/icon.png",
+      "error": "net::ERR_NETWORK_CHANGED"
+    },
+    {
+      "path": "/_next/static/chunks/794-4ca22931fae0b30a.js",
+      "error": "net::ERR_NETWORK_CHANGED"
+    },
+    {
+      "path": "/_next/static/chunks/main-app-480d398640d38a59.js",
+      "error": "net::ERR_NETWORK_CHANGED"
+    },
+    {
+      "path": "/_next/static/chunks/app/error-df3e4d40985b75ee.js",
+      "error": "net::ERR_NETWORK_CHANGED"
+    },
+    {
+      "path": "/_next/static/chunks/app/not-found-152cd73888d505ec.js",
+      "error": "net::ERR_NETWORK_CHANGED"
+    },
+    {
+      "path": "/_next/static/chunks/559-f5037b4e241e10df.js",
+      "error": "net::ERR_NETWORK_CHANGED"
+    },
+    {
+      "path": "/_next/static/chunks/621-639f30e966be4f59.js",
+      "error": "net::ERR_NETWORK_CHANGED"
+    },
+    {
+      "path": "/_next/static/chunks/219-0afb7fcaf799b5d9.js",
+      "error": "net::ERR_NETWORK_CHANGED"
+    },
+    {
+      "path": "/_next/static/chunks/421-151b0f027eef846d.js",
+      "error": "net::ERR_NETWORK_CHANGED"
+    },
+    {
+      "path": "/_next/static/chunks/app/app/%5B%5B...page%5D%5D/page-2f4174e7bc19da85.js",
+      "error": "net::ERR_NETWORK_CHANGED"
+    }
+  ],
+  "interpretation": "Browser reported ERR_NETWORK_CHANGED on same-origin CSS, JavaScript and brand assets before login. Independent production API checks passed. Transport cause is unresolved; no application assertion is waived.",
+  "screenshots": false,
+  "video": false,
+  "credentialsRecorded": false
+}

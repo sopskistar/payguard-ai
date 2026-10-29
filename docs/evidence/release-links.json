@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-29T01:36:11.167Z",
+  "checkedAt": "2026-10-29T16:09:04.523Z",
   "results": [
     {
       "url": "https://payguard-ai-henna.vercel.app/",
@@ -40,6 +40,14 @@
     },
     {
       "url": "https://github.com/sopskistar/payguard-ai/blob/main/docs/WALLET_SECURITY.md",
+      "status": 200
+    },
+    {
+      "url": "https://github.com/sopskistar/payguard-ai/blob/main/docs/SLUSH_SECURITY_REVIEW.md",
+      "status": 200
+    },
+    {
+      "url": "https://github.com/sopskistar/payguard-ai/blob/main/docs/RELEASE_STATUS.md",
       "status": 200
     }
   ]
