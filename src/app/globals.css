@@ -3844,6 +3844,26 @@ tr:hover td {
   border-radius: 10px;
   font-size: 12px;
 }
+.service-preflight {
+  display: block;
+  min-width: 0;
+}
+.service-payment-page .detail-list > div {
+  display: grid;
+  grid-template-columns: minmax(130px, 0.7fr) minmax(0, 1fr);
+  align-items: start;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.service-payment-page .detail-list dd {
+  text-align: left;
+}
+@media (max-width: 600px) {
+  .service-payment-page .detail-list > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+}
 .judge-shell button:focus-visible {
   outline: 2px solid var(--mint);
   outline-offset: 3px;

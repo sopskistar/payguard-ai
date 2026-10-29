@@ -1,0 +1,22 @@
+{
+  "startedAt": "2026-10-29T23:02:53.861Z",
+  "finishedAt": "2026-10-29T23:04:34.990Z",
+  "exitCode": 1,
+  "actualProduction": true,
+  "liveMemoryReuse": true,
+  "video": false,
+  "commit": "222a09ed180564f72bc3ec829c5ca73596c28289",
+  "passed": 13,
+  "failed": 1,
+  "skipped": 3,
+  "transport": "HTTP/1.1; HTTPS and assertions retained",
+  "failure": {
+    "test": "Owner Mainnet preflight mobile layout",
+    "classification": "Application layout defect",
+    "assertion": "document scrollWidth exceeds viewport after real preflight expands",
+    "fix": "Scoped block proposal layout and responsive terms grid"
+  },
+  "skips": "Three hosted wallet fixtures intentionally blocked by security policy",
+  "memoryWrites": false,
+  "paymentSettlement": false
+}

@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { visit } from './browser-helpers';
+import recordedPreflight from '../../docs/evidence/production-payment-preflight.json' with { type: 'json' };
 const origin = process.env.E2E_BASE_URL || 'http://localhost:3000';
 test('owner service page explains exact Mainnet proposal and keeps spending disabled', async ({
   browser,
@@ -31,19 +32,25 @@ test('owner service page explains exact Mainnet proposal and keeps spending disa
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,
     );
-    // Do not consume live provider quota in the default isolated local browser suite.
-    if (process.env.LIVE_CHAIN_TEST === '1') {
-      await page.getByRole('button', { name: /Check Mainnet proposal/ }).click();
-      await expect(page.getByRole('heading', { name: 'Read-only purchase preflight' })).toBeVisible(
-        { timeout: 30000 },
+    // A recorded fixture exercises the expanded layout locally. Production uses the actual API.
+    if (process.env.LIVE_CHAIN_TEST !== '1')
+      await page.route('**/api/service-payments/preflight', (route) =>
+        route.fulfill({ json: { ...recordedPreflight, payer: null, recipient: null } }),
       );
-      await expect(page.getByText('sui:mainnet', { exact: true }).first()).toBeVisible();
-      await expect(page.getByText('Merchant recipient', { exact: true })).toBeVisible();
-      await expect(page.getByText(/Proposal is incomplete|Exact owner approval/)).toBeVisible();
-      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
-        true,
-      );
-    }
+    await page.getByRole('button', { name: /Check Mainnet proposal/ }).click();
+    await expect(page.getByRole('heading', { name: 'Read-only purchase preflight' })).toBeVisible({
+      timeout: 30000,
+    });
+    await expect(page.getByText('sui:mainnet', { exact: true }).first()).toBeVisible();
+    await expect(page.getByText('Merchant recipient', { exact: true })).toBeVisible();
+    await expect(page.getByText(/Proposal is incomplete|Exact owner approval/)).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+      true,
+    );
+    await page.getByText('Read-only chain proof and risk details', { exact: true }).click();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+      true,
+    );
   } finally {
     await context.request.post('/api/auth/logout', { headers: { origin }, data: {} });
     await context.close();

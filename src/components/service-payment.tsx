@@ -240,7 +240,7 @@ export function ServicePayment() {
     if (r.receipt) setReceipt(r.receipt);
   }
   return (
-    <div className="judge-shell">
+    <div className="judge-shell service-payment-page">
       <header className="judge-header">
         <Link href="/app/review">← Verify Instructions</Link>
         <Badge tone="amber">Mainnet implementation · spending gated</Badge>
@@ -293,7 +293,7 @@ export function ServicePayment() {
               Check Mainnet proposal · no signing
             </button>
             {proposal && (
-              <section className="notice">
+              <section className="notice service-preflight">
                 <h3>Read-only purchase preflight</h3>
                 <p>
                   This is a proposal, not permission to spend. Buyer and seller may both be
