@@ -1,0 +1,123 @@
+{
+  "startedAt": "2026-10-29T23:58:24.334Z",
+  "finishedAt": "2026-10-30T00:00:10.963Z",
+  "exitCode": 0,
+  "actualProduction": true,
+  "liveMemoryReuse": true,
+  "video": false,
+  "applicationCommit": "2571cead1d78e1db2214f893e43189469bdf1785",
+  "passed": 14,
+  "failed": 0,
+  "skipped": 3,
+  "transport": "Chromium HTTPS over HTTP/1.1; Tatum retains native HTTP/2 gRPC",
+  "noJavaScriptCase": "Dedicated browser process; interactive assertions retained",
+  "transportRetries": [],
+  "skipReason": "Three hosted wallet fixtures blocked by the unresolved Slush security pause",
+  "mainnetMemoryWrites": false,
+  "paymentSettlement": false,
+  "tests": [
+    {
+      "file": "app.spec.ts",
+      "title": "public Verify journey, replay controls and responsive navigation",
+      "status": "passed",
+      "durationMs": 11385
+    },
+    {
+      "file": "app.spec.ts",
+      "title": "anonymous users cannot read owner data or mutate records; origin is checked",
+      "status": "passed",
+      "durationMs": 1407
+    },
+    {
+      "file": "app.spec.ts",
+      "title": "owner intake persists through a fresh browser context, with no fictional memory",
+      "status": "passed",
+      "durationMs": 14928
+    },
+    {
+      "file": "judge.spec.ts",
+      "title": "judge never presents active walkthrough buttons before client readiness",
+      "status": "passed",
+      "durationMs": 2485
+    },
+    {
+      "file": "judge.spec.ts",
+      "title": "judge completes all seven clear steps, with back navigation, real evidence and no account",
+      "status": "passed",
+      "durationMs": 6041
+    },
+    {
+      "file": "judge.spec.ts",
+      "title": "public users cannot quote, approve or settle service fees",
+      "status": "passed",
+      "durationMs": 1091
+    },
+    {
+      "file": "live-chain.spec.ts",
+      "title": "LIVE Tatum transaction inspector rejects an unrelated sample payment",
+      "status": "passed",
+      "durationMs": 8103
+    },
+    {
+      "file": "live-memory.spec.ts",
+      "title": "LIVE Mainnet correction is recalled in a separate owner session",
+      "status": "passed",
+      "durationMs": 10996
+    },
+    {
+      "file": "product-ux.spec.ts",
+      "title": "refresh shows loading, honest success, timestamp and failure; public actions explain owner access",
+      "status": "passed",
+      "durationMs": 5140
+    },
+    {
+      "file": "product-ux.spec.ts",
+      "title": "landing CTAs, FAQ, proof and mobile layouts are deliberate and functional",
+      "status": "passed",
+      "durationMs": 11602
+    },
+    {
+      "file": "product-ux.spec.ts",
+      "title": "owner sign-in clears submitted credentials while the request is pending",
+      "status": "passed",
+      "durationMs": 2949
+    },
+    {
+      "file": "service-preflight.spec.ts",
+      "title": "owner service page explains exact Mainnet proposal and keeps spending disabled",
+      "status": "passed",
+      "durationMs": 4751
+    },
+    {
+      "file": "verification.spec.ts",
+      "title": "owner records independent verification; edited instructions invalidate approval",
+      "status": "passed",
+      "durationMs": 14898
+    },
+    {
+      "file": "wallet-pause.spec.ts",
+      "title": "hosted wallet pause is visible and both signature endpoints fail closed",
+      "status": "passed",
+      "durationMs": 2994
+    },
+    {
+      "file": "wallet.spec.ts",
+      "title": "wallet sign-in uses a real personal signature; logout, replay and cross-user APIs are enforced",
+      "status": "skipped",
+      "durationMs": 585
+    },
+    {
+      "file": "wallet.spec.ts",
+      "title": "Wallet Standard connect UI signs in, switches accounts safely and fits mobile",
+      "status": "skipped",
+      "durationMs": 580
+    },
+    {
+      "file": "wallet.spec.ts",
+      "title": "wallet loading provides native recovery when JavaScript cannot load",
+      "status": "skipped",
+      "durationMs": 572
+    }
+  ],
+  "ok": true
+}

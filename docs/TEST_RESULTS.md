@@ -1,4 +1,10 @@
-# Current Mainnet continuation results — October 29
+# Current verified application — 2571cea
+
+**Final production browser suite: 14 passed, 0 failed, 3 intentional hosted-wallet skips; zero navigation retries.** All 17 cases were collected. The full seven-step judge, owner persistence, actual Walrus recall, Tatum, Refresh loading/success/failure, responsive preflight, and current-instruction verification passed. [Machine-readable final browser result](evidence/production-browser-mainnet.json). Local full suite: 14 passed / 3 intentional skips; unit suite: 110 passed / 16 files. Lint, TypeScript, formatting and Webpack production build passed. Final npm advisory audit: zero vulnerabilities. Credential scans found zero configured/historical secret matches in workspace, decoded archives and Git history.
+
+[Authenticated core smoke](evidence/production-core-smoke.json) independently passed on the same deployed code. [Production Mainnet preflight](evidence/production-payment-preflight.json) returned 200 with spending disabled. [Real provider isolation](evidence/two-tenant-mainnet-memory.json) is a controlled loopback/Neon/Mainnet proof, not physical production registration. Payment settlement is unproven. The following records retain the earlier failed attempts and their fixes.
+
+## Earlier continuation attempts — October 29
 
 Current tests supersede the historical ledgers below: 110 unit tests / 16 files passed, including withdrawal redemption, signature-disclosure cancellation races and rejected/interrupted facilitator verification; lint, TypeScript and Webpack build passed. Local browser rerun: **14 passed / 3 intentional skips** (two live-provider cases and hosted-only pause). Prior hosted HTTP/1.1 run: **12 passed / 1 transport-navigation failure / 3 intentional hosted-wallet skips**. The updated hosted run on 222a09e passed 13 tests, failed one expanded-payment-panel mobile width assertion, and intentionally skipped three hosted wallet fixtures. This application layout defect is now covered by an expanded local regression and was fixed with a scoped responsive terms grid; the passing deployed rerun is recorded below when complete.
 

@@ -32,6 +32,8 @@ The public practice uses synthetic invoices and a synthetic callback. Its Walrus
 
 The [Memory Learning Report](https://payguard-ai-henna.vercel.app/proof#learning) measures 18 authored synthetic scenarios using four genuine recalls. The initial run found three false alarms; the corrected run met 18/18 specified contracts, preserved all baseline findings and added zero critical warnings across four unchanged controls. This is a small contract evaluation, not a real-world fraud accuracy claim. [Before](docs/evidence/learning-before.json) · [After](docs/evidence/learning-report.json).
 
+**Latest verified application (`2571cea`): 110 unit tests; full production browser suite 14 passed, 0 failed, 3 security-paused wallet skips.** Owner/Neon, new-session Walrus recall, Tatum and unsigned Mainnet preflight passed live. Physical wallet onboarding and genuine service settlement remain unproven. [Current completion matrix](docs/RELEASE_STATUS.md) · [Browser evidence](docs/evidence/production-browser-mainnet.json).
+
 ## What is implemented
 
 - Responsive landing page and workspace, official brand assets, reduced-motion support, keyboard-friendly dialogs and mobile navigation.

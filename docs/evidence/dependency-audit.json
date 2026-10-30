@@ -1,0 +1,20 @@
+{
+  "checkedAt": "2026-10-30T00:02:57.021Z",
+  "vulnerabilities": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0,
+    "total": 0
+  },
+  "dependencies": {
+    "prod": 126,
+    "dev": 476,
+    "optional": 151,
+    "peer": 0,
+    "peerOptional": 0,
+    "total": 649
+  },
+  "packageLockSha256": "0e07482c0f767ac565af68491cf32ab93220a3ceeba11235b445f28b38c0d000"
+}

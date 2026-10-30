@@ -1,3 +1,17 @@
+# Final verified application checkpoint — 2571cea
+
+Application commit 2571cead1d78e1db2214f893e43189469bdf1785 is pushed, Vercel Ready and actually verified in production. Full hosted run: 14 passed / 0 failed / 3 intentionally skipped wallet fixtures, zero transport retries. Core owner/Neon/fresh-session recall/Tatum/preflight passed on the same commit. Local 14 passed / 3 skips; 110 unit tests / 16 files; lint/typecheck/format/Webpack build pass. Final evidence/docs-only checkpoint may change release SHA while preserving identical application code. See RELEASE_STATUS.md and production-browser-mainnet.json.
+
+Preserved original 30 Mainnet memories; two controlled customer records make 32 tracked confirmed. Never reseed or rerun the two-write proof. Each controlled tenant logged out, returned and recalled its own policy on a later synthetic invoice; both-direction foreign access denied. Real provider job/blob/namespace recheck passed. Four actual recalls met 18 authored synthetic contracts; no real-world accuracy claim.
+
+Mainnet x402 code, actual quote-only HTTP 402, native SUI preflight and strict caps are implemented. No real service payment or receipt exists. Spending remains disabled and the hosted Slush pause remains. Owner already submitted review. Await review outcome/controlled unfunded physical-wallet retest, dedicated public payer/merchant addresses and explicit exact financial authorization. No secret or spending key should be requested. The five-minute application quote does not revoke signed epoch-valid bytes; disclosure locks the reservation before /verify. Never bypass the warning.
+
+The obsolete owner password was freshly rejected; current login/session/logout work. Credential scans cover configured and historical values plus decoded HTML report archives. Preserve .env.local privately and the untracked .gitignore.save backup. Do not reset Neon, force-push, duplicate memories, create a video or prepare the final submission form. Earlier failed browser evidence is retained below. The owned loopback QA server was stopped after validation; its isolated database files remain preserved.
+
+---
+
+## Earlier handoffs and provenance
+
 # Current continuation handoff — Sui Mainnet implementation
 
 This section supersedes historical checkpoints below. Started from e9781c2 with only the preserved untracked `.gitignore.save`. Do not remove that backup. No reset, force push, credential output or video.
