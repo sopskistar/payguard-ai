@@ -1,0 +1,38 @@
+{
+  "applicationCommit": "1953de67bbf5e20435fb77eccd644a123af7184e",
+  "stats": {
+    "startTime": "2026-10-30T14:21:11.192Z",
+    "duration": 26706.606,
+    "expected": 4,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "cases": [
+    {
+      "title": "private setup distinguishes unusable coins, usable funds, security pause and failed checks (fixtures, no settlement)",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "mobile navigation closes, traps focus, locks scroll and supports direct/back navigation",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "owner service page explains exact Mainnet proposal and keeps spending disabled",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "hosted wallet pause is visible and both signature endpoints fail closed",
+      "status": "expected",
+      "annotations": []
+    }
+  ],
+  "actualMainnetPreflight": true,
+  "partialFailureCases": "Browser/provider fixtures, not induced production provider failures",
+  "financialSigning": false,
+  "settlement": false,
+  "video": false
+}

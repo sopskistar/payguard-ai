@@ -26,4 +26,9 @@ All read-only checks can pass while quote readiness remains false because the pa
 ## Evidence
 
 - [Corrected local code against genuine Mainnet responses and deployed public addresses](evidence/balance-fix-local-mainnet.json). This is not a Vercel execution claim.
-- Production verification and final test results will be recorded after the validated engineering deployment.
+- [Authenticated Vercel Production verification](evidence/balance-fix-production.json): both unchanged accounts pass; checkpoint 339803385, then browser refresh 339803415.
+- [Focused hosted regression result](evidence/balance-fix-hosted-tests.json): 4 passed / 0 failed / 0 skipped. [Local validation](evidence/balance-fix-local-tests.json): 123 unit/integration passes; full local browser 20/0/3 environment skips.
+- [First custom Production acceptance attempt](evidence/balance-fix-production-first.json) passed API reads but did not complete its browser phase; preserved separately. Complete rerun passed all views.
+- [Desktop](screenshots/balance-fix/payment-setup-1280.png) and [mobile](screenshots/balance-fix/payment-setup-390.png) captures mask public wallet addresses; exact DOM/copy equality is recorded privately as booleans.
+
+Actual Production balances match the local observation: Wallet A total/coins **0.027993344 SUI**, address **0**; Wallet B total/coins/address **0**. Flags remain false, no address was replaced, 32 memories remain confirmed, and service receipt count is zero. Quote readiness is false until usable address-balance funding is separately reviewed and available.

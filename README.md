@@ -10,6 +10,8 @@ The application is deployed and production-tested; wallet security and funded se
 
 Private owner wallet configuration: [Payment Setup](docs/PAYMENT_SETUP.md) · [prepared experiments](docs/PAYMENT_EXPERIMENTS.md) · [session recovery matrix](docs/SESSION_RECOVERY.md). Both wallets already exist. Settlement remains disabled.
 
+**Balance checker corrected:** both existing Production wallets are configured and verified. Read-only checks now handle provider rate limits and omitted zero fields, preserve partial results and show safe stage diagnostics. Both payment flags remain false. [Cause, current balances and verification](docs/BALANCE_CHECK_FIX.md).
+
 ## Judge? Start Here
 
 **PayGuard Verify — Verify before you pay. Remember what nearly went wrong.**

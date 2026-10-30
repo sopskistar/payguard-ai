@@ -1,0 +1,267 @@
+{
+  "checkedAt": "2026-10-30T14:19:51.447Z",
+  "release": {
+    "application": "PayGuard Verify",
+    "commit": "1953de67bbf5e20435fb77eccd644a123af7184e",
+    "recordedProofCount": 30,
+    "proofExportedAt": "2026-10-28T23:01:40.457Z",
+    "modes": ["public-demo", "owner-admin", "wallet-member", "recorded-proof"]
+  },
+  "readOnly": true,
+  "configurationChanged": false,
+  "signatures": false,
+  "transactions": false,
+  "video": false,
+  "configuration": {
+    "status": 200,
+    "payerMatchesOriginal": true,
+    "merchantMatchesOriginal": true,
+    "partiesDistinct": true,
+    "quoteEnabled": false,
+    "settlementEnabled": false,
+    "securityCleared": false,
+    "partyFingerprints": {
+      "payer": "4d843c0976858a6888635ec75d5b55a50598e5baaaaecafbcc21a11cc77b17ee",
+      "recipient": "442915c203856a4a450f74af0c19be8e2058b604d9a772a17f563bad79d47ba9"
+    }
+  },
+  "check": {
+    "status": 200,
+    "state": "passed",
+    "diagnostics": [
+      {
+        "stage": "configuration",
+        "label": "Deployed read-only payment configuration",
+        "status": "passed",
+        "checkedAt": "2026-10-30T14:19:53.602Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "tentacle.supported",
+        "label": "Tentacle x402 v2 exact sponsorship",
+        "status": "passed",
+        "checkedAt": "2026-10-30T14:19:53.797Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "tatum.connection",
+        "label": "Tatum native gRPC connection and authentication",
+        "status": "passed",
+        "checkedAt": "2026-10-30T14:19:53.964Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "tatum.chain",
+        "label": "Sui Mainnet chain identity",
+        "status": "passed",
+        "checkedAt": "2026-10-30T14:19:53.964Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "tatum.native_sui",
+        "label": "Native SUI identity and units",
+        "status": "passed",
+        "checkedAt": "2026-10-30T14:19:54.321Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "tatum.protocol",
+        "label": "Address-balance gas protocol feature",
+        "status": "passed",
+        "checkedAt": "2026-10-30T14:19:54.829Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "balance.payer",
+        "label": "Wallet A native SUI balance",
+        "status": "passed",
+        "checkedAt": "2026-10-30T14:19:55.320Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "balance.recipient",
+        "label": "Wallet B native SUI balance",
+        "status": "passed",
+        "checkedAt": "2026-10-30T14:19:55.821Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "configuration.parties",
+        "label": "Payer, merchant and sponsor separation",
+        "status": "passed",
+        "checkedAt": "2026-10-30T14:19:55.822Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      }
+    ],
+    "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+    "checkpoint": "339803385",
+    "decimals": 9,
+    "asset": "0x2::sui::SUI",
+    "addressBalanceGasEnabled": true,
+    "readyForQuotePreparation": false,
+    "sufficientlyFunded": false,
+    "balances": {
+      "payer": {
+        "totalAtomic": "27993344",
+        "coinAtomic": "27993344",
+        "addressAtomic": "0",
+        "derivation": "Address balance derived from explicit total minus coin balance",
+        "checkedAt": "2026-10-30T14:19:55.320Z"
+      },
+      "recipient": {
+        "totalAtomic": "0",
+        "coinAtomic": "0",
+        "addressAtomic": "0",
+        "derivation": "Both components proven zero by the explicit zero total",
+        "checkedAt": "2026-10-30T14:19:55.821Z"
+      }
+    }
+  },
+  "browserFreshCheck": {
+    "state": "passed",
+    "checkpoint": "339803415"
+  },
+  "views": [
+    {
+      "width": 1280,
+      "height": 1000,
+      "zoom": "100%",
+      "documentWidth": 1280,
+      "roles": [
+        {
+          "role": "payer",
+          "fullAddressMatchesConfiguration": true,
+          "copiedAddressMatchesConfiguration": true,
+          "addressLength": 66,
+          "addressFitsContainer": true,
+          "controlsDoNotOverlap": true,
+          "lastSuccessfulTimestampPresent": true
+        },
+        {
+          "role": "recipient",
+          "fullAddressMatchesConfiguration": true,
+          "copiedAddressMatchesConfiguration": true,
+          "addressLength": 66,
+          "addressFitsContainer": true,
+          "controlsDoNotOverlap": true,
+          "lastSuccessfulTimestampPresent": true
+        }
+      ]
+    },
+    {
+      "width": 360,
+      "height": 844,
+      "zoom": "100%",
+      "documentWidth": 360,
+      "roles": [
+        {
+          "role": "payer",
+          "fullAddressMatchesConfiguration": true,
+          "copiedAddressMatchesConfiguration": true,
+          "addressLength": 66,
+          "addressFitsContainer": true,
+          "controlsDoNotOverlap": true,
+          "lastSuccessfulTimestampPresent": true
+        },
+        {
+          "role": "recipient",
+          "fullAddressMatchesConfiguration": true,
+          "copiedAddressMatchesConfiguration": true,
+          "addressLength": 66,
+          "addressFitsContainer": true,
+          "controlsDoNotOverlap": true,
+          "lastSuccessfulTimestampPresent": true
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "zoom": "100%",
+      "documentWidth": 390,
+      "roles": [
+        {
+          "role": "payer",
+          "fullAddressMatchesConfiguration": true,
+          "copiedAddressMatchesConfiguration": true,
+          "addressLength": 66,
+          "addressFitsContainer": true,
+          "controlsDoNotOverlap": true,
+          "lastSuccessfulTimestampPresent": true
+        },
+        {
+          "role": "recipient",
+          "fullAddressMatchesConfiguration": true,
+          "copiedAddressMatchesConfiguration": true,
+          "addressLength": 66,
+          "addressFitsContainer": true,
+          "controlsDoNotOverlap": true,
+          "lastSuccessfulTimestampPresent": true
+        }
+      ]
+    },
+    {
+      "width": 430,
+      "height": 844,
+      "zoom": "100%",
+      "documentWidth": 430,
+      "roles": [
+        {
+          "role": "payer",
+          "fullAddressMatchesConfiguration": true,
+          "copiedAddressMatchesConfiguration": true,
+          "addressLength": 66,
+          "addressFitsContainer": true,
+          "controlsDoNotOverlap": true,
+          "lastSuccessfulTimestampPresent": true
+        },
+        {
+          "role": "recipient",
+          "fullAddressMatchesConfiguration": true,
+          "copiedAddressMatchesConfiguration": true,
+          "addressLength": 66,
+          "addressFitsContainer": true,
+          "controlsDoNotOverlap": true,
+          "lastSuccessfulTimestampPresent": true
+        }
+      ]
+    }
+  ],
+  "browser": {
+    "version": "151.0.7922.34",
+    "errors": [],
+    "quoteButtonDisabled": true
+  },
+  "preservedRecords": {
+    "confirmed_memories": 32,
+    "service_receipts": 0
+  },
+  "ok": true
+}
