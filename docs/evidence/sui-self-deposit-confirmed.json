@@ -1,0 +1,58 @@
+{
+  "status": "confirmed",
+  "checkedAt": "2026-10-30T18:17:33.617Z",
+  "source": "Tatum native Sui Mainnet gRPC",
+  "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+  "digest": "6MXocsgenJghaAG5J7AAE9FqAEdkhrkjXgq13SiuBnMP",
+  "checkpoint": "339863005",
+  "successfulFinalized": true,
+  "exactApprovedBytes": true,
+  "conversionMist": "5000000",
+  "gas": {
+    "computationCost": "100000",
+    "storageCost": "988000",
+    "storageRebate": "987901",
+    "nonRefundableStorageFee": "99"
+  },
+  "netGasMist": "100099",
+  "before": {
+    "total": "27993344",
+    "coins": "27993344",
+    "address": "0"
+  },
+  "after": {
+    "total": "27893245",
+    "coins": "22893245",
+    "address": "5000000"
+  },
+  "expected": {
+    "total": "27893245",
+    "coins": "22893245",
+    "address": "5000000"
+  },
+  "balanceDeltaMatches": true,
+  "balanceChangesMatch": true,
+  "usableAddressBalance": true,
+  "servicePayment": false,
+  "recordedAt": "2026-10-30T18:22:18.003Z",
+  "sourceCommit": "62b0fa3274376b44f8ebb27fa4984966384fbe42",
+  "asset": "0x2::sui::SUI",
+  "decimals": 9,
+  "approvedAmountMist": "5000000",
+  "approvedGasCapMist": "2000000",
+  "approvedBytesSha256": "6cd20f7766bd11869c93ac8c090fb8c2863389d2b8b453fb7b9c086580d69bce",
+  "payerFingerprint": "4d843c0976858a6888635ec75d5b55a50598e5baaaaecafbcc21a11cc77b17ee",
+  "senderDestinationAndGasOwnerEqual": true,
+  "merchantParticipated": false,
+  "ownerSlushSignatureCryptographicallyVerified": true,
+  "attemptCreatedAt": "2026-10-30T18:16:09.351Z",
+  "attemptConfirmedAt": "2026-10-30T18:17:36.128Z",
+  "independentCliRecheck": {
+    "checkedAt": "2026-10-30T18:18:59.854Z",
+    "status": "confirmed",
+    "checkpoint": "339863005",
+    "exactApprovedBytes": true,
+    "balanceDeltaMatches": true
+  },
+  "privateSignaturePublished": false
+}

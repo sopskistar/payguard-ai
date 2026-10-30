@@ -1,0 +1,137 @@
+{
+  "checkedAt": "2026-10-30T18:21:12.815Z",
+  "readOnly": true,
+  "quoteRequested": false,
+  "servicePaymentInitiated": false,
+  "environmentChanged": false,
+  "configuration": {
+    "payerMatchesOriginal": true,
+    "merchantMatchesOriginal": true,
+    "quoteEnabled": false,
+    "settlementEnabled": false,
+    "securityCleared": false
+  },
+  "readiness": {
+    "state": "passed",
+    "readyForQuotePreparation": true,
+    "readyForExactApproval": false,
+    "sufficientlyFunded": true,
+    "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+    "checkpoint": "339863941",
+    "asset": "0x2::sui::SUI",
+    "decimals": 9,
+    "diagnostics": [
+      {
+        "stage": "configuration",
+        "label": "Deployed read-only payment configuration",
+        "status": "passed",
+        "checkedAt": "2026-10-30T18:21:16.875Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "tentacle.supported",
+        "label": "Tentacle x402 v2 exact sponsorship",
+        "status": "passed",
+        "checkedAt": "2026-10-30T18:21:17.085Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "tatum.connection",
+        "label": "Tatum native gRPC connection and authentication",
+        "status": "passed",
+        "checkedAt": "2026-10-30T18:21:17.260Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "tatum.chain",
+        "label": "Sui Mainnet chain identity",
+        "status": "passed",
+        "checkedAt": "2026-10-30T18:21:17.260Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "tatum.native_sui",
+        "label": "Native SUI identity and units",
+        "status": "passed",
+        "checkedAt": "2026-10-30T18:21:17.605Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "tatum.protocol",
+        "label": "Address-balance gas protocol feature",
+        "status": "passed",
+        "checkedAt": "2026-10-30T18:21:18.110Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "balance.payer",
+        "label": "Wallet A native SUI balance",
+        "status": "passed",
+        "checkedAt": "2026-10-30T18:21:18.616Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "balance.recipient",
+        "label": "Wallet B native SUI balance",
+        "status": "passed",
+        "checkedAt": "2026-10-30T18:21:19.106Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "configuration.parties",
+        "label": "Payer, merchant and sponsor separation",
+        "status": "passed",
+        "checkedAt": "2026-10-30T18:21:19.107Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      }
+    ],
+    "balances": {
+      "payer": {
+        "totalAtomic": "27893245",
+        "coinAtomic": "22893245",
+        "addressAtomic": "5000000",
+        "derivation": "Explicit total and both components",
+        "checkedAt": "2026-10-30T18:21:18.616Z"
+      },
+      "recipient": {
+        "totalAtomic": "0",
+        "coinAtomic": "0",
+        "addressAtomic": "0",
+        "derivation": "Both components proven zero by the explicit zero total",
+        "checkedAt": "2026-10-30T18:21:19.106Z"
+      }
+    }
+  },
+  "preservedRecords": {
+    "confirmed_memories": 32,
+    "service_receipts": 0
+  },
+  "ok": true
+}

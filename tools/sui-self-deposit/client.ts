@@ -93,9 +93,11 @@ async function init() {
   const freshness = () =>
     set(
       'status',
-      Date.now() > expiry
-        ? 'Preview is stale. It remains readable; rerun the read-only preparation before any approval. Signing stays disabled.'
-        : `Simulation succeeded with real coins and checks enabled at ${p.checkedAt}. Inspect the attempt status below before any action.`,
+      state?.phase === 'confirmed'
+        ? 'Self-deposit confirmed through Tatum. This one-attempt authorization is consumed; no further signing or submission is available.'
+        : Date.now() > expiry
+          ? 'Preview is stale. It remains readable; rerun the read-only preparation before any approval. Signing stays disabled.'
+          : `Simulation succeeded with real coins and checks enabled at ${p.checkedAt}. Inspect the attempt status below before any action.`,
     );
   freshness();
   set(
@@ -141,7 +143,7 @@ async function init() {
   set('bytes', p.unsignedBytes);
   set(
     'identity',
-    `Unsigned digest (not an executed transaction): ${p.unsignedDigest}\nSHA-256: ${p.sha256}`,
+    `Prepared transaction digest; execution must be independently verified: ${p.unsignedDigest}\nSHA-256: ${p.sha256}`,
   );
   button('copy').disabled = false;
   button('copy').onclick = async () => {
@@ -180,6 +182,16 @@ async function init() {
         : `Attempt status: ${state.phase}. Digest: ${state.digest}. ${state.detail || ''}`,
     );
     set('receipt', state?.verification ? JSON.stringify(state.verification, null, 2) : '');
+    if (state?.phase === 'confirmed') {
+      set(
+        'mode',
+        'One Wallet A self-deposit confirmed. Signing and submission are locked. No x402 purchase was initiated.',
+      );
+      set(
+        'identity',
+        `Finalized conversion digest: ${state.digest}\nSHA-256 of exact approved bytes: ${p.sha256}`,
+      );
+    }
   }
   async function api(path: string, body: unknown = {}) {
     const response = await fetch(path, {

@@ -1,5 +1,9 @@
 # Mainnet proof ledger
 
+## Confirmed wallet custody conversion — October 30, 2026
+
+One owner-approved **0.005 SUI Wallet A self-deposit** finalized at checkpoint **339863005**, digest `6MXocsgenJghaAG5J7AAE9FqAEdkhrkjXgq13SiuBnMP`. Native Tatum Mainnet gRPC independently verifies success, exact approved bytes, actual gas **0.000100099 SUI**, and final Wallet A coin/address balances **0.022893245 / 0.005 SUI**. [Actual receipt and boundaries](SUI_SELF_DEPOSIT_RESULT.md). **This is not an x402 purchase.** Fresh Production audit confirms 32 preserved memories and zero service receipts; payment switches stay false and production Slush clearance remains unresolved.
+
 ## Fresh recovery recheck — October 30, 2026
 
 All **32 tracked confirmed records (30 original owner + 2 controlled tenant)** passed fresh SDK job/blob/namespace checks without writes. Neon contains **zero genuine service-payment receipts**. [Audit](evidence/session-recovery-audit.json). Production owner login/logout, Neon persistence, fresh-session recall (OFF 0 / ON 7 owned citations), unchanged baseline holds and actual Tatum Mainnet reads passed on `7531455` before the engineering update. [Core evidence](evidence/production-core-smoke.json). This does not prove funded wallet or x402 settlement compatibility.

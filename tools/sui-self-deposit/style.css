@@ -91,6 +91,7 @@ summary {
 }
 #status,
 #connection,
+#execution,
 #identity {
   overflow-wrap: anywhere;
 }

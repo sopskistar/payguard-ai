@@ -1,0 +1,17 @@
+{
+  "checkedAt": "2026-10-30T18:23:51.505Z",
+  "browser": "151.0.7922.34",
+  "realConfirmedConversion": true,
+  "financialActionsRequested": false,
+  "views": [
+    {
+      "width": 1280,
+      "zoom": "100%",
+      "controlsDisabled": true,
+      "noOverflow": true,
+      "realReceiptVisible": true
+    }
+  ],
+  "ok": false,
+  "error": "Read-only confirmed-receipt UI check failed."
+}

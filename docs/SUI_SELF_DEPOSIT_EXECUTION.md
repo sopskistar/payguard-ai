@@ -1,5 +1,7 @@
 # Owner-approved localhost self-deposit
 
+**Completed:** one exact owner-operated conversion is finalized and independently verified. See [actual digest, gas, balances and limits](SUI_SELF_DEPOSIT_RESULT.md). The one-attempt lock is consumed, localhost is back in read-only mode, and no x402 purchase has been initiated. The steps below record the controlled execution workflow.
+
 The owner explicitly authorized preparation of **one 0.005 SUI (5,000,000 MIST) self-deposit on Sui Mainnet**, with sender, recipient and gas owner all the existing Wallet A, and a **maximum 0.002 SUI gas budget**. Wallet B must be absent. Actual transaction review/approval remains in the owner's existing Slush account. This authorization does not cover x402, other transfers, new wallets or retries after failure/uncertainty.
 
 The standalone tool defaults to review mode. Active signing requires the explicit local process argument `--owner-approved-signing` plus an ignored, private `authorization.json` that matches the freshly simulated BCS hash, exact owner address, asset, chain, amount, gas budget and expiry. The operator recorded the owner's authorization locally; the source contains no hardcoded owner address or key. The server refuses hosted/Vercel execution and binds only to loopback. Production PayGuard wallet policy and both false payment switches are untouched.

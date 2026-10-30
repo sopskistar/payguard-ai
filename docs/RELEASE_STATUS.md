@@ -1,3 +1,11 @@
+# Wallet A conversion confirmed — October 30, 2026
+
+**One real owner-approved 0.005 SUI self-deposit succeeded**, independently verified through Tatum at checkpoint **339863005**. Digest `6MXocsgenJghaAG5J7AAE9FqAEdkhrkjXgq13SiuBnMP`; actual gas **0.000100099 SUI**, below the 0.002 SUI cap. Wallet A now has **0.005 SUI address balance**, **0.022893245 SUI coins**, total **0.027893245 SUI**. Wallet B was absent. The localhost attempt is consumed and the server is back in read-only mode. [Confirmed result](SUI_SELF_DEPOSIT_RESULT.md).
+
+Authenticated Production read-only readiness now passes, including Tentacle support and both unchanged public addresses. Quote preparation is technically ready but **still disabled**; settlement remains false and production Slush clearance unresolved. **No x402 purchase initiated; zero service receipts.** Neon still has **32 confirmed memories**. The earlier preparation entries below are historical, not the current conversion outcome.
+
+---
+
 # Owner-approved local self-deposit flow — October 30, 2026
 
 The owner authorized preparation of exactly **0.005 SUI** to Wallet A's own Mainnet address balance, with Wallet A paying at most **0.002 SUI gas**. The standalone localhost utility now supports a single owner-triggered Slush sign-only request and a separate explicit one-time submission, backed by durable locks, full BCS equality and cryptographic signature validation. Fresh genuine simulation passed; independent Tatum balances remain coin objects **0.027993344 SUI**, address balance **zero** before execution. **No funded conversion or x402 settlement is claimed by preparation.** [Owner-controlled flow](SUI_SELF_DEPOSIT_EXECUTION.md) · [fresh simulation](evidence/self-deposit-signing-preview.json) · [fully mocked signing fixtures](evidence/self-deposit-signing-fixtures.json).

@@ -1,3 +1,11 @@
+# Owner-operated self-deposit verified — October 30, 2026
+
+**143 unit/integration passes across 21 files**, lint/typecheck/format/build pass; five fully intercepted signing UI scenarios pass with no real financial calls. Actual owner-controlled Slush signing and one genuine Mainnet self-deposit then succeeded: Tatum confirms digest `6MXocsgenJghaAG5J7AAE9FqAEdkhrkjXgq13SiuBnMP`, finalized checkpoint **339863005**, net gas **100,099 MIST**, address balance **5,000,000 MIST** and coin balance **22,893,245 MIST**. [Actual result](SUI_SELF_DEPOSIT_RESULT.md) · [mock fixture boundaries](evidence/self-deposit-signing-fixtures.json) · [read-only receipt browser checks](evidence/self-deposit-confirmed-browser.json).
+
+Production's subsequent authenticated read-only check passes all nine stages; quote readiness true, quote/settlement flags false, security clearance false. [Evidence](evidence/post-conversion-readiness.json). Database SELECT-only audit confirms **32 memories and zero service receipts**. Hosted funded signing and genuine x402 settlement remain untested/blocked; the local self-deposit is not counted as a service purchase. Historical failures/skips below remain preserved. No video.
+
+---
+
 # Production balance fix verified — October 30, 2026
 
 Application commit **1953de6** is deployed and verified on Vercel. Both public addresses exactly match the authenticated Production values read before this task, including all 66 characters and Copy output. Neither address nor payment switch was changed. Quote preparation and settlement remain false; Slush clearance remains false.

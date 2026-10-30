@@ -1,0 +1,38 @@
+{
+  "checkedAt": "2026-10-30T18:25:32.211Z",
+  "browser": "151.0.7922.34",
+  "realConfirmedConversion": true,
+  "financialActionsRequested": false,
+  "views": [
+    {
+      "width": 1280,
+      "zoom": "100%",
+      "controlsDisabled": true,
+      "noOverflow": true,
+      "realReceiptVisible": true
+    },
+    {
+      "width": 360,
+      "zoom": "100%",
+      "controlsDisabled": true,
+      "noOverflow": true,
+      "realReceiptVisible": true
+    },
+    {
+      "width": 390,
+      "zoom": "100%",
+      "controlsDisabled": true,
+      "noOverflow": true,
+      "realReceiptVisible": true
+    },
+    {
+      "width": 430,
+      "zoom": "100%",
+      "controlsDisabled": true,
+      "noOverflow": true,
+      "realReceiptVisible": true
+    }
+  ],
+  "errors": [],
+  "ok": true
+}
