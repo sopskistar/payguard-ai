@@ -1,0 +1,193 @@
+{
+  "checkedAt": "2026-10-30T08:56:43.481Z",
+  "applicationCommit": "ec74c88027fba1a255cf66a72fc2b89bfeb9a4dd",
+  "execution": "First combined production browser run; one shared worker/browser",
+  "passed": 16,
+  "failed": 2,
+  "skipped": 3,
+  "classification": "Refresh initialization blocked by ERR_NETWORK_CHANGED on CSS/JS assets; refusal document request hit the same transport reset. No HTTP error responses were observed. Both cases passed individually in fresh processes.",
+  "financialSignature": false,
+  "memoryWrites": false,
+  "tests": [
+    {
+      "file": "app.spec.ts",
+      "title": "public Verify journey, replay controls and responsive navigation",
+      "outcome": "expected",
+      "transport": []
+    },
+    {
+      "file": "app.spec.ts",
+      "title": "anonymous users cannot read owner data or mutate records; origin is checked",
+      "outcome": "expected",
+      "transport": []
+    },
+    {
+      "file": "app.spec.ts",
+      "title": "owner intake persists through a fresh browser context, with no fictional memory",
+      "outcome": "expected",
+      "transport": []
+    },
+    {
+      "file": "judge.spec.ts",
+      "title": "judge never presents active walkthrough buttons before client readiness",
+      "outcome": "expected",
+      "transport": []
+    },
+    {
+      "file": "judge.spec.ts",
+      "title": "judge completes all seven clear steps, with back navigation, real evidence and no account",
+      "outcome": "expected",
+      "transport": []
+    },
+    {
+      "file": "judge.spec.ts",
+      "title": "public users cannot quote, approve or settle service fees",
+      "outcome": "expected",
+      "transport": []
+    },
+    {
+      "file": "live-chain.spec.ts",
+      "title": "LIVE Tatum transaction inspector rejects an unrelated sample payment",
+      "outcome": "expected",
+      "transport": []
+    },
+    {
+      "file": "live-memory.spec.ts",
+      "title": "LIVE Mainnet correction is recalled in a separate owner session",
+      "outcome": "expected",
+      "transport": []
+    },
+    {
+      "file": "product-story.spec.ts",
+      "title": "product story has six usable stages, play/pause/replay and no private operations",
+      "outcome": "expected",
+      "transport": []
+    },
+    {
+      "file": "product-story.spec.ts",
+      "title": "reduced-motion and mobile story preserve readable controls and clear access paths",
+      "outcome": "expected",
+      "transport": []
+    },
+    {
+      "file": "product-ux.spec.ts",
+      "title": "refresh shows loading, honest success, timestamp and failure; public actions explain owner access",
+      "outcome": "unexpected",
+      "transport": [
+        {
+          "failures": [
+            {
+              "method": "GET",
+              "path": "/_next/static/css/8379d1e61b4b7c5b.css",
+              "error": "net::ERR_NETWORK_CHANGED"
+            },
+            {
+              "method": "GET",
+              "path": "/_next/static/css/e6fceae4222f23b0.css",
+              "error": "net::ERR_NETWORK_CHANGED"
+            },
+            {
+              "method": "GET",
+              "path": "/_next/static/chunks/webpack-c9720f10a627a24d.js",
+              "error": "net::ERR_NETWORK_CHANGED"
+            },
+            {
+              "method": "GET",
+              "path": "/_next/static/chunks/4bd1b696-cd566323a07c169f.js",
+              "error": "net::ERR_NETWORK_CHANGED"
+            },
+            {
+              "method": "GET",
+              "path": "/_next/static/chunks/794-4ca22931fae0b30a.js",
+              "error": "net::ERR_NETWORK_CHANGED"
+            }
+          ],
+          "inFlight": [],
+          "badResponses": [],
+          "publicReadiness": []
+        }
+      ]
+    },
+    {
+      "file": "product-ux.spec.ts",
+      "title": "landing CTAs, FAQ, proof and mobile layouts are deliberate and functional",
+      "outcome": "expected",
+      "transport": []
+    },
+    {
+      "file": "product-ux.spec.ts",
+      "title": "owner sign-in clears submitted credentials while the request is pending",
+      "outcome": "expected",
+      "transport": []
+    },
+    {
+      "file": "service-preflight.spec.ts",
+      "title": "owner service page explains exact Mainnet proposal and keeps spending disabled",
+      "outcome": "expected",
+      "transport": []
+    },
+    {
+      "file": "verification.spec.ts",
+      "title": "owner records independent verification; edited instructions invalidate approval",
+      "outcome": "expected",
+      "transport": []
+    },
+    {
+      "file": "wallet-pause.spec.ts",
+      "title": "hosted wallet pause is visible and both signature endpoints fail closed",
+      "outcome": "expected",
+      "transport": []
+    },
+    {
+      "file": "wallet-review.spec.ts",
+      "title": "public official review selector connects only by choice, never signs or authenticates, and disconnects",
+      "outcome": "expected",
+      "transport": []
+    },
+    {
+      "file": "wallet-review.spec.ts",
+      "title": "wallet refusal remains with the official selector; no signature or fallback login follows",
+      "outcome": "unexpected",
+      "transport": [
+        {
+          "failures": [
+            {
+              "method": "GET",
+              "path": "/connect",
+              "error": "net::ERR_NETWORK_CHANGED"
+            }
+          ],
+          "inFlight": [
+            {
+              "method": "GET",
+              "path": "/connect",
+              "type": "document",
+              "elapsedMs": 490
+            }
+          ],
+          "badResponses": [],
+          "publicReadiness": []
+        }
+      ]
+    },
+    {
+      "file": "wallet.spec.ts",
+      "title": "wallet sign-in uses a real personal signature; logout, replay and cross-user APIs are enforced",
+      "outcome": "skipped",
+      "transport": []
+    },
+    {
+      "file": "wallet.spec.ts",
+      "title": "Wallet Standard connect UI signs in, switches accounts safely and fits mobile",
+      "outcome": "skipped",
+      "transport": []
+    },
+    {
+      "file": "wallet.spec.ts",
+      "title": "wallet loading provides native recovery when JavaScript cannot load",
+      "outcome": "skipped",
+      "transport": []
+    }
+  ],
+  "startedAt": "2026-10-30T08:54:25.728Z"
+}

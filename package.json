@@ -24,7 +24,8 @@
     "memory:evaluate": "node --conditions=react-server --import tsx scripts/evaluate-memory.ts",
     "judge:publish-build": "node scripts/build-judge-pages.mjs",
     "memory:preflight": "node --conditions=react-server --import tsx scripts/memory-preflight.ts",
-    "memory:evaluate-learning": "node --conditions=react-server --import tsx scripts/evaluate-learning.ts"
+    "memory:evaluate-learning": "node --conditions=react-server --import tsx scripts/evaluate-learning.ts",
+    "test:e2e:isolated": "node scripts/run-isolated-e2e.mjs"
   },
   "dependencies": {
     "@fontsource/manrope": "^5.2.8",

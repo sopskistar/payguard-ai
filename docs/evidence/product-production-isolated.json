@@ -1,0 +1,242 @@
+{
+  "startedAt": "2026-10-30T09:05:18.415Z",
+  "baseURL": "https://payguard-ai-henna.vercel.app",
+  "isolation": "A fresh Playwright/Chromium process per spec; sequential; no automatic spec retry",
+  "mainnetMemoryWrites": false,
+  "paymentSettlement": false,
+  "video": false,
+  "passed": 18,
+  "failed": 0,
+  "skipped": 3,
+  "flaky": 0,
+  "specs": [
+    {
+      "file": "app.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "public Verify journey, replay controls and responsive navigation",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 11206
+        },
+        {
+          "title": "anonymous users cannot read owner data or mutate records; origin is checked",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 1388
+        },
+        {
+          "title": "owner intake persists through a fresh browser context, with no fictional memory",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 14971
+        }
+      ]
+    },
+    {
+      "file": "judge.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "judge never presents active walkthrough buttons before client readiness",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 3823
+        },
+        {
+          "title": "judge completes all seven clear steps, with back navigation, real evidence and no account",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 6671
+        },
+        {
+          "title": "public users cannot quote, approve or settle service fees",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 1212
+        }
+      ]
+    },
+    {
+      "file": "live-chain.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "LIVE Tatum transaction inspector rejects an unrelated sample payment",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 8845
+        }
+      ]
+    },
+    {
+      "file": "live-memory.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "LIVE Mainnet correction is recalled in a separate owner session",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 11847
+        }
+      ]
+    },
+    {
+      "file": "product-story.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "product story has six usable stages, play/pause/replay and no private operations",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 7168
+        },
+        {
+          "title": "reduced-motion and mobile story preserve readable controls and clear access paths",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 2593
+        }
+      ]
+    },
+    {
+      "file": "product-ux.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "refresh shows loading, honest success, timestamp and failure; public actions explain owner access",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 4783
+        },
+        {
+          "title": "landing CTAs, FAQ, proof and mobile layouts are deliberate and functional",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 10126
+        },
+        {
+          "title": "owner sign-in clears submitted credentials while the request is pending",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 2253
+        }
+      ]
+    },
+    {
+      "file": "service-preflight.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "owner service page explains exact Mainnet proposal and keeps spending disabled",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 4982
+        }
+      ]
+    },
+    {
+      "file": "verification.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "owner records independent verification; edited instructions invalidate approval",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 16930
+        }
+      ]
+    },
+    {
+      "file": "wallet-pause.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "hosted wallet pause is visible and both signature endpoints fail closed",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 6136
+        }
+      ]
+    },
+    {
+      "file": "wallet-review.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "public official review selector connects only by choice, never signs or authenticates, and disconnects",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 5154
+        },
+        {
+          "title": "wallet refusal remains with the official selector; no signature or fallback login follows",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 4501
+        }
+      ]
+    },
+    {
+      "file": "wallet.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "wallet sign-in uses a real personal signature; logout, replay and cross-user APIs are enforced",
+          "status": "skipped",
+          "annotations": [
+            {
+              "type": "skip",
+              "description": "Hosted wallet onboarding blocked pending Slush review; fixtures run on controlled loopback only.",
+              "location": {
+                "file": "/home/sopski/payguard-ai/tests/e2e/wallet.spec.ts",
+                "line": 10,
+                "column": 8
+              }
+            }
+          ],
+          "durationMs": 706
+        },
+        {
+          "title": "Wallet Standard connect UI signs in, switches accounts safely and fits mobile",
+          "status": "skipped",
+          "annotations": [
+            {
+              "type": "skip",
+              "description": "Hosted wallet onboarding blocked pending Slush review; fixtures run on controlled loopback only.",
+              "location": {
+                "file": "/home/sopski/payguard-ai/tests/e2e/wallet.spec.ts",
+                "line": 10,
+                "column": 8
+              }
+            }
+          ],
+          "durationMs": 589
+        },
+        {
+          "title": "wallet loading provides native recovery when JavaScript cannot load",
+          "status": "skipped",
+          "annotations": [
+            {
+              "type": "skip",
+              "description": "Hosted wallet onboarding blocked pending Slush review; fixtures run on controlled loopback only.",
+              "location": {
+                "file": "/home/sopski/payguard-ai/tests/e2e/wallet.spec.ts",
+                "line": 10,
+                "column": 8
+              }
+            }
+          ],
+          "durationMs": 588
+        }
+      ]
+    }
+  ],
+  "finishedAt": "2026-10-30T09:07:59.337Z",
+  "ok": true,
+  "applicationCommit": "ec74c88027fba1a255cf66a72fc2b89bfeb9a4dd",
+  "transport": "Chromium HTTPS over HTTP/1.1; Tatum native HTTP/2 gRPC",
+  "skipReason": "Three hosted wallet-authentication fixtures remain blocked by unresolved Slush review; all pass on controlled loopback",
+  "transportRetries": []
+}

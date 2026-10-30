@@ -1,11 +1,11 @@
 {
-  "checkedAt": "2026-10-29T23:57:00.595Z",
+  "checkedAt": "2026-10-30T09:02:22.224Z",
   "base": "https://payguard-ai-henna.vercel.app",
   "memoryWrites": false,
   "paymentsSent": false,
   "release": {
     "application": "PayGuard Verify",
-    "commit": "2571cead1d78e1db2214f893e43189469bdf1785",
+    "commit": "ec74c88027fba1a255cf66a72fc2b89bfeb9a4dd",
     "recordedProofCount": 30,
     "proofExportedAt": "2026-10-28T23:01:40.457Z",
     "modes": ["public-demo", "owner-admin", "wallet-member", "recorded-proof"]
@@ -49,7 +49,7 @@
   "tatum": {
     "status": 200,
     "chainId": "35834a8a",
-    "checkpoint": "339589368",
+    "checkpoint": "339723985",
     "digest": "os1iG8zow278c6hqxbuyxnvMUjzThsD8GTY8atdfzW6"
   },
   "revokedCookieRejected": true,

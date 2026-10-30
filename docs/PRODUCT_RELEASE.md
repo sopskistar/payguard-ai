@@ -1,5 +1,7 @@
 # Product experience and security-review release
 
+**Validated application commit: ec74c88, Vercel Ready.** Every hosted spec ran in a fresh browser process: 18 passed / 0 failed / 3 hosted-wallet skips, zero navigation retries. The first combined run’s transport failures are preserved in the test ledger.
+
 The public application is https://payguard-ai-henna.vercel.app/. The account-free judge journey is [/try](https://payguard-ai-henna.vercel.app/try). Product changes preserve the existing database, tenant controls, approval enforcement, confirmed memories and provider integrations.
 
 ## Public Slush review correction — deployed first
@@ -39,6 +41,15 @@ Latest measured results and deployment identity are recorded in [the test ledger
 | Judge memory step      | [Screenshot](evidence/screenshots/release-judge-desktop.png)                                                                      | [Screenshot](evidence/screenshots/release-judge-mobile.png)                                                                     |
 | Public workspace       | [Screenshot](evidence/screenshots/release-workspace-desktop.png)                                                                  | [Screenshot](evidence/screenshots/release-workspace-mobile.png)                                                                 |
 | Review-only connection | [Screenshot](evidence/screenshots/release-connect-desktop.png)                                                                    | [Screenshot](evidence/screenshots/release-connect-mobile.png)                                                                   |
+
+## Deployed visual smoke
+
+Production ec74c88 returned **200 on all 16 desktop/mobile route checks** (eight routes in two viewports), with zero overflow, broken images or browser errors. [Actual production measurements](evidence/product-production-visual.json). These additional screenshots were captured directly from production in fresh public contexts:
+
+- [Production desktop first viewport](evidence/screenshots/production-home-desktop-fold.png) · [Production mobile first viewport](evidence/screenshots/production-home-mobile-fold.png).
+- [Production judge memory step, desktop](evidence/screenshots/production-judge-desktop.png) · [Production judge memory step, mobile](evidence/screenshots/production-judge-mobile.png).
+
+The earlier screenshots above preserve the rebuilt local QA views. Neither set contains private records or credentials. Public sample data, recorded proof and actual workspace operations remain separate.
 
 ## External boundaries
 

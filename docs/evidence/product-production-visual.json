@@ -1,0 +1,172 @@
+{
+  "capturedAt": "2026-10-30T09:10:38.480Z",
+  "origin": "https://payguard-ai-henna.vercel.app",
+  "zoom": "100 percent",
+  "privateSession": false,
+  "video": false,
+  "screenshots": "Explicit public-page PNG captures only",
+  "checks": [
+    {
+      "device": "desktop",
+      "route": "/",
+      "status": 200,
+      "width": 1440,
+      "scrollWidth": 1440,
+      "zoom": 1,
+      "brokenImages": [],
+      "errors": []
+    },
+    {
+      "device": "desktop",
+      "route": "/try",
+      "status": 200,
+      "width": 1440,
+      "scrollWidth": 1440,
+      "zoom": 1,
+      "brokenImages": [],
+      "errors": []
+    },
+    {
+      "device": "desktop",
+      "route": "/app",
+      "status": 200,
+      "width": 1440,
+      "scrollWidth": 1440,
+      "zoom": 1,
+      "brokenImages": [],
+      "errors": []
+    },
+    {
+      "device": "desktop",
+      "route": "/app/replay",
+      "status": 200,
+      "width": 1440,
+      "scrollWidth": 1440,
+      "zoom": 1,
+      "brokenImages": [],
+      "errors": []
+    },
+    {
+      "device": "desktop",
+      "route": "/app/memory",
+      "status": 200,
+      "width": 1440,
+      "scrollWidth": 1440,
+      "zoom": 1,
+      "brokenImages": [],
+      "errors": []
+    },
+    {
+      "device": "desktop",
+      "route": "/connect",
+      "status": 200,
+      "width": 1440,
+      "scrollWidth": 1440,
+      "zoom": 1,
+      "brokenImages": [],
+      "errors": []
+    },
+    {
+      "device": "desktop",
+      "route": "/services",
+      "status": 200,
+      "width": 1440,
+      "scrollWidth": 1440,
+      "zoom": 1,
+      "brokenImages": [],
+      "errors": []
+    },
+    {
+      "device": "desktop",
+      "route": "/proof",
+      "status": 200,
+      "width": 1440,
+      "scrollWidth": 1440,
+      "zoom": 1,
+      "brokenImages": [],
+      "errors": []
+    },
+    {
+      "device": "mobile",
+      "route": "/",
+      "status": 200,
+      "width": 390,
+      "scrollWidth": 390,
+      "zoom": 1,
+      "brokenImages": [],
+      "errors": []
+    },
+    {
+      "device": "mobile",
+      "route": "/try",
+      "status": 200,
+      "width": 390,
+      "scrollWidth": 390,
+      "zoom": 1,
+      "brokenImages": [],
+      "errors": []
+    },
+    {
+      "device": "mobile",
+      "route": "/app",
+      "status": 200,
+      "width": 390,
+      "scrollWidth": 390,
+      "zoom": 1,
+      "brokenImages": [],
+      "errors": []
+    },
+    {
+      "device": "mobile",
+      "route": "/app/replay",
+      "status": 200,
+      "width": 390,
+      "scrollWidth": 390,
+      "zoom": 1,
+      "brokenImages": [],
+      "errors": []
+    },
+    {
+      "device": "mobile",
+      "route": "/app/memory",
+      "status": 200,
+      "width": 390,
+      "scrollWidth": 390,
+      "zoom": 1,
+      "brokenImages": [],
+      "errors": []
+    },
+    {
+      "device": "mobile",
+      "route": "/connect",
+      "status": 200,
+      "width": 390,
+      "scrollWidth": 390,
+      "zoom": 1,
+      "brokenImages": [],
+      "errors": []
+    },
+    {
+      "device": "mobile",
+      "route": "/services",
+      "status": 200,
+      "width": 390,
+      "scrollWidth": 390,
+      "zoom": 1,
+      "brokenImages": [],
+      "errors": []
+    },
+    {
+      "device": "mobile",
+      "route": "/proof",
+      "status": 200,
+      "width": 390,
+      "scrollWidth": 390,
+      "zoom": 1,
+      "brokenImages": [],
+      "errors": []
+    }
+  ],
+  "applicationCommit": "ec74c88027fba1a255cf66a72fc2b89bfeb9a4dd",
+  "actualProduction": true
+}

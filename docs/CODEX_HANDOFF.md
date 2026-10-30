@@ -1,3 +1,15 @@
+# Final production validation — ec74c88
+
+- Vercel Ready; public `/api/release` matched `ec74c88027fba1a255cf66a72fc2b89bfeb9a4dd`.
+- **All 11 hosted specs ran in isolated processes: 18 passed / 0 failed / 3 hosted-wallet skips, zero navigation retries.** Reproduce with `npm run test:e2e:isolated` and private test configuration. The first shared-browser run had 16 passes / 2 network failures / 3 skips; CSS/JS/document ERR_NETWORK_CHANGED metadata is preserved separately. Do not erase it or call that original run green.
+- Production owner/Neon/session/logout, Walrus fresh-session recall (OFF0 / ON7 owned citations), Tatum and non-spending Mainnet preflight passed. Actual checkpoint339723985. `docs/evidence/production-core-smoke.json`, `product-production-isolated.json`.
+- Original 30 owner and two controlled tenant records intact; fresh SDK rechecks and four genuine recall queries met18/18 synthetic contracts. No new Mainnet write, payment, video or submission form.
+- New public `/connect` review-only flow remains separate from hosted authentication/signing gates. Physical Slush verdict is unresolved; owner must use Flag for review inside Slush without accepting the connection. No production wallet-authentication certification.
+- Missing `SERVICE_PAYMENT_PAYER`, `SERVICE_PAYMENT_RECIPIENT`; exact approval worksheet in docs/MAINNET_PAYMENT_APPROVAL.md is not authorized. Keep settlement disabled. No funds or private keys requested.
+- Final release docs/evidence checkpoints can advance the deployed SHA with identical application source. Preserve `.gitignore.save`, private `.env.local`, Neon, all memories and historical evidence.
+
+---
+
 # Product-experience continuation — October 30
 
 - Targeted public review/branding fix deployed first on `faf3b31`. `/connect` is public, deliberate official connection only, `autoConnect:false`, `storage:null`; no auth/signature/payment capability. Owner must test actual Slush **Flag for review**; no clearance claimed.
