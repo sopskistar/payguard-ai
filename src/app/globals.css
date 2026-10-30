@@ -883,8 +883,13 @@ select:focus {
   object-fit: contain;
 }
 .payguard-brand > span > span {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  line-height: 1.2;
+  text-transform: uppercase;
   color: var(--mint);
-  margin-left: 4px;
+  margin: 0;
 }
 .sidebar-brand > .payguard-brand > span {
   color: #ecf6f5;
@@ -997,7 +1002,7 @@ select:focus {
   font-weight: 800;
   letter-spacing: -0.06em;
 }
-.sidebar-brand > span > span {
+.sidebar-brand > span:not(.payguard-brand) > span {
   color: var(--mint);
   margin-left: 4px;
 }
@@ -3651,7 +3656,7 @@ tr:hover td {
   }
 }
 /* PayGuard Verify: extends the preserved command center. */
-.sidebar-brand > span > span {
+.sidebar-brand > span:not(.payguard-brand) > span {
   display: block;
   font-size: 9px;
   letter-spacing: 0.14em;
