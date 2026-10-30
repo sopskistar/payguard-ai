@@ -16,7 +16,7 @@ export default function ProofPage() {
     <div className="proof-page">
       <header className="site-nav">
         <Link href="/" aria-label="PayGuard home">
-          <img className="site-logo" src="/brand/logo.png" alt="PayGuard AI" />
+          <img className="site-logo" src="/brand/logo.png" alt="PayGuard Verify" />
         </Link>
         <Link className="site-link" href="/try">
           Try Interactive Demo <ArrowRight size={15} />

@@ -51,7 +51,7 @@ export function Landing() {
       <div className="site-home">
         <header className="site-nav">
           <Link href="/" aria-label="PayGuard home">
-            <img src="/brand/logo.png" alt="PayGuard AI" className="site-logo" />
+            <img src="/brand/logo.png" alt="PayGuard Verify" className="site-logo" />
           </Link>
           <nav aria-label="Page sections">
             <a href="#how-it-works">How it works</a>
@@ -89,7 +89,7 @@ export function Landing() {
                   Try Interactive Demo <ArrowRight size={18} />
                 </Link>
                 <Link href="/connect" className="button outline site-cta">
-                  Connect Sui Wallet <ArrowUpRight size={16} />
+                  Wallet security review <ArrowUpRight size={16} />
                 </Link>
               </div>
               <div className="site-hero-note">
@@ -459,7 +459,7 @@ export function Landing() {
         </main>
         <footer className="site-footer">
           <div>
-            <img src="/brand/logo.png" className="site-logo" alt="PayGuard AI" />
+            <img src="/brand/logo.png" className="site-logo" alt="PayGuard Verify" />
             <p>
               PayGuard Verify
               <br />

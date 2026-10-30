@@ -18,6 +18,7 @@ test('hosted wallet pause is visible and both signature endpoints fail closed', 
     page.getByRole('heading', { name: 'Wallet security review in progress' }),
   ).toBeVisible();
   await expect(page.getByText(/Do not override wallet warnings/)).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Open Slush Security Review' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Connect Wallet' })).toHaveCount(0);
   const origin = new URL(page.url()).origin;
   for (const [path, data] of [

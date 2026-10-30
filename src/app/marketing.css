@@ -1522,3 +1522,46 @@
 .workspace-loading .inline-link {
   font-size: 13px;
 }
+
+/* The owner-provided transparent wordmark has navy lettering: its light plaque preserves contrast. */
+.site-logo {
+  background: #f1faf6;
+  border-radius: 8px;
+  padding: 6px 10px;
+  object-fit: contain;
+}
+.wallet-review-controls {
+  display: grid;
+  gap: 14px;
+  margin: 18px 0;
+}
+.wallet-review-controls p {
+  margin: 0;
+}
+.wallet-review-controls mysten-dapp-kit-connect-modal {
+  --background: #0b1b29;
+  --foreground: #e9f5f1;
+  --primary: #9cf5d0;
+  --primary-foreground: #061b18;
+  --muted: #132e3a;
+  --muted-foreground: #a4bdc9;
+  --popover: #0b1b29;
+  --popover-foreground: #e9f5f1;
+}
+.site-logo {
+  width: 180px;
+  height: 60px;
+}
+@media (max-width: 600px) {
+  .site-logo {
+    width: 146px;
+    height: 49px;
+  }
+  .site-nav {
+    gap: 14px;
+    padding-inline: 18px;
+  }
+  .site-nav > .inline-link {
+    font-size: 11px;
+  }
+}

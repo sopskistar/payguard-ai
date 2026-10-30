@@ -1,14 +1,21 @@
 import Link from 'next/link';
+import { WalletReviewEntry } from '@/components/wallet-review-entry';
 import { WalletEntry } from '@/components/wallet-entry';
 import { walletOnboardingAllowed, WALLET_REVIEW_MESSAGE } from '@/lib/wallet-policy';
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Connect Sui Wallet' };
-export default function ConnectPage() {
+export default async function ConnectPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ mode?: string }>;
+}) {
+  const query = await searchParams;
+  const signIn = walletOnboardingAllowed() && query.mode === 'signin';
   return (
     <div className="site-home">
       <header className="site-nav">
         <Link href="/">
-          <img src="/brand/logo.png" alt="PayGuard AI" className="site-logo" />
+          <img src="/brand/logo.png" alt="PayGuard Verify" className="site-logo" />
         </Link>
         <Link href="/try" className="inline-link">
           Try without a wallet ↗
@@ -16,20 +23,24 @@ export default function ConnectPage() {
       </header>
       <main id="main" className="connect-page">
         <div>
-          <span className="site-eyebrow">YOUR PRIVATE WORKSPACE</span>
+          <span className="site-eyebrow">WALLET SECURITY REVIEW · PUBLIC ACCESS</span>
           <h1>
-            Your wallet.
+            A review request.
             <br />
-            <em>Your review history.</em>
+            <em>No sign-in. No spending.</em>
           </h1>
           <p>
-            A verified personal-message signature creates or opens an individual account. Hosted
-            wallet onboarding is currently paused pending a Slush security review.
+            Slush Support directs domain reviews through its own warning screen. This public page
+            opens the official wallet selector so you can reach that review action. Customer sign-in
+            and payments remain paused.
           </p>
           <ol>
-            <li>Connect a compatible wallet.</li>
-            <li>Review the domain, address and expiry.</li>
-            <li>Sign a plain-English personal message.</li>
+            <li>Choose Open Slush Security Review, then select the installed Slush extension.</li>
+            <li>If Slush displays a warning, select “Flag for review” inside the extension.</li>
+            <li>
+              Do not accept the connection or override the warning. Close the request after
+              submitting your review.
+            </li>
           </ol>
           <p>
             PayGuard never asks for a recovery phrase or private key. Connection alone does not sign
@@ -40,12 +51,19 @@ export default function ConnectPage() {
           </Link>
         </div>
         <section className="panel">
-          <h2>Connect Sui Wallet</h2>
-          {walletOnboardingAllowed() ? (
+          <h2>{signIn ? 'Local wallet sign-in' : 'Slush review only'}</h2>
+          {signIn ? (
             <WalletEntry />
           ) : (
             <div className="wallet-security-pause" role="status">
               <h3>Wallet security review in progress</h3>
+              <p>
+                No account or owner password is required. This flow never requests a signature,
+                issues a login challenge, registers an account or authorizes a payment. If no
+                warning appears, stop; that is not clearance. Disconnect if a wallet unexpectedly
+                connects.
+              </p>
+              <WalletReviewEntry />
               <p>{WALLET_REVIEW_MESSAGE}</p>
               <Link className="button primary full" href="/try">
                 Try without a wallet

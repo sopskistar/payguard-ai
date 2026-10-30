@@ -302,7 +302,7 @@ test('Wallet Standard connect UI signs in, switches accounts safely and fits mob
   const key = Ed25519Keypair.generate();
   await injectWallet(page, key);
   try {
-    await visit(page, '/connect');
+    await visit(page, '/connect?mode=signin');
     await expect(page.getByRole('heading', { name: 'Connect Sui Wallet' })).toBeVisible();
     await page.getByRole('button', { name: 'Connect Wallet', exact: true }).click();
     await page.getByText('PayGuard Test Wallet', { exact: true }).click();
@@ -343,7 +343,7 @@ test('wallet loading provides native recovery when JavaScript cannot load', asyn
   const context = await browser.newContext({ javaScriptEnabled: false });
   try {
     const page = await context.newPage();
-    await visit(page, '/connect');
+    await visit(page, '/connect?mode=signin');
     await expect(page.getByRole('heading', { name: 'Connect Sui Wallet' })).toBeVisible();
     const reload = page.getByRole('button', { name: 'Reload wallet connection' });
     await expect(reload).toBeVisible();

@@ -154,7 +154,7 @@ export function JudgeSandbox() {
       <fieldset className="journey journey-ready-controls" disabled={!ready}>
         <header className="journey-header">
           <Link href="/" className="journey-brand">
-            <img src="/brand/icon.png" alt="PayGuard shield" />
+            <img src="/brand/icon.png" alt="PayGuard Verify icon" />
             <span>
               PayGuard <b>Verify</b>
             </span>

@@ -1,8 +1,22 @@
+# Public Slush review access — targeted correction
+
+Open **https://payguard-ai-henna.vercel.app/connect** without an account or owner password.
+
+1. Click **Open Slush Security Review**. This loads the official Mysten wallet selector only after your interaction.
+2. Choose the installed **Slush browser extension**.
+3. If Slush shows its genuine malicious-site warning, select **Flag for review inside Slush**. Do not accept the connection, dismiss the warning to proceed, or request a signature.
+4. Close the request after submitting the review. If the wallet unexpectedly returns a connection, use **Disconnect review connection**. No login, registration or payment follows.
+5. If no warning or review option appears, stop and follow up with the existing Slush support case. Share the exact origin, extension/browser versions and a redacted still screenshot; never provide wallet secrets. Absence of a warning is not security clearance.
+
+This component uses the installed official `ConnectModal`, `autoConnect: false`, `storage: null`, and no OAuth initializer. The server wallet-authentication and x402 settlement gates are unchanged. The controlled browser tests use explicitly labeled fixture wallets: they do not reproduce a genuine Slush warning or submit a provider review. The owner must perform the physical-extension step.
+
+---
+
 # Slush domain review — unresolved, onboarding paused
 
 **Status: BLOCKED BY THIRD PARTY.** The owner has submitted the official domain-security review request and reports Slush showing “Malicious website — This site has been flagged for malicious behavior.” at `https://payguard-ai-henna.vercel.app/connect`. This is not dismissed as a false positive. A physical Slush extension is unavailable in the controlled test browser, so this run cannot independently reproduce or clear its verdict.
 
-Hosted wallet connection/sign-in and new service-payment signing/settlement are paused in application code and server APIs. There is no hosted environment override. `/try`, `/proof` and password-based owner administration remain available. Local loopback fixtures use unfunded ephemeral identities and never bypass production wallet protection. Existing data, sessions, Mainnet memories and proof are preserved.
+Hosted wallet authentication and new service-payment signing/settlement remain paused in application code and server APIs. A separate public review-only connector is available on `/connect`, after deliberate interaction, using the official Mysten Wallet Standard modal with auto-connect and persistence disabled. It has no authentication or signing actions. There is no hosted environment override. `/try`, `/proof` and password-based owner administration remain available. Local loopback fixtures use unfunded ephemeral identities and never bypass production wallet protection. Existing data, sessions, Mainnet memories and proof are preserved.
 
 ## Evidence collected
 

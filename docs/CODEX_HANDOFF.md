@@ -1,3 +1,15 @@
+# Targeted public Slush review and new branding
+
+Owner upload commit c2c6ba8 was fast-forwarded safely. New root PNGs copied byte-for-byte to public/brand/logo.png and public/brand/icon.png; both decode with transparency (2172x724 and 1254x1254). Product text/metadata now says PayGuard Verify; the icon cache key and manifest dimensions were updated. The horizontal navy wordmark uses a deliberate light plaque for contrast.
+
+Public /connect is now review-only by default, no owner password. WalletReviewEntry lazy-loads a dedicated official Mysten ConnectModal only on the review click. The kit has autoConnect:false, storage:null and no OAuth/burner wallet. Only connection/disconnection are used; no app API, challenge, signature or financial action. An unexpected connection exposes ordinary disconnect without showing an address. No Slush physical warning is simulated. Owner must select Flag for review inside the actual extension without approving connection. All backend onboarding/payment gates are unchanged. The old local sign-in UI is preserved at /connect?mode=signin only when the server's existing policy permits it.
+
+Targeted validation: 110 unit tests and production build passed; review connection/refusal tests 2/2 passed. Existing judge/UX/branding browser checks passed (one hosted-only pause test skipped on loopback). The initial refusal assertion expected an underlying wallet error string; corrected it to the official SDK's normalized Connection failed state. No assertion about a real Slush verdict is made. No new owner variables are required.
+
+After the targeted deployment, continue the full homepage/product-story, purposeful motion, operational dashboard and judge polish requested by the owner. Keep 32 confirmed tracked memories, all Neon records and cryptographic/payment boundaries intact. No video. Preserve untracked .gitignore.save.
+
+---
+
 # Final verified application checkpoint — 2571cea
 
 Application commit 2571cead1d78e1db2214f893e43189469bdf1785 is pushed, Vercel Ready and actually verified in production. Full hosted run: 14 passed / 0 failed / 3 intentionally skipped wallet fixtures, zero transport retries. Core owner/Neon/fresh-session recall/Tatum/preflight passed on the same commit. Local 14 passed / 3 skips; 110 unit tests / 16 files; lint/typecheck/format/Webpack build pass. Final evidence/docs-only checkpoint may change release SHA while preserving identical application code. See RELEASE_STATUS.md and production-browser-mainnet.json.

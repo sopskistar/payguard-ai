@@ -268,7 +268,7 @@ export function Workspace({
   if (!ready)
     return (
       <main id="main" className="workspace-loading">
-        <img src="/brand/icon.png" alt="PayGuard shield" width={44} height={44} />
+        <img src="/brand/icon.png" alt="PayGuard Verify icon" width={44} height={44} />
         <h1>Preparing your workspace</h1>
         <noscript>Enable JavaScript to use the private workspace.</noscript>
         <p role="status">
@@ -290,7 +290,7 @@ export function Workspace({
       <div className="app-shell">
         <aside className={`sidebar ${drawer ? 'open' : ''}`}>
           <Link className="sidebar-brand" href="/">
-            <img src="/brand/icon.png" alt="PayGuard shield" />
+            <img src="/brand/icon.png" alt="PayGuard Verify icon" />
             <span>
               PayGuard<span>Verify</span>
             </span>
@@ -771,7 +771,8 @@ export function Workspace({
                 <ShieldCheck size={13} /> Assistive review. You stay in control.
               </span>
               <span>
-                PayGuard AI <span className="muted">/</span> {owner ? data?.storage : 'Guided demo'}
+                PayGuard Verify <span className="muted">/</span>{' '}
+                {owner ? data?.storage : 'Guided demo'}
               </span>
             </footer>
           </main>
