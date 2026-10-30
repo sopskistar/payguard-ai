@@ -1,5 +1,7 @@
 # Latest x402 engineering handoff — October 30, 2026
 
+Code release **787fa31** is pushed and Production-verified. Final genuine 402 and both-wallet UI refresh passed at 23:10 UTC / checkpoint 339935428; five focused hosted tests passed, including the enforced pause. Fresh 1280/390px screenshots and 360/390/430px overflow results are linked in the readiness document. Subsequent evidence-only commits do not change application behavior.
+
 Continue current HEAD; recovery began at `d7d2329`, with only `.gitignore.save` untracked. Mainnet quote mode is owner-enabled and verified; settlement remains disabled and the production Slush gate stays hard-paused. Do not repeat the confirmed self-deposit. Wallet A address balance remains 0.005 SUI, coin objects 0.022893245 SUI. Both addresses match the original configuration. **Zero genuine service receipts; 32 confirmed memories preserved.**
 
 Read [FINAL_X402_READINESS.md](FINAL_X402_READINESS.md). Genuine Production 402/idempotency/resource checks, unsigned Mainnet sponsor simulation, existing Slush-signature verification and fresh-session existing Walrus recall pass. Positive settlement/delivery and paid-analysis memory consent are mocked. Code supplies SDK zkLogin clients, locks digest/cap before signature RPC disclosure, separates preparation/signing, distinguishes wallet registry IDs, gates web registration, rejects stale operations, clears stale report attribution and enforces separate memory consent/current instructions. No security gate was relaxed.

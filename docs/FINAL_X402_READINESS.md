@@ -4,6 +4,8 @@
 
 Recovered local/fetched GitHub HEAD was `d7d23291793c3111bb71513dcd61e3fe18f32f3c`, with no tracked changes or unpushed commits. The existing `.gitignore.save`, private configuration, completed conversion and its consumed attempt were preserved. No funding/conversion was repeated and no production database migration, reset or reseed was run.
 
+Application commit **787fa31374045ec88ac70679114639e91ffba23f** is pushed and verified on the production URL. The final authenticated audit at **23:10 UTC, October 30, 2026** passed at Tatum checkpoint **339935428**. The deployed browser refreshed both wallets through the real API, received the same genuine HTTP 402 quote, and kept signing disabled. Desktop and 360/390/430px views fit at 100% zoom. [Desktop capture](screenshots/final-x402/production-quote-1280.png) · [Mobile capture](screenshots/final-x402/production-quote-390.png). Public addresses and QR images are masked in published captures; the private audit compared both complete configured addresses.
+
 ## What passed against genuine providers
 
 - Authenticated Production configuration: both existing addresses match the original configuration; quote mode is enabled, settlement disabled, and production security clearance false. [Actual configuration, balances and HTTP 402](evidence/final-x402-production-quote.json).
@@ -36,6 +38,8 @@ Only independent Tatum verification of the exact digest, Mainnet identity, final
 Tests cover valid signatures, wrong payer/network/amount/recipient/gas/commands, expiry, session ownership, **3,000,000 MIST authenticated-session cap**, concurrency, cancellation, digest replay/idempotency, failed execution, interrupted verification/settlement, same-digest resumption, receipt attribution, useful delivered analysis, retained holds, explicit memory consent and cross-tenant access. [Test ledger](evidence/final-x402-tests.json). Browser financial signatures, RPC and settlement fixtures are explicitly simulated. Hosted funded signing and real paid-service delivery remain unproven while security-paused.
 
 An initial audit compared JSON member order and failed on Neon JSONB's reordered keys; semantic comparison and the application's existing schema-normalized header/body checks pass. The first local full browser run had one account-switch privacy assertion failure; its cause was not established. The complete wallet rerun and five repetitions passed, followed by a passing full suite. A stale QA process/build restart also failed separately; only temporary local QA was affected. Original failures remain recorded, not relabelled as passes.
+
+After deployment, all **five focused hosted tests passed with zero skips**, covering genuine service preflight, the public walkthrough, anonymous payment denial and the enforced wallet pause. One earlier hosted runner was interrupted with exit 143 before producing a test result; it is not counted as a pass. Local validation remains **151 unit/integration passes**, full browser **23 passed / 0 failed / 3 environment skips**, plus **four isolated service workflow passes** with mocked financial responses. Actual funded production signing remains blocked, not a passed test.
 
 ## Exact next owner actions
 

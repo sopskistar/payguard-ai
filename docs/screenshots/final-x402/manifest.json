@@ -1,0 +1,27 @@
+{
+  "applicationCommit": "787fa31374045ec88ac70679114639e91ffba23f",
+  "checkedAt": "2026-10-30T23:10:02.540Z",
+  "browser": "Chromium 151.0.7922.34",
+  "zoom": "100%",
+  "privateData": "Public addresses and QR images masked; no credentials or private invoice details captured",
+  "mode": "genuine authenticated production reads and unpaid HTTP 402; no signing, approval or settlement",
+  "captures": [
+    {
+      "path": "production-quote-1280.png",
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      }
+    },
+    {
+      "path": "production-quote-390.png",
+      "viewport": {
+        "width": 390,
+        "height": 1000
+      }
+    }
+  ],
+  "allTestedWidths": [1280, 360, 390, 430],
+  "walletBalancesRefreshed": true,
+  "noOverflow": true
+}

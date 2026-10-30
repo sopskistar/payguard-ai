@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-30T22:43:04.688Z",
+  "checkedAt": "2026-10-30T23:10:08.476Z",
   "unitIntegration": {
     "passed": 151,
     "failed": 0,
@@ -38,17 +38,32 @@
     "One extra QA startup found the old QA child on port 3002; no Production process or data was involved",
     "An extra service fixture run used a stale QA build and could not load the view; QA server restarted before passing rerun",
     "A shared browser clock advanced during expiry testing leaked to a later test; reset before the four-case passing rerun",
-    "Wrong-payer audit classification was refined to the exact SDK public-key/address rejection; a network error is not counted as rejection"
+    "Wrong-payer audit classification was refined to the exact SDK public-key/address rejection; a network error is not counted as rejection",
+    "An earlier hosted runner exited 143 before producing a test result; the complete subsequent hosted run passed 5/5"
   ],
   "lint": "passed",
   "typecheck": "passed",
   "format": "passed",
   "productionBuild": "passed",
   "credentialScan": {
-    "files": 473,
+    "files": 478,
     "matches": 0
   },
-  "hostedAfterDeployment": null,
+  "hostedAfterDeployment": {
+    "startedAt": "2026-10-30T23:09:44.632Z",
+    "finishedAt": "2026-10-30T23:10:08.476Z",
+    "exitCode": 0,
+    "actualProduction": true,
+    "liveMemoryReuse": true,
+    "video": false,
+    "applicationCommit": "787fa31374045ec88ac70679114639e91ffba23f",
+    "passed": 5,
+    "failed": 0,
+    "skipped": 0,
+    "specs": ["service-preflight.spec.ts", "wallet-pause.spec.ts", "judge.spec.ts"],
+    "fundedSigning": false,
+    "settlement": false
+  },
   "actualX402Settlements": 0,
   "simulatedSettlementOnly": true,
   "productionSigningStillBlocked": true,

@@ -4,6 +4,8 @@
 
 Genuine checks cover Production quote configuration/balances, HTTP 402/header/resource/idempotency, unsigned sponsored Mainnet simulation, verification of an existing Slush signature and rejection of a self-deposit as a service receipt. Fresh-session existing-memory recall passed OFF 0 / ON 7, all citations owned and recipient-change hold preserved; 32 records remain. Positive facilitator settlement, receipt/report delivery and post-purchase memory writes are **fixtures**, not live funded evidence. Production signing remains security-paused and actual service receipts remain **zero**. [Evidence index and owner actions](FINAL_X402_READINESS.md). No video.
 
+Application **787fa31** is verified deployed. Final genuine Production quote and both-wallet UI refresh passed at **23:10 UTC / checkpoint 339935428**, including 1280/360/390/430px checks at 100% zoom. All **five focused hosted regressions passed, zero failures/skips**. An earlier hosted runner exited 143 before producing results; this interruption is not counted as a pass. [Desktop](screenshots/final-x402/production-quote-1280.png) · [Mobile](screenshots/final-x402/production-quote-390.png). Funded physical-wallet signing and real x402 settlement remain blocked.
+
 ---
 
 # Owner-operated self-deposit verified — October 30, 2026
