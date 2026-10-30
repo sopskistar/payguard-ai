@@ -1,12 +1,26 @@
 # Recovery UX and payment setup — October 30, 2026
 
+Production application **3b55319** is live at https://payguard-ai-henna.vercel.app/ (Vercel deployment success and `/api/release` match). Captured **24 fresh production screenshots**, Chromium **151.0.7922.34**, 100% zoom: desktop 1440×1000 and mobile 360/390/430×844. No measured horizontal overflow, broken images or browser page errors in this screenshot capture. [Capture manifest](evidence/recovery-visuals.json).
+
+| View                              | Screenshot                                                                                                                                                                                                                           |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Homepage desktop / mobile         | [Desktop](screenshots/recovery-release/homepage-1440.png) · [390px](screenshots/recovery-release/homepage-390.png) · [360px](screenshots/recovery-release/homepage-360.png) · [430px](screenshots/recovery-release/homepage-430.png) |
+| Six-stage story / approval hold   | [Story](screenshots/recovery-release/hero-story-hold.png) · [Invoice comparison](screenshots/recovery-release/instruction-hold-1440.png)                                                                                             |
+| Mobile drawer open / closed       | [Open](screenshots/recovery-release/drawer-open-360.png) · [Closed](screenshots/recovery-release/drawer-closed-360.png)                                                                                                              |
+| Workspace / Memory Lab            | [Workspace](screenshots/recovery-release/workspace-1440.png) · [Memory](screenshots/recovery-release/memory-lab-1440.png)                                                                                                            |
+| Walrus / Tatum / learning proof   | [Proof](screenshots/recovery-release/walrus-tatum-proof-1440.png)                                                                                                                                                                    |
+| Private Payment Setup             | [390px setup panel](screenshots/recovery-release/payment-setup-390.png)                                                                                                                                                              |
+| Judge walkthrough / wallet review | [Judge](screenshots/recovery-release/judge-walkthrough-1440.png) · [Review-only connector](screenshots/recovery-release/wallet-review-390.png)                                                                                       |
+
+No genuine quote/receipt screenshot is available: addresses are unconfigured and no paid service settled. Private setup capture contains credential-presence statuses only; any configured wallet addresses are masked. An offscreen fixed skip-link compositor artifact was suppressed for the tall-element capture; application content was not altered. No video.
+
 The existing product was extended without rebuilding it. Mobile workspace navigation now has a visible close X, Escape and backdrop dismissal, automatic navigation close, focus trap/restore, body scroll lock and an inert hidden drawer. Back and Overview work on direct workspace subpages. Browser tests cover 360, 390 and 430px at 100% zoom.
 
 Every application surface reuses the existing geometric icon and live PayGuard Verify typography; no replacement artwork was generated. The unwanted light wordmark rectangle is no longer used. The public judge bundle uses the same brand component with a relative static asset path. The six-stage story, controls and reduced-motion behavior remain tested.
 
 [Administrator Payment Setup](https://payguard-ai-henna.vercel.app/services#payment-setup) adds two existing account roles, configuration/presence statuses, copy/address-only QR controls, independently checked Mainnet balance categories, explicit readiness/failure states and beginner Vercel guidance. Quote mode expects `mainnet`, not `true`; settlement remains disabled and hosted Slush signing remains paused. Funding instructions distinguish address balance from coin objects and do not perform conversions. [Owner guide](PAYMENT_SETUP.md).
 
-Local verification: 116 unit/integration passes, 20 browser passes / 0 failures / 3 environment skips. Initial fixture overflow at 360px was corrected and the full suite rerun. Fresh production screenshots will be recorded under `docs/screenshots/recovery-release/` with a commit/date/browser/viewport manifest. No exact quote or successful receipt screenshot will be fabricated while those real artifacts are unavailable.
+Local verification: 116 unit/integration passes, 20 browser passes / 0 failures / 3 environment skips. Initial fixture overflow at 360px was corrected and the full suite rerun. Fresh production screenshots are recorded under `docs/screenshots/recovery-release/` with a commit/date/browser/viewport manifest. Hosted test transport failures remain separately documented: latest full 18/2/3, followed by a focused 2/1; no uninterrupted green hosted run is claimed. No exact quote or successful receipt screenshot will be fabricated while those real artifacts are unavailable.
 
 ---
 

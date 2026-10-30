@@ -1,7 +1,9 @@
 {
-  "checkedAt": "2026-10-30T11:01:36.620Z",
+  "checkedAt": "2026-10-30T11:31:28.361Z",
   "spending": false,
   "readyForExactApproval": false,
+  "configurationReady": false,
+  "sufficientlyFunded": false,
   "missing": ["SERVICE_PAYMENT_PAYER", "SERVICE_PAYMENT_RECIPIENT"],
   "partiesDistinct": false,
   "network": "sui:mainnet",
@@ -31,11 +33,16 @@
     "source": "Tatum native Sui gRPC",
     "network": "sui:mainnet",
     "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
-    "checkpoint": "339753587",
+    "checkpoint": "339761050",
     "coinType": "0x2::sui::SUI",
     "decimals": 9,
-    "checkedAt": "2026-10-30T11:01:36.620Z",
-    "spending": false
+    "checkedAt": "2026-10-30T11:31:28.360Z",
+    "spending": false,
+    "addressBalanceGasEnabled": true,
+    "balances": {
+      "payer": null,
+      "recipient": null
+    }
   },
   "securityCleared": false,
   "settlementEnabled": false,

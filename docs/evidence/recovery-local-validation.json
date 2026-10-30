@@ -35,6 +35,17 @@
   "preservedFailureHistory": [
     "Initial Payment Setup fixture overflowed at 360px. Corrected wrapping/layout; full suite passed.",
     "A concurrent unit run timed out in two temporary database setup hooks. Sequential full rerun: 116 passed.",
-    "Sandboxed Next build failed to spawn TypeScript (EPERM); same build succeeded outside the sandbox."
-  ]
+    "Sandboxed Next build failed to spawn TypeScript (EPERM); same build succeeded outside the sandbox.",
+    "First focused CSS rerun raced QA server startup: one ECONNREFUSED, three passed. Rerun after Ready recorded separately."
+  ],
+  "finalBrandRefinement": {
+    "change": "CSS only: exclude shared wordmark from obsolete sidebar nesting rule; preserve original stacked Verify typography",
+    "productionBuild": "passed",
+    "focusedBrowser": {
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0
+    },
+    "format": "passed"
+  }
 }

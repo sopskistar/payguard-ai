@@ -1,0 +1,450 @@
+{
+  "startedAt": "2026-10-30T11:51:32.940Z",
+  "baseURL": "https://payguard-ai-henna.vercel.app",
+  "isolation": "A fresh Playwright/Chromium process per spec; sequential; no automatic spec retry",
+  "mainnetMemoryWrites": false,
+  "paymentSettlement": false,
+  "video": false,
+  "passed": 18,
+  "failed": 2,
+  "skipped": 3,
+  "flaky": 0,
+  "specs": [
+    {
+      "file": "app.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "public Verify journey, replay controls and responsive navigation",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 13886
+        },
+        {
+          "title": "anonymous users cannot read owner data or mutate records; origin is checked",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 1452
+        },
+        {
+          "title": "owner intake persists through a fresh browser context, with no fictional memory",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 15428
+        }
+      ]
+    },
+    {
+      "file": "judge.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "judge never presents active walkthrough buttons before client readiness",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 4502
+        },
+        {
+          "title": "judge completes all seven clear steps, with back navigation, real evidence and no account",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 7854
+        },
+        {
+          "title": "public users cannot quote, approve or settle service fees",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 1287
+        }
+      ]
+    },
+    {
+      "file": "live-chain.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "LIVE Tatum transaction inspector rejects an unrelated sample payment",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 9136
+        }
+      ]
+    },
+    {
+      "file": "live-memory.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "LIVE Mainnet correction is recalled in a separate owner session",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 11473
+        }
+      ]
+    },
+    {
+      "file": "payment-setup.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "private setup distinguishes unusable coins, usable funds, security pause and failed checks (fixtures, no settlement)",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 5630
+        },
+        {
+          "title": "mobile navigation closes, traps focus, locks scroll and supports direct/back navigation",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 9437
+        }
+      ]
+    },
+    {
+      "file": "product-story.spec.ts",
+      "exitCode": 1,
+      "tests": [
+        {
+          "title": "product story has six usable stages, play/pause/replay and no private operations",
+          "status": "unexpected",
+          "annotations": [],
+          "durationMs": 60017
+        },
+        {
+          "title": "reduced-motion and mobile story preserve readable controls and clear access paths",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 2595
+        }
+      ]
+    },
+    {
+      "file": "product-ux.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "refresh shows loading, honest success, timestamp and failure; public actions explain owner access",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 5526
+        },
+        {
+          "title": "landing CTAs, FAQ, proof and mobile layouts are deliberate and functional",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 14033
+        },
+        {
+          "title": "owner sign-in clears submitted credentials while the request is pending",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 2160
+        }
+      ]
+    },
+    {
+      "file": "service-preflight.spec.ts",
+      "exitCode": 1,
+      "tests": [
+        {
+          "title": "owner service page explains exact Mainnet proposal and keeps spending disabled",
+          "status": "unexpected",
+          "annotations": [
+            {
+              "type": "transport-retry",
+              "description": "One read-only navigation retried after browser ERR_NETWORK_CHANGED."
+            }
+          ],
+          "durationMs": 2360
+        }
+      ]
+    },
+    {
+      "file": "verification.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "owner records independent verification; edited instructions invalidate approval",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 14363
+        }
+      ]
+    },
+    {
+      "file": "wallet-pause.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "hosted wallet pause is visible and both signature endpoints fail closed",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 3419
+        }
+      ]
+    },
+    {
+      "file": "wallet-review.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "public official review selector connects only by choice, never signs or authenticates, and disconnects",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 4894
+        },
+        {
+          "title": "wallet refusal remains with the official selector; no signature or fallback login follows",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 3071
+        }
+      ]
+    },
+    {
+      "file": "wallet.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "wallet sign-in uses a real personal signature; logout, replay and cross-user APIs are enforced",
+          "status": "skipped",
+          "annotations": [
+            {
+              "type": "skip",
+              "description": "Hosted wallet onboarding blocked pending Slush review; fixtures run on controlled loopback only.",
+              "location": {
+                "file": "/home/sopski/payguard-ai/tests/e2e/wallet.spec.ts",
+                "line": 10,
+                "column": 8
+              }
+            }
+          ],
+          "durationMs": 630
+        },
+        {
+          "title": "Wallet Standard connect UI signs in, switches accounts safely and fits mobile",
+          "status": "skipped",
+          "annotations": [
+            {
+              "type": "skip",
+              "description": "Hosted wallet onboarding blocked pending Slush review; fixtures run on controlled loopback only.",
+              "location": {
+                "file": "/home/sopski/payguard-ai/tests/e2e/wallet.spec.ts",
+                "line": 10,
+                "column": 8
+              }
+            }
+          ],
+          "durationMs": 646
+        },
+        {
+          "title": "wallet loading provides native recovery when JavaScript cannot load",
+          "status": "skipped",
+          "annotations": [
+            {
+              "type": "skip",
+              "description": "Hosted wallet onboarding blocked pending Slush review; fixtures run on controlled loopback only.",
+              "location": {
+                "file": "/home/sopski/payguard-ai/tests/e2e/wallet.spec.ts",
+                "line": 10,
+                "column": 8
+              }
+            }
+          ],
+          "durationMs": 597
+        }
+      ]
+    }
+  ],
+  "finishedAt": "2026-10-30T11:55:24.410Z",
+  "ok": false,
+  "focusedReruns": {
+    "passed": 2,
+    "failed": 1,
+    "specs": ["product-story.spec.ts", "service-preflight.spec.ts"],
+    "detail": "Both originally failed cases passed; the previously passing reduced-motion case hit a new document ERR_NETWORK_CHANGED."
+  },
+  "completeUninterruptedHostedRun": false,
+  "deployedApplicationCommit": "3b55319c81e3de7ab8c3fb3664230e9b5fcea25b",
+  "earlierRun": "recovery-production-first.json: 17 passed, 3 failed, 3 security skips; preserved",
+  "physicalWalletSigning": "Blocked by unresolved Slush review; not certified",
+  "genuineServiceSettlements": 0,
+  "failureDetails": [
+    {
+      "run": "full",
+      "title": "product story has six usable stages, play/pause/replay and no private operations",
+      "status": "timedOut",
+      "errors": ["\u001b[31mTest timeout of 60000ms exceeded.\u001b[39m"],
+      "transport": [
+        {
+          "failures": [
+            {
+              "method": "GET",
+              "path": "/_next/static/css/52049a6dfdc3d965.css",
+              "error": "net::ERR_NETWORK_CHANGED"
+            },
+            {
+              "method": "GET",
+              "path": "/_next/static/css/e6fceae4222f23b0.css",
+              "error": "net::ERR_NETWORK_CHANGED"
+            },
+            {
+              "method": "GET",
+              "path": "/_next/static/chunks/webpack-1913f42ba671dc08.js",
+              "error": "net::ERR_NETWORK_CHANGED"
+            },
+            {
+              "method": "GET",
+              "path": "/_next/static/chunks/4bd1b696-cd566323a07c169f.js",
+              "error": "net::ERR_NETWORK_CHANGED"
+            },
+            {
+              "method": "GET",
+              "path": "/_next/static/chunks/794-4ca22931fae0b30a.js",
+              "error": "net::ERR_NETWORK_CHANGED"
+            }
+          ],
+          "inFlight": [],
+          "badResponses": [],
+          "publicReadiness": []
+        }
+      ]
+    },
+    {
+      "run": "full",
+      "title": "owner service page explains exact Mainnet proposal and keeps spending disabled",
+      "status": "failed",
+      "errors": [
+        "Error: page.goto: Navigation to \"https://payguard-ai-henna.vercel.app/services\" is interrupted by another navigation to \"chrome-error://chromewebdata/\"\nCall log:\n\u001b[2m  - navigating to \"https://payguard-ai-henna.vercel.app/services\", waiting until \"load\"\u001b[22m\n\n\n   at browser-helpers.ts:104\n\n  102 |     });\n  103 |     // Retry the read directly. Error-page CDP targets may already have detached.\n> 104 |     return page.goto(url, options);\n      |                 ^\n  105 |   }\n  106 | }\n  107 | export async function signInOwner(page: Page, password: string) {\n    at visit (/home/sopski/payguard-ai/tests/e2e/browser-helpers.ts:104:17)\n    at /home/sopski/payguard-ai/tests/e2e/service-preflight.spec.ts:27:5"
+      ],
+      "transport": [
+        {
+          "failures": [
+            {
+              "method": "GET",
+              "path": "/services",
+              "error": "net::ERR_NETWORK_CHANGED"
+            }
+          ],
+          "inFlight": [
+            {
+              "method": "GET",
+              "path": "/brand/icon.png",
+              "type": "image",
+              "elapsedMs": 239
+            },
+            {
+              "method": "GET",
+              "path": "/_next/static/css/52049a6dfdc3d965.css",
+              "type": "stylesheet",
+              "elapsedMs": 223
+            },
+            {
+              "method": "GET",
+              "path": "/_next/static/css/e6fceae4222f23b0.css",
+              "type": "stylesheet",
+              "elapsedMs": 223
+            },
+            {
+              "method": "GET",
+              "path": "/_next/static/chunks/webpack-1913f42ba671dc08.js",
+              "type": "script",
+              "elapsedMs": 223
+            },
+            {
+              "method": "GET",
+              "path": "/_next/static/chunks/4bd1b696-cd566323a07c169f.js",
+              "type": "script",
+              "elapsedMs": 222
+            },
+            {
+              "method": "GET",
+              "path": "/_next/static/chunks/794-4ca22931fae0b30a.js",
+              "type": "script",
+              "elapsedMs": 222
+            },
+            {
+              "method": "GET",
+              "path": "/_next/static/chunks/main-app-b4de09f40a432622.js",
+              "type": "script",
+              "elapsedMs": 222
+            },
+            {
+              "method": "GET",
+              "path": "/_next/static/chunks/app/error-df3e4d40985b75ee.js",
+              "type": "script",
+              "elapsedMs": 222
+            },
+            {
+              "method": "GET",
+              "path": "/_next/static/chunks/500-863cc2266cad9a2f.js",
+              "type": "script",
+              "elapsedMs": 222
+            },
+            {
+              "method": "GET",
+              "path": "/_next/static/chunks/app/not-found-152cd73888d505ec.js",
+              "type": "script",
+              "elapsedMs": 222
+            },
+            {
+              "method": "GET",
+              "path": "/_next/static/chunks/06f0e697-3c61c93091215583.js",
+              "type": "script",
+              "elapsedMs": 221
+            },
+            {
+              "method": "GET",
+              "path": "/_next/static/chunks/559-f5037b4e241e10df.js",
+              "type": "script",
+              "elapsedMs": 221
+            },
+            {
+              "method": "GET",
+              "path": "/_next/static/chunks/533-436630acd133e05b.js",
+              "type": "script",
+              "elapsedMs": 221
+            },
+            {
+              "method": "GET",
+              "path": "/_next/static/chunks/app/services/page-09703078f76fcab9.js",
+              "type": "script",
+              "elapsedMs": 221
+            }
+          ],
+          "badResponses": [],
+          "publicReadiness": []
+        }
+      ]
+    },
+    {
+      "run": "focused",
+      "title": "reduced-motion and mobile story preserve readable controls and clear access paths",
+      "status": "failed",
+      "errors": [
+        "Error: page.goto: Navigation to \"https://payguard-ai-henna.vercel.app/\" is interrupted by another navigation to \"chrome-error://chromewebdata/\"\nCall log:\n\u001b[2m  - navigating to \"https://payguard-ai-henna.vercel.app/\", waiting until \"load\"\u001b[22m\n\n\n   at browser-helpers.ts:104\n\n  102 |     });\n  103 |     // Retry the read directly. Error-page CDP targets may already have detached.\n> 104 |     return page.goto(url, options);\n      |                 ^\n  105 |   }\n  106 | }\n  107 | export async function signInOwner(page: Page, password: string) {\n    at visit (/home/sopski/payguard-ai/tests/e2e/browser-helpers.ts:104:17)\n    at /home/sopski/payguard-ai/tests/e2e/product-story.spec.ts:51:3"
+      ],
+      "transport": [
+        {
+          "failures": [
+            {
+              "method": "GET",
+              "path": "/",
+              "error": "net::ERR_NETWORK_CHANGED"
+            }
+          ],
+          "inFlight": [
+            {
+              "method": "GET",
+              "path": "/",
+              "type": "document",
+              "elapsedMs": 474
+            }
+          ],
+          "badResponses": [],
+          "publicReadiness": []
+        }
+      ]
+    }
+  ]
+}

@@ -372,6 +372,16 @@
       <section>
         <h2>Existing-wallet payment preparation</h2>
         <p>
+          October 30 recovery validation: 116 unit/integration tests and a full local browser run of
+          20 passed, 0 failed, 3 explicit environment skips. The latest hosted full run had 18
+          passes, 2 Chromium transport failures and 3 security-paused wallet skips; focused reruns
+          passed the original failing cases but hit one further transport reset. No clean
+          uninterrupted hosted run or physical-wallet certification is claimed.
+          <a href="https://github.com/sopskistar/payguard-ai/blob/main/docs/TEST_RESULTS.md"
+            >Complete test ledger</a
+          >.
+        </p>
+        <p>
           PayGuard now prepares the two existing owner wallets through an administrator-only Payment
           Setup screen. Tatum checks Mainnet identity and separates coin-object funds from usable
           address balance. Configuration, funding, security clearance, exact owner authorization and

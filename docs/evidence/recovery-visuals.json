@@ -1,0 +1,330 @@
+{
+  "checkedAt": "2026-10-30T11:58:15.889Z",
+  "base": "https://payguard-ai-henna.vercel.app",
+  "release": {
+    "application": "PayGuard Verify",
+    "commit": "3b55319c81e3de7ab8c3fb3664230e9b5fcea25b",
+    "recordedProofCount": 30,
+    "proofExportedAt": "2026-10-28T23:01:40.457Z",
+    "modes": ["public-demo", "owner-admin", "wallet-member", "recorded-proof"]
+  },
+  "browser": "151.0.7922.34",
+  "screenshots": [
+    {
+      "path": "/",
+      "file": "docs/screenshots/recovery-release/homepage-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "zoom": "100%",
+      "status": 200,
+      "width": 1440,
+      "documentWidth": 1440,
+      "brokenImages": 0
+    },
+    {
+      "path": "/app",
+      "file": "docs/screenshots/recovery-release/workspace-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "zoom": "100%",
+      "status": 200,
+      "width": 1440,
+      "documentWidth": 1440,
+      "brokenImages": 0
+    },
+    {
+      "path": "/app/review",
+      "file": "docs/screenshots/recovery-release/instruction-hold-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "zoom": "100%",
+      "status": 200,
+      "width": 1440,
+      "documentWidth": 1440,
+      "brokenImages": 0
+    },
+    {
+      "path": "/app/memory",
+      "file": "docs/screenshots/recovery-release/memory-lab-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "zoom": "100%",
+      "status": 200,
+      "width": 1440,
+      "documentWidth": 1440,
+      "brokenImages": 0
+    },
+    {
+      "path": "/proof",
+      "file": "docs/screenshots/recovery-release/walrus-tatum-proof-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "zoom": "100%",
+      "status": 200,
+      "width": 1440,
+      "documentWidth": 1440,
+      "brokenImages": 0
+    },
+    {
+      "path": "/try",
+      "file": "docs/screenshots/recovery-release/judge-walkthrough-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "zoom": "100%",
+      "status": 200,
+      "width": 1440,
+      "documentWidth": 1440,
+      "brokenImages": 0
+    },
+    {
+      "path": "/connect",
+      "file": "docs/screenshots/recovery-release/wallet-review-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "zoom": "100%",
+      "status": 200,
+      "width": 1440,
+      "documentWidth": 1440,
+      "brokenImages": 0
+    },
+    {
+      "path": "/",
+      "file": "docs/screenshots/recovery-release/homepage-390.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "zoom": "100%",
+      "status": 200,
+      "width": 390,
+      "documentWidth": 390,
+      "brokenImages": 0
+    },
+    {
+      "path": "/app",
+      "file": "docs/screenshots/recovery-release/workspace-390.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "zoom": "100%",
+      "status": 200,
+      "width": 390,
+      "documentWidth": 390,
+      "brokenImages": 0
+    },
+    {
+      "path": "/app/review",
+      "file": "docs/screenshots/recovery-release/instruction-hold-390.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "zoom": "100%",
+      "status": 200,
+      "width": 390,
+      "documentWidth": 390,
+      "brokenImages": 0
+    },
+    {
+      "path": "/app/memory",
+      "file": "docs/screenshots/recovery-release/memory-lab-390.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "zoom": "100%",
+      "status": 200,
+      "width": 390,
+      "documentWidth": 390,
+      "brokenImages": 0
+    },
+    {
+      "path": "/proof",
+      "file": "docs/screenshots/recovery-release/walrus-tatum-proof-390.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "zoom": "100%",
+      "status": 200,
+      "width": 390,
+      "documentWidth": 390,
+      "brokenImages": 0
+    },
+    {
+      "path": "/try",
+      "file": "docs/screenshots/recovery-release/judge-walkthrough-390.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "zoom": "100%",
+      "status": 200,
+      "width": 390,
+      "documentWidth": 390,
+      "brokenImages": 0
+    },
+    {
+      "path": "/connect",
+      "file": "docs/screenshots/recovery-release/wallet-review-390.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "zoom": "100%",
+      "status": 200,
+      "width": 390,
+      "documentWidth": 390,
+      "brokenImages": 0
+    },
+    {
+      "path": "/app",
+      "file": "docs/screenshots/recovery-release/drawer-open-360.png",
+      "viewport": {
+        "width": 360,
+        "height": 844
+      },
+      "zoom": "100%",
+      "status": 200,
+      "width": 360,
+      "documentWidth": 360,
+      "brokenImages": 0
+    },
+    {
+      "path": "/app",
+      "file": "docs/screenshots/recovery-release/drawer-closed-360.png",
+      "viewport": {
+        "width": 360,
+        "height": 844
+      },
+      "zoom": "100%",
+      "status": 200,
+      "width": 360,
+      "documentWidth": 360
+    },
+    {
+      "path": "/",
+      "file": "docs/screenshots/recovery-release/homepage-360.png",
+      "viewport": {
+        "width": 360,
+        "height": 844
+      },
+      "zoom": "100%",
+      "status": 200,
+      "width": 360,
+      "documentWidth": 360,
+      "brokenImages": 0
+    },
+    {
+      "path": "/app",
+      "file": "docs/screenshots/recovery-release/drawer-open-390.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "zoom": "100%",
+      "status": 200,
+      "width": 390,
+      "documentWidth": 390,
+      "brokenImages": 0
+    },
+    {
+      "path": "/app",
+      "file": "docs/screenshots/recovery-release/drawer-closed-390.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "zoom": "100%",
+      "status": 200,
+      "width": 390,
+      "documentWidth": 390
+    },
+    {
+      "path": "/app",
+      "file": "docs/screenshots/recovery-release/drawer-open-430.png",
+      "viewport": {
+        "width": 430,
+        "height": 844
+      },
+      "zoom": "100%",
+      "status": 200,
+      "width": 430,
+      "documentWidth": 430,
+      "brokenImages": 0
+    },
+    {
+      "path": "/app",
+      "file": "docs/screenshots/recovery-release/drawer-closed-430.png",
+      "viewport": {
+        "width": 430,
+        "height": 844
+      },
+      "zoom": "100%",
+      "status": 200,
+      "width": 430,
+      "documentWidth": 430
+    },
+    {
+      "path": "/",
+      "file": "docs/screenshots/recovery-release/homepage-430.png",
+      "viewport": {
+        "width": 430,
+        "height": 844
+      },
+      "zoom": "100%",
+      "status": 200,
+      "width": 430,
+      "documentWidth": 430,
+      "brokenImages": 0
+    },
+    {
+      "path": "/",
+      "file": "docs/screenshots/recovery-release/hero-story-hold.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "zoom": "100%",
+      "status": 200,
+      "width": 1440,
+      "documentWidth": 1440,
+      "brokenImages": 0
+    },
+    {
+      "path": "/services#payment-setup",
+      "file": "docs/screenshots/recovery-release/payment-setup-390.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "zoom": "100%",
+      "privateCustomerData": false,
+      "publicWalletAddressesMasked": true,
+      "documentWidth": 390,
+      "width": 390
+    }
+  ],
+  "errors": [],
+  "paymentQuoteScreenshot": "Unavailable: payer/merchant unconfigured; no actual quote fabricated",
+  "paidReceiptScreenshot": "Unavailable: zero genuine settlements",
+  "video": false,
+  "ok": true,
+  "totalScreenshots": 24,
+  "screenshotOnlyAdjustment": "Tall private-setup capture suppresses a nonfocused, normally offscreen fixed skip-link compositor artifact; visible application content unchanged. Public wallet addresses are masked if present."
+}

@@ -1,0 +1,73 @@
+{
+  "checkedAt": "2026-10-30T11:31:00.715Z",
+  "signatures": false,
+  "settlement": false,
+  "memoryWrites": false,
+  "release": {
+    "application": "PayGuard Verify",
+    "commit": "0e6c48bc341664422a15e3fbe03d62124225d6b8",
+    "recordedProofCount": 30,
+    "proofExportedAt": "2026-10-28T23:01:40.457Z",
+    "modes": ["public-demo", "owner-admin", "wallet-member", "recorded-proof"]
+  },
+  "unauthenticatedSetupStatus": 401,
+  "setup": {
+    "status": 200,
+    "noStore": "private, no-store",
+    "payerConfigured": false,
+    "merchantConfigured": false,
+    "quoteEnabled": false,
+    "settlementEnabled": false,
+    "securityCleared": false,
+    "variables": [
+      {
+        "name": "SERVICE_PAYMENT_PAYER",
+        "status": "Missing"
+      },
+      {
+        "name": "SERVICE_PAYMENT_RECIPIENT",
+        "status": "Missing"
+      },
+      {
+        "name": "ENABLE_AGENT_PAYMENTS",
+        "status": "Quotes disabled"
+      },
+      {
+        "name": "SERVICE_PAYMENT_SETTLEMENT_ENABLED",
+        "status": "Settlement disabled"
+      },
+      {
+        "name": "DATABASE_URL",
+        "status": "Present (value hidden)"
+      },
+      {
+        "name": "AUTH_SECRET",
+        "status": "Present (value hidden)"
+      },
+      {
+        "name": "OWNER_PASSWORD",
+        "status": "Present (value hidden)"
+      },
+      {
+        "name": "APP_URL",
+        "status": "Present (value hidden)"
+      },
+      {
+        "name": "TATUM_API_KEY",
+        "status": "Present (value hidden)"
+      }
+    ],
+    "controlVerification": "Incomplete: configuration and balance reads do not prove wallet control. No wallet signature requested."
+  },
+  "check": {
+    "status": 200,
+    "state": "passed",
+    "network": "sui:mainnet",
+    "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+    "addressBalanceGasEnabled": true,
+    "balancesAvailable": false,
+    "spending": false
+  },
+  "ok": true,
+  "logout": 200
+}
