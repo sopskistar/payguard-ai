@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-10-30T22:55:45.880Z",
+  "source": "Already executed, owner-authorized Slush self-deposit signature",
+  "newSignatureRequested": false,
+  "newTransactionSubmitted": false,
+  "x402Payment": false,
+  "correctPayerVerified": true,
+  "wrongPayerRejected": true,
+  "encodingSizeCheck": {
+    "signatureCharacters": 1300,
+    "encodedHeaderCharacters": 3404,
+    "withinClientLimit": true,
+    "roundTripUnchanged": true,
+    "encodingOnly": true,
+    "payloadNotSignedForThisPurchase": true,
+    "headerNeverSent": true
+  }
+}

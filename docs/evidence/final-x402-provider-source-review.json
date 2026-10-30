@@ -1,0 +1,29 @@
+{
+  "checkedAt": "2026-10-30T22:43:04.686Z",
+  "downloadedCodeExecuted": false,
+  "facilitatorVerifyCalled": false,
+  "facilitatorSettleCalled": false,
+  "sources": [
+    {
+      "url": "https://github.com/tentaclepay/sui-x402/blob/main/typescript/src/exact/client/scheme.ts",
+      "sha256": "910c1a1bb9b9661dd0a235ff9c26430383172da0a2ab1e0f67a7a982dc8c240d"
+    },
+    {
+      "url": "https://github.com/tentaclepay/sui-x402/blob/main/typescript/src/exact/facilitator/scheme.ts",
+      "sha256": "bc6c763c0d85d9e12fa3de7cba1b37ce48b8214f4dda3e9c318c61c0187bf130"
+    },
+    {
+      "url": "https://github.com/tentaclepay/sui-x402/blob/main/typescript/src/exact/facilitator/send-funds.ts",
+      "sha256": "60f04ba6a9b6c15f6d409690d5028cf8aae6aeda3c735d2727ea7f50ee5308ca"
+    }
+  ],
+  "observed": {
+    "addressBalanceTemplate": true,
+    "gasOwnerAndBudgetRequired": true,
+    "zeroGasCoinInputs": true,
+    "redeemFundsRecognizedByValidator": true,
+    "sponsorCountersignsInSettlementCode": true,
+    "mainnetSimulationPassed": true,
+    "realSponsoredSettlementProven": false
+  }
+}

@@ -4,6 +4,8 @@ import { cookies } from 'next/headers';
 import { and, eq, gt, isNull, lt } from 'drizzle-orm';
 import { verifyPersonalMessageSignature } from '@mysten/sui/verify';
 import { normalizeSuiAddress } from '@mysten/sui/utils';
+import { SuiGrpcClient } from '@mysten/sui/grpc';
+import { serviceNetworkInfo } from './service-protocol';
 import { z } from 'zod';
 import { db } from '@/db';
 import { walletChallenges, users, auditEvents } from '@/db/schema';
@@ -113,9 +115,15 @@ export async function verifyWalletLogin(input: z.infer<typeof walletProofInput>)
     const key = await verifyPersonalMessageSignature(
       new TextEncoder().encode(challenge.message),
       input.signature,
-      { address: challenge.address },
+      {
+        address: challenge.address,
+        client: new SuiGrpcClient({
+          network: 'mainnet',
+          baseUrl: serviceNetworkInfo('sui:mainnet').grpc,
+        }),
+      },
     );
-    if (key.toSuiAddress() !== challenge.address) invalid();
+    if (!key.verifyAddress(challenge.address)) invalid();
   } catch {
     invalid();
   }

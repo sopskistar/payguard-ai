@@ -45,7 +45,11 @@ test('owner service page explains exact Mainnet proposal and keeps spending disa
     });
     await expect(page.getByText('sui:mainnet', { exact: true }).first()).toBeVisible();
     await expect(page.getByText('Merchant recipient', { exact: true })).toBeVisible();
-    await expect(page.getByText(/Proposal is incomplete|Parties are configured/)).toBeVisible();
+    await expect(
+      page.getByText(
+        /Proposal is incomplete|Parties are configured|Parties and usable funds are verified/,
+      ),
+    ).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,
     );

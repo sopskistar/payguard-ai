@@ -1,0 +1,16 @@
+{
+  "checkedAt": "2026-10-30T22:58:57.484Z",
+  "source": "Local inspection of the actual frozen synthetic quote input",
+  "paidDelivery": false,
+  "settlement": false,
+  "provider": "PayGuard first-party consistency analysis",
+  "deterministic": true,
+  "independentIdentityVerification": false,
+  "addressesMentioned": 0,
+  "conflictingRecipientCount": 0,
+  "linkDomainCount": 0,
+  "injectionDirective": false,
+  "recommendation": "Complete independent supplier verification. Consistent text cannot establish identity.",
+  "limitations": "Deterministic supplemental analysis of submitted records; no external callback, email authentication or supplier identity certification.",
+  "rawInvoiceAndAddressesPublished": false
+}

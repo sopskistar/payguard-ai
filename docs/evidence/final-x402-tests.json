@@ -1,0 +1,63 @@
+{
+  "checkedAt": "2026-10-30T22:43:04.688Z",
+  "unitIntegration": {
+    "passed": 151,
+    "failed": 0,
+    "files": 22
+  },
+  "localBrowser": {
+    "passed": 23,
+    "failed": 0,
+    "skipped": 3,
+    "baseUrl": "http://localhost:3002",
+    "database": "isolated temporary PostgreSQL QA, never Neon",
+    "video": false
+  },
+  "localBrowserFirst": {
+    "passed": 22,
+    "failed": 1,
+    "skipped": 3,
+    "failure": "Account-switch privacy heading not observed within 5 seconds; cause not established"
+  },
+  "walletSpecRerun": {
+    "passed": 3,
+    "failed": 0
+  },
+  "walletPrivacyRepetitions": {
+    "passed": 5,
+    "failed": 0
+  },
+  "skips": [
+    "Live Tatum browser fixture disabled locally; actual native Mainnet reads/simulation checked separately",
+    "Live Walrus browser test disabled to avoid writes; actual existing-memory recall checked across fresh Production sessions",
+    "Hosted-only wallet-pause assertion skipped on localhost; hosted check required separately"
+  ],
+  "earlierDiagnostics": [
+    "First audit compared JSON member order; semantic header/body equality passed after audit correction",
+    "A signature test setup returned its mock as teardown; corrected without weakening assertions",
+    "One extra QA startup found the old QA child on port 3002; no Production process or data was involved",
+    "An extra service fixture run used a stale QA build and could not load the view; QA server restarted before passing rerun",
+    "A shared browser clock advanced during expiry testing leaked to a later test; reset before the four-case passing rerun",
+    "Wrong-payer audit classification was refined to the exact SDK public-key/address rejection; a network error is not counted as rejection"
+  ],
+  "lint": "passed",
+  "typecheck": "passed",
+  "format": "passed",
+  "productionBuild": "passed",
+  "credentialScan": {
+    "files": 473,
+    "matches": 0
+  },
+  "hostedAfterDeployment": null,
+  "actualX402Settlements": 0,
+  "simulatedSettlementOnly": true,
+  "productionSigningStillBlocked": true,
+  "isolatedServiceWorkflow": {
+    "passed": 4,
+    "failed": 0,
+    "financialRpcAndWalletResponses": "mocked",
+    "positiveReceipt": "synthetic local fixture only",
+    "signatureRequestedDuringPreparation": false,
+    "signAndExecuteFallback": false
+  }
+}

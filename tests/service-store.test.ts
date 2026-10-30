@@ -27,6 +27,8 @@ import {
 import { serviceNetworkInfo, type ServiceChallenge } from '@/lib/service-protocol';
 import { AppError } from '@/lib/errors';
 import { assess } from '@/lib/integrations/memory';
+import * as memory from '@/lib/integrations/memory';
+import * as signatureVerifier from '@/lib/integrations/service-signature';
 import { DEFAULT_PREFERENCES } from '@/lib/types';
 import * as schema from '@/db/schema';
 import { eq } from 'drizzle-orm';
@@ -142,6 +144,10 @@ async function payload(row: Awaited<ReturnType<typeof quote>>) {
 }
 it('durably deduplicates a quote and rejects another tenant', async () => {
   const row = await quote();
+  expect((row.challenge as ServiceChallenge).resource.description).toContain('recipient change');
+  expect((row.challenge as ServiceChallenge).resource.description).toContain(
+    'purchase is not recommended',
+  );
   expect((await quoteService(OWNER_ID, row.invoiceId, row.operationKey)).id).toBe(row.id);
   await expect(ownedService(randomUUID(), row.id)).rejects.toThrow('not found');
 });
@@ -326,7 +332,7 @@ it('uses only current, owned purchased analysis and preserves the supplier hold 
     .set({ instructionHash: row.instructionHash })
     .where(eq(schema.servicePaymentIntents.id, row.id));
   await expect(fulfillService(OWNER_ID, row.id)).rejects.toThrow('owned settlement receipt');
-  await expect(rememberService(OWNER_ID, row.id)).rejects.toThrow(
+  await expect(rememberService(OWNER_ID, row.id, true)).rejects.toThrow(
     'Tatum-confirmed service receipt',
   );
   expect(
@@ -334,4 +340,89 @@ it('uses only current, owned purchased analysis and preserves the supplier hold 
       (f) => f.id === `service-analysis-${receipt?.id}`,
     ),
   ).toBe(false);
+});
+it('does not reissue payable 402 terms for a cancelled or expired operation', async () => {
+  const row = await quote();
+  await cancelService(OWNER_ID, row.id);
+  await expect(quoteService(OWNER_ID, row.invoiceId, row.operationKey)).rejects.toThrow(
+    'expired, cancelled or submitted',
+  );
+  const expired = await quote();
+  await (
+    await db()
+  )
+    .update(schema.servicePaymentIntents)
+    .set({ expiresAt: new Date(0) })
+    .where(eq(schema.servicePaymentIntents.id, expired.id));
+  await expect(quoteService(OWNER_ID, expired.invoiceId, expired.operationKey)).rejects.toThrow(
+    'expired, cancelled or submitted',
+  );
+});
+it('locks the digest and cap before zkLogin-capable signature verification can disclose bytes', async () => {
+  const row = await quote();
+  await approveService(OWNER_ID, row.id, payer.toSuiAddress());
+  const before = settles;
+  const signature = vi
+    .spyOn(signatureVerifier, 'verifyServiceSignature')
+    .mockImplementationOnce(async () => {
+      const current = await ownedService(OWNER_ID, row.id);
+      expect(current.state).toBe('settling');
+      expect(current.digest).toBeTruthy();
+      await expect(cancelService(OWNER_ID, row.id)).rejects.toThrow('cannot be cancelled');
+      throw new Error('Synthetic zkLogin verification RPC interrupted');
+    });
+  try {
+    const result = await fulfillService(OWNER_ID, row.id, await payload(row));
+    expect(result.state).toBe('pending');
+    expect(settles).toBe(before);
+    await expect(cancelService(OWNER_ID, row.id)).rejects.toThrow('cannot be cancelled');
+    expect((await ownedService(OWNER_ID, row.id)).state).toBe('settling');
+  } finally {
+    signature.mockRestore();
+  }
+});
+it('requires separate explicit consent for a minimized owned post-purchase Walrus correction', async () => {
+  const row = await quote();
+  await approveService(OWNER_ID, row.id, payer.toSuiAddress());
+  await fulfillService(OWNER_ID, row.id, await payload(row));
+  const remember = vi
+    .spyOn(memory, 'recordCorrection')
+    .mockResolvedValue({ status: 'confirmed', blobId: 'SYNTHETIC_PROVIDER_FIXTURE' } as Awaited<
+      ReturnType<typeof memory.recordCorrection>
+    >);
+  try {
+    await expect(rememberService(OWNER_ID, row.id, false)).rejects.toThrow('Explicit consent');
+    await expect(rememberService(randomUUID(), row.id, true)).rejects.toThrow('not found');
+    expect(remember).not.toHaveBeenCalled();
+    await rememberService(OWNER_ID, row.id, true);
+    expect(remember).toHaveBeenCalledWith(
+      OWNER_ID,
+      expect.objectContaining({
+        invoiceId: row.invoiceId,
+        consent: true,
+        kind: 'verify_address',
+        scope: 'vendor',
+        future: true,
+        hard: false,
+        value: '',
+        operationKey: row.id,
+      }),
+    );
+    const correction = remember.mock.calls[0][1];
+    expect(correction.explanation).not.toContain(payer.toSuiAddress());
+    expect(
+      (await assess(OWNER_ID, row.invoiceId, false)).findings.some(
+        (f) => f.id === 'recipient-change',
+      ),
+    ).toBe(true);
+    await (
+      await db()
+    )
+      .update(schema.servicePaymentIntents)
+      .set({ instructionHash: '0'.repeat(64) })
+      .where(eq(schema.servicePaymentIntents.id, row.id));
+    await expect(rememberService(OWNER_ID, row.id, true)).rejects.toThrow('changed invoice');
+  } finally {
+    remember.mockRestore();
+  }
 });

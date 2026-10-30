@@ -1,9 +1,7 @@
 import 'server-only';
 import { createHash, randomUUID } from 'node:crypto';
 import { and, eq, desc } from 'drizzle-orm';
-import { verifyTransactionSignature } from '@mysten/sui/verify';
 import { Transaction } from '@mysten/sui/transactions';
-import { fromBase64 } from '@mysten/sui/utils';
 import { db } from '@/db';
 import * as s from '@/db/schema';
 import { ownedInvoice, audit } from './store';
@@ -25,6 +23,7 @@ import {
   type ServiceChallenge,
 } from './service-protocol';
 import { inspectServiceSettlement, serviceChainPreflight } from './integrations/service-tatum';
+import { verifyServiceSignature } from './integrations/service-signature';
 import { recordCorrection } from './integrations/memory';
 import { walletOnboardingAllowed, WALLET_REVIEW_MESSAGE } from './wallet-policy';
 import {
@@ -293,6 +292,12 @@ export async function quoteService(tenantId: string, invoiceId: string, operatio
         'OPERATION_REUSED',
         'This operation already belongs to another invoice.',
       );
+    if (!['quoted', 'approved'].includes(old.state) || old.expiresAt <= new Date())
+      throw new AppError(
+        409,
+        'EXISTING_INTENT',
+        'This operation already has an expired, cancelled or submitted intent. Resume its record; do not reuse it for a new purchase.',
+      );
     return old;
   }
   const invoice = await ownedInvoice(tenantId, invoiceId);
@@ -303,6 +308,9 @@ export async function quoteService(tenantId: string, invoiceId: string, operatio
       'NO_ANALYSIS_NEED',
       'No instruction anomaly currently requires supplemental consistency analysis.',
     );
+  const text = invoice.memo + ' ' + (context.instruction?.message || '');
+  const hasSupplementalText =
+    /0x[a-fA-F0-9]{64}|https?:\/\/|ignore.{0,80}(?:instructions|safety|rules)/i.test(text);
   const network = serviceMode();
   if (network === 'sui:mainnet') {
     const readiness = await servicePreflight();
@@ -345,7 +353,12 @@ export async function quoteService(tenantId: string, invoiceId: string, operatio
     x402Version: 2,
     resource: {
       url: new URL('/api/service-payments/' + id, process.env.APP_URL!).toString(),
-      description: 'First-party invoice consistency analysis; does not verify supplier identity.',
+      description: `First-party invoice analysis of ${context.signals
+        .slice(0, 3)
+        .map((f) => f.id.replaceAll('-', ' '))
+        .join(
+          ', ',
+        )}. ${hasSupplementalText ? '' : 'No extra textual signals to inspect; supplemental purchase is not recommended. '}Does not verify supplier identity.`,
       mimeType: 'application/json',
     },
     accepts: [terms],
@@ -602,13 +615,6 @@ export async function fulfillService(
         'Signed payment terms differ from the approved quote.',
       );
     validateServiceTransaction(payload.payload.transaction, terms, row.payer!);
-    const key = await verifyTransactionSignature(
-      fromBase64(payload.payload.transaction),
-      payload.payload.signature,
-      { address: row.payer! },
-    );
-    if (key.toSuiAddress() !== row.payer)
-      throw new AppError(400, 'SIGNER', 'Unexpected wallet signer');
     const digest = await Transaction.from(payload.payload.transaction).getDigest();
     const payloadHash = createHash('sha256').update(payload.payload.transaction).digest('hex');
     // Lock before ANY third party receives signed bytes. Cancellation must never release
@@ -629,6 +635,26 @@ export async function fulfillService(
       };
     }
     row = claimed;
+    try {
+      await verifyServiceSignature(
+        payload.payload.transaction,
+        payload.payload.signature,
+        row.payer!,
+        terms.network,
+      );
+    } catch {
+      await audit(tenantId, 'service.signature_unverified', id, {
+        digest,
+        settlementRequested: false,
+        signatureCheckMayDiscloseBytes: true,
+      });
+      return {
+        state: 'pending',
+        digest,
+        message:
+          'Payer signature could not be verified. The attempt remains locked because zkLogin verification may disclose signed bytes. Reconcile this digest; do not sign or settle again.',
+      };
+    }
     try {
       const verify = await facilitator('/verify', {
         x402Version: 2,
@@ -782,7 +808,13 @@ export async function fulfillService(
     receipt: saved,
   };
 }
-export async function rememberService(tenantId: string, id: string) {
+export async function rememberService(tenantId: string, id: string, consent = false) {
+  if (consent !== true)
+    throw new AppError(
+      400,
+      'MEMORY_CONSENT',
+      'Explicit consent to the minimized vendor rule is required.',
+    );
   const row = await ownedService(tenantId, id);
   const [receipt] = await (
     await db()
@@ -797,6 +829,14 @@ export async function rememberService(tenantId: string, id: string) {
     );
   if (!receipt || row.state !== 'settled')
     throw new AppError(409, 'NO_SETTLEMENT', 'A Tatum-confirmed service receipt is required.');
+  const invoice = await ownedInvoice(tenantId, row.invoiceId);
+  const context = await trustContext(tenantId, invoice);
+  if (context.instructionHash !== row.instructionHash)
+    throw new AppError(
+      409,
+      'INSTRUCTION_CHANGED',
+      'Review the changed invoice instructions before consenting to a memory.',
+    );
   return recordCorrection(tenantId, {
     invoiceId: row.invoiceId,
     findingId: 'service-consistency-review',

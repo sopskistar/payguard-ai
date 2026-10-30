@@ -1,0 +1,37 @@
+{
+  "checkedAt": "2026-10-30T22:32:08.811Z",
+  "newMemoryCreated": false,
+  "newInvoiceCreated": false,
+  "paymentRequested": false,
+  "actualWalrusRecall": true,
+  "freshAuthenticatedSession": true,
+  "usedExistingRelatedInvoice": true,
+  "off": {
+    "citations": 0,
+    "findings": ["trusted-recipient-change", "near-duplicate", "recipient-change"],
+    "memoryStatus": "Off: learned soft policies excluded; mandatory user rules remain active"
+  },
+  "on": {
+    "citations": 7,
+    "appliedMemoryFindings": 7,
+    "findings": [
+      "trusted-recipient-change",
+      "near-duplicate",
+      "recipient-change",
+      "policy-6651bfb1-0b09-4ac4-b126-a55555ed3dd1",
+      "policy-272da366-0028-456b-9af0-2959eb001433",
+      "policy-48f13c23-23d5-4424-aa1f-c70bc35e5b20",
+      "policy-0528915d-7056-4634-9bde-3ba5742fe25b",
+      "policy-1e13b709-fc08-4943-b139-7c270c19d913",
+      "policy-1e5dd96a-90e6-47a9-a840-6036ebcfdb19",
+      "policy-6181df21-1d8d-4fe4-900e-9d32e5dece60"
+    ],
+    "memoryStatus": "Recalled 30 confirmed Mainnet memories",
+    "allCitationsOwned": true
+  },
+  "counts": {
+    "confirmed_memories": 32,
+    "service_receipts": 0
+  },
+  "ok": true
+}

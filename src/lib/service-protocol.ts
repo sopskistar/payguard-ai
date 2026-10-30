@@ -118,6 +118,57 @@ export function decodeServicePaymentHeader(encoded: string) {
     JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(encoded), (c) => c.charCodeAt(0)))),
   );
 }
+// Complete unsigned transaction shared by the browser and non-spending audits.
+// No wallet, RPC execution or automatic coin-selection intent is involved.
+export function buildServiceTransaction(
+  terms: ServiceTerms,
+  payer: string,
+  state: { genesis: string; epoch: string | number; gasPrice: string; nonce: number },
+) {
+  serviceTermsSchema.parse(terms);
+  serviceAddressSchema.parse(payer);
+  if (
+    state.genesis !== serviceNetworkInfo(terms.network).genesis ||
+    !/^\d+$/.test(String(state.epoch)) ||
+    !/^[1-9]\d*$/.test(state.gasPrice) ||
+    !Number.isSafeInteger(Number(state.epoch)) ||
+    !Number.isInteger(state.nonce) ||
+    state.nonce < 0 ||
+    state.nonce > 0xffffffff ||
+    payer === terms.payTo ||
+    payer === terms.extra.gasOwner
+  )
+    throw new Error('Unverified network, epoch, gas price, nonce or payer');
+  const tx = new Transaction();
+  tx.setSender(payer);
+  const balance = tx.moveCall({
+    target: '0x2::balance::redeem_funds',
+    typeArguments: [terms.asset],
+    arguments: [tx.withdrawal({ type: terms.asset, amount: BigInt(terms.amount) })],
+  });
+  tx.moveCall({
+    target: '0x2::balance::send_funds',
+    typeArguments: [terms.asset],
+    arguments: [balance, tx.pure.address(terms.payTo)],
+  });
+  tx.pure.string(terms.extra.quoteId);
+  const epoch = Number(state.epoch);
+  tx.setExpiration({
+    ValidDuring: {
+      chain: state.genesis,
+      minEpoch: epoch,
+      maxEpoch: epoch + 1,
+      minTimestamp: null,
+      maxTimestamp: null,
+      nonce: state.nonce,
+    },
+  });
+  tx.setGasOwner(terms.extra.gasOwner);
+  tx.setGasBudget(terms.extra.gasBudget);
+  tx.setGasPrice(state.gasPrice);
+  tx.setGasPayment([]);
+  return tx;
+}
 // This local allowlist is stricter than the facilitator: one destination, no arbitrary app calls.
 export function validateServiceTransaction(bytes: string, terms: ServiceTerms, payer: string) {
   const d = Transaction.from(fromBase64(bytes)).getData();

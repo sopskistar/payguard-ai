@@ -1,0 +1,60 @@
+{
+  "checkedAt": "2026-10-30T22:24:46.834Z",
+  "mode": "genuine-mainnet-unsigned-simulation",
+  "signed": false,
+  "submitted": false,
+  "quoteUsableForApproval": false,
+  "quoteCancelledAfterAudit": true,
+  "balances": {
+    "payer": {
+      "totalAtomic": "27893245",
+      "coinAtomic": "22893245",
+      "addressAtomic": "5000000",
+      "derivation": "Explicit total and both components"
+    },
+    "merchant": {
+      "totalAtomic": "0",
+      "coinAtomic": "0",
+      "addressAtomic": "0",
+      "derivation": "Both components proven zero by the explicit zero total"
+    },
+    "sponsor": {
+      "totalAtomic": "850635192",
+      "coinAtomic": "53080696",
+      "addressAtomic": "797554496",
+      "derivation": "Explicit total and both components"
+    }
+  },
+  "ok": true,
+  "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+  "checkpoint": "339924289",
+  "epoch": "1296",
+  "unsignedDigest": "5GHaprgrojPM43vPXMaZqcUA4yFF1YRneC6VzsFXbZGT",
+  "commands": ["balance::redeem_funds", "balance::send_funds"],
+  "withdrawalMist": "1000000",
+  "payerGasMist": "0",
+  "gasSponsor": "0x6d8c6e978808e81344b6ddcc741b06d2b2b1106066d218683e0161f696878b61",
+  "gasBudgetMist": "2000000",
+  "simulatedGas": {
+    "computationCost": "100000",
+    "storageCost": "0",
+    "storageRebate": "0",
+    "nonRefundableStorageFee": "0"
+  },
+  "simulatedSponsorNetGasMist": "100000",
+  "simulatedMerchantCreditMist": "1000000",
+  "simulatedPayerDebitMist": "1000000",
+  "validity": {
+    "ValidDuring": {
+      "minEpoch": 1296,
+      "maxEpoch": 1297,
+      "minTimestamp": null,
+      "maxTimestamp": null,
+      "chain": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+      "nonce": 1334652603
+    },
+    "$kind": "ValidDuring"
+  },
+  "checksEnabled": true,
+  "gasPaymentMocked": false
+}

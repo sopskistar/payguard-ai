@@ -4011,6 +4011,9 @@ tr:hover td {
   display: block;
   min-width: 0;
 }
+.service-prepared-digest {
+  overflow-wrap: anywhere;
+}
 .service-payment-page .detail-list > div {
   display: grid;
   grid-template-columns: minmax(130px, 0.7fr) minmax(0, 1fr);

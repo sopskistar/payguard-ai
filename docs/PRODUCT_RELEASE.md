@@ -1,3 +1,9 @@
+# Mainnet service engineering verified — October 30, 2026
+
+The owner enabled Mainnet quotes and retained settlement disabled. Production quotes and usable balances pass genuine checks; unsigned exact sponsored execution simulates successfully. SDK zkLogin verification, pre-disclosure locking, separate preparation/signing controls and post-purchase consent are covered by isolated tests. Existing Walrus recall and all 32 records are preserved. **The genuine paid-service experiment remains blocked by production Slush clearance and separate approval of a fresh exact quote.** [Final readiness and owner workflow](FINAL_X402_READINESS.md). No bonus-completion or video claim is made. Earlier release entries below are historical evidence.
+
+---
+
 # Recovery UX and payment setup — October 30, 2026
 
 Production application **3b55319** is live at https://payguard-ai-henna.vercel.app/ (Vercel deployment success and `/api/release` match). Captured **24 fresh production screenshots**, Chromium **151.0.7922.34**, 100% zoom: desktop 1440×1000 and mobile 360/390/430×844. No measured horizontal overflow, broken images or browser page errors in this screenshot capture. [Capture manifest](evidence/recovery-visuals.json).

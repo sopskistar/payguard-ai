@@ -1,5 +1,11 @@
 # Sui Mainnet x402 service payments
 
+## Final engineering audit — October 30, 2026
+
+Production Mainnet **quote preparation is now enabled** and both existing addresses and usable payer funds are verified. Genuine HTTP 402/resource/idempotency checks and unsigned Mainnet sponsored execution simulation pass. SDK zkLogin verification now has an explicit chain client and a pre-disclosure durable lock; the owner prepares a frozen transaction and signs through a separate click. Paid-analysis memory consent is enforced independently. [Exact evidence, simulations, live-purchase steps and remaining gates](FINAL_X402_READINESS.md).
+
+**No genuine x402 settlement has occurred.** Production settlement and Slush security clearance remain false. All audit quotes are cancelled unapproved; no funding/conversion was repeated. The historical setup descriptions below predate the funded payer and enabled quote mode.
+
 ## Recovery engineering update — October 30, 2026
 
 The existing [Agent Services Payment Setup](https://payguard-ai-henna.vercel.app/services#payment-setup) now has administrator-only configuration/presence statuses, distinct existing wallet roles, copy/QR controls, native total/coin/address balance reads through Tatum, explicit funding states and Vercel instructions. [Exact owner setup guide](PAYMENT_SETUP.md) · [three prepared experiments](PAYMENT_EXPERIMENTS.md). No wallet was created and no settlement enabled.
@@ -54,7 +60,7 @@ Existing private server configuration: `DATABASE_URL`, `AUTH_SECRET`, `OWNER_PAS
 
 Additional names: `ENABLE_AGENT_PAYMENTS`, `SERVICE_PAYMENT_PAYER`, `SERVICE_PAYMENT_RECIPIENT`, `SERVICE_PAYMENT_SETTLEMENT_ENABLED`. Quote mode supports `mainnet` and controlled development `testnet`; the independent settlement switch defaults to false. **Keep production settlement disabled.** No environment variable bypasses the unresolved Slush gate.
 
-The latest preflight is incomplete because the dedicated payer and merchant addresses are not configured. Provide public addresses only or configure those names privately. Once configured, prepare the exact approval record with payer, merchant, first-party provider/service URL, Mainnet genesis, SUI coin type, 0.001 SUI price, zero payer gas, sponsor identity/2,000,000 MIST budget, purpose, expected report and facilitator risks. Obtain separate owner approval and resolve the production wallet-security review before a funded signature or settlement. Building Mainnet support is not financial authorization.
+Both dedicated public addresses are configured and the latest read-only preflight passes. Payer address balance is sufficient; do not repeat setup or conversion. After legitimate security clearance and controlled retesting, prepare the exact fresh approval record with payer, merchant, first-party provider/service URL, Mainnet genesis, native SUI, 0.001 SUI price, zero payer gas, sponsor identity/2,000,000 MIST budget, purpose, expected report and facilitator risks. Obtain separate owner approval before any funded signature or settlement. Quote readiness is not financial authorization.
 
 Read-only command (does not enable spending):
 
@@ -70,4 +76,4 @@ The five-minute quote governs PayGuard submission. Sui currently [rejects timest
 
 ## Owner approval worksheet
 
-[Exact Mainnet approval worksheet](MAINNET_PAYMENT_APPROVAL.md) records the native-SUI price, sponsor, cap, expected report and evidence. It is explicitly **not authorized**: dedicated payer/merchant public addresses remain unconfigured, production wallet signing is paused, and no settlement occurred. The public Slush review selector is not an alternative authentication or payment-signing route.
+[Exact Mainnet approval worksheet](MAINNET_PAYMENT_APPROVAL.md) records the native-SUI price, sponsor, cap, expected report and evidence. A service purchase is explicitly **not authorized**: both addresses are configured and funded readiness passes, but production wallet signing remains paused and no service settlement occurred. The public Slush review selector is not an alternative authentication or payment-signing route.

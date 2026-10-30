@@ -14,6 +14,8 @@ Private owner wallet configuration: [Payment Setup](docs/PAYMENT_SETUP.md) · [p
 
 ## Judge? Start Here
 
+Current Mainnet payment status: [genuine 402 quotes, unsigned sponsor simulation and final owner workflow](docs/FINAL_X402_READINESS.md). Quotes are enabled; production signing is security-paused and **no paid-service settlement is claimed**.
+
 **PayGuard Verify — Verify before you pay. Remember what nearly went wrong.**
 
 | Explore                           | Link and actual status                                                                                                                                                            |

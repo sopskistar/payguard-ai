@@ -14,6 +14,7 @@ import {
   encodeServicePaymentHeader,
   type ServiceNetwork,
   validateServiceTransaction,
+  buildServiceTransaction,
   type ServiceChallenge,
 } from '@/lib/service-protocol';
 import type { Invoice, Snapshot } from '@/lib/types';
@@ -21,12 +22,12 @@ import { api, Badge, Field } from './ui';
 import { WALLET_REVIEW_MESSAGE } from '@/lib/wallet-policy';
 import { PaymentSetup } from './payment-setup';
 import { Brand } from './brand';
-type WalletAccount = { address: string; chains: readonly string[] };
+type WalletAccount = { address: string; chains: readonly string[]; features: readonly string[] };
 type WalletFeatures = {
   'standard:connect'?: { connect: () => Promise<{ accounts: WalletAccount[] }> };
   'sui:signTransaction'?: {
     signTransaction: (input: {
-      transaction: Transaction;
+      transaction: { toJSON: () => Promise<string> };
       account: WalletAccount;
       chain: ServiceNetwork;
     }) => Promise<{ bytes: string; signature: string }>;
@@ -71,7 +72,7 @@ export function ServicePayment() {
     [signingAllowed, setSigningAllowed] = useState(false),
     [network, setNetwork] = useState<ServiceNetwork>('sui:mainnet'),
     [proposal, setProposal] = useState<Record<string, unknown>>(),
-    [walletNames, setWalletNames] = useState<string[]>([]),
+    [walletNames, setWalletNames] = useState<{ id: string; name: string }[]>([]),
     [walletName, setWalletName] = useState(''),
     [dedicatedPayer, setDedicatedPayer] = useState<string | null>(null),
     [securityCleared, setSecurityCleared] = useState(false),
@@ -81,6 +82,16 @@ export function ServicePayment() {
     [pending, setPending] = useState(false),
     [paymentState, setPaymentState] = useState(''),
     [consent, setConsent] = useState(false),
+    [now, setNow] = useState(() => Date.now()),
+    [prepared, setPrepared] = useState<{
+      bytes: string;
+      digest: string;
+      account: WalletAccount;
+      features: WalletFeatures;
+      walletName: string;
+      quoteId: string;
+    }>(),
+    [signatureAttempted, setSignatureAttempted] = useState(false),
     [memory, setMemory] = useState(''),
     [saved, setSaved] = useState<
       {
@@ -91,6 +102,12 @@ export function ServicePayment() {
         expiresAt: string;
       }[]
     >([]);
+  const quoteExpired = !!quote && Date.parse(quote.expiresAt) <= now;
+  useEffect(() => {
+    if (!quote) return;
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, [quote]);
   useEffect(() => {
     api<Snapshot>('snapshot')
       .then((s) => {
@@ -126,8 +143,16 @@ export function ServicePayment() {
       setWalletNames(
         registry
           .get()
-          .filter((w) => w.chains.includes(network) && w.features['sui:signTransaction'])
-          .map((w) => w.name),
+          .filter(
+            (w) =>
+              w.chains.includes(network) &&
+              w.features['sui:signTransaction'] &&
+              w.features['standard:connect'],
+          )
+          .map((w) => ({
+            id: w.id || w.name,
+            name: w.name + (w.id?.endsWith('.web') ? ' · web wallet' : ''),
+          })),
       );
     update();
     const offRegister = registry.on('register', update);
@@ -148,9 +173,11 @@ export function ServicePayment() {
       setBusy(false);
     }
   }
-  async function sign() {
+  async function prepare() {
     if (!signingAllowed) throw new Error(WALLET_REVIEW_MESSAGE);
     if (!quote || !consent) throw new Error('Review and approve every term first');
+    if (Date.parse(quote.expiresAt) <= Date.now())
+      throw new Error('Quote expired. Review fresh terms before approval.');
     const terms = serviceTermsSchema.parse(quote.accepts[0]);
     if (terms.network !== network)
       throw new Error('Quote network differs from the selected server mode. Request fresh terms.');
@@ -162,13 +189,14 @@ export function ServicePayment() {
       throw new Error(
         'A compatible wallet must support the approved Sui network and transaction signing. No keys should be entered in PayGuard.',
       );
-    const selectedWallet = wallets.find((w) => w.name === walletName);
+    const selectedWallet = wallets.find((w) => (w.id || w.name) === walletName);
     if (!selectedWallet) throw new Error('Choose the compatible wallet you intend to use.');
     const features = selectedWallet.features as WalletFeatures;
     const accounts = (await features['standard:connect']!.connect()).accounts;
     const account = accounts.find(
       (a) =>
         a.chains.includes(terms.network) &&
+        a.features.includes('sui:signTransaction') &&
         (terms.network !== 'sui:mainnet' || a.address === dedicatedPayer),
     );
     if (!account)
@@ -187,48 +215,65 @@ export function ServicePayment() {
       throw new Error(
         'The dedicated wallet needs sufficient native SUI address balance for this sponsored protocol. Coin-object holdings alone do not qualify. No deposit or payment was initiated.',
       );
-    const tx = new Transaction();
-    tx.setSender(account.address);
-    const redeemed = tx.moveCall({
-      target: '0x2::balance::redeem_funds',
-      typeArguments: [terms.asset],
-      arguments: [tx.withdrawal({ type: terms.asset, amount: BigInt(terms.amount) })],
+    const tx = buildServiceTransaction(terms, account.address, {
+      genesis: chainIdentifier,
+      epoch: systemState.epoch,
+      gasPrice: systemState.referenceGasPrice,
+      nonce: crypto.getRandomValues(new Uint32Array(1))[0],
     });
-    tx.moveCall({
-      target: '0x2::balance::send_funds',
-      typeArguments: [terms.asset],
-      arguments: [redeemed, tx.pure.address(terms.payTo)],
-    });
-    tx.pure.string(terms.extra.quoteId);
-    const epoch = Number(systemState.epoch);
-    tx.setExpiration({
-      ValidDuring: {
-        chain: chainIdentifier,
-        minEpoch: epoch,
-        maxEpoch: epoch + 1,
-        minTimestamp: null,
-        maxTimestamp: null,
-        nonce: crypto.getRandomValues(new Uint32Array(1))[0],
-      },
-    });
-    tx.setGasOwner(terms.extra.gasOwner);
-    tx.setGasBudget(terms.extra.gasBudget);
-    tx.setGasPrice(systemState.referenceGasPrice);
-    tx.setGasPayment([]);
     const bytes = toBase64(await tx.build({ client }));
     validateServiceTransaction(bytes, terms, account.address);
     await request('/' + quote.id + '/approve', { approved: true, payer: account.address });
-    const signed = await features['sui:signTransaction']!.signTransaction({
-      transaction: Transaction.from(bytes),
+    setPrepared({
+      bytes,
+      digest: await tx.getDigest(),
       account,
+      features,
+      walletName: selectedWallet.id || selectedWallet.name,
+      quoteId: quote.id,
+    });
+    setPaymentState('approved');
+  }
+  async function signPrepared() {
+    if (!signingAllowed) throw new Error(WALLET_REVIEW_MESSAGE);
+    if (
+      !quote ||
+      !prepared ||
+      !consent ||
+      signatureAttempted ||
+      prepared.quoteId !== quote.id ||
+      Date.parse(quote.expiresAt) <= Date.now()
+    )
+      throw new Error('Fresh approved prepared terms are required.');
+    const terms = serviceTermsSchema.parse(quote.accepts[0]);
+    const current = getWallets()
+      .get()
+      .find((w) => (w.id || w.name) === prepared.walletName);
+    if (
+      !current?.accounts.some(
+        (a) =>
+          a.address === prepared.account.address &&
+          a.chains.includes(terms.network) &&
+          a.features.includes('sui:signTransaction'),
+      )
+    )
+      throw new Error('Wallet account changed. Reconnect the exact approved payer before signing.');
+    validateServiceTransaction(prepared.bytes, terms, prepared.account.address);
+    setSignatureAttempted(true);
+    setPending(true);
+    setPaymentState('awaiting-wallet');
+    const signed = await prepared.features['sui:signTransaction']!.signTransaction({
+      // The separate fresh click opens Slush before any network work, including Google-login popups.
+      transaction: { toJSON: () => Transaction.from(prepared.bytes).toJSON() },
+      account: prepared.account,
       chain: terms.network,
     });
-    if (signed.bytes !== bytes)
+    if (signed.bytes !== prepared.bytes)
       throw new Error(
         'Wallet changed approved transaction bytes; nothing was submitted by PayGuard',
       );
     // A lost response is indeterminate. Resume the same intent instead of signing/paying again.
-    setPending(true);
+    setPaymentState('submission-uncertain');
     const r = await request('/' + quote.id, {
       x402Version: 2,
       resource: quote.resource,
@@ -334,7 +379,9 @@ export function ServicePayment() {
                   </dl>
                   <p role="status">
                     {proposal.configurationReady
-                      ? 'Parties are configured. Funding, exact owner approval and wallet-security clearance are still required before signing.'
+                      ? proposal.sufficientlyFunded
+                        ? 'Parties and usable funds are verified. Exact owner approval and wallet-security clearance are still required before signing.'
+                        : 'Parties are configured. Usable address-balance funds, exact owner approval and wallet-security clearance are still required before signing.'
                       : `Proposal is incomplete. Configure public address names: ${Array.isArray(proposal.missing) ? proposal.missing.join(', ') : 'review server configuration'}. All parties must differ.`}
                   </p>
                   <details>
@@ -356,6 +403,11 @@ export function ServicePayment() {
                       void run(async () => {
                         setQuote({ ...i.challenge, id: i.id, expiresAt: i.expiresAt });
                         setInvoice(i.invoiceId);
+                        setReceipt(undefined);
+                        setConsent(false);
+                        setMemory('');
+                        setPrepared(undefined);
+                        setSignatureAttempted(false);
                         const r = await request('/' + i.id + '/resume', {});
                         setPending(r.state === 'pending');
                         setPaymentState(r.state);
@@ -410,6 +462,9 @@ export function ServicePayment() {
                       network,
                     );
                     setQuote(r);
+                    setNow(Date.now());
+                    setPrepared(undefined);
+                    setSignatureAttempted(false);
                     setPaymentState('quoted');
                   })
                 }
@@ -419,6 +474,13 @@ export function ServicePayment() {
               {quote && (
                 <>
                   <h3>Payment required · x402 v2</h3>
+                  <p>Reason for this quote: {quote.resource.description}</p>
+                  {quoteExpired && !receipt && (
+                    <p role="status">
+                      This quote has expired. No new signing is available. Resume an existing
+                      submitted digest; request fresh terms only for an unpaid review.
+                    </p>
+                  )}
                   {!pending && !receipt && (
                     <button
                       className="button outline small"
@@ -529,11 +591,15 @@ export function ServicePayment() {
                   </label>
                   {signingAllowed && (
                     <Field label="Signing wallet">
-                      <select value={walletName} onChange={(e) => setWalletName(e.target.value)}>
+                      <select
+                        disabled={busy || !!prepared}
+                        value={walletName}
+                        onChange={(e) => setWalletName(e.target.value)}
+                      >
                         <option value="">Choose a compatible wallet</option>
-                        {walletNames.map((name) => (
-                          <option key={name} value={name}>
-                            {name}
+                        {walletNames.map((wallet) => (
+                          <option key={wallet.id} value={wallet.id}>
+                            {wallet.name}
                           </option>
                         ))}
                       </select>
@@ -547,17 +613,74 @@ export function ServicePayment() {
                       !consent ||
                       pending ||
                       !!receipt ||
-                      paymentState === 'failed'
+                      paymentState === 'failed' ||
+                      quoteExpired ||
+                      !!prepared ||
+                      signatureAttempted
                     }
-                    onClick={() => void run(sign)}
+                    onClick={() => void run(prepare)}
                   >
-                    {busy ? 'Checking…' : 'Approve exact terms & sign in wallet'}
+                    {busy ? 'Checking…' : 'Approve terms and prepare transaction · no signature'}
                   </button>
+                  {signingAllowed && (
+                    <button
+                      className="button outline"
+                      disabled={busy || !!prepared || signatureAttempted}
+                      onClick={() =>
+                        void run(async () => {
+                          const { registerSlushWallet } = await import('@mysten/slush-wallet');
+                          const registered = registerSlushWallet('PayGuard Verify');
+                          if (!registered)
+                            throw new Error(
+                              'Official Slush web wallet unavailable. No signing requested.',
+                            );
+                          setWalletName(registered.wallet.id || registered.wallet.name);
+                        })
+                      }
+                    >
+                      Use existing Slush web wallet
+                    </button>
+                  )}
+                  {prepared && (
+                    <>
+                      <p>
+                        Approving the next wallet signature submits these exact bytes to Tentacle
+                        for one verification and settlement attempt. If the response is uncertain,
+                        only resume the existing digest; do not sign or pay again.
+                      </p>
+                      <p className="service-prepared-digest">
+                        Prepared digest (not settlement proof): <code>{prepared.digest}</code>.
+                        Retain this digest if a response is uncertain; do not prepare a replacement
+                        payment.
+                      </p>
+                      <details>
+                        <summary>Inspect exact prepared transaction before signing</summary>
+                        <pre className="service-result">
+                          {JSON.stringify(Transaction.from(prepared.bytes).getData(), null, 2)}
+                        </pre>
+                      </details>
+                      <button
+                        className="button primary"
+                        disabled={
+                          !signingAllowed ||
+                          busy ||
+                          !consent ||
+                          quoteExpired ||
+                          signatureAttempted ||
+                          !!receipt
+                        }
+                        onClick={() => void run(signPrepared)}
+                      >
+                        Review and sign exact purchase in wallet
+                      </button>
+                    </>
+                  )}
                   {pending && (
                     <>
                       <p role="status">
-                        Pending independent Tatum confirmation. Resume the same digest; do not pay
-                        again.
+                        {paymentState === 'awaiting-wallet'
+                          ? 'Wallet signing has not completed or returned a verified response. No new signature will be requested automatically. Check the existing intent before doing anything else.'
+                          : 'Submission or independent Tatum confirmation is pending. Resume the same digest; do not pay again.'}
                       </p>
                       <button
                         className="button outline"
@@ -596,6 +719,12 @@ export function ServicePayment() {
                       <p>
                         Supplier approval still requires the independent human verification
                         workflow.
+                      </p>
+                      <p>
+                        Optional minimized learning for this vendor: “Always require independent
+                        verification for new or changed payout addresses.” Only the rule and a
+                        scoped vendor reference are saved; raw invoice text, wallet signatures and
+                        payment payloads are excluded.
                       </p>
                       <button
                         className="button outline"

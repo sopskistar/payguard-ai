@@ -1,5 +1,9 @@
 # Mainnet proof ledger
 
+## Genuine service quotes and unsigned simulation — October 30, 2026
+
+Production returns genuine x402 v2 HTTP 402 for the existing synthetic NS-1048 anomaly. Native SUI price **0.001**, configured payer/merchant, Tentacle sponsor terms, header/body agreement and idempotency pass. Audit quotes are cancelled without approval. [Live quote evidence](evidence/final-x402-production-quote.json). The exact two-command address-balance transaction passes actual unsigned Mainnet simulation with checks enabled, no mocked gas, simulated merchant credit **1,000,000 MIST**, zero payer gas and **100,000 MIST** sponsor gas. [Unsigned proof](evidence/final-x402-unsigned-simulation.json). **Its digest is not a settled transaction. Zero genuine service receipts exist.** [Actual versus simulated scope](FINAL_X402_READINESS.md).
+
 ## Confirmed wallet custody conversion — October 30, 2026
 
 One owner-approved **0.005 SUI Wallet A self-deposit** finalized at checkpoint **339863005**, digest `6MXocsgenJghaAG5J7AAE9FqAEdkhrkjXgq13SiuBnMP`. Native Tatum Mainnet gRPC independently verifies success, exact approved bytes, actual gas **0.000100099 SUI**, and final Wallet A coin/address balances **0.022893245 / 0.005 SUI**. [Actual receipt and boundaries](SUI_SELF_DEPOSIT_RESULT.md). **This is not an x402 purchase.** Fresh Production audit confirms 32 preserved memories and zero service receipts; payment switches stay false and production Slush clearance remains unresolved.

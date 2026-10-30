@@ -7,6 +7,7 @@ import {
   parseServiceChallenge,
   encodeServicePaymentHeader,
   decodeServicePaymentHeader,
+  buildServiceTransaction,
 } from '@/lib/service-protocol';
 const payer = '0x' + '1'.repeat(64),
   merchant = '0x' + '2'.repeat(64),
@@ -25,6 +26,32 @@ const terms = serviceTermsSchema.parse({
     instructionHash: 'a'.repeat(64),
   },
 });
+it.each(['sui:mainnet', 'sui:testnet'] as const)(
+  'builds the exact unsigned %s transaction with no gas coins or execution',
+  async (network) => {
+    const t = serviceTermsSchema.parse({ ...terms, network });
+    const { serviceNetworkInfo } = await import('@/lib/service-protocol');
+    const state = {
+      genesis: serviceNetworkInfo(network).genesis,
+      epoch: 1296,
+      gasPrice: '100',
+      nonce: 123,
+    };
+    const tx = buildServiceTransaction(t, payer, state);
+    const bytes = Buffer.from(await tx.build()).toString('base64');
+    expect(() => validateServiceTransaction(bytes, t, payer)).not.toThrow();
+    expect(tx.getData().commands).toHaveLength(2);
+    expect(tx.getData().gasData.payment).toEqual([]);
+    for (const diff of [
+      { genesis: 'wrong' },
+      { gasPrice: '0' },
+      { epoch: 'not-an-epoch' },
+      { nonce: -1 },
+      { nonce: 2 ** 32 },
+    ])
+      expect(() => buildServiceTransaction(t, payer, { ...state, ...diff })).toThrow();
+  },
+);
 async function fixture(change?: (tx: Transaction) => void, redeem = true) {
   const tx = new Transaction();
   tx.setSender(payer);
@@ -72,6 +99,22 @@ describe('capped Testnet service authorization (synthetic transaction bytes; no 
       accepts: [terms],
     };
     expect(parseServiceChallenge(valid, origin)).toEqual(valid);
+    expect(
+      JSON.stringify(
+        parseServiceChallenge(
+          {
+            accepts: valid.accepts,
+            resource: {
+              mimeType: 'application/json',
+              description: valid.resource.description,
+              url: valid.resource.url,
+            },
+            x402Version: 2,
+          },
+          origin,
+        ),
+      ),
+    ).toBe(JSON.stringify(parseServiceChallenge(valid, origin)));
     for (const bad of [
       { ...valid, x402Version: 1 },
       { ...valid, accepts: [terms, terms] },

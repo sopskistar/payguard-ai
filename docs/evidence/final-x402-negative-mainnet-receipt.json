@@ -1,0 +1,8 @@
+{
+  "checkedAt": "2026-10-30T22:51:47.025Z",
+  "source": "Existing finalized Mainnet self-deposit; not a service purchase",
+  "newSignature": false,
+  "newSettlement": false,
+  "digest": "6MXocsgenJghaAG5J7AAE9FqAEdkhrkjXgq13SiuBnMP",
+  "serviceReceiptRejected": true
+}

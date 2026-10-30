@@ -109,8 +109,11 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
       return NextResponse.json(await approveService(tenantId, id, input.payer, actor?.sessionKey));
     }
     if (path[1] === 'remember') {
-      z.object({ consent: z.literal(true) }).parse(data);
-      return NextResponse.json(await rememberService(tenantId, id));
+      const input = z
+        .object({ consent: z.literal(true) })
+        .strict()
+        .parse(data);
+      return NextResponse.json(await rememberService(tenantId, id, input.consent));
     }
     if (path[1] && path[1] !== 'resume')
       throw new AppError(404, 'NOT_FOUND', 'Unknown service action');

@@ -1,3 +1,11 @@
+# x402 quote and engineering audit — October 30, 2026
+
+Mainnet quote preparation is enabled in Production; settlement remains disabled and Slush clearance false. Genuine HTTP 402, exact quote binding/idempotency, unsigned sponsored Mainnet simulation and existing Slush-signature verification pass. Wallet A still has **0.005 SUI address balance** plus **0.022893245 SUI coins**; Wallet B remains zero. **No service payment has settled.** [Completed checks, simulations and exact owner actions](FINAL_X402_READINESS.md).
+
+The zkLogin client requirement and pre-RPC disclosure lock are fixed. The owner prepares inspectable exact bytes before a separate signing/submission click; Slush web registration remains gated. Expired/cancelled operations, report attribution and current-instruction Walrus consent are guarded. Unit/integration **151/151**; local full browser **23 passed / 0 failed / 3 environment skips**, plus **four fully mocked service UI contracts**. Existing-memory fresh-session recall is OFF 0 / ON 7 owned citations with the mandatory hold intact; **32 memories and zero service receipts** remain. [Ledger](evidence/final-x402-tests.json). Earlier entries below are historical.
+
+---
+
 # Wallet A conversion confirmed — October 30, 2026
 
 **One real owner-approved 0.005 SUI self-deposit succeeded**, independently verified through Tatum at checkpoint **339863005**. Digest `6MXocsgenJghaAG5J7AAE9FqAEdkhrkjXgq13SiuBnMP`; actual gas **0.000100099 SUI**, below the 0.002 SUI cap. Wallet A now has **0.005 SUI address balance**, **0.022893245 SUI coins**, total **0.027893245 SUI**. Wallet B was absent. The localhost attempt is consumed and the server is back in read-only mode. [Confirmed result](SUI_SELF_DEPOSIT_RESULT.md).

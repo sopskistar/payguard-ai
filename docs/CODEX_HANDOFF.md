@@ -1,3 +1,13 @@
+# Latest x402 engineering handoff — October 30, 2026
+
+Continue current HEAD; recovery began at `d7d2329`, with only `.gitignore.save` untracked. Mainnet quote mode is owner-enabled and verified; settlement remains disabled and the production Slush gate stays hard-paused. Do not repeat the confirmed self-deposit. Wallet A address balance remains 0.005 SUI, coin objects 0.022893245 SUI. Both addresses match the original configuration. **Zero genuine service receipts; 32 confirmed memories preserved.**
+
+Read [FINAL_X402_READINESS.md](FINAL_X402_READINESS.md). Genuine Production 402/idempotency/resource checks, unsigned Mainnet sponsor simulation, existing Slush-signature verification and fresh-session existing Walrus recall pass. Positive settlement/delivery and paid-analysis memory consent are mocked. Code supplies SDK zkLogin clients, locks digest/cap before signature RPC disclosure, separates preparation/signing, distinguishes wallet registry IDs, gates web registration, rejects stale operations, clears stale report attribution and enforces separate memory consent/current instructions. No security gate was relaxed.
+
+Next requirement: satisfactory Slush clearance for the exact production origin and a controlled unfunded retest. Only afterward may a reviewed release lift the pause, create a fresh exact 0.001 SUI proposal, obtain new owner approval, and enable one supervised settlement. Do not use localhost/another origin to evade the warning. Keep settlement false now. All audit quotes were cancelled. No new wallet, funding, conversion, memory write, database reset or video is needed. Earlier entries are historical.
+
+---
+
 # Production balance fix verified — October 30, 2026
 
 Application commit **1953de6** is deployed and verified on Vercel. Both public addresses exactly match the authenticated Production values read before this task, including all 66 characters and Copy output. Neither address nor payment switch was changed. Quote preparation and settlement remain false; Slush clearance remains false.

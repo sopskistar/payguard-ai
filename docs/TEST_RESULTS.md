@@ -1,3 +1,11 @@
+# Final x402 engineering audit — October 30, 2026
+
+**151 unit/integration tests across 22 files pass.** Lint, TypeScript, formatting and production build pass. Full local browser rerun **23 / 0 / 3 environment skips**; earlier full run **22 / 1 / 3** on an account-switch privacy assertion. Complete wallet spec rerun **3/3**, then **five successful repetitions**. The cause of the first failure was not established. The four isolated service UI contracts also pass, including mocked prepare/sign/receipt and explicit memory consent. [Tests and limits](evidence/final-x402-tests.json).
+
+Genuine checks cover Production quote configuration/balances, HTTP 402/header/resource/idempotency, unsigned sponsored Mainnet simulation, verification of an existing Slush signature and rejection of a self-deposit as a service receipt. Fresh-session existing-memory recall passed OFF 0 / ON 7, all citations owned and recipient-change hold preserved; 32 records remain. Positive facilitator settlement, receipt/report delivery and post-purchase memory writes are **fixtures**, not live funded evidence. Production signing remains security-paused and actual service receipts remain **zero**. [Evidence index and owner actions](FINAL_X402_READINESS.md). No video.
+
+---
+
 # Owner-operated self-deposit verified — October 30, 2026
 
 **143 unit/integration passes across 21 files**, lint/typecheck/format/build pass; five fully intercepted signing UI scenarios pass with no real financial calls. Actual owner-controlled Slush signing and one genuine Mainnet self-deposit then succeeded: Tatum confirms digest `6MXocsgenJghaAG5J7AAE9FqAEdkhrkjXgq13SiuBnMP`, finalized checkpoint **339863005**, net gas **100,099 MIST**, address balance **5,000,000 MIST** and coin balance **22,893,245 MIST**. [Actual result](SUI_SELF_DEPOSIT_RESULT.md) · [mock fixture boundaries](evidence/self-deposit-signing-fixtures.json) · [read-only receipt browser checks](evidence/self-deposit-confirmed-browser.json).
