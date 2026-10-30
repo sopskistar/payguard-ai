@@ -1,5 +1,9 @@
 # The invoice was familiar. The recipient was not.
 
+## Recovery engineering update
+
+PayGuard preserves 32 tracked confirmed Mainnet memories and now prepares existing payer/merchant accounts through a private Payment Setup screen with Tatum balance categories, funding guidance, Vercel configuration and explicit security states. The first-party report remains deterministic; semantic Walrus retrieval informs policy application, and no LLM is called. No authentic service purchase has settled; the payment bonus remains unproven. [Owner guide](PAYMENT_SETUP.md) · [fresh memory/receipt audit](evidence/session-recovery-audit.json). Three experiments are prepared, each with separate approval; none is represented as executed.
+
 _Technical article source, updated October 28, 2026. Mainnet results are measured; see the test ledger for hosted deployment status._
 
 [Repository](https://github.com/sopskistar/payguard-ai) · [Proof ledger](MAINNET_PROOF.md) · [Test results](TEST_RESULTS.md)

@@ -1,5 +1,9 @@
 # Mainnet proof ledger
 
+## Fresh recovery recheck — October 30, 2026
+
+All **32 tracked confirmed records (30 original owner + 2 controlled tenant)** passed fresh SDK job/blob/namespace checks without writes. Neon contains **zero genuine service-payment receipts**. [Audit](evidence/session-recovery-audit.json). Production owner login/logout, Neon persistence, fresh-session recall (OFF 0 / ON 7 owned citations), unchanged baseline holds and actual Tatum Mainnet reads passed on `7531455` before the engineering update. [Core evidence](evidence/production-core-smoke.json). This does not prove funded wallet or x402 settlement compatibility.
+
 **October 29 continuation:** all original 30 provider jobs/blobs were independently reconfirmed. Two additional sponsored records belong to separate controlled tenant identities, bringing the tracked total to **32**. They are separate from the original owner collection below. Both later authenticated sessions recalled their own confirmed correction on a new synthetic invoice; foreign invoice/memory access was denied in both directions. [Live controlled API proof](evidence/two-tenant-mainnet-memory.json) · [independent SDK job/blob/namespace recheck](evidence/two-tenant-provider-recheck.json). This used a loopback application with real Neon/Walrus, not a physical hosted wallet or a cleared Slush domain. No reseed, renewal or financial transaction was submitted.
 
 Verified on October 28, 2026. **30 distinct confirmed Walrus memories**, including the original 12 seeds, the original cross-session correction and 17 new learning events. Expansion confirmed at `2026-10-28T23:00:52.070Z`, with zero pending or failed records. The business scenarios are synthetic; the Mainnet writes and returned IDs below are real. No pending job is counted.

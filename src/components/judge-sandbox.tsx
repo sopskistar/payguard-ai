@@ -1,4 +1,5 @@
 'use client';
+import { Brand } from './brand';
 import { useRef, useState } from 'react';
 import Link from 'next/link';
 import { motion, MotionConfig, useReducedMotion } from 'motion/react';
@@ -155,10 +156,7 @@ export function JudgeSandbox() {
       <fieldset className="journey journey-ready-controls" disabled={!ready}>
         <header className="journey-header">
           <Link href="/" className="journey-brand">
-            <img src="/brand/icon.png" alt="PayGuard Verify icon" />
-            <span>
-              PayGuard <b>Verify</b>
-            </span>
+            <Brand />
           </Link>
           <div>
             <Link href="/proof">

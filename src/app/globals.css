@@ -858,6 +858,128 @@ select:focus {
   flex-direction: column;
   z-index: 40;
 }
+.drawer-close {
+  display: none;
+}
+.workspace-back {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.payguard-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: #ecf6f5;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.06em;
+  white-space: nowrap;
+}
+.payguard-brand > img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+.payguard-brand > span > span {
+  color: var(--mint);
+  margin-left: 4px;
+}
+.sidebar-brand > .payguard-brand > span {
+  color: #ecf6f5;
+  margin-left: 0;
+}
+.payment-setup {
+  margin: 28px 0;
+}
+.payment-setup code,
+.payment-setup dd,
+.payment-setup td {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.payment-accounts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+.payment-accounts .notice {
+  display: block;
+  margin: 0;
+  min-width: 0;
+}
+.payment-accounts .button {
+  margin-top: 12px;
+}
+.payment-setup details {
+  margin-top: 20px;
+}
+.payment-setup summary {
+  cursor: pointer;
+  min-height: 44px;
+  display: list-item;
+}
+.payment-setup li {
+  margin: 10px 0;
+}
+.payment-setup table {
+  min-width: 0;
+  width: 100%;
+  table-layout: fixed;
+  font-size: 13px;
+}
+.service-payment-page .button {
+  max-width: 100%;
+  white-space: normal;
+}
+.payment-setup p,
+.payment-setup li {
+  overflow-wrap: anywhere;
+}
+.payment-setup th,
+.payment-setup td {
+  white-space: normal;
+  padding: 10px 6px;
+  text-align: left;
+}
+.payment-setup caption {
+  white-space: normal;
+}
+.payment-qr img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin-top: 16px;
+}
+.service-payment-page .judge-header {
+  flex-wrap: wrap;
+  gap: 16px;
+}
+@media (max-width: 720px) {
+  .drawer-close {
+    display: flex;
+    align-self: flex-end;
+    flex-shrink: 0;
+    margin-bottom: 8px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .sidebar {
+    max-width: calc(100vw - 48px);
+  }
+  .payment-accounts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .payguard-brand {
+    font-size: 19px;
+  }
+  .payguard-brand > img {
+    width: 32px;
+    height: 32px;
+  }
+}
 .sidebar-brand {
   display: flex;
   align-items: center;

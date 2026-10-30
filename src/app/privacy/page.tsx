@@ -1,9 +1,12 @@
 import Link from 'next/link';
+import { Brand } from '@/components/brand';
 export const metadata = { title: 'Privacy and retention' };
 export default function Privacy() {
   return (
     <main id="main" className="connect-page" style={{ display: 'block', maxWidth: 800 }}>
-      <Link href="/">← PayGuard Verify</Link>
+      <Link href="/" aria-label="PayGuard home">
+        <Brand />
+      </Link>
       <h1>Your records and your wallet</h1>
       <p>
         Wallet sign-in proves control of a signing account. It does not prove a person’s identity,

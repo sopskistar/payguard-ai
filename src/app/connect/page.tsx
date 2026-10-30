@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Brand } from '@/components/brand';
 import { WalletReviewEntry } from '@/components/wallet-review-entry';
 import { WalletEntry } from '@/components/wallet-entry';
 import { walletOnboardingAllowed, WALLET_REVIEW_MESSAGE } from '@/lib/wallet-policy';
@@ -15,7 +16,7 @@ export default async function ConnectPage({
     <div className="site-home">
       <header className="site-nav">
         <Link href="/">
-          <img src="/brand/logo.png" alt="PayGuard Verify" className="site-logo" />
+          <Brand />
         </Link>
         <Link href="/try" className="inline-link">
           Try without a wallet ↗

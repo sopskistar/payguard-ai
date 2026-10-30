@@ -1,3 +1,17 @@
+# Recovery engineering release — October 30, 2026
+
+Recovered local/GitHub/live production at `7531455`, no lost edits or unpushed commits; preserved `.gitignore.save`, credentials, Neon and all 32 Mainnet records. [Recovery matrix](SESSION_RECOVERY.md).
+
+Finished private **Agent Services → Payment Setup** with existing-wallet roles, secret-safe configuration statuses, read-only Tatum total/coin/address balances, funding/QR guidance, readiness states and precise Vercel instructions. Mainnet quotes now require valid distinct configured parties and fresh sufficient address-balance evidence. Added actual network protocol-feature verification. No settlement enabled.
+
+Completed missing mobile close X, Escape/backdrop/navigation dismissal, focus containment/restoration, scroll lock, hidden-drawer keyboard exclusion and Back/Overview breadcrumbs. Shared existing geometric icon/live wordmark removes the light rectangle throughout the app, including the public judge artifact. Six-stage motion and review-only Slush connector preserved. Local validation: **116 unit/integration tests; 20 browser passes / 0 failures / 3 environment skips**; lint/typecheck/format/build passed. [Test ledger](TEST_RESULTS.md).
+
+Owner stage: both wallets exist but public addresses are missing in configuration; balances unknown. **Zero genuine service receipts**. Legitimate Slush clearance, physical-wallet retest, usable funding and exact owner approval remain necessary. [Setup](PAYMENT_SETUP.md) · [three unexecuted experiments](PAYMENT_EXPERIMENTS.md). No video, account recreation, production reseed, memory duplication or financial action.
+
+Historical production checkpoints follow; current deployment confirmation will be added after release.
+
+---
+
 # Verified product release — ec74c88
 
 Application commit **ec74c88027fba1a255cf66a72fc2b89bfeb9a4dd** reached Vercel Ready and was independently observed through `/api/release`. The final **isolated hosted suite ran every spec: 18 passed, 0 failed, 3 intentional hosted-wallet skips; zero navigation retries**. The earlier shared-browser run (16 passed / 2 transport failures / 3 skipped) is preserved separately, not counted as green. [Hosted result](evidence/product-production-isolated.json) · [Initial diagnostics](evidence/product-production-first.json).

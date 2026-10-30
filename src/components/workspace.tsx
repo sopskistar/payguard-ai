@@ -4,6 +4,7 @@ import { useClientReady } from './client-ready';
 import { WalletSessionMonitor } from './wallet-entry';
 import { Onboarding } from './onboarding';
 import { WorkspaceOverview, WorkspaceGuide } from './workspace-overview';
+import { Brand } from './brand';
 import { PublicMemoryLab, publishedMemoryCount } from './mode-notice';
 import { VerificationPanel, VendorProfiles, AttackReplayLab } from './verify-panels';
 import { useRouter } from 'next/navigation';
@@ -101,6 +102,59 @@ export function Workspace({
   const [refreshing, setRefreshing] = useState(false);
   const [lastRefresh, setLastRefresh] = useState<string>();
   const [drawer, setDrawer] = useState(false);
+  const drawerRef = useRef<HTMLElement>(null);
+  const menuRef = useRef<HTMLButtonElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const sidebar = drawerRef.current;
+    const content = contentRef.current;
+    const menu = menuRef.current;
+    if (!sidebar || !content) return;
+    const media = window.matchMedia('(max-width: 720px)');
+    const update = () => {
+      sidebar.inert = media.matches && !drawer;
+      if (media.matches && !drawer) sidebar.setAttribute('aria-hidden', 'true');
+      else sidebar.removeAttribute('aria-hidden');
+      if (!media.matches && drawer) setDrawer(false);
+    };
+    update();
+    media.addEventListener('change', update);
+    const overflow = document.body.style.overflow;
+    if (drawer && media.matches) {
+      document.body.style.overflow = 'hidden';
+      content.inert = true;
+      sidebar.querySelector<HTMLButtonElement>('.drawer-close')?.focus();
+    }
+    const key = (event: KeyboardEvent) => {
+      if (!drawer || !media.matches) return;
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setDrawer(false);
+      }
+      if (event.key === 'Tab') {
+        const items = Array.from(
+          sidebar.querySelectorAll<HTMLElement>('a[href], button:not(:disabled)'),
+        ).filter((el) => el.getClientRects().length > 0);
+        const first = items[0],
+          last = items[items.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last?.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first?.focus();
+        }
+      }
+    };
+    document.addEventListener('keydown', key);
+    return () => {
+      media.removeEventListener('change', update);
+      document.removeEventListener('keydown', key);
+      content.inert = false;
+      document.body.style.overflow = overflow;
+      if (drawer) menu?.focus();
+    };
+  }, [drawer, ready, logoutPending]);
   const [toast, setToast] = useState<Toast>();
   const [modal, setModal] = useState<'login' | 'invoice' | 'correction' | 'status' | null>(
     initialSignIn ? 'login' : null,
@@ -289,12 +343,23 @@ export function Workspace({
   return (
     <MotionConfig reducedMotion="user">
       <div className="app-shell">
-        <aside className={`sidebar ${drawer ? 'open' : ''}`}>
-          <Link className="sidebar-brand" href="/">
-            <img src="/brand/icon.png" alt="PayGuard Verify icon" />
-            <span>
-              PayGuard<span>Verify</span>
-            </span>
+        <aside
+          id="workspace-navigation"
+          ref={drawerRef}
+          role={drawer ? 'dialog' : undefined}
+          aria-modal={drawer || undefined}
+          aria-label={drawer ? 'Workspace navigation' : undefined}
+          className={`sidebar ${drawer ? 'open' : ''}`}
+        >
+          <button
+            className="icon-button drawer-close"
+            aria-label="Close navigation"
+            onClick={() => setDrawer(false)}
+          >
+            <X />
+          </button>
+          <Link className="sidebar-brand" href="/" onClick={() => setDrawer(false)}>
+            <Brand />
           </Link>
           <div className="workspace-label">
             <span className="workspace-avatar">P</span>
@@ -329,6 +394,14 @@ export function Workspace({
                 {n.id === 'memory' && <span className="new-label">LEARN</span>}
               </Link>
             ))}
+            <Link
+              className="nav-link"
+              href="/services#payment-setup"
+              onClick={() => setDrawer(false)}
+            >
+              <Zap size={19} />
+              <span>Agent Services</span>
+            </Link>
           </nav>
           <div className="sidebar-bottom">
             <div className="guardian-mini">
@@ -341,7 +414,7 @@ export function Workspace({
                 <br />
                 It never sends supplier payments.
               </p>
-              <Link href="/app/memory">
+              <Link href="/app/memory" onClick={() => setDrawer(false)}>
                 Explore the learning loop <ArrowUpRight size={14} />
               </Link>
             </div>
@@ -360,23 +433,33 @@ export function Workspace({
         {drawer && (
           <button
             className="drawer-scrim"
-            aria-label="Close navigation"
+            aria-label="Dismiss navigation backdrop"
+            tabIndex={-1}
             onClick={() => setDrawer(false)}
           />
         )}
-        <div className="app-main">
+        <div className="app-main" ref={contentRef}>
           <header className="topbar">
             <div>
               <button
                 className="icon-button mobile-menu"
                 aria-label="Open navigation"
+                aria-expanded={drawer}
+                aria-controls="workspace-navigation"
+                ref={menuRef}
                 onClick={() => setDrawer(!drawer)}
               >
                 <Menu />
               </button>
-              <span className="breadcrumb">
-                Workspace <ChevronRight size={13} /> <strong>{pageTitle}</strong>
-              </span>
+              <nav className="breadcrumb" aria-label="Breadcrumb">
+                <Link href="/app">Overview</Link>
+                {view !== 'overview' && (
+                  <>
+                    <ChevronRight size={13} />
+                    <strong aria-current="page">{pageTitle}</strong>
+                  </>
+                )}
+              </nav>
             </div>
             <div className="topbar-right">
               <span className="network-label">
@@ -402,6 +485,19 @@ export function Workspace({
             </div>
           </header>
           <main id="main" className="workspace-content">
+            {view !== 'overview' && (
+              <div className="workspace-back">
+                <button
+                  className="button outline small"
+                  onClick={() => (window.history.length > 1 ? router.back() : router.push('/app'))}
+                >
+                  ← Back
+                </button>
+                <Link href="/app" className="inline-link">
+                  Overview
+                </Link>
+              </div>
+            )}
             <div className="page-heading">
               <div>
                 <span className="eyebrow">YOUR PAYMENT COMMAND CENTER</span>

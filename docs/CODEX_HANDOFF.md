@@ -1,3 +1,15 @@
+# Recovery continuation — October 30, 2026
+
+Started from local/remote/live `75314550eeb81aa7a027091234d8b19c0160f788`, no tracked changes or unpushed work. Preserve untracked `.gitignore.save`, private `.env.local`, all historical evidence and Neon. Both owner wallets already exist; do not recreate them.
+
+Finished administrator Payment Setup in `/services#payment-setup`, safe configuration statuses, Tatum total/coin/address balances, actual address-balance gas protocol-feature check, payer copy/QR after owner address comparison, funding/shortfall guidance and exact Vercel guide. `ENABLE_AGENT_PAYMENTS` expects `mainnet` for quotes; `true` is invalid. Keep settlement false. Mainnet quotes now reject missing/reused parties, failed live checks and inadequate usable funds. Hosted signing hard pause remains.
+
+Finished mobile drawer X/Escape/focus/inert/scroll/back navigation and shared existing icon/live wordmark across the app and static judge. Preserve meaningful story motion. Local validation: 116 unit/integration tests; full browser 20 passed / 0 failed / 3 environment skips; lint/typecheck/format/build pass. Build needs normal subprocess permissions (sandbox EPERM). Retain initial 360px overflow and database-hook contention failures in `recovery-local-validation.json`; full reruns passed.
+
+Read-only recovery audit independently rechecked all 32 existing SDK jobs/blobs/namespaces and zero service receipts. Production on recovered commit passed owner login/logout/Neon/fresh-session recall OFF0 ON7 owned citations/Tatum Mainnet/preflight. Four new real recall queries again met 18/18 synthetic learning contracts. No memory write or funded signature/payment; no video. Remaining: production deployment/browser/screenshots for this change, then owner public-address configuration, genuine Slush clearance and controlled physical retest, exact transaction approval. [Setup](PAYMENT_SETUP.md) · [experiments, not authorized](PAYMENT_EXPERIMENTS.md).
+
+---
+
 # Final production validation — ec74c88
 
 - Vercel Ready; public `/api/release` matched `ec74c88027fba1a255cf66a72fc2b89bfeb9a4dd`.

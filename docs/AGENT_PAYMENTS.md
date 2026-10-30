@@ -1,5 +1,13 @@
 # Sui Mainnet x402 service payments
 
+## Recovery engineering update — October 30, 2026
+
+The existing [Agent Services Payment Setup](https://payguard-ai-henna.vercel.app/services#payment-setup) now has administrator-only configuration/presence statuses, distinct existing wallet roles, copy/QR controls, native total/coin/address balance reads through Tatum, explicit funding states and Vercel instructions. [Exact owner setup guide](PAYMENT_SETUP.md) · [three prepared experiments](PAYMENT_EXPERIMENTS.md). No wallet was created and no settlement enabled.
+
+Mainnet quote generation now refuses missing/reused payer configuration, unavailable compatibility checks or insufficient address-balance SUI. The read-only preflight verifies the actual `enable_address_balance_gas_payments` protocol flag. Unknown balances remain unknown. Account control remains unverified until a legitimate wallet signature; the comparison checkbox is not proof of control.
+
+The foundation's generic Sui exact specification still describes coin-object sponsorship and discusses address balances as future work. PayGuard uses Tentacle's concrete address-balance extension (`extra.gasOwner`/`gasBudget`, signed transaction/signature payload), checked against its current client and facilitator source and Sui's current framework guidance. This provider-specific interoperability is not universal facilitator support or funded settlement proof. [Foundation spec](https://github.com/x402-foundation/x402/blob/main/specs/schemes/exact/scheme_exact_sui.md) · [Tentacle validator](https://github.com/tentaclepay/sui-x402/blob/main/typescript/src/exact/facilitator/send-funds.ts) · [Sui address balances](https://www.docs.sui.io/onchain-finance/asset-custody/address-balances/using-address-balances).
+
 **Mainnet and development Testnet are implemented. No genuine service payment has settled on either network. Hosted wallet signing remains security-paused. The payments bonus is unproven.**
 
 PayGuard offers a useful, explicitly **first-party** consistency analysis when supplier instructions show anomalies: conflicting recipient mentions, embedded link domains and instruction-bypass language. The report preserves independent human verification and cannot approve or pay a supplier invoice. Buyer and merchant may both be controlled by this project; this is not an independent identity check.

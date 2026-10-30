@@ -20,6 +20,7 @@ import {
   cancelService,
   servicePreflight,
   ownedService,
+  serviceSetup,
 } from '@/lib/service-payments';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -32,6 +33,12 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
     if (req.method !== 'GET') await rateLimit(tenantId + ':service-payments', 30);
     const path = (await params).path || [];
     if (path.length > 2) throw new AppError(404, 'NOT_FOUND', 'Unknown service action');
+    if (req.method === 'GET' && path.length === 1 && ['setup', 'setup-check'].includes(path[0])) {
+      await rateLimit(tenantId + ':service-setup', 15);
+      return NextResponse.json(await serviceSetup(path[0] === 'setup-check'), {
+        headers: { 'Cache-Control': 'private, no-store' },
+      });
+    }
     if (req.method === 'GET' && path.length === 1 && path[0] === 'preflight') {
       await rateLimit(tenantId + ':service-preflight', 15);
       return NextResponse.json(await servicePreflight(), {
@@ -45,19 +52,22 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
         'Service actions require an authenticated, origin-checked POST.',
       );
     if (req.method === 'GET' && !path.length)
-      return NextResponse.json({
-        configured: serviceReady(),
-        network: serviceMode(),
-        mainnetImplemented: true,
-        mainnetEnabled: serviceMode() === 'sui:mainnet' && serviceSettlementEnabled(),
-        signingAllowed: serviceSettlementEnabled(),
-        securityCleared: walletOnboardingAllowed(),
-        sessionCapAtomic: SERVICE_SESSION_CAP,
-        dedicatedPayer: serviceAddressSchema.safeParse(process.env.SERVICE_PAYMENT_PAYER).success
-          ? process.env.SERVICE_PAYMENT_PAYER
-          : null,
-        intents: await listServiceIntents(tenantId),
-      });
+      return NextResponse.json(
+        {
+          configured: serviceReady(),
+          network: serviceMode(),
+          mainnetImplemented: true,
+          mainnetEnabled: serviceMode() === 'sui:mainnet' && serviceSettlementEnabled(),
+          signingAllowed: serviceSettlementEnabled(),
+          securityCleared: walletOnboardingAllowed(),
+          sessionCapAtomic: SERVICE_SESSION_CAP,
+          dedicatedPayer: serviceAddressSchema.safeParse(process.env.SERVICE_PAYMENT_PAYER).success
+            ? process.env.SERVICE_PAYMENT_PAYER
+            : null,
+          intents: await listServiceIntents(tenantId),
+        },
+        { headers: { 'Cache-Control': 'private, no-store' } },
+      );
     let size = 0;
     const chunks: Uint8Array[] = [];
     const reader = req.body?.getReader();

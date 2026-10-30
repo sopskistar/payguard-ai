@@ -1,5 +1,9 @@
 # Judge? Start Here — PayGuard Verify in three minutes
 
+## Payment setup and current limits
+
+The private administrator can open [Agent Services → Payment Setup](https://payguard-ai-henna.vercel.app/services#payment-setup). Public judges retain account-free `/try` and `/proof`. Setup shows configuration, independent balances and readiness, not payment success. Both owner wallet accounts exist but their addresses remain unconfigured; production signing is Slush-paused. Genuine settlement count is zero. [Owner setup](PAYMENT_SETUP.md) · [exact approval worksheet](MAINNET_PAYMENT_APPROVAL.md). Do not connect a funded wallet to override a warning.
+
 **Verify before you pay. Remember what nearly went wrong.**
 
 The [homepage](https://payguard-ai-henna.vercel.app/) introduces the problem with a controllable six-stage synthetic illustration. Play/Pause, Replay and direct step selection need no wallet. The real recall comparison below it preserves the approval hold in both memory modes.

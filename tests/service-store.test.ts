@@ -8,8 +8,11 @@ import type { PGlite } from '@electric-sql/pglite';
 import { Transaction } from '@mysten/sui/transactions';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 import { fromBase64 } from '@mysten/sui/utils';
-const mock = vi.hoisted(() => ({ inspect: vi.fn() }));
-vi.mock('@/lib/integrations/service-tatum', () => ({ inspectServiceSettlement: mock.inspect }));
+const mock = vi.hoisted(() => ({ inspect: vi.fn(), preflight: vi.fn() }));
+vi.mock('@/lib/integrations/service-tatum', () => ({
+  inspectServiceSettlement: mock.inspect,
+  serviceChainPreflight: mock.preflight,
+}));
 import { db } from '@/db';
 import { seedDemo, listInvoices } from '@/lib/store';
 import { OWNER_ID } from '@/lib/demo';
@@ -78,6 +81,14 @@ beforeAll(async () => {
   mock.inspect.mockResolvedValue({
     source: 'SYNTHETIC MOCK, NOT NETWORK PROOF',
     receivedAtomic: '1000000',
+  });
+  mock.preflight.mockResolvedValue({
+    source: 'SYNTHETIC MOCK, NOT NETWORK PROOF',
+    genesis: serviceNetworkInfo('sui:mainnet').genesis,
+    balances: {
+      payer: { addressAtomic: '1000000', coinAtomic: '0', totalAtomic: '1000000' },
+      recipient: null,
+    },
   });
 });
 afterAll(async () => {
@@ -164,6 +175,25 @@ it('Mainnet quotes and signatures are supported but the separate spend switch fa
   await approveService(OWNER_ID, row.id, payer.toSuiAddress());
   expect((await fulfillService(OWNER_ID, row.id, await payload(row))).state).toBe('settled'); // MOCK only
   vi.stubEnv('ENABLE_AGENT_PAYMENTS', 'testnet');
+});
+it('refuses Mainnet quotes with a missing payer, reused merchant, insufficient address balance or unavailable provider', async () => {
+  vi.stubEnv('ENABLE_AGENT_PAYMENTS', 'mainnet');
+  try {
+    vi.stubEnv('SERVICE_PAYMENT_PAYER', '');
+    await expect(quote()).rejects.toThrow('quotes require');
+    vi.stubEnv('SERVICE_PAYMENT_PAYER', process.env.SERVICE_PAYMENT_RECIPIENT!);
+    await expect(quote()).rejects.toThrow('quotes require');
+    vi.stubEnv('SERVICE_PAYMENT_PAYER', payer.toSuiAddress());
+    mock.preflight.mockResolvedValueOnce({
+      balances: { payer: { addressAtomic: '0', coinAtomic: '5000000' } },
+    });
+    await expect(quote()).rejects.toThrow('sufficient address-balance');
+    mock.preflight.mockRejectedValueOnce(new Error('Synthetic provider outage'));
+    await expect(quote()).rejects.toThrow('Synthetic provider outage');
+  } finally {
+    vi.stubEnv('SERVICE_PAYMENT_PAYER', payer.toSuiAddress());
+    vi.stubEnv('ENABLE_AGENT_PAYMENTS', 'testnet');
+  }
 });
 it('records a finalized failed transaction without a receipt or resettlement', async () => {
   const row = await quote();

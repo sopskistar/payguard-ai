@@ -27,12 +27,18 @@ import {
 import { inspectServiceSettlement, serviceChainPreflight } from './integrations/service-tatum';
 import { recordCorrection } from './integrations/memory';
 import { walletOnboardingAllowed, WALLET_REVIEW_MESSAGE } from './wallet-policy';
+import { serviceConfiguration } from './service-setup';
 export const serviceMode = (): ServiceNetwork =>
   process.env.ENABLE_AGENT_PAYMENTS === 'testnet' ? 'sui:testnet' : SERVICE_NETWORK;
-export const serviceReady = () =>
-  ['mainnet', 'testnet'].includes(process.env.ENABLE_AGENT_PAYMENTS || '') &&
-  serviceAddressSchema.safeParse(process.env.SERVICE_PAYMENT_RECIPIENT).success &&
-  !!process.env.TATUM_API_KEY;
+export const serviceReady = () => {
+  const config = serviceConfiguration(process.env);
+  return (
+    ['mainnet', 'testnet'].includes(process.env.ENABLE_AGENT_PAYMENTS || '') &&
+    !!config.recipient &&
+    !!process.env.TATUM_API_KEY &&
+    (serviceMode() !== 'sui:mainnet' || config.partiesValid)
+  );
+};
 export const serviceSettlementEnabled = () =>
   serviceReady() &&
   process.env.SERVICE_PAYMENT_SETTLEMENT_ENABLED === 'true' &&
@@ -84,9 +90,12 @@ export async function servicePreflight() {
       'FACILITATOR_TERMS',
       'Selected network or sponsor terms unavailable. No payment proposed.',
     );
-  const chain = await serviceChainPreflight(network);
   const payer = serviceAddressSchema.safeParse(process.env.SERVICE_PAYMENT_PAYER);
   const recipient = serviceAddressSchema.safeParse(process.env.SERVICE_PAYMENT_RECIPIENT);
+  const chain = await serviceChainPreflight(network, {
+    payer: payer.success ? payer.data : null,
+    recipient: recipient.success ? recipient.data : null,
+  });
   const missing = [
     ...(!payer.success ? ['SERVICE_PAYMENT_PAYER'] : []),
     ...(!recipient.success ? ['SERVICE_PAYMENT_RECIPIENT'] : []),
@@ -97,10 +106,15 @@ export async function servicePreflight() {
     payer.data !== recipient.data &&
     payer.data !== sponsor.data &&
     recipient.data !== sponsor.data;
+  const sufficientlyFunded =
+    !!chain.balances.payer && BigInt(chain.balances.payer.addressAtomic) >= BigInt(SERVICE_AMOUNT);
   return {
     checkedAt: new Date().toISOString(),
     spending: false,
-    readyForExactApproval: missing.length === 0 && validParties,
+    readyForExactApproval:
+      missing.length === 0 && validParties && sufficientlyFunded && walletOnboardingAllowed(),
+    configurationReady: missing.length === 0 && validParties,
+    sufficientlyFunded,
     missing,
     partiesDistinct: !!validParties,
     payer: payer.success ? payer.data : null,
@@ -135,6 +149,32 @@ export async function servicePreflight() {
     settlementEnabled: serviceSettlementEnabled(),
   };
 }
+export async function serviceSetup(check = false) {
+  const config = serviceConfiguration(process.env);
+  const base = {
+    ...config,
+    network: serviceMode(),
+    quoteEnabled: serviceReady(),
+    settlementEnabled: serviceSettlementEnabled(),
+    securityCleared: walletOnboardingAllowed(),
+  };
+  if (!check) return { ...base, check: { state: 'unchecked' as const } };
+  try {
+    const preflight = await servicePreflight();
+    return { ...base, check: { state: 'passed' as const, preflight } };
+  } catch {
+    return {
+      ...base,
+      check: {
+        state: 'failed' as const,
+        checkedAt: new Date().toISOString(),
+        message:
+          'Read-only provider check unavailable. Balances and compatibility are unknown; refresh before preparing any payment.',
+      },
+    };
+  }
+}
+export type ServiceSetup = Awaited<ReturnType<typeof serviceSetup>>;
 function configuredTerms(terms: import('./service-protocol').ServiceTerms, payer: string) {
   if (terms.network !== serviceMode() || terms.payTo !== process.env.SERVICE_PAYMENT_RECIPIENT)
     throw new AppError(
@@ -184,6 +224,15 @@ export async function quoteService(tenantId: string, invoiceId: string, operatio
       'No instruction anomaly currently requires supplemental consistency analysis.',
     );
   const network = serviceMode();
+  if (network === 'sui:mainnet') {
+    const readiness = await servicePreflight();
+    if (!readiness.configurationReady || !readiness.sufficientlyFunded)
+      throw new AppError(
+        409,
+        'PAYMENT_NOT_READY',
+        'Mainnet quote requires distinct configured parties and independently checked sufficient address-balance SUI. Open Payment Setup. No signing or payment occurred.',
+      );
+  }
   const supported = await facilitator('/supported');
   const kind = supported.kinds?.find(
     (k: { x402Version: number; network: string; scheme: string }) =>

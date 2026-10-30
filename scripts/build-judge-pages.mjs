@@ -23,7 +23,7 @@ await build({
           resolveDir: process.cwd(),
           loader: 'js',
         }));
-        b.onLoad({ filter: /judge-sandbox\.tsx$/ }, async (args) => ({
+        b.onLoad({ filter: /(?:judge-sandbox|brand)\.tsx$/ }, async (args) => ({
           contents: (await readFile(args.path, 'utf8')).replaceAll(
             'src="/brand/icon.png"',
             'src="brand/icon.png"',

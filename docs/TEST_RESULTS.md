@@ -1,3 +1,13 @@
+# Recovery release validation — October 30, 2026
+
+**116 unit/integration tests across 18 files; local browser 20 passed / 0 failed / 3 environment skips.** Lint (zero warnings), TypeScript, formatting and production build pass. New tests cover configured/malformed/reused addresses, no credential disclosure, coin-versus-address funding, missing/disabled protocol support, unknown/inconsistent balances, Mainnet quote readiness, private setup and all mobile drawer dismissal/focus/back behaviors at 360/390/430px. Existing replay, idempotency, caps, failure recovery, reconciliation and tenant tests remain. [Local ledger](evidence/recovery-local-validation.json).
+
+The three local skips are two live-provider tests reserved for production and one hosted-only wallet-pause assertion. Production physical-wallet signing remains blocked, not passed. All settlement responses in automated tests are fixtures; no genuine service settlement occurred. The initial 360px overflow, two setup-hook timeouts under build contention, and sandbox TypeScript subprocess EPERM are retained in the ledger; the final checks above passed after correction/sequential execution.
+
+Fresh read-only production core checks, 32 SDK job/blob/namespace checks, four real recalls / 18 synthetic learning contracts and actual Mainnet protocol-feature checks passed. [Recovery audit](evidence/session-recovery-audit.json) · [Mainnet preflight](evidence/mainnet-service-preflight.json). Source/built-asset credential scans and 23 browser-report archives found no configured credential matches; historical-password extraction was unavailable in this new session and is not claimed. Production browser/deployment evidence follows after this validated commit is deployed.
+
+---
+
 # Production verification — ec74c88
 
 **Every hosted spec passed in the isolated runner: 18 passed, 0 failed, 3 intentional hosted-wallet skips, 0 flaky tests and 0 navigation retries.** Eleven spec files ran sequentially in fresh Chromium processes with unchanged assertions, HTTPS and the original security gates. [Actual per-spec result](evidence/product-production-isolated.json). The initial combined run’s two network failures and both fresh-case reruns remain documented below.

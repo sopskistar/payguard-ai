@@ -1,0 +1,40 @@
+{
+  "checkedAt": "2026-10-30T11:24:17.750363+00:00",
+  "recoveredHead": "75314550eeb81aa7a027091234d8b19c0160f788",
+  "unitIntegration": {
+    "passed": 116,
+    "files": 18
+  },
+  "localBrowser": {
+    "passed": 20,
+    "failed": 0,
+    "skipped": 3,
+    "details": {
+      "startedAt": "2026-10-30T11:21:45.691Z",
+      "finishedAt": "2026-10-30T11:22:43.073Z",
+      "exitCode": 0,
+      "actualProduction": false,
+      "liveMemoryReuse": true,
+      "video": false
+    },
+    "skipReasons": [
+      "Live Tatum reserved for production",
+      "Live Walrus reserved for production; existing memories reused",
+      "Hosted-only security pause is not applicable on loopback"
+    ]
+  },
+  "lint": "passed without warnings",
+  "typecheck": "passed",
+  "format": "passed",
+  "productionBuild": "passed; sandbox EPERM required normal subprocess permissions",
+  "mainnetWrites": false,
+  "walletCreated": false,
+  "financialSignatures": false,
+  "settlementEnabled": false,
+  "realServiceReceipts": 0,
+  "preservedFailureHistory": [
+    "Initial Payment Setup fixture overflowed at 360px. Corrected wrapping/layout; full suite passed.",
+    "A concurrent unit run timed out in two temporary database setup hooks. Sequential full rerun: 116 passed.",
+    "Sandboxed Next build failed to spawn TypeScript (EPERM); same build succeeded outside the sandbox."
+  ]
+}

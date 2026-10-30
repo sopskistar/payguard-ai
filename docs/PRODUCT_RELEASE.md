@@ -1,3 +1,15 @@
+# Recovery UX and payment setup — October 30, 2026
+
+The existing product was extended without rebuilding it. Mobile workspace navigation now has a visible close X, Escape and backdrop dismissal, automatic navigation close, focus trap/restore, body scroll lock and an inert hidden drawer. Back and Overview work on direct workspace subpages. Browser tests cover 360, 390 and 430px at 100% zoom.
+
+Every application surface reuses the existing geometric icon and live PayGuard Verify typography; no replacement artwork was generated. The unwanted light wordmark rectangle is no longer used. The public judge bundle uses the same brand component with a relative static asset path. The six-stage story, controls and reduced-motion behavior remain tested.
+
+[Administrator Payment Setup](https://payguard-ai-henna.vercel.app/services#payment-setup) adds two existing account roles, configuration/presence statuses, copy/address-only QR controls, independently checked Mainnet balance categories, explicit readiness/failure states and beginner Vercel guidance. Quote mode expects `mainnet`, not `true`; settlement remains disabled and hosted Slush signing remains paused. Funding instructions distinguish address balance from coin objects and do not perform conversions. [Owner guide](PAYMENT_SETUP.md).
+
+Local verification: 116 unit/integration passes, 20 browser passes / 0 failures / 3 environment skips. Initial fixture overflow at 360px was corrected and the full suite rerun. Fresh production screenshots will be recorded under `docs/screenshots/recovery-release/` with a commit/date/browser/viewport manifest. No exact quote or successful receipt screenshot will be fabricated while those real artifacts are unavailable.
+
+---
+
 # Product experience and security-review release
 
 **Validated application commit: ec74c88, Vercel Ready.** Every hosted spec ran in a fresh browser process: 18 passed / 0 failed / 3 hosted-wallet skips, zero navigation retries. The first combined run’s transport failures are preserved in the test ledger.

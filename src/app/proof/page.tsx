@@ -1,4 +1,5 @@
 import { LearningReport } from '@/components/learning-report';
+import { Brand } from '@/components/brand';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, ShieldCheck, ExternalLink, Check } from 'lucide-react';
@@ -16,7 +17,7 @@ export default function ProofPage() {
     <div className="proof-page">
       <header className="site-nav">
         <Link href="/" aria-label="PayGuard home">
-          <img className="site-logo" src="/brand/logo.png" alt="PayGuard Verify" />
+          <Brand />
         </Link>
         <Link className="site-link" href="/try">
           Try Interactive Demo <ArrowRight size={15} />

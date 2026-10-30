@@ -12,7 +12,10 @@ import {
   type ServiceNetwork,
 } from '../service-protocol';
 import { AppError } from '../errors';
-export async function serviceChainPreflight(networkId: ServiceNetwork) {
+export async function serviceChainPreflight(
+  networkId: ServiceNetwork,
+  parties: { payer?: string | null; recipient?: string | null } = {},
+) {
   if (!process.env.TATUM_API_KEY) throw new Error('TATUM_API_KEY configuration required');
   const network = serviceNetworkInfo(networkId);
   const transport = new GrpcTransport({
@@ -32,6 +35,36 @@ export async function serviceChainPreflight(networkId: ServiceNetwork) {
       coin.metadata?.decimals !== SERVICE_DECIMALS
     )
       throw new Error('Network identity or native SUI metadata mismatch');
+    const { response: epoch } = await client.ledgerService.getEpoch({
+      readMask: { paths: ['protocol_config.feature_flags'] },
+    });
+    const addressBalanceGasEnabled =
+      epoch.epoch?.protocolConfig?.featureFlags['enable_address_balance_gas_payments'] === true;
+    if (!addressBalanceGasEnabled)
+      throw new Error('Address-balance gas payments are not enabled on the checked network');
+    const balance = async (owner?: string | null) => {
+      if (!owner) return null;
+      const { response } = await client.stateService.getBalance({ owner, coinType: SERVICE_ASSET });
+      const b = response.balance;
+      if (
+        b?.balance == null ||
+        b.coinBalance == null ||
+        b.addressBalance == null ||
+        canonicalCoin(b.coinType || '') !== canonicalCoin(SERVICE_ASSET) ||
+        b.balance !== b.coinBalance + b.addressBalance
+      )
+        throw new Error('Incomplete or inconsistent native SUI balance response');
+      return {
+        owner,
+        totalAtomic: b.balance.toString(),
+        coinAtomic: b.coinBalance.toString(),
+        addressAtomic: b.addressBalance.toString(),
+      };
+    };
+    const [payer, recipient] = await Promise.all([
+      balance(parties.payer),
+      balance(parties.recipient),
+    ]);
     return {
       source: 'Tatum native Sui gRPC',
       network: networkId,
@@ -41,6 +74,8 @@ export async function serviceChainPreflight(networkId: ServiceNetwork) {
       decimals: coin.metadata.decimals,
       checkedAt: new Date().toISOString(),
       spending: false,
+      addressBalanceGasEnabled,
+      balances: { payer, recipient },
     };
   } finally {
     transport.close();

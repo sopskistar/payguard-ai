@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useClientReady } from './client-ready';
 import { AnimatePresence, motion, MotionConfig, useReducedMotion } from 'motion/react';
 import { ProductStory } from './product-story';
+import { Brand } from './brand';
 import tenants from '../../docs/evidence/two-tenant-mainnet-memory.json';
 import chain from '../../docs/evidence/tatum-reconciliation.json';
 import { useState } from 'react';
@@ -55,7 +56,7 @@ export function Landing() {
       <div className="site-home">
         <header className="site-nav">
           <Link href="/" aria-label="PayGuard home">
-            <img src="/brand/logo.png" alt="PayGuard Verify" className="site-logo" />
+            <Brand />
           </Link>
           <nav aria-label="Page sections">
             <a href="#how-it-works">How it works</a>
@@ -492,7 +493,7 @@ export function Landing() {
         </main>
         <footer className="site-footer">
           <div>
-            <img src="/brand/logo.png" className="site-logo" alt="PayGuard Verify" />
+            <Brand />
             <p>
               PayGuard Verify
               <br />

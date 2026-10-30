@@ -1,8 +1,10 @@
 {
   "execution": "Local operator read-only preflight; not production wallet clearance",
-  "checkedAt": "2026-10-30T08:38:42.755Z",
+  "checkedAt": "2026-10-30T11:03:15.682Z",
   "spending": false,
   "readyForExactApproval": false,
+  "configurationReady": false,
+  "sufficientlyFunded": false,
   "missing": ["SERVICE_PAYMENT_PAYER", "SERVICE_PAYMENT_RECIPIENT"],
   "partiesDistinct": false,
   "network": "sui:mainnet",
@@ -32,11 +34,16 @@
     "source": "Tatum native Sui gRPC",
     "network": "sui:mainnet",
     "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
-    "checkpoint": "339718099",
+    "checkpoint": "339754001",
     "coinType": "0x2::sui::SUI",
     "decimals": 9,
-    "checkedAt": "2026-10-30T08:38:42.753Z",
-    "spending": false
+    "checkedAt": "2026-10-30T11:03:15.681Z",
+    "spending": false,
+    "addressBalanceGasEnabled": true,
+    "balances": {
+      "payer": null,
+      "recipient": null
+    }
   },
   "securityCleared": false,
   "settlementEnabled": false,

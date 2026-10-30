@@ -1,5 +1,7 @@
 # Mainnet service purchase — approval worksheet (not authorized)
 
+Both owner wallets already exist. Configure their public addresses using [Payment Setup](PAYMENT_SETUP.md); do not create replacements. The actual application expects `ENABLE_AGENT_PAYMENTS=mainnet` for non-spending quote mode, after readiness checks, and `SERVICE_PAYMENT_SETTLEMENT_ENABLED=false` throughout setup. Neither is financial approval. Fresh receipt-count audit: **zero** ([read-only recovery evidence](evidence/session-recovery-audit.json)).
+
 **Not ready for funded signing. No service payment has settled.** This document grants no spending permission. The public Slush review connection cannot sign or authenticate, and cannot reach payment settlement.
 
 | Exact term                         | Prepared value / unresolved item                                                                                                                                               |

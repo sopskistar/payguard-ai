@@ -8,6 +8,8 @@ PayGuard Verify helps a human reviewer investigate supplier payment-instruction 
 
 The application is deployed and production-tested; wallet security and funded service settlement remain explicitly unresolved. **30 original Walrus Mainnet memories are preserved, plus two confirmed controlled tenant proofs (32 tracked total); real semantic recall passed across a fresh owner browser session; Tatum gRPC inspected a real transaction and correctly rejected a false invoice match.** See [the proof ledger](docs/MAINNET_PROOF.md), [test results](docs/TEST_RESULTS.md), and [handoff](docs/CODEX_HANDOFF.md). The production application is public at https://payguard-ai-henna.vercel.app/. Owner browser login, secure cookies, Neon persistence across a new session, live Walrus recall and Tatum Mainnet gRPC passed on production; [fresh production core evidence](docs/evidence/production-core-smoke.json). Wallet fixtures and tenant boundaries are tested locally; current hosted wallet onboarding is paused pending Slush review. Two new controlled customer sessions used real Neon and Walrus Mainnet successfully; this does not certify a physical production wallet. No supplier payment or positive live payment match is claimed. The updated October 27 PayGuard Verify specification was merged safely from GitHub.
 
+Private owner wallet configuration: [Payment Setup](docs/PAYMENT_SETUP.md) · [prepared experiments](docs/PAYMENT_EXPERIMENTS.md) · [session recovery matrix](docs/SESSION_RECOVERY.md). Both wallets already exist. Settlement remains disabled.
+
 ## Judge? Start Here
 
 **PayGuard Verify — Verify before you pay. Remember what nearly went wrong.**
@@ -28,7 +30,7 @@ The application is deployed and production-tested; wallet security and funded se
 
 The homepage now includes a six-stage **synthetic product illustration** with Play, Pause, Replay and keyboard step selection. It shows the recipient change, approval hold, independent human check and the reason to remember a correction. The public memory comparison uses genuine dated recall evidence through the application’s review logic; no anonymous provider request or write occurs. The operational dashboard separates current server-evaluated holds, saved workspace activity, personal confirmed jobs and the published **30 + 2** Mainnet proof.
 
-**Current validation:** 111 unit/integration tests; local browser 18 passed / 0 failed / 3 environment skips; every hosted spec in isolated Chromium processes 18 passed / 0 failed / 3 security skips. Lint, TypeScript, format and production build pass. The earlier shared-browser transport failures are retained in the [test ledger](docs/TEST_RESULTS.md).
+**Recovery validation:** 116 unit/integration tests; full local browser 20 passed / 0 failed / 3 environment skips; lint, TypeScript, formatting and production build pass. Current production deployment/browser evidence is recorded in [the release ledger](docs/RELEASE_STATUS.md); historical hosted runs remain separate.
 
 Access is explicit: **Public demo** requires nothing; **regular wallet onboarding** remains security-paused; **Owner Sign In** is private administrator access. A public review-only wallet connection creates no application session. [Release UX, screenshots and validation](docs/PRODUCT_RELEASE.md) · [Exact payment approval worksheet—currently incomplete](docs/MAINNET_PAYMENT_APPROVAL.md).
 
@@ -38,7 +40,7 @@ The public practice uses synthetic invoices and a synthetic callback. Its Walrus
 
 The [Memory Learning Report](https://payguard-ai-henna.vercel.app/proof#learning) measures 18 authored synthetic scenarios using four genuine recalls. The initial run found three false alarms; the corrected run met 18/18 specified contracts, preserved all baseline findings and added zero critical warnings across four unchanged controls. This is a small contract evaluation, not a real-world fraud accuracy claim. [Before](docs/evidence/learning-before.json) · [After](docs/evidence/learning-report.json).
 
-**Latest verified application (`2571cea`): 110 unit tests; full production browser suite 14 passed, 0 failed, 3 security-paused wallet skips.** Owner/Neon, new-session Walrus recall, Tatum and unsigned Mainnet preflight passed live. Physical wallet onboarding and genuine service settlement remain unproven. [Current completion matrix](docs/RELEASE_STATUS.md) · [Browser evidence](docs/evidence/production-browser-mainnet.json).
+**Historical verified checkpoint (`2571cea`): 110 unit tests; full production browser suite 14 passed, 0 failed, 3 security-paused wallet skips.** Owner/Neon, new-session Walrus recall, Tatum and unsigned Mainnet preflight passed live. Physical wallet onboarding and genuine service settlement remain unproven. [Current completion matrix](docs/RELEASE_STATUS.md) · [Browser evidence](docs/evidence/production-browser-mainnet.json).
 
 ## What is implemented
 
