@@ -1,0 +1,38 @@
+{
+  "checkedAt": "2026-10-30T14:12:24.956697+00:00",
+  "baseCommit": "eb36a4fa91b585a60c5fb648948eae942bc289be",
+  "unitIntegration": {
+    "passed": 123,
+    "files": 19
+  },
+  "localBrowser": {
+    "passed": 20,
+    "failed": 0,
+    "skipped": 3,
+    "skipReasons": [
+      "Live Tatum browser case reserved for deployed provider checks",
+      "Live Walrus write/recall case not rerun; memories preserved",
+      "Hosted-only security pause assertion not applicable on loopback"
+    ]
+  },
+  "lint": "passed",
+  "typecheck": "passed",
+  "format": "passed",
+  "productionBuild": "passed",
+  "paymentSwitchesChanged": false,
+  "walletAddressesChanged": false,
+  "transactionsInitiated": false,
+  "regressions": [
+    "Actual omitted-zero protobuf shapes",
+    "Unknown or inconsistent balance remains unknown",
+    "HTTP 429 wrapped as gRPC UNAVAILABLE",
+    "Provider enforcing three requests per second",
+    "Successful Wallet A preserved when Wallet B fails",
+    "Balances remain available when Tentacle fails",
+    "No provider error/header credential disclosure",
+    "Address text and Copy control do not overlap at 360/390/430px",
+    "Copy values exactly match each complete address",
+    "Last-successful values labeled stale after failure",
+    "Quote request remains disabled with both flags false"
+  ]
+}

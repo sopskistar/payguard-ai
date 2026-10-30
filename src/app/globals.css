@@ -918,6 +918,42 @@ select:focus {
 .payment-accounts .button {
   margin-top: 12px;
 }
+.payment-address {
+  display: grid;
+  gap: 12px;
+  margin: 14px 0;
+  min-width: 0;
+}
+.payment-address code {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-all;
+  line-height: 1.65;
+  font-size: 13px;
+  user-select: all;
+}
+.payment-address .button {
+  justify-self: start;
+  margin-top: 0;
+}
+.payment-account p {
+  margin-block: 12px;
+}
+.payment-account small,
+.payment-diagnostics small {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.payment-diagnostics li {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.payment-diagnostics p {
+  font-size: 12px;
+}
 .payment-setup details {
   margin-top: 20px;
 }

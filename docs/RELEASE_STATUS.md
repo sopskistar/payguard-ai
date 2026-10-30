@@ -1,3 +1,11 @@
+# Balance checker fix — October 30, 2026
+
+Both existing owner public addresses are now configured in Production; the earlier missing-address status below is historical. This fix addresses verified Tatum HTTP-429 burst limits and omitted zero-component parsing, preserves separate successful results, and displays stage/account diagnostics, full addresses, timestamps and retry states. Both payment switches remain false. [Investigation](BALANCE_CHECK_FIX.md) · [genuine local Mainnet check](evidence/balance-fix-local-mainnet.json).
+
+Local validation: 123 unit/integration passes, full desktop/mobile browser 20 passed / 0 failed / 3 environment skips, lint/typecheck/format/build pass. Production deployment/acceptance follows. No transaction, configuration change, memory write or video.
+
+---
+
 # Recovery release verified — October 30, 2026
 
 Production application **3b55319c81e3de7ab8c3fb3664230e9b5fcea25b** is deployed and verified. The final full hosted run passed **18 / failed 2 / skipped 3 security-paused wallet fixtures; both originally failed cases then passed; the focused run was 2 passed / 1 new transport failure**, with every spec in a fresh Chromium process. [Final hosted ledger](evidence/recovery-production-final.json). The earlier 17/3/3 run remains preserved: one CSS/JS network reset and two owner-login failures in an exhausted quota window after overlapping acceptance checks. No throttle, assertion or Slush gate was weakened.

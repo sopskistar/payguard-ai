@@ -1,3 +1,15 @@
+# Balance-check continuation — October 30, 2026
+
+Owner has now configured both existing public wallet addresses in Vercel Production and redeployed `eb36a4f`. **Do not replace or ask to configure them again.** Both are valid/distinct and both payment switches remain false. Source changes preserve Slush hosted signing restrictions and all existing data.
+
+Traced two actual defects: Tatum returned HTTP 429 wrapped as gRPC UNAVAILABLE after the unpaced five-read preflight; successful native balance responses omitted zero components, which the strict parser rejected. Fixed read pacing (two starts/sec per process, at most one cooled-down read retry), safe per-stage diagnostics, explicit-total component derivation, independent account results and stale-label recovery. Full addresses now occupy separate blocks above Copy controls. Read-only checks do not depend on enabling quotes or settlement.
+
+Corrected local code with the deployed public addresses and existing server-only Tatum credential passed genuine Mainnet checks: Wallet A total/coins 27,993,344 MIST, address 0; Wallet B explicit total 0, both components 0. Checkpoint 339799557. This local execution is not yet a claim about the new Vercel build. Wallet A already has enough coins for the 1,000,000-MIST service, but a separately reviewed owner conversion to address balance is needed. No additional service funding indicated; conversion fees require their own review. Wallet B needs no funding to receive. Do not sign or convert from this session.
+
+123 unit/integration tests, full local browser 20/0/3 environment skips, lint/typecheck/format/build pass. Deploy validated engineering and verify both actual Production accounts/flags, safe diagnostics and desktop/mobile UI. Record production evidence afterward. [Cause and controls](BALANCE_CHECK_FIX.md).
+
+---
+
 # Final recovery handoff — October 30, 2026
 
 Recovered original local/fetched remote/live **75314550eeb81aa7a027091234d8b19c0160f788** with no tracked edits, staged changes or unpushed commits. Preserve untracked `.gitignore.save`, private `.env.local`, all historical evidence and Neon. Both owner wallets already exist; do not recreate them.

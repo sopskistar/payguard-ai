@@ -1,5 +1,7 @@
 # Configure the two existing owner wallets
 
+**Current owner state:** both existing public addresses are already configured in Vercel Production. Keep them unchanged. The balance-check correction and current evidence are in [BALANCE_CHECK_FIX.md](BALANCE_CHECK_FIX.md). Both quote/settlement switches remain false. The instructions below are reference, not a request to repeat setup.
+
 Both wallet accounts already exist. Use Wallet A as payer and Wallet B as merchant. No wallet creation, private key, recovery phrase, automated funding or account conversion is part of this setup.
 
 Open [Owner Sign In](https://payguard-ai-henna.vercel.app/app?signin=1), then **Agent Services → Payment Setup**, or go directly to [private Payment Setup](https://payguard-ai-henna.vercel.app/services#payment-setup). Anonymous users and member accounts cannot read the setup API. The screen displays public addresses only after administrator authentication, plus credential-presence statuses with values hidden.

@@ -27,7 +27,13 @@ import {
 import { inspectServiceSettlement, serviceChainPreflight } from './integrations/service-tatum';
 import { recordCorrection } from './integrations/memory';
 import { walletOnboardingAllowed, WALLET_REVIEW_MESSAGE } from './wallet-policy';
-import { serviceConfiguration } from './service-setup';
+import {
+  serviceConfiguration,
+  PaymentCheckError,
+  paymentCheck,
+  failedPaymentCheck,
+  type PaymentDiagnostic,
+} from './service-setup';
 export const serviceMode = (): ServiceNetwork =>
   process.env.ENABLE_AGENT_PAYMENTS === 'testnet' ? 'sui:testnet' : SERVICE_NETWORK;
 export const serviceReady = () => {
@@ -68,6 +74,8 @@ async function facilitator(path: string, body?: unknown) {
     body: body ? JSON.stringify(body) : undefined,
     signal: AbortSignal.timeout(10000),
   });
+  if (!r.ok && path === '/supported')
+    throw Object.assign(new Error('Read-only facilitator request failed'), { status: r.status });
   if (!r.ok)
     throw new AppError(
       502,
@@ -76,26 +84,48 @@ async function facilitator(path: string, body?: unknown) {
     );
   return r.json();
 }
-export async function servicePreflight() {
+export async function servicePreflight(options: { allowPartial?: boolean } = {}) {
   const network = serviceMode();
-  const supported = await facilitator('/supported');
-  const kind = supported.kinds?.find(
-    (k: { network: string; scheme: string; x402Version: number }) =>
-      k.network === network && k.scheme === 'exact' && k.x402Version === 2,
+  const diagnostics: PaymentDiagnostic[] = [];
+  const config = serviceConfiguration(process.env);
+  await paymentCheck(
+    diagnostics,
+    'configuration',
+    'Deployed read-only payment configuration',
+    async () => {
+      if (!config.partiesValid || !process.env.TATUM_API_KEY || !process.env.APP_URL)
+        throw new PaymentCheckError('CONFIGURATION');
+      new URL(process.env.APP_URL);
+      return true;
+    },
   );
-  const sponsor = serviceAddressSchema.safeParse(kind?.extra?.gasOwner);
-  if (!sponsor.success || kind.extra.gasBudget !== '2000000')
-    throw new AppError(
-      503,
-      'FACILITATOR_TERMS',
-      'Selected network or sponsor terms unavailable. No payment proposed.',
-    );
+  const sponsor = await paymentCheck(
+    diagnostics,
+    'tentacle.supported',
+    'Tentacle x402 v2 exact sponsorship',
+    async () => {
+      const supported = await facilitator('/supported');
+      const kind = (Array.isArray(supported.kinds) ? supported.kinds : []).find(
+        (k: { network: string; scheme: string; x402Version: number }) =>
+          k.network === network && k.scheme === 'exact' && k.x402Version === 2,
+      );
+      const address = serviceAddressSchema.safeParse(kind?.extra?.gasOwner);
+      if (!address.success || kind?.extra?.gasBudget !== '2000000')
+        throw new PaymentCheckError('FACILITATOR_TERMS');
+      return address.data;
+    },
+  );
   const payer = serviceAddressSchema.safeParse(process.env.SERVICE_PAYMENT_PAYER);
   const recipient = serviceAddressSchema.safeParse(process.env.SERVICE_PAYMENT_RECIPIENT);
-  const chain = await serviceChainPreflight(network, {
-    payer: payer.success ? payer.data : null,
-    recipient: recipient.success ? recipient.data : null,
-  });
+  const chain = await serviceChainPreflight(
+    network,
+    {
+      payer: payer.success ? payer.data : null,
+      recipient: recipient.success ? recipient.data : null,
+    },
+    { allowPartial: true },
+  );
+  diagnostics.push(...(chain.diagnostics || []));
   const missing = [
     ...(!payer.success ? ['SERVICE_PAYMENT_PAYER'] : []),
     ...(!recipient.success ? ['SERVICE_PAYMENT_RECIPIENT'] : []),
@@ -103,16 +133,37 @@ export async function servicePreflight() {
   const validParties =
     payer.success &&
     recipient.success &&
+    !!sponsor &&
     payer.data !== recipient.data &&
-    payer.data !== sponsor.data &&
-    recipient.data !== sponsor.data;
+    payer.data !== sponsor &&
+    recipient.data !== sponsor;
+  if (sponsor)
+    await paymentCheck(
+      diagnostics,
+      'configuration.parties',
+      'Payer, merchant and sponsor separation',
+      async () => {
+        if (!validParties) throw new PaymentCheckError('CONFIGURATION');
+        return true;
+      },
+    );
+  if (!options.allowPartial && diagnostics.some((d) => d.status === 'failed')) {
+    const first = diagnostics.find((d) => d.status === 'failed')!;
+    throw new AppError(503, first.code, `${first.label}: ${first.message} ${first.action}`);
+  }
   const sufficientlyFunded =
     !!chain.balances.payer && BigInt(chain.balances.payer.addressAtomic) >= BigInt(SERVICE_AMOUNT);
   return {
     checkedAt: new Date().toISOString(),
     spending: false,
+    diagnostics,
     readyForExactApproval:
-      missing.length === 0 && validParties && sufficientlyFunded && walletOnboardingAllowed(),
+      diagnostics.every((d) => d.status === 'passed') &&
+      validParties &&
+      sufficientlyFunded &&
+      walletOnboardingAllowed(),
+    readyForQuotePreparation:
+      diagnostics.every((d) => d.status === 'passed') && validParties && sufficientlyFunded,
     configurationReady: missing.length === 0 && validParties,
     sufficientlyFunded,
     missing,
@@ -130,7 +181,7 @@ export async function servicePreflight() {
     independentThirdPartyPurchase: false,
     resourceOrigin: process.env.APP_URL ? new URL(process.env.APP_URL).origin : null,
     facilitator: FACILITATOR,
-    sponsor: sponsor.data,
+    sponsor,
     maxSponsorGasAtomic: '2000000',
     maxPayerGasAtomic: '0',
     purpose:
@@ -158,18 +209,47 @@ export async function serviceSetup(check = false) {
     settlementEnabled: serviceSettlementEnabled(),
     securityCleared: walletOnboardingAllowed(),
   };
-  if (!check) return { ...base, check: { state: 'unchecked' as const } };
+  if (!check)
+    return {
+      ...base,
+      check: {
+        state: 'unchecked' as const,
+        preflight: null,
+        diagnostics: [] as PaymentDiagnostic[],
+        checkedAt: null,
+        message: 'No check requested.',
+      },
+    };
   try {
-    const preflight = await servicePreflight();
-    return { ...base, check: { state: 'passed' as const, preflight } };
-  } catch {
+    const preflight = await servicePreflight({ allowPartial: true });
+    const allPassed = preflight.diagnostics.every((d) => d.status === 'passed');
+    const anyBalance = !!preflight.chain.balances.payer || !!preflight.chain.balances.recipient;
+    return {
+      ...base,
+      check: {
+        state: allPassed
+          ? ('passed' as const)
+          : anyBalance
+            ? ('partial' as const)
+            : ('failed' as const),
+        preflight,
+        diagnostics: preflight.diagnostics,
+        checkedAt: preflight.checkedAt,
+        message: allPassed
+          ? 'Both wallet balances and provider checks succeeded.'
+          : 'Some read-only stages could not be verified. Successful wallet results are preserved below.',
+      },
+    };
+  } catch (error) {
+    const diagnostic = failedPaymentCheck('setup', 'Read-only setup check', error);
     return {
       ...base,
       check: {
         state: 'failed' as const,
+        preflight: null,
+        diagnostics: [diagnostic],
         checkedAt: new Date().toISOString(),
-        message:
-          'Read-only provider check unavailable. Balances and compatibility are unknown; refresh before preparing any payment.',
+        message: `${diagnostic.message} ${diagnostic.action}`,
       },
     };
   }

@@ -38,14 +38,32 @@ test('private setup distinguishes unusable coins, usable funds, security pause a
   await page.route('**/api/service-payments/setup', (r) => r.fulfill({ json: setup }));
   let addressAtomic = '0';
   let unavailable = false;
+  let merchantFailed = false;
+  const checkedAt = '2026-10-30T12:00:00.000Z';
+  const diagnostic = (role: string, failed = false) => ({
+    stage: 'balance.' + role,
+    label: role === 'payer' ? 'Wallet A balance' : 'Wallet B balance',
+    status: failed ? 'failed' : 'passed',
+    checkedAt,
+    classification: failed ? 'authentication' : 'verified',
+    code: failed ? 'UNAUTHENTICATED' : 'OK',
+    message: failed ? 'Provider rejected Wallet B balance check.' : 'Read-only check succeeded.',
+    action: failed ? 'Retry this account.' : '',
+  });
   await page.route('**/api/service-payments/setup-check', (r) =>
     r.fulfill({
       json: {
         ...setup,
         check: unavailable
-          ? { state: 'failed', message: 'Provider unavailable; balances unknown' }
+          ? {
+              state: 'failed',
+              preflight: null,
+              diagnostics: [{ ...diagnostic('payer', true), stage: 'tatum.connection' }],
+              message: 'Provider unavailable; balances unknown',
+            }
           : {
-              state: 'passed',
+              state: merchantFailed ? 'partial' : 'passed',
+              diagnostics: [diagnostic('payer'), diagnostic('recipient', merchantFailed)],
               preflight: {
                 checkedAt: '2026-10-30T12:00:00.000Z',
                 configurationReady: true,
@@ -56,11 +74,21 @@ test('private setup distinguishes unusable coins, usable funds, security pause a
                   checkpoint: '123',
                   balances: {
                     payer: {
+                      owner: payer,
+                      checkedAt,
                       totalAtomic: (BigInt(addressAtomic) + 4000000n).toString(),
                       coinAtomic: '4000000',
                       addressAtomic,
                     },
-                    recipient: null,
+                    recipient: merchantFailed
+                      ? null
+                      : {
+                          owner: recipient,
+                          checkedAt,
+                          totalAtomic: '0',
+                          coinAtomic: '0',
+                          addressAtomic: '0',
+                        },
                   },
                 },
               },
@@ -104,10 +132,38 @@ test('private setup distinguishes unusable coins, usable funds, security pause a
       }),
     ).toBe(true);
   }
+  await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+  for (const [role, address] of [
+    ['payer', payer],
+    ['recipient', recipient],
+  ]) {
+    const card = panel.locator(`[data-wallet="${role}"]`);
+    const code = card.locator('.payment-address code');
+    await expect(code).toHaveText(address);
+    const a = await code.boundingBox(),
+      b = await card.getByRole('button', { name: /Copy/ }).boundingBox();
+    expect(a!.y + a!.height).toBeLessThanOrEqual(b!.y);
+    await card.getByRole('button', { name: /Copy/ }).click();
+    expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(address);
+  }
+  await expect(
+    page.getByRole('button', { name: 'Request exact service terms', exact: true }),
+  ).toBeDisabled();
+  merchantFailed = true;
+  await panel.getByRole('button', { name: /Refresh balances/ }).click();
+  await expect(panel.locator('[data-wallet="payer"]')).toContainText('Sufficient address balance');
+  await expect(panel.locator('[data-wallet="recipient"]')).toContainText('Current balance unknown');
+  await expect(panel.locator('[data-wallet="recipient"]')).toContainText(
+    'Last successful balance check',
+  );
+  await expect(panel.locator('[data-wallet="recipient"]')).toContainText(
+    'Provider rejected Wallet B',
+  );
   unavailable = true;
   await panel.getByRole('button', { name: /Refresh balances/ }).click();
   await expect(panel).toContainText('Failed or uncertain: provider check unavailable');
-  await expect(panel).toContainText('Balance unknown');
+  await expect(panel.locator('[data-wallet="payer"]')).toContainText('Current balance unknown');
+  await expect(panel.locator('[data-wallet="payer"]')).toContainText('Funding readiness unknown');
   await expect(page.getByRole('button', { name: /Approve.*sign/i })).toHaveCount(0);
 });
 test('mobile navigation closes, traps focus, locks scroll and supports direct/back navigation', async ({

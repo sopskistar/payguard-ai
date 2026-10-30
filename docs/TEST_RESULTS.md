@@ -1,3 +1,11 @@
+# Balance-check regression validation — October 30, 2026
+
+123 unit/integration tests across 19 files passed. Full local desktop/mobile browser suite: **20 passed / 0 failed / 3 explicit environment skips**. Lint, TypeScript, formatting and production build passed. [Exact local ledger](evidence/balance-fix-local-tests.json). Regression cases include actual omitted-zero shapes, missing/ambiguous/inconsistent results, 429 classification/pacing, preserved partial success, safe diagnostics, stale snapshots, exact address copy and non-overlap at 360/390/430px, and disabled quote controls.
+
+The live local Mainnet check uses public addresses read from authenticated Production configuration and the existing server-side Tatum credential; it does not create a transaction. Both accounts passed after pacing/parser corrections ([evidence](evidence/balance-fix-local-mainnet.json)). Actual Vercel checks and focused hosted browser results will be added after deployment. No historical transport failures are erased.
+
+---
+
 # Recovery release validation — October 30, 2026
 
 **116 unit/integration tests across 18 files. Full local browser: 20 passed / 0 failed / 3 environment skips. Latest full hosted browser: 18 passed / 2 transport failures / 3 security skips on 3b55319; affected-spec reruns: 2 passed / 1 new document transport failure.** Every hosted spec ran in a fresh Chromium process after the normal owner-login quota reset, without overlapping owner acceptance checks. [Final hosted result](evidence/recovery-production-final.json) · [local ledger](evidence/recovery-local-validation.json).

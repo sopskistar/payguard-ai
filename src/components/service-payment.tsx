@@ -378,10 +378,9 @@ export function ServicePayment() {
               </p>
               {!configured && (
                 <div role="status" className="notice">
-                  Not configured. Owner environment names: ENABLE_AGENT_PAYMENTS,
-                  SERVICE_PAYMENT_RECIPIENT, TATUM_API_KEY. Mainnet additionally requires the
-                  dedicated public SERVICE_PAYMENT_PAYER. Settlement remains separately disabled by
-                  default.
+                  Quote preparation is disabled or incomplete. Review Payment Setup for the exact
+                  configuration status. ENABLE_AGENT_PAYMENTS=false keeps quotes off while read-only
+                  balance checks remain available. Settlement is separately disabled.
                 </div>
               )}
               <Field label="Invoice requiring additional review">

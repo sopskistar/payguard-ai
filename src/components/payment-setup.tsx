@@ -7,7 +7,8 @@ import {
   SERVICE_SESSION_CAP,
   serviceNetworkInfo,
 } from '@/lib/service-protocol';
-import { formatSui, fundingState } from '@/lib/service-setup';
+import { formatSui, fundingState, failedPaymentCheck } from '@/lib/service-setup';
+import type { ServiceWalletBalance } from '@/lib/integrations/service-tatum';
 import { api } from './ui';
 
 export function PaymentSetup({ states }: { states: string[] }) {
@@ -16,6 +17,9 @@ export function PaymentSetup({ states }: { states: string[] }) {
   const [message, setMessage] = useState('');
   const [comparedPayer, setComparedPayer] = useState<string | null>(null);
   const [qr, setQr] = useState('');
+  const [lastBalances, setLastBalances] = useState<
+    Partial<Record<'payer' | 'recipient', ServiceWalletBalance>>
+  >({});
   useEffect(() => {
     let active = true;
     api<ServiceSetup>('service-payments/setup')
@@ -55,8 +59,34 @@ export function PaymentSetup({ states }: { states: string[] }) {
     setBusy(true);
     setMessage('');
     try {
-      setSetup(await api<ServiceSetup>('service-payments/setup-check'));
+      const next = await api<ServiceSetup>('service-payments/setup-check');
+      setSetup(next);
+      setLastBalances((previous) => {
+        const balances = next.check.preflight?.chain.balances;
+        return {
+          payer:
+            balances?.payer || (previous.payer?.owner === next.payer ? previous.payer : undefined),
+          recipient:
+            balances?.recipient ||
+            (previous.recipient?.owner === next.recipient ? previous.recipient : undefined),
+        };
+      });
     } catch {
+      const diagnostic = failedPaymentCheck('request', 'Payment Setup request', new Error());
+      setSetup(
+        (previous) =>
+          previous && {
+            ...previous,
+            check: {
+              state: 'failed',
+              preflight: null,
+              diagnostics: [diagnostic],
+              checkedAt: diagnostic.checkedAt,
+              message:
+                'The latest request failed. Current balances are unknown; last successful results are labeled below.',
+            },
+          },
+      );
       setMessage(
         'Read-only check failed. No payment was submitted. Retry after checking your session.',
       );
@@ -72,7 +102,7 @@ export function PaymentSetup({ states }: { states: string[] }) {
       setMessage('Copy unavailable. Select and copy the full displayed address.');
     }
   }
-  const preflight = setup?.check.state === 'passed' ? setup.check.preflight : undefined;
+  const preflight = setup?.check.preflight;
   const balances = preflight?.chain.balances;
   const funded = !!preflight?.sufficientlyFunded;
   const pending = states.some((s) => s === 'settling');
@@ -81,22 +111,21 @@ export function PaymentSetup({ states }: { states: string[] }) {
   const funding = balances?.payer
     ? fundingState(balances.payer.addressAtomic, balances.payer.coinAtomic)
     : 'Balance not checked';
-  const status =
-    !setup?.partiesValid || (preflight && !preflight.configurationReady)
-      ? 'Not configured'
-      : setup.check.state === 'failed'
-        ? 'Failed or uncertain: provider check unavailable'
-        : pending
-          ? 'Pending settlement: reconcile the existing digest; do not pay again'
-          : failed
-            ? 'Failed transaction recorded: inspect its saved evidence'
-            : preflight && !funded
-              ? 'Configured but insufficient usable funds'
-              : funded
-                ? preflight?.readyForExactApproval
-                  ? 'Ready for owner authorization of a fresh exact quote'
-                  : 'Configured and sufficiently funded; security clearance still required'
-                : 'Ready for non-spending preflight';
+  const status = !setup?.partiesValid
+    ? 'Not configured'
+    : setup.check.state === 'failed' || setup.check.state === 'partial'
+      ? 'Failed or uncertain: provider check unavailable'
+      : pending
+        ? 'Pending settlement: reconcile the existing digest; do not pay again'
+        : failed
+          ? 'Failed transaction recorded: inspect its saved evidence'
+          : preflight && !funded
+            ? 'Configured but insufficient usable funds'
+            : funded
+              ? preflight?.readyForExactApproval
+                ? 'Ready for owner authorization of a fresh exact quote'
+                : 'Configured and sufficiently funded; security clearance still required'
+              : 'Ready for non-spending preflight';
   return (
     <section
       id="payment-setup"
@@ -108,9 +137,15 @@ export function PaymentSetup({ states }: { states: string[] }) {
         Use your two existing accounts. Wallet A pays for analysis; Wallet B receives the service
         fee. Public-address configuration does not establish ownership.
       </p>
-      <p role="status">
+      <p role="status" aria-live="polite">
         <strong>{status}</strong>
       </p>
+      {busy && (
+        <p role="status">
+          Checking Wallet A and Wallet B on Sui Mainnet, plus provider compatibility. No signing or
+          transaction.
+        </p>
+      )}
       {message && <p role="status">{message}</p>}
       {!setup ? (
         <button className="button outline" disabled={busy} onClick={() => void refresh()}>
@@ -140,7 +175,7 @@ export function PaymentSetup({ states }: { states: string[] }) {
                 'Quote mode',
                 setup.quoteEnabled
                   ? 'Enabled; fresh provider and usable-funds checks required for Mainnet quotes'
-                  : 'Disabled or configuration incomplete',
+                  : 'Quote preparation disabled. Read-only balance checks remain available with ENABLE_AGENT_PAYMENTS=false.',
               ],
               [
                 'Settlement',
@@ -165,15 +200,43 @@ export function PaymentSetup({ states }: { states: string[] }) {
           <div className="payment-accounts">
             {(['payer', 'recipient'] as const).map((role) => {
               const address = setup[role];
-              const balance = balances?.[role];
+              const current = balances?.[role];
+              const previous =
+                lastBalances[role]?.owner === address ? lastBalances[role] : undefined;
+              const balance = current || previous;
+              const stale = !current && !!previous;
+              const diagnostic = setup.check.diagnostics?.find(
+                (d) => d.stage === 'balance.' + role,
+              );
               return (
-                <section key={role} className="notice">
+                <section
+                  key={role}
+                  className="notice payment-account"
+                  data-wallet={role}
+                  aria-busy={busy}
+                >
                   <h3>{role === 'payer' ? 'Wallet A · payer' : 'Wallet B · merchant'}</h3>
-                  <code>{address || 'Not configured'}</code>
-                  {address && (
-                    <button className="button outline small" onClick={() => void copy(address)}>
-                      Copy {role === 'payer' ? 'payer' : 'merchant'} address
-                    </button>
+                  <div className="payment-address">
+                    <code
+                      aria-label={
+                        role === 'payer'
+                          ? 'Wallet A full public address'
+                          : 'Wallet B full public address'
+                      }
+                    >
+                      {address || 'Not configured'}
+                    </code>
+                    {address && (
+                      <button className="button outline small" onClick={() => void copy(address)}>
+                        Copy {role === 'payer' ? 'payer' : 'merchant'} address
+                      </button>
+                    )}
+                  </div>
+                  {stale && (
+                    <p role="status">
+                      Current balance unknown: latest check failed. The amounts below are the last
+                      successful snapshot, not current funding readiness.
+                    </p>
                   )}
                   {balance ? (
                     <dl className="detail-list">
@@ -197,7 +260,37 @@ export function PaymentSetup({ states }: { states: string[] }) {
                       </div>
                     </dl>
                   ) : (
-                    <p>Balance unknown. Run the read-only check.</p>
+                    <p>
+                      Balance unknown.{' '}
+                      {busy ? 'Checking this wallet…' : 'Run or retry the read-only check.'}
+                    </p>
+                  )}
+                  <p className="wallet-funding-status" role="status">
+                    {busy
+                      ? 'Refreshing both wallets…'
+                      : current
+                        ? role === 'payer'
+                          ? fundingState(current.addressAtomic, current.coinAtomic)
+                          : 'Merchant receiving account checked. No merchant funding is required for this sponsored service payment.'
+                        : 'Funding readiness unknown.'}
+                  </p>
+                  <p>
+                    Last successful balance check:{' '}
+                    {balance?.checkedAt ? (
+                      <time dateTime={balance.checkedAt}>
+                        {new Date(balance.checkedAt).toLocaleString()}
+                      </time>
+                    ) : (
+                      'No successful check yet'
+                    )}
+                  </p>
+                  {current?.derivation && (
+                    <small>{current.derivation}. Amounts are in native SUI, 9 decimals.</small>
+                  )}
+                  {!busy && diagnostic?.status === 'failed' && (
+                    <p role="alert">
+                      {diagnostic.message} {diagnostic.action}
+                    </p>
                   )}
                 </section>
               );
@@ -211,16 +304,44 @@ export function PaymentSetup({ states }: { states: string[] }) {
             </p>
           )}
           <button className="button outline" disabled={busy} onClick={() => void refresh()}>
-            {busy ? 'Checking Mainnet…' : 'Refresh balances and compatibility · no signing'}
+            {busy
+              ? 'Checking both wallets…'
+              : 'Refresh balances for both wallets and compatibility · no signing'}
           </button>
+          {(setup.check.state === 'failed' || setup.check.state === 'partial') && (
+            <button className="button outline" disabled={busy} onClick={() => void refresh()}>
+              Retry checks for both wallets
+            </button>
+          )}
           <p role="status">
             {funding}.{' '}
-            {preflight
+            {preflight?.chain.genesis
               ? `Tatum native Sui gRPC checked ${preflight.checkedAt}. Checkpoint ${preflight.chain.checkpoint}. This is a balance snapshot, not a settlement.`
-              : setup.check.state === 'failed'
+              : setup.check.state === 'failed' || setup.check.state === 'partial'
                 ? setup.check.message
                 : 'No live compatibility or funding check has run on this screen.'}
           </p>
+          {!!setup.check.diagnostics?.length && (
+            <section className="payment-diagnostics" aria-label="Read-only check diagnostics">
+              <h3>Read-only check results</h3>
+              <ol>
+                {setup.check.diagnostics.map((d) => (
+                  <li key={d.stage}>
+                    <strong>
+                      {d.label}: {d.status}
+                    </strong>
+                    <p>
+                      {d.message} {d.action}
+                    </p>
+                    <small>
+                      {d.stage} · {d.classification} · {d.code} ·{' '}
+                      <time dateTime={d.checkedAt}>{d.checkedAt}</time>
+                    </small>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          )}
           {preflight && (
             <p>
               Facilitator sponsorship{' '}
@@ -234,19 +355,29 @@ export function PaymentSetup({ states }: { states: string[] }) {
           <details>
             <summary>Configuration and Vercel instructions</summary>
             <ol>
-              <li>
-                In Vercel, open the existing <strong>payguard-ai</strong> project → Settings →
-                Environment Variables. Select <strong>Production</strong>.
-              </li>
-              <li>
-                Set <code>SERVICE_PAYMENT_PAYER</code> to your existing Wallet A public address and{' '}
-                <code>SERVICE_PAYMENT_RECIPIENT</code> to your existing Wallet B public address.
-                Compare each with the address shown in that wallet. Keep all existing credentials.
-              </li>
+              {setup.partiesValid ? (
+                <li>
+                  Your existing Wallet A and Wallet B addresses are configured. Keep them unchanged;
+                  compare the complete addresses above with your wallets.
+                </li>
+              ) : (
+                <li>
+                  In Vercel, open the existing <strong>payguard-ai</strong> project → Settings →
+                  Environment Variables. Select <strong>Production</strong>.
+                </li>
+              )}
+              {!setup.partiesValid && (
+                <li>
+                  Set <code>SERVICE_PAYMENT_PAYER</code> to your existing Wallet A public address
+                  and <code>SERVICE_PAYMENT_RECIPIENT</code> to your existing Wallet B public
+                  address. Compare each with the address shown in that wallet. Keep all existing
+                  credentials.
+                </li>
+              )}
               <li>
                 Keep <code>ENABLE_AGENT_PAYMENTS=false</code> and{' '}
-                <code>SERVICE_PAYMENT_SETTLEMENT_ENABLED=false</code> during setup. Save and
-                redeploy the production deployment.
+                <code>SERVICE_PAYMENT_SETTLEMENT_ENABLED=false</code> during debugging. Checking
+                balances requires no environment changes or signing.
               </li>
               <li>
                 Return here and refresh. After configuration, funding and read-only checks pass,
