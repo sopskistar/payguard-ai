@@ -1,3 +1,11 @@
+# Wallet A self-deposit prepared — October 30, 2026
+
+Recovered local/fetched GitHub HEAD `02b6d96`, clean tracked tree and no unpushed commits. A separate loopback-only unsigned review utility now builds exactly **0.005 SUI** from Wallet A's real coin objects into that same address's balance. Independent Tatum and official Mainnet reads agree; genuine simulation passed with real gas and checks enabled. Expected gas **0.000100099 SUI**, proposed cap **0.002 SUI**; expected address balance **0.005 SUI**, remaining coins **0.022893245 SUI**. These are simulated results, not executed balances. [Owner instructions, limitations and exact review](SUI_SELF_DEPOSIT.md) · [sanitized simulation](evidence/self-deposit-preview.json).
+
+**No conversion signed/submitted, no genuine service settlement, no production signing reactivation.** The local review tool contains no signing or broadcasting call. Actual Slush Google-account signing and a native Slush conversion button are unverified. Owner review and exact approval come next; any Slush security warning must be resolved legitimately. Existing Vercel addresses, false payment switches, Neon and Walrus data are untouched. The previous balance fix below remains valid historical evidence.
+
+---
+
 # Production balance fix verified — October 30, 2026
 
 Application commit **1953de6** is deployed and verified on Vercel. Both public addresses exactly match the authenticated Production values read before this task, including all 66 characters and Copy output. Neither address nor payment switch was changed. Quote preparation and settlement remain false; Slush clearance remains false.

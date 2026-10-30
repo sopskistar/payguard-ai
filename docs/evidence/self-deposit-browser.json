@@ -1,0 +1,65 @@
+{
+  "checkedAt": "2026-10-30T17:33:46.531Z",
+  "browser": "151.0.7922.34",
+  "mode": "local-unsigned-review",
+  "cases": [
+    {
+      "name": "review layout",
+      "width": 1280,
+      "zoom": "100%",
+      "addressVisible": true,
+      "noOverflow": true,
+      "signDisabled": true,
+      "errors": []
+    },
+    {
+      "name": "review layout",
+      "width": 360,
+      "zoom": "100%",
+      "addressVisible": true,
+      "noOverflow": true,
+      "signDisabled": true,
+      "errors": []
+    },
+    {
+      "name": "review layout",
+      "width": 390,
+      "zoom": "100%",
+      "addressVisible": true,
+      "noOverflow": true,
+      "signDisabled": true,
+      "errors": []
+    },
+    {
+      "name": "review layout",
+      "width": 430,
+      "zoom": "100%",
+      "addressVisible": true,
+      "noOverflow": true,
+      "signDisabled": true,
+      "errors": []
+    },
+    {
+      "name": "matching Wallet A fixture",
+      "connect": 1,
+      "sign": 0,
+      "execute": 0,
+      "physicalSlush": false
+    },
+    {
+      "name": "different wallet rejected fixture",
+      "connect": 1,
+      "sign": 0,
+      "execute": 0,
+      "physicalSlush": false
+    },
+    {
+      "name": "no execution endpoint / foreign origin and host blocked",
+      "post": 405,
+      "foreignOrigin": 403,
+      "foreignHost": 403
+    }
+  ],
+  "fundedSigningTested": false,
+  "ok": true
+}

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>SUI self-deposit · unsigned local review</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <main>
+      <p>Local tool · Sui Mainnet · unsigned review</p>
+      <h1>Convert 0.005 SUI within Wallet A</h1>
+      <p class="notice">
+        Signing and submission are disabled. This page cannot send a transaction. A separate owner
+        approval is required before a signing flow is prepared.
+      </p>
+      <p>
+        Independent local review of the official SDK operation, separate from PayGuard. This does
+        not clear any Slush security warning. Stop if a warning appears. Never enter a recovery
+        phrase or private key.
+      </p>
+      <p id="status" role="status">Checking unsigned preview integrity…</p>
+      <section>
+        <h2>Exact proposed operation</h2>
+        <dl id="terms"></dl>
+        <button id="copy" disabled>Copy Wallet A address</button>
+      </section>
+      <section>
+        <h2>Simulated balances and fees</h2>
+        <p>
+          The conversion moves funds between two forms of custody at the same address. Only gas
+          reduces the total. Simulation estimates can change.
+        </p>
+        <div id="balances"></div>
+        <dl id="gas"></dl>
+      </section>
+      <section>
+        <h2>Check your existing Slush connection</h2>
+        <p>
+          Connecting shares public account details. It does not prove account control and requests
+          no signature. Use the same Google login and existing Wallet A. Do not create or import an
+          account.
+        </p>
+        <button id="discover" disabled>Find Slush extension</button>
+        <button id="web" disabled>Use official Slush web wallet</button>
+        <div id="wallets"></div>
+        <p id="connection" role="status">Not connected. Signing capability has not been checked.</p>
+        <button disabled>Sign conversion · awaiting separate owner approval</button>
+      </section>
+      <section>
+        <h2>Inspect before approval</h2>
+        <p>
+          Exactly two commands: split 5,000,000 MIST from the owned gas coin, then call
+          <code>0x2::coin::send_funds&lt;0x2::sui::SUI&gt;</code> with Wallet A as recipient.
+          Remaining coins return to Wallet A; Wallet B is absent. Gas is paid by Wallet A, without
+          sponsorship.
+        </p>
+        <details>
+          <summary>Decoded unsigned transaction</summary>
+          <pre id="decoded"></pre>
+        </details>
+        <details>
+          <summary>Unsigned BCS bytes (no signature)</summary>
+          <pre id="bytes"></pre>
+        </details>
+        <p id="identity"></p>
+      </section>
+    </main>
+    <script type="module" src="/client.js"></script>
+  </body>
+</html>

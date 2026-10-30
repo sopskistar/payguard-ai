@@ -17,15 +17,19 @@
     "check:live": "node --conditions=react-server --import tsx scripts/check-live.ts",
     "memory:seed": "node --conditions=react-server --import tsx scripts/seed-memory.ts",
     "memory:prove-recall": "node --conditions=react-server --import tsx scripts/recall-proof.ts",
-    "format": "prettier --write src scripts tests docs README.md CONTRIBUTING.md *.config.* package.json",
-    "format:check": "prettier --check src scripts tests docs README.md CONTRIBUTING.md *.config.* package.json",
+    "format": "prettier --write src scripts tools tests docs README.md CONTRIBUTING.md *.config.* package.json",
+    "format:check": "prettier --check src scripts tools tests docs README.md CONTRIBUTING.md *.config.* package.json",
     "memory:expand": "node --conditions=react-server --import tsx scripts/expand-memory.ts",
     "judge:evidence": "node --conditions=react-server --import tsx scripts/judge-evidence.ts",
     "memory:evaluate": "node --conditions=react-server --import tsx scripts/evaluate-memory.ts",
     "judge:publish-build": "node scripts/build-judge-pages.mjs",
     "memory:preflight": "node --conditions=react-server --import tsx scripts/memory-preflight.ts",
     "memory:evaluate-learning": "node --conditions=react-server --import tsx scripts/evaluate-learning.ts",
-    "test:e2e:isolated": "node scripts/run-isolated-e2e.mjs"
+    "test:e2e:isolated": "node scripts/run-isolated-e2e.mjs",
+    "sui:deposit:preview": "node --conditions=react-server --import tsx tools/sui-self-deposit/prepare.ts",
+    "sui:deposit:review": "node --import tsx tools/sui-self-deposit/server.ts",
+    "sui:deposit:check-browser": "node tools/sui-self-deposit/check-browser.mjs",
+    "sui:deposit:verify": "node --import tsx tools/sui-self-deposit/verify.ts"
   },
   "dependencies": {
     "@fontsource/manrope": "^5.2.8",
@@ -53,6 +57,7 @@
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.3.14",
+    "@mysten/slush-wallet": "1.3.6",
     "@playwright/test": "^1.56.1",
     "@tailwindcss/postcss": "^4.1.16",
     "@types/node": "^22.18.10",

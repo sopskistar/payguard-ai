@@ -1,0 +1,27 @@
+{
+  "checkedAt": "2026-10-30T17:33:09.611Z",
+  "unitIntegration": {
+    "passed": 134,
+    "failed": 0,
+    "files": 20,
+    "newConversionTests": 11
+  },
+  "lint": "passed",
+  "typecheck": "passed",
+  "format": "passed",
+  "productionBuild": "passed",
+  "browserEvidence": "self-deposit-browser.json",
+  "credentialScan": {
+    "files": 441,
+    "matches": 0
+  },
+  "notPerformed": [
+    "native Slush conversion UI verification",
+    "physical Slush Google-account signing",
+    "funded conversion",
+    "post-conversion Tatum receipt reconciliation",
+    "x402 settlement"
+  ],
+  "sourceApplicationChanged": false,
+  "productionPaymentConfigurationChanged": false
+}

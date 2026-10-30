@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "mode": "review-only",
+  "signingEnabled": false,
+  "executionEnabled": false,
+  "checkedAt": "2026-10-30T17:22:09.915Z",
+  "reviewExpiresAt": "2026-10-30T17:37:09.915Z",
+  "network": "Sui Mainnet",
+  "chain": "sui:mainnet",
+  "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+  "asset": "0x2::sui::SUI",
+  "amountMist": "5000000",
+  "gasBudgetMist": "2000000",
+  "before": {
+    "total": "27993344",
+    "coins": "27993344",
+    "address": "0"
+  },
+  "expected": {
+    "total": "27893245",
+    "coins": "22893245",
+    "address": "5000000",
+    "minimumCoinsAfterGasCap": "20993344"
+  },
+  "simulation": {
+    "success": true,
+    "checksEnabled": true,
+    "gasPaymentMocked": false,
+    "gas": {
+      "computationCost": "100000",
+      "storageCost": "988000",
+      "storageRebate": "987901",
+      "nonRefundableStorageFee": "99"
+    },
+    "estimatedNetGasMist": "100099",
+    "balanceChanges": [
+      {
+        "coinType": "0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI",
+        "amount": "-100099"
+      }
+    ]
+  },
+  "providers": {
+    "tatumCheckpoint": "339849081",
+    "officialCheckpoint": "339849090",
+    "addressBalanceEnabled": true
+  },
+  "unsignedDigest": "6MXocsgenJghaAG5J7AAE9FqAEdkhrkjXgq13SiuBnMP",
+  "sha256": "6cd20f7766bd11869c93ac8c090fb8c2863389d2b8b453fb7b9c086580d69bce",
+  "payerAddressPublished": false,
+  "sameSenderDestinationAndGasOwner": true,
+  "ownerCoinCountSelected": 1
+}

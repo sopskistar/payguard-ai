@@ -1,0 +1,19 @@
+{
+  "checkedAt": "2026-10-30T17:26:04.452Z",
+  "browser": "151.0.7922.34",
+  "mode": "local-unsigned-review",
+  "cases": [
+    {
+      "name": "review layout",
+      "width": 1280,
+      "zoom": "100%",
+      "addressVisible": true,
+      "noOverflow": true,
+      "signDisabled": true,
+      "errors": []
+    }
+  ],
+  "fundedSigningTested": false,
+  "ok": false,
+  "error": "Review rendering failed []"
+}
