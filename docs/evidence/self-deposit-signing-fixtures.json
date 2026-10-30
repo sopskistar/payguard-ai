@@ -1,0 +1,90 @@
+{
+  "checkedAt": "2026-10-30T18:06:27.486Z",
+  "browser": "151.0.7922.34",
+  "mode": "fully-mocked-signing-and-submission",
+  "realSignatures": false,
+  "realSubmissions": false,
+  "cases": [
+    {
+      "scenario": "success",
+      "serverCalls": {
+        "claim": 1,
+        "stored": 1,
+        "submit": 1,
+        "reconcile": 1
+      },
+      "walletCalls": {
+        "connect": 1,
+        "sign": 1,
+        "execute": 0,
+        "exactRequest": true
+      },
+      "passed": true
+    },
+    {
+      "scenario": "cancel",
+      "serverCalls": {
+        "claim": 1,
+        "stored": 0,
+        "submit": 0,
+        "reconcile": 0
+      },
+      "walletCalls": {
+        "connect": 1,
+        "sign": 1,
+        "execute": 0,
+        "exactRequest": true
+      },
+      "passed": true
+    },
+    {
+      "scenario": "changed-bytes",
+      "serverCalls": {
+        "claim": 1,
+        "stored": 0,
+        "submit": 0,
+        "reconcile": 0
+      },
+      "walletCalls": {
+        "connect": 1,
+        "sign": 1,
+        "execute": 0,
+        "exactRequest": true
+      },
+      "passed": true
+    },
+    {
+      "scenario": "uncertain",
+      "serverCalls": {
+        "claim": 1,
+        "stored": 1,
+        "submit": 1,
+        "reconcile": 2
+      },
+      "walletCalls": {
+        "connect": 1,
+        "sign": 1,
+        "execute": 0,
+        "exactRequest": true
+      },
+      "passed": true
+    },
+    {
+      "scenario": "expired",
+      "serverCalls": {
+        "claim": 0,
+        "stored": 0,
+        "submit": 0,
+        "reconcile": 0
+      },
+      "walletCalls": {
+        "connect": 1,
+        "sign": 0,
+        "execute": 0,
+        "exactRequest": false
+      },
+      "passed": true
+    }
+  ],
+  "ok": true
+}

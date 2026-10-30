@@ -28,7 +28,7 @@ try {
       errors.length
     )
       throw new Error('Review rendering failed ' + JSON.stringify(errors));
-    const sign = page.getByRole('button', { name: /Sign conversion/ });
+    const sign = page.locator('#sign');
     if (!(await sign.isDisabled())) throw new Error('Signing available unexpectedly');
     report.cases.push({
       name: 'review layout',
@@ -42,7 +42,7 @@ try {
     if ([1280, 390].includes(width)) {
       await mkdir('docs/screenshots/self-deposit', { recursive: true });
       await page.screenshot({
-        path: `docs/screenshots/self-deposit/unsigned-${width}.png`,
+        path: `docs/screenshots/self-deposit/local-flow-${width}.png`,
         fullPage: true,
         mask: [page.locator('#terms dd').nth(1)],
       });
@@ -153,6 +153,9 @@ try {
 } finally {
   await browser.close();
 }
-await writeFile('docs/evidence/self-deposit-browser.json', JSON.stringify(report, null, 2) + '\n');
+await writeFile(
+  'docs/evidence/self-deposit-signing-review-browser.json',
+  JSON.stringify(report, null, 2) + '\n',
+);
 console.log(JSON.stringify(report, null, 2));
 process.exitCode = report.ok ? 0 : 1;

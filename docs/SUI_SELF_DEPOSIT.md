@@ -1,5 +1,7 @@
 # Wallet A: unsigned 0.005 SUI self-deposit review
 
+**Later owner update:** the owner has explicitly authorized preparation of the exact self-deposit and owner-controlled localhost signing. See [the controlled execution flow](SUI_SELF_DEPOSIT_EXECUTION.md). The unsigned preparation evidence below remains historical; actual conversion success still requires a finalized, independently verified receipt. Production signing remains paused and x402 is separately unauthorized.
+
 **No conversion has been signed or submitted. This document grants no transaction approval.** Both existing owner wallets and Production settings are preserved. Production wallet signing remains paused. No service purchase has settled.
 
 Local and fetched GitHub HEAD were both `02b6d969303a31f30db8b3694060b0bfc455b67b`, with no tracked changes or unpushed commits. The pre-existing untracked `.gitignore.save` remains untouched. This task adds a separate loopback review utility; it does not change PayGuard payment, database, memory or wallet-policy code.

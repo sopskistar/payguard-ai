@@ -3,16 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>SUI self-deposit · unsigned local review</title>
+    <title>SUI self-deposit · controlled local review</title>
     <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
     <main>
-      <p>Local tool · Sui Mainnet · unsigned review</p>
+      <p>Local tool · Sui Mainnet · one Wallet A self-deposit</p>
       <h1>Convert 0.005 SUI within Wallet A</h1>
-      <p class="notice">
-        Signing and submission are disabled. This page cannot send a transaction. A separate owner
-        approval is required before a signing flow is prepared.
+      <p class="notice" id="mode">
+        Checking authorization. No signature or transaction is requested automatically.
       </p>
       <p>
         Independent local review of the official SDK operation, separate from PayGuard. This does
@@ -45,7 +44,13 @@
         <button id="web" disabled>Use official Slush web wallet</button>
         <div id="wallets"></div>
         <p id="connection" role="status">Not connected. Signing capability has not been checked.</p>
-        <button disabled>Sign conversion · awaiting separate owner approval</button>
+        <p>Review the exact terms above. Stop if Slush shows any security warning.</p>
+        <button id="unlock" disabled>Validate Wallet A and unlock one signing attempt</button>
+        <button id="sign" disabled>Review and sign exact conversion in Slush</button>
+        <button id="submit" disabled>Submit this signed conversion once</button>
+        <button id="reconcile" disabled>Check existing digest through Tatum · no resend</button>
+        <p id="execution" role="status">No attempt recorded.</p>
+        <pre id="receipt"></pre>
       </section>
       <section>
         <h2>Inspect before approval</h2>

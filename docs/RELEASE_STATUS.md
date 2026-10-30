@@ -1,3 +1,11 @@
+# Owner-approved local self-deposit flow — October 30, 2026
+
+The owner authorized preparation of exactly **0.005 SUI** to Wallet A's own Mainnet address balance, with Wallet A paying at most **0.002 SUI gas**. The standalone localhost utility now supports a single owner-triggered Slush sign-only request and a separate explicit one-time submission, backed by durable locks, full BCS equality and cryptographic signature validation. Fresh genuine simulation passed; independent Tatum balances remain coin objects **0.027993344 SUI**, address balance **zero** before execution. **No funded conversion or x402 settlement is claimed by preparation.** [Owner-controlled flow](SUI_SELF_DEPOSIT_EXECUTION.md) · [fresh simulation](evidence/self-deposit-signing-preview.json) · [fully mocked signing fixtures](evidence/self-deposit-signing-fixtures.json).
+
+Validation before activation: **143 unit/integration tests, 21 files**, lint/typecheck/format pass; five intercepted signing UI scenarios pass, with no real signatures/submissions. The hosted production signing pause and both false payment switches remain intact. The earlier review-only release below is historical. Actual conversion results require Tatum verification of the frozen attempt digest and updated balances.
+
+---
+
 # Wallet A self-deposit prepared — October 30, 2026
 
 Recovered local/fetched GitHub HEAD `02b6d96`, clean tracked tree and no unpushed commits. A separate loopback-only unsigned review utility now builds exactly **0.005 SUI** from Wallet A's real coin objects into that same address's balance. Independent Tatum and official Mainnet reads agree; genuine simulation passed with real gas and checks enabled. Expected gas **0.000100099 SUI**, proposed cap **0.002 SUI**; expected address balance **0.005 SUI**, remaining coins **0.022893245 SUI**. These are simulated results, not executed balances. [Owner instructions, limitations and exact review](SUI_SELF_DEPOSIT.md) · [sanitized simulation](evidence/self-deposit-preview.json).

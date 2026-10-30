@@ -1,6 +1,7 @@
 import { getWallets } from '@wallet-standard/app';
 import { fromBase64 } from '@mysten/sui/utils';
 import { Transaction } from '@mysten/sui/transactions';
+import type { Attempt } from './workflow';
 import {
   AMOUNT,
   CHAIN,
@@ -35,6 +36,7 @@ type Preview = {
   unsignedDigest: string;
   sha256: string;
   decoded: unknown;
+  runtime: { csrf: string; authorized: boolean; state: Attempt | null };
 };
 const element = (id: string) => {
   const node = document.getElementById(id);
@@ -61,9 +63,7 @@ async function init() {
   if (!response.ok) throw new Error('Unsigned preview unavailable.');
   const p: Preview = await response.json();
   if (
-    p.mode !== 'review-only' ||
-    p.signingEnabled !== false ||
-    p.executionEnabled !== false ||
+    !['review-only', 'owner-approved-local'].includes(p.mode) ||
     p.chain !== CHAIN ||
     p.genesis !== GENESIS ||
     p.amountMist !== AMOUNT.toString() ||
@@ -81,6 +81,13 @@ async function init() {
     .map((n) => n.toString(16).padStart(2, '0'))
     .join('');
   if (hash !== p.sha256) throw new Error('Unsigned transaction hash mismatch.');
+  const enabled =
+    p.mode === 'owner-approved-local' && p.signingEnabled === true && p.executionEnabled === true;
+  let state = p.runtime.state;
+  let authorized = enabled && p.runtime.authorized;
+  let canRequestWallet = false;
+  let busy = false;
+  let submittedClicked = false;
   const expiry = Date.parse(p.reviewExpiresAt);
   if (!Number.isFinite(expiry)) throw new Error('Invalid review timestamp.');
   const freshness = () =>
@@ -88,10 +95,15 @@ async function init() {
       'status',
       Date.now() > expiry
         ? 'Preview is stale. It remains readable; rerun the read-only preparation before any approval. Signing stays disabled.'
-        : `Simulation succeeded with real coins and checks enabled at ${p.checkedAt}. Unsigned review only; no transaction sent.`,
+        : `Simulation succeeded with real coins and checks enabled at ${p.checkedAt}. Inspect the attempt status below before any action.`,
     );
   freshness();
-  setInterval(freshness, 30_000);
+  set(
+    'mode',
+    enabled
+      ? 'Owner authorized one exact 0.005 SUI Wallet A self-deposit, gas capped at 0.002 SUI. Slush signing and network submission each require your click. No x402 purchase is enabled.'
+      : 'Unsigned review only. Signing and submission are disabled.',
+  );
   definition('terms', {
     'Network / asset': 'Sui Mainnet / native SUI (9 decimals)',
     'Sender, destination and gas owner (all Wallet A)': p.plan.payer,
@@ -140,6 +152,136 @@ async function init() {
   const registry = getWallets();
   let connectedWallet: ReturnType<typeof registry.get>[number] | undefined;
   let unsubscribe: (() => void) | undefined;
+  const account = () =>
+    connectedWallet?.accounts.find(
+      (a) =>
+        a.address.toLowerCase() === p.plan.payer &&
+        a.chains.includes(CHAIN) &&
+        a.features.includes('sui:signTransaction'),
+    );
+  function render() {
+    const fresh = Date.now() < expiry;
+    const connected = !!account() && !!connectedWallet?.features['sui:signTransaction'];
+    button('unlock').disabled = !authorized || !fresh || !connected || !!state || busy;
+    button('sign').disabled =
+      !authorized ||
+      !fresh ||
+      !connected ||
+      !canRequestWallet ||
+      busy ||
+      state?.phase !== 'awaiting_wallet';
+    button('submit').disabled =
+      !authorized || !fresh || !connected || busy || submittedClicked || state?.phase !== 'signed';
+    button('reconcile').disabled = !enabled || !state || busy;
+    set(
+      'execution',
+      !state
+        ? 'No attempt recorded.'
+        : `Attempt status: ${state.phase}. Digest: ${state.digest}. ${state.detail || ''}`,
+    );
+    set('receipt', state?.verification ? JSON.stringify(state.verification, null, 2) : '');
+  }
+  async function api(path: string, body: unknown = {}) {
+    const response = await fetch(path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Local-Review-Token': p.runtime.csrf },
+      body: JSON.stringify(body),
+    });
+    const value = await response.json();
+    if (!response.ok)
+      throw new Error(
+        value.message || 'Local operation unavailable. Stop and check the existing digest.',
+      );
+    state = value.state;
+    render();
+    return value;
+  }
+  async function reconcile() {
+    busy = true;
+    render();
+    try {
+      await api('/reconcile');
+    } catch (error) {
+      set(
+        'execution',
+        error instanceof Error ? error.message : 'Tatum check unavailable. Do not resend.',
+      );
+    } finally {
+      busy = false;
+      render();
+    }
+  }
+  button('unlock').onclick = async () => {
+    busy = true;
+    render();
+    try {
+      const a = account();
+      if (!a) throw new Error('Reconnect exact Wallet A on Mainnet.');
+      await api('/claim-signing', { sha256: p.sha256, address: p.plan.payer, chain: CHAIN });
+      canRequestWallet = true;
+    } catch (error) {
+      set('connection', error instanceof Error ? error.message : 'Signing unlock unavailable.');
+    } finally {
+      busy = false;
+      render();
+    }
+  };
+  button('sign').onclick = async () => {
+    if (!canRequestWallet || !account() || Date.now() >= expiry) return;
+    canRequestWallet = false;
+    busy = true;
+    render();
+    try {
+      const a = account()!;
+      const feature = connectedWallet!.features['sui:signTransaction'] as {
+        signTransaction: (input: {
+          account: typeof a;
+          chain: typeof CHAIN;
+          transaction: { toJSON: () => Promise<string> };
+        }) => Promise<{ bytes: string; signature: string }>;
+      };
+      // A fresh owner click opens Slush directly. No Sign-and-Execute fallback.
+      const result = await feature.signTransaction({
+        account: a,
+        chain: CHAIN,
+        transaction: { toJSON: () => Transaction.from(bytes).toJSON() },
+      });
+      if (result.bytes !== p.unsignedBytes)
+        throw new Error('Slush changed the transaction bytes. No submission allowed.');
+      await assertExactBytes(fromBase64(result.bytes), p.plan);
+      await api('/signed', result);
+    } catch (error) {
+      await api('/stop').catch(() => {});
+      set(
+        'connection',
+        error instanceof Error && error.message.startsWith('Slush changed')
+          ? error.message
+          : 'Slush signing was declined, failed or could not be verified. No automatic retry. Check the existing digest if uncertain.',
+      );
+    } finally {
+      busy = false;
+      render();
+    }
+  };
+  button('submit').onclick = async () => {
+    if (state?.phase !== 'signed' || submittedClicked || !account() || Date.now() >= expiry) return;
+    submittedClicked = true;
+    busy = true;
+    render();
+    try {
+      await api('/submit', { sha256: p.sha256 });
+      await api('/reconcile'); // Independent READ only; never another execution.
+    } catch {
+      set(
+        'connection',
+        'Submission response or verification unavailable. Do not resend. Check the existing digest through Tatum.',
+      );
+    } finally {
+      busy = false;
+      render();
+    }
+  };
+  button('reconcile').onclick = () => void reconcile();
   async function connect(wallet: ReturnType<typeof registry.get>[number]) {
     try {
       set(
@@ -170,9 +312,10 @@ async function init() {
         { on: (event: 'change', fn: () => void) => () => void } | undefined;
       unsubscribe = events?.on('change', () => {
         connectedWallet = undefined;
+        render();
         set(
           'connection',
-          'Wallet accounts changed. Reconnect and verify Wallet A. Signing remains disabled.',
+          'Wallet accounts changed. Reconnect and verify Wallet A before any further action.',
         );
       });
       const sign =
@@ -180,7 +323,7 @@ async function init() {
         !!wallet.features['sui:signTransaction'];
       set(
         'connection',
-        `Wallet A matches exactly; account lists Sui Mainnet. Sign-only capability ${sign ? 'advertised' : 'not available'}. Google-login signing and account control are untested. No signature requested. Signing remains disabled.`,
+        `Wallet A matches exactly; account lists Sui Mainnet. Sign-only capability ${sign ? 'advertised' : 'not available'}. ${enabled ? 'Inspect the refreshed preview, then unlock the single signing attempt.' : 'Signing remains disabled.'} No signature requested by connection.`,
       );
     } catch (error) {
       connectedWallet = undefined;
@@ -191,6 +334,7 @@ async function init() {
           : 'Connection unavailable or declined. Stop on any Slush warning. No transaction sent.',
       );
     }
+    render();
   }
   const list = () => {
     const container = element('wallets');
@@ -211,6 +355,7 @@ async function init() {
   registry.on('register', list);
   registry.on('unregister', () => {
     connectedWallet = undefined;
+    render();
     set('connection', 'Wallet availability changed. Reconnect if needed.');
     list();
   });
@@ -235,9 +380,25 @@ async function init() {
     unsubscribe?.();
     connectedWallet = undefined;
   });
-  // Deliberately no signTransaction, signAndExecuteTransaction, executeTransaction
-  // or personal-message call. Connection and public capability checks only.
-  void connectedWallet;
+  render();
+  setInterval(() => {
+    freshness();
+    render();
+  }, 1000);
+  if (enabled)
+    setInterval(async () => {
+      if (busy) return;
+      try {
+        const response = await fetch('/state', { cache: 'no-store' });
+        if (!response.ok) return;
+        const current = await response.json();
+        state = current.state;
+        authorized = current.authorized;
+        render();
+      } catch {
+        /* Read failure never triggers signing, submission or retries. */
+      }
+    }, 3000);
 }
 init().catch(() =>
   set(

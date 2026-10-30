@@ -1,5 +1,5 @@
 // READ-ONLY: builds and simulates unsigned bytes; has no execution or signing API.
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { SuiGrpcClient } from '@mysten/sui/grpc';
 import { normalizeStructTag, toBase64 } from '@mysten/sui/utils';
@@ -25,6 +25,16 @@ import {
 config({ path: '.env.local', quiet: true });
 let stage = 'configuration';
 try {
+  stage = 'existing-attempt-safety-check';
+  try {
+    await access('.data/sui-self-deposit/attempt.json');
+    throw new Error(
+      'An attempt exists. Reconcile its frozen digest; do not prepare another transaction.',
+    );
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+  }
+  stage = 'configuration';
   const parties = JSON.parse(await readFile('.data/production-payment-parties.json', 'utf8'));
   const payer = fullAddress(parties.payer);
   if (payer === parties.recipient) throw new Error('Wallet A must differ from Wallet B.');
