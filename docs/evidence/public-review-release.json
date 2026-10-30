@@ -1,0 +1,24 @@
+{
+  "checkedAt": "2026-10-30T08:05:50.546Z",
+  "commit": "faf3b31f7582d84634fba0fba78e0274b91ea503",
+  "publicReviewUrl": "https://payguard-ai-henna.vercel.app/connect",
+  "authenticationStillPaused": true,
+  "assets": [
+    {
+      "name": "logo",
+      "sha256": "c84aa4415db5377e65a653cfc837289cb6b6facd2c46ca1104abb40821f5d64d",
+      "matchesUpload": true
+    },
+    {
+      "name": "icon",
+      "sha256": "ce68761f6838c496164ce8e5eb4d02e7333e7b89d693e034679a45d27710b532",
+      "matchesUpload": true
+    }
+  ],
+  "physicalSlushTest": false,
+  "fixtureConnectionPassed": true,
+  "fixtureRefusalPassedFreshRun": true,
+  "initialRefusalRun": "Chromium ERR_NETWORK_CHANGED during navigation; retained in ignored logs",
+  "signaturesRequested": 0,
+  "paymentSettlement": false
+}

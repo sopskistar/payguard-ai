@@ -35,7 +35,7 @@ import {
   processMemoryJob,
   recordCorrection,
 } from '@/lib/integrations/memory';
-import { saveTrust, saveInstructions } from '@/lib/verify-store';
+import { saveTrust, saveInstructions, recordHumanCheck, trustContext } from '@/lib/verify-store';
 let client: PGlite;
 const alice = Ed25519Keypair.generate(),
   bob = Ed25519Keypair.generate();
@@ -143,6 +143,7 @@ it('isolates invoices, suppliers, trust, settings, audits, edits, deletes and re
     importKey: crypto.randomUUID(),
   });
   expect((await snapshot(b)).invoices).toHaveLength(0);
+  expect((await snapshot(b)).approvalGates).toEqual({});
   expect((await snapshot(b)).vendorProfiles).toHaveLength(0);
   expect((await snapshot(b)).audit.some((e) => e.entityId === id)).toBe(false);
   await expect(
@@ -162,7 +163,10 @@ it('isolates invoices, suppliers, trust, settings, audits, edits, deletes and re
       receivedAt: new Date().toISOString(),
     }),
   ).rejects.toThrow('not found');
-  const own = (await snapshot(a)).invoices[0];
+  const ownSnapshot = await snapshot(a);
+  const own = ownSnapshot.invoices[0];
+  expect(Object.keys(ownSnapshot.approvalGates!)).toEqual([id]);
+  expect(ownSnapshot.approvalGates![id]).toMatchObject({ allowed: false });
   await expect(
     saveTrust(b, {
       vendorId: own.vendorId,
@@ -235,6 +239,52 @@ it('isolates invoices, suppliers, trust, settings, audits, edits, deletes and re
   expect(namespaceFor(a)).not.toBe(namespaceFor(b));
   expect((await snapshot(b)).preferences).toEqual(DEFAULT_PREFERENCES);
 });
+it('overview approval gates track an actual human check and invalidate after edits', async () => {
+  vi.stubEnv('DATABASE_URL', '');
+  await verifyWalletLogin(await signed(alice));
+  const tenant = (await currentActor())!.tenantId;
+  const id = await saveInvoice(tenant, {
+    ...demoInvoices()[0],
+    vendor: 'Synthetic overview supplier',
+    source: 'manual',
+    isDemo: false,
+    importKey: crypto.randomUUID(),
+  });
+  let snap = await snapshot(tenant);
+  const invoice = snap.invoices.find((i) => i.id === id)!;
+  await saveTrust(tenant, {
+    vendorId: invoice.vendorId,
+    trustedRecipient: '0x' + '1'.repeat(64),
+    emailDomain: 'example.com',
+    contactLabel: 'Established fixture contact',
+    contactMethod: 'phone',
+    contactReference: 'Pre-existing fixture directory',
+    establishedAt: '2026-01-01T00:00:00.000Z',
+    independentlySourced: true,
+  });
+  expect((await snapshot(tenant)).approvalGates![id].allowed).toBe(false);
+  const context = await trustContext(tenant, invoice);
+  await recordHumanCheck(tenant, {
+    invoiceId: id,
+    profileRevision: context.profile!.revision,
+    instructionHash: context.instructionHash,
+    outcome: 'confirmed',
+    method: 'phone',
+    note: 'Fixture independent verification for exact saved instruction',
+    usedEstablishedContact: true,
+  });
+  expect((await snapshot(tenant)).approvalGates![id].allowed).toBe(true);
+  await saveInvoice(
+    tenant,
+    { ...invoice, recipient: '0x' + '3'.repeat(64), importKey: crypto.randomUUID() },
+    id,
+  );
+  snap = await snapshot(tenant);
+  expect(snap.approvalGates![id].allowed).toBe(false);
+  await verifyWalletLogin(await signed(bob));
+  const other = (await currentActor())!.tenantId;
+  expect((await snapshot(other)).approvalGates![id]).toBeUndefined();
+});
 it('retains separate administrator login and blocks cross-origin writes', async () => {
   await login('test-only-owner-password-for-isolated-tests');
   expect(await requireOwner()).toBe(OWNER_ID);
@@ -251,6 +301,9 @@ it('retains separate administrator login and blocks cross-origin writes', async 
 });
 
 it('filters mixed, foreign and tampered SDK candidates even when both tenants own memories', async () => {
+  vi.stubEnv('DATABASE_URL', 'fixture-configured');
+  vi.stubEnv('MEMWAL_ACCOUNT_ID', 'fixture');
+  vi.stubEnv('MEMWAL_PRIVATE_KEY', 'fixture');
   await verifyWalletLogin(await signed(alice));
   const a = (await currentActor())!.tenantId;
   await verifyWalletLogin(await signed(bob));

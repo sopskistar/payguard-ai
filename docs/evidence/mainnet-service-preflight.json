@@ -1,6 +1,6 @@
 {
   "execution": "Local operator read-only preflight; not production wallet clearance",
-  "checkedAt": "2026-10-29T19:59:46.248Z",
+  "checkedAt": "2026-10-30T08:38:42.755Z",
   "spending": false,
   "readyForExactApproval": false,
   "missing": ["SERVICE_PAYMENT_PAYER", "SERVICE_PAYMENT_RECIPIENT"],
@@ -24,17 +24,18 @@
   "risks": [
     "First-party buyer/seller relationship; not independent supplier identity verification.",
     "Facilitator availability, sponsorship and full wallet compatibility remain unproven until an authorized settlement.",
-    "Signed transaction can be relayed; cancellation is only available before PayGuard submits it.",
+    "Signed transaction can be relayed; cancellation is only available before PayGuard discloses signed bytes to the facilitator.",
+    "The five-minute quote limits application submission. Sui timestamp expiry is unsupported; disclosed signed bytes remain relayable through the approved epoch window and cannot be revoked by cancelling a quote.",
     "No service result is released until Tatum independently confirms exact finalized credit."
   ],
   "chain": {
     "source": "Tatum native Sui gRPC",
     "network": "sui:mainnet",
     "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
-    "checkpoint": "339530502",
+    "checkpoint": "339718099",
     "coinType": "0x2::sui::SUI",
     "decimals": 9,
-    "checkedAt": "2026-10-29T19:59:46.248Z",
+    "checkedAt": "2026-10-30T08:38:42.753Z",
     "spending": false
   },
   "securityCleared": false,

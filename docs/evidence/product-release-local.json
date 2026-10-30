@@ -1,0 +1,207 @@
+{
+  "checkedAt": "2026-10-30T08:49:38.526Z",
+  "execution": "Isolated loopback application, local PostgreSQL, official Wallet Standard fixtures; separate read-only provider checks",
+  "unit": {
+    "passed": 111,
+    "files": 16,
+    "failed": 0
+  },
+  "browser": {
+    "collected": 21,
+    "passed": 18,
+    "failed": 0,
+    "skipped": 3,
+    "skippedReasons": [
+      "Live Tatum browser case reserved for production",
+      "Live Walrus browser case reserved for production",
+      "Hosted-only wallet pause assertion"
+    ]
+  },
+  "lint": "passed",
+  "typecheck": "passed after completed build",
+  "build": "Next.js Webpack passed",
+  "format": "passed",
+  "dependencyAdvisories": 0,
+  "visual": {
+    "capturedAt": "2026-10-30T08:48:19.165Z",
+    "origin": "http://localhost:3002",
+    "zoom": "100 percent",
+    "privateSession": false,
+    "video": false,
+    "screenshots": "Explicit public-page PNG captures only",
+    "checks": [
+      {
+        "device": "desktop",
+        "route": "/",
+        "status": 200,
+        "width": 1440,
+        "scrollWidth": 1440,
+        "zoom": 1,
+        "brokenImages": [],
+        "errors": []
+      },
+      {
+        "device": "desktop",
+        "route": "/try",
+        "status": 200,
+        "width": 1440,
+        "scrollWidth": 1440,
+        "zoom": 1,
+        "brokenImages": [],
+        "errors": []
+      },
+      {
+        "device": "desktop",
+        "route": "/app",
+        "status": 200,
+        "width": 1440,
+        "scrollWidth": 1440,
+        "zoom": 1,
+        "brokenImages": [],
+        "errors": []
+      },
+      {
+        "device": "desktop",
+        "route": "/app/replay",
+        "status": 200,
+        "width": 1440,
+        "scrollWidth": 1440,
+        "zoom": 1,
+        "brokenImages": [],
+        "errors": []
+      },
+      {
+        "device": "desktop",
+        "route": "/app/memory",
+        "status": 200,
+        "width": 1440,
+        "scrollWidth": 1440,
+        "zoom": 1,
+        "brokenImages": [],
+        "errors": []
+      },
+      {
+        "device": "desktop",
+        "route": "/connect",
+        "status": 200,
+        "width": 1440,
+        "scrollWidth": 1440,
+        "zoom": 1,
+        "brokenImages": [],
+        "errors": []
+      },
+      {
+        "device": "desktop",
+        "route": "/services",
+        "status": 200,
+        "width": 1440,
+        "scrollWidth": 1440,
+        "zoom": 1,
+        "brokenImages": [],
+        "errors": []
+      },
+      {
+        "device": "desktop",
+        "route": "/proof",
+        "status": 200,
+        "width": 1440,
+        "scrollWidth": 1440,
+        "zoom": 1,
+        "brokenImages": [],
+        "errors": []
+      },
+      {
+        "device": "mobile",
+        "route": "/",
+        "status": 200,
+        "width": 390,
+        "scrollWidth": 390,
+        "zoom": 1,
+        "brokenImages": [],
+        "errors": []
+      },
+      {
+        "device": "mobile",
+        "route": "/try",
+        "status": 200,
+        "width": 390,
+        "scrollWidth": 390,
+        "zoom": 1,
+        "brokenImages": [],
+        "errors": []
+      },
+      {
+        "device": "mobile",
+        "route": "/app",
+        "status": 200,
+        "width": 390,
+        "scrollWidth": 390,
+        "zoom": 1,
+        "brokenImages": [],
+        "errors": []
+      },
+      {
+        "device": "mobile",
+        "route": "/app/replay",
+        "status": 200,
+        "width": 390,
+        "scrollWidth": 390,
+        "zoom": 1,
+        "brokenImages": [],
+        "errors": []
+      },
+      {
+        "device": "mobile",
+        "route": "/app/memory",
+        "status": 200,
+        "width": 390,
+        "scrollWidth": 390,
+        "zoom": 1,
+        "brokenImages": [],
+        "errors": []
+      },
+      {
+        "device": "mobile",
+        "route": "/connect",
+        "status": 200,
+        "width": 390,
+        "scrollWidth": 390,
+        "zoom": 1,
+        "brokenImages": [],
+        "errors": []
+      },
+      {
+        "device": "mobile",
+        "route": "/services",
+        "status": 200,
+        "width": 390,
+        "scrollWidth": 390,
+        "zoom": 1,
+        "brokenImages": [],
+        "errors": []
+      },
+      {
+        "device": "mobile",
+        "route": "/proof",
+        "status": 200,
+        "width": 390,
+        "scrollWidth": 390,
+        "zoom": 1,
+        "brokenImages": [],
+        "errors": []
+      }
+    ]
+  },
+  "earlierFailures": [
+    "Initial unit run: PGlite setup hooks exceeded 10-second limit; rerun with one worker passed all cases",
+    "Memory fixture required its own explicit environment setup; fixed and passed",
+    "Local wallet reload dropped signin query; fixed and tested",
+    "Reduced-motion text differed during hydration; use client-ready text, browser and visual rechecks passed",
+    "A separate typecheck raced Next generated-type replacement during build; sequential recheck passed",
+    "Generated preflight JSON needed formatting; corrected"
+  ],
+  "noFinancialSignature": true,
+  "noSettlement": true,
+  "noMemoryWrites": true,
+  "noVideo": true
+}

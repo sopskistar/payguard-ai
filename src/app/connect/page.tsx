@@ -23,25 +23,42 @@ export default async function ConnectPage({
       </header>
       <main id="main" className="connect-page">
         <div>
-          <span className="site-eyebrow">WALLET SECURITY REVIEW · PUBLIC ACCESS</span>
-          <h1>
-            A review request.
-            <br />
-            <em>No sign-in. No spending.</em>
-          </h1>
-          <p>
-            Slush Support directs domain reviews through its own warning screen. This public page
-            opens the official wallet selector so you can reach that review action. Customer sign-in
-            and payments remain paused.
-          </p>
-          <ol>
-            <li>Choose Open Slush Security Review, then select the installed Slush extension.</li>
-            <li>If Slush displays a warning, select “Flag for review” inside the extension.</li>
-            <li>
-              Do not accept the connection or override the warning. Close the request after
-              submitting your review.
-            </li>
-          </ol>
+          <span className="site-eyebrow">
+            {signIn ? 'CONTROLLED LOCAL WALLET SIGN-IN' : 'WALLET SECURITY REVIEW · PUBLIC ACCESS'}
+          </span>
+          {signIn ? (
+            <>
+              <h1>Connect Sui Wallet</h1>
+              <p>
+                This sign-in flow is available only in controlled local development. Connection
+                alone does not authenticate you. Inspect the free personal-message challenge before
+                deliberately signing; it cannot authorize a transaction.
+              </p>
+            </>
+          ) : (
+            <>
+              <h1>
+                A review request.
+                <br />
+                <em>No sign-in. No spending.</em>
+              </h1>
+              <p>
+                Slush Support directs domain reviews through its own warning screen. This public
+                page opens the official wallet selector so you can reach that review action.
+                Customer sign-in and payments remain paused.
+              </p>
+              <ol>
+                <li>
+                  Choose Open Slush Security Review, then select the installed Slush extension.
+                </li>
+                <li>If Slush displays a warning, select “Flag for review” inside the extension.</li>
+                <li>
+                  Do not accept the connection or override the warning. Close the request after
+                  submitting your review.
+                </li>
+              </ol>
+            </>
+          )}
           <p>
             PayGuard never asks for a recovery phrase or private key. Connection alone does not sign
             you in. Wallet sign-in does not authorize payments or grant administrator access.

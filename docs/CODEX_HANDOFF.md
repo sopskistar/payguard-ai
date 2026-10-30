@@ -1,3 +1,14 @@
+# Product-experience continuation — October 30
+
+- Targeted public review/branding fix deployed first on `faf3b31`. `/connect` is public, deliberate official connection only, `autoConnect:false`, `storage:null`; no auth/signature/payment capability. Owner must test actual Slush **Flag for review**; no clearance claimed.
+- Full product illustration, section redesign, three access paths, actual approval-gate dashboard, saved activity and diagnostic status, contextual help, judge visual transitions/capture date and official branding are implemented. See `docs/PRODUCT_RELEASE.md`.
+- Local final validation: 111 unit/integration passes; full browser 18 passed / 0 failed / 3 environment skips; lint/typecheck/format/build passed; 16 route/viewport checks without overflow, broken images or browser errors. Both initial frontend regressions were fixed and rerun. `docs/evidence/product-release-local.json` and public-only PNGs document it.
+- Read-only provider checks reconfirmed 30 owner + 2 controlled memories and 18/18 synthetic learning contracts (four actual recall queries). No new writes, reseeds, payments or provider quota expansion. Tatum Mainnet and Tentacle supported/sponsor preflight passed.
+- Payment worksheet is deliberately incomplete: `SERVICE_PAYMENT_PAYER`, `SERVICE_PAYMENT_RECIPIENT` missing; settlement disabled. Never use the public review connector as a signing/auth path. No financial approval or funded transaction exists.
+- Preserve `.gitignore.save` (untracked user backup), `.env.local`, Neon, all 32 memories and evidence. No video or submission form.
+
+---
+
 # Targeted public Slush review and new branding
 
 Owner upload commit c2c6ba8 was fast-forwarded safely. New root PNGs copied byte-for-byte to public/brand/logo.png and public/brand/icon.png; both decode with transparency (2172x724 and 1254x1254). Product text/metadata now says PayGuard Verify; the icon cache key and manifest dimensions were updated. The horizontal navy wordmark uses a deliberate light plaque for contrast.

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useClientReady } from './client-ready';
 import { WalletSessionMonitor } from './wallet-entry';
 import { Onboarding } from './onboarding';
+import { WorkspaceOverview, WorkspaceGuide } from './workspace-overview';
 import { PublicMemoryLab, publishedMemoryCount } from './mode-notice';
 import { VerificationPanel, VendorProfiles, AttackReplayLab } from './verify-panels';
 import { useRouter } from 'next/navigation';
@@ -338,7 +339,7 @@ export function Workspace({
               <p>
                 PayGuard reviews evidence.
                 <br />
-                It never moves your funds.
+                It never sends supplier payments.
               </p>
               <Link href="/app/memory">
                 Explore the learning loop <ArrowUpRight size={14} />
@@ -379,17 +380,24 @@ export function Workspace({
             </div>
             <div className="topbar-right">
               <span className="network-label">
-                <span className="status-dot" /> Sui Mainnet
+                <span className="status-dot" /> Sui Mainnet ·{' '}
+                {data?.mode === 'public-demo' ? 'recorded proof' : 'read-only evidence'}
               </span>
               <Link className="icon-button" href="/app/activity" aria-label="View activity">
                 <Bell size={18} />
               </Link>
               <button
                 className="user-avatar"
-                aria-label={owner ? 'Owner settings' : 'Owner login'}
+                aria-label={
+                  data?.mode === 'member'
+                    ? 'Account settings'
+                    : owner
+                      ? 'Owner settings'
+                      : 'Owner login'
+                }
                 onClick={() => (owner ? router.push('/app/settings') : setModal('login'))}
               >
-                {owner ? 'O' : 'D'}
+                {data?.mode === 'member' ? 'W' : owner ? 'O' : 'D'}
               </button>
             </div>
           </header>
@@ -482,6 +490,7 @@ export function Workspace({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.25 }}
               >
+                <WorkspaceGuide view={view} />
                 {view === 'overview' && <Overview data={data} onAdd={() => openInvoice()} />}
                 {view === 'vendors' && (
                   <VendorProfiles data={data} notify={notify} onChanged={() => void refresh()} />
@@ -923,239 +932,10 @@ type Act = <T = Record<string, unknown>>(
   message?: string,
 ) => Promise<T | undefined>;
 function Overview({ data, onAdd }: { data: Snapshot; onAdd: () => void }) {
-  const open = data.invoices.filter((i) => i.status === 'open');
-  const review = open.filter((i) =>
-    ['Needs review', 'High risk / verification required'].includes(data.assessments[i.id].level),
-  );
-  const duplicates = data.invoices.filter((i) =>
-    data.assessments[i.id].findings.some(
-      (f) => f.id === 'duplicate-number' || f.id === 'near-duplicate',
-    ),
-  );
-  const confirmed = data.memories.filter((m) => m.status === 'confirmed');
-  const metrics = [
-    {
-      label: data.mode === 'public-demo' ? 'Sample invoices' : 'Invoices in workspace',
-      value: data.invoices.length,
-      sub:
-        data.mode === 'public-demo'
-          ? 'Synthetic practice dataset'
-          : `${open.length} awaiting a decision`,
-      icon: FileText,
-      tone: 'cyan',
-    },
-    {
-      label: 'Needs your review',
-      value: review.length,
-      sub: 'Your attention makes the difference',
-      icon: ShieldCheck,
-      tone: 'amber',
-    },
-    {
-      label: 'Duplicate signals',
-      value: duplicates.length,
-      sub: 'Exact and possible matches',
-      icon: Fingerprint,
-      tone: 'danger',
-    },
-    {
-      label: data.mode === 'public-demo' ? 'Supplier payments' : 'Confirmed Sui payments',
-      value: data.mode === 'public-demo' ? '—' : data.confirmedPayments,
-      sub:
-        data.mode === 'public-demo'
-          ? 'No transfers in public practice'
-          : 'Matched to live chain evidence',
-      icon: Wallet,
-      tone: 'mint',
-    },
-  ];
   return (
-    <>
-      <div className="metrics-grid">
-        {metrics.map((m) => (
-          <section className="metric-card" key={m.label}>
-            <div>
-              <span>{m.label}</span>
-              <span className={`metric-icon ${m.tone}`}>
-                <m.icon size={18} />
-              </span>
-            </div>
-            <strong>
-              {typeof m.value === 'number' ? m.value.toString().padStart(2, '0') : m.value}
-            </strong>
-            <small>{m.sub}</small>
-          </section>
-        ))}
-      </div>
-      <div className="overview-grid">
-        <section className="panel attention-panel">
-          <div className="panel-top">
-            <h2>
-              On your radar <span className="count-pill">{review.length}</span>
-            </h2>
-            <Link className="inline-link" href="/app/review">
-              Review center <ArrowUpRight size={15} />
-            </Link>
-          </div>
-          {data.preferences.alerts && review.length ? (
-            review.slice(0, 3).map((i) => (
-              <Link className="alert-row" key={i.id} href={`/app/review?invoice=${i.id}`}>
-                <span
-                  className={`vendor-avatar ${data.assessments[i.id].level.startsWith('High') ? 'rose' : 'gold'}`}
-                >
-                  {i.vendor[0]}
-                </span>
-                <div>
-                  <strong>{i.vendor}</strong>
-                  <p>{data.assessments[i.id].findings.find((f) => f.severity !== 'info')?.title}</p>
-                </div>
-                <div>
-                  <strong>{money(i)}</strong>
-                  <small>{i.number}</small>
-                </div>
-                <ChevronRight size={17} />
-              </Link>
-            ))
-          ) : (
-            <Empty title="Your review queue is clear">
-              <p>Add an invoice to get started.</p>
-            </Empty>
-          )}
-          <div className="panel-foot">
-            <span className="status-dot amber-dot" /> Findings are review signals, never a fraud
-            verdict.
-          </div>
-        </section>
-        <section className="panel memory-pulse">
-          <div className="panel-top">
-            <h2>
-              <BrainCircuit size={19} /> Memory pulse
-            </h2>
-            <Badge tone="cyan">Walrus</Badge>
-          </div>
-          <div className="memory-count">
-            <strong>
-              {(data.mode === 'public-demo' ? publishedMemoryCount : confirmed.length)
-                .toString()
-                .padStart(2, '0')}
-            </strong>
-            <div>
-              {data.mode === 'public-demo'
-                ? 'Published Mainnet proof'
-                : 'Your confirmed Mainnet memories'}
-              {data.mode === 'public-demo' ? (
-                <small>Recorded evidence · separate from sample data</small>
-              ) : (
-                <small>
-                  {data.memories.filter((m) => m.status === 'pending').length} pending ·{' '}
-                  {data.memories.filter((m) => m.status === 'failed').length} failed
-                </small>
-              )}
-            </div>
-          </div>
-          <div className="memory-flow">
-            <FileText size={21} />
-            <span />
-            <ShieldCheck size={21} />
-            <span />
-            <BrainCircuit size={25} />
-            <span />
-            <Sparkles size={21} />
-          </div>
-          <p>
-            {data.mode === 'public-demo'
-              ? 'The project’s confirmed receipts are available in the read-only evidence view. Public practice creates no memories.'
-              : confirmed.length
-                ? 'Your verified corrections are ready for semantic recall.'
-                : 'Every guardian starts somewhere. Save a correction to begin the learning loop.'}
-          </p>
-          <Link
-            className="button outline full"
-            href={data.mode === 'public-demo' ? '/proof#memory' : '/app/memory'}
-          >
-            {data.mode === 'public-demo' ? 'Inspect published memory proof' : 'Open Memory Lab'}{' '}
-            <ArrowRight size={16} />
-          </Link>
-        </section>
-      </div>
-      <div className="overview-grid lower-grid">
-        <section className="panel">
-          <div className="panel-top">
-            <h2>Review signals by invoice</h2>
-            <Badge>{data.mode === 'public-demo' ? 'Sample data' : 'Stored data'}</Badge>
-          </div>
-          <div
-            className="trend-chart"
-            role="img"
-            aria-label="Rule-based review scores for the latest eight invoices"
-          >
-            {data.invoices
-              .slice(0, 8)
-              .reverse()
-              .map((i) => (
-                <div className="chart-column" key={i.id}>
-                  <span>{data.assessments[i.id].score}</span>
-                  <div
-                    className={`chart-bar ${data.assessments[i.id].score >= 40 ? 'high' : ''}`}
-                    style={{ height: `${Math.max(3, data.assessments[i.id].score)}%` }}
-                  />
-                  <small title={i.number}>{i.number.slice(-4)}</small>
-                </div>
-              ))}
-          </div>
-          <div className="chart-legend">
-            <span />
-            <span>Rule priority · 0–100, not fraud probability</span>
-          </div>
-        </section>
-        <section className="panel demo-card">
-          <div className="panel-top">
-            <span className="demo-icon">
-              <FlaskConical size={24} />
-            </span>
-            <Badge tone="mint">Demo Lab</Badge>
-          </div>
-          <h2>Stop the payout switch.</h2>
-          <p>
-            Review a payout switch. Save a correction. Open the next invoice in a new session and
-            see what Walrus recalls.
-          </p>
-          <Link className="button primary" href="/app/replay">
-            Open Attack Replay Lab <ArrowUpRight size={16} />
-          </Link>
-        </section>
-      </div>
-      <section className="panel">
-        <div className="panel-top">
-          <h2>Recent invoices</h2>
-          <Link className="inline-link" href="/app/invoices">
-            View all <ArrowUpRight size={15} />
-          </Link>
-        </div>
-        <InvoiceTable data={data} invoices={data.invoices.slice(0, 5)} />
-        {!data.invoices.length && (
-          <Empty title="Your inbox starts here">
-            <button className="button primary" onClick={onAdd}>
-              Add your first invoice
-            </button>
-          </Empty>
-        )}
-      </section>
-      <div className="connection-row">
-        {[
-          { name: 'Neon database', ok: data.integrations.database },
-          { name: 'Walrus Memory', ok: data.integrations.memory },
-          { name: 'Tatum Sui gRPC', ok: data.integrations.tatum },
-        ].map((i) => (
-          <Link key={i.name} href="/app/settings/integrations">
-            <span className={`tiny-dot ${i.ok ? '' : 'off'}`} />
-            <strong>{i.name}</strong>
-            <span>{i.ok ? 'Configured · test connection' : 'Not configured in this view'}</span>
-            <ArrowUpRight size={14} />
-          </Link>
-        ))}
-      </div>
-    </>
+    <WorkspaceOverview data={data} onAdd={onAdd}>
+      <InvoiceTable data={data} invoices={data.invoices.slice(0, 5)} />
+    </WorkspaceOverview>
   );
 }
 function InvoiceTable({
@@ -1542,6 +1322,11 @@ function WalletWatch({
           <Submit busy={busy} disabled={data.mode === 'public-demo'}>
             Add watch-only wallet
           </Submit>
+          {data.mode === 'public-demo' && (
+            <p className="muted small-text">
+              Saving a watchlist requires a private authenticated workspace.
+            </p>
+          )}
         </form>
         {data.wallets.map((w) => (
           <div className="wallet-row" key={w.id}>
@@ -2154,8 +1939,12 @@ function Settings({
         <section className="panel">
           <h2>Workspace access</h2>
           <Link className="button outline full" href="/connect">
-            Connect Sui Wallet / switch account
+            Wallet access & security review
           </Link>
+          <p className="small-text muted">
+            Public connection is review-only. Wallet registration and payment signing remain paused;
+            this link cannot authenticate an account.
+          </p>
           <p>
             {owner
               ? 'Authenticated private session. Sessions expire after eight hours.'

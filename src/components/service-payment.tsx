@@ -269,7 +269,7 @@ export function ServicePayment() {
           <p>Loading owner workspace…</p>
         ) : data.mode !== 'owner' ? (
           <p>
-            <Link className="button primary" href="/app">
+            <Link className="button primary" href="/app?signin=1">
               Sign in through the owner workspace
             </Link>{' '}
             before quoting a service. Public judges can inspect{' '}

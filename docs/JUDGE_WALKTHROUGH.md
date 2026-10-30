@@ -2,6 +2,8 @@
 
 **Verify before you pay. Remember what nearly went wrong.**
 
+The [homepage](https://payguard-ai-henna.vercel.app/) introduces the problem with a controllable six-stage synthetic illustration. Play/Pause, Replay and direct step selection need no wallet. The real recall comparison below it preserves the approval hold in both memory modes.
+
 Open the [public judge sandbox](https://payguard-ai-henna.vercel.app/try). It requires no account, wallet or funds. The prominent **Next Step** and **Back** controls guide all seven tasks. A numbered progress rail allows direct exploration. Synthetic business data and genuine dated Mainnet proof are labeled separately. The [GitHub Pages fallback](https://sopskistar.github.io/payguard-ai/try/) uses the same component.
 
 1. **Open the invoice.** Northstar's synthetic retainer is $1,250 with a separately agreed synthetic 500 SUI amount. Nothing is being charged or transferred. Open the supplier reference.
@@ -9,7 +11,7 @@ Open the [public judge sandbox](https://payguard-ai-henna.vercel.app/try). It re
 3. **Enforce the hold.** Use the approval-attempt control. The actual `approvalGate` function refuses approval until independent verification is recorded. The vulnerable procedure alongside it is a hypothetical failure, not an unsafe app mode.
 4. **Verify independently.** Check the explicitly synthetic practice attestation. In the owner workflow, a reviewer must actually contact the supplier through the pre-established channel; PayGuard records their assertion against exact terms and profile revision. Press **Edit instructions after verification**. The old attestation becomes invalid and approval is held. Embedded directives remain inert data. Positive attestations expire after 30 days.
 5. **Compare memory OFF / ON.** Turn memory ON. Inspect the actual recalled blob IDs and the remembered verification/escalation instructions. The engine applies those captured, confirmed policy citations. OFF retains the baseline recipient warnings. The screen states the capture timestamp: these are recorded live results, not a new anonymous SDK request on each click.
-6. **Inspect the chain.** The genuine Tatum Mainnet transaction succeeded but did not pay this sample recipient. See checkpoint, expected atomic units, zero actual credit, and **Mismatch**. Follow the SuiScan link or inspect the raw JSON. Transaction success does not establish supplier identity.
+6. **Inspect the chain.** The genuine Tatum Mainnet transaction succeeded but did not pay this sample recipient. See the visible capture date, checkpoint, expected atomic units, zero actual credit, and **Mismatch**. Follow the SuiScan link or inspect the raw JSON. Transaction success does not establish supplier identity.
 7. **Audit the decision.** Record the decision. If instructions were edited after the practice attestation, approval remains blocked. Escalate instead if desired. The sandbox audit is local practice state; authenticated owner decisions are persisted in Neon. Reset practice to retry; reset never deletes Mainnet proof.
 
 The step buttons allow direct exploration on desktop or mobile. Use keyboard Tab/Enter/Space; focus indicators and reduced-motion preferences are supported. Expanding evidence findings reveals the reason and next action.
@@ -24,11 +26,11 @@ The step buttons allow direct exploration on desktop or mobile. Use keyboard Tab
 
 ## Real workspace versus public practice
 
-Hosted [wallet onboarding](https://payguard-ai-henna.vercel.app/connect) is **paused pending Slush security review**. Do not override wallet warnings or connect a funded wallet. Registration and seven onboarding milestones are implemented and tested with controlled local identities; no physical-wallet production certification is claimed. Owner Sign In remains separate administrator access. New accounts start empty; zero personal memories does not contradict the 30 confirmed published project records. The [read-only proof](https://payguard-ai-henna.vercel.app/proof) includes the 18-case learning report and requires no wallet.
+Hosted wallet registration is **paused pending Slush security review**. Public [/connect](https://payguard-ai-henna.vercel.app/connect) now offers **Open Slush Security Review**, then the official selector. Select the installed Slush extension and choose **Flag for review inside its warning**, without accepting the connection. No signature, account creation or authentication follows this review-only flow; an unexpected successful connection offers an ordinary disconnect. Loading the selector does not establish clearance. Do not override wallet warnings or connect a funded wallet. Registration and seven onboarding milestones are implemented and tested with controlled local identities; no physical-wallet production certification is claimed. Owner Sign In remains separate administrator access. New accounts start empty; zero personal memories does not contradict the 30 confirmed published project records. The [read-only proof](https://payguard-ai-henna.vercel.app/proof) includes the 18-case learning report and requires no wallet.
 
 ## Owner workflow
 
-The [Next.js app](https://payguard-ai-henna.vercel.app) has protected owner intake, vendor profiles, exact-instruction human attestations, live recall and chain inspection. Public samples do not expose owner records or admin operations. The optional `/services` flow quotes a tightly capped first-party Mainnet analysis service with a retained Testnet development option; signing/settlement remain disabled and no settlement is claimed. [Status and exact controls](AGENT_PAYMENTS.md).
+The [Next.js workspace](https://payguard-ai-henna.vercel.app/app) has protected owner intake, vendor profiles, exact-instruction human attestations, live recall and chain inspection. Public samples do not expose owner records or admin operations. The optional `/services` flow quotes a tightly capped first-party Mainnet analysis service with a retained Testnet development option; signing/settlement remain disabled and no settlement is claimed. [Status and exact controls](AGENT_PAYMENTS.md).
 
 ## Troubleshooting
 
@@ -38,6 +40,8 @@ The [Next.js app](https://payguard-ai-henna.vercel.app) has protected owner inta
 - **Chain mismatch:** expected for this unrelated public digest. Do not treat the sample supplier as paid. Exact amount, coin, network, positive recipient credit and uniqueness are required.
 - **Practice reset:** resets only component state. Owner invoices, provider jobs, proof artifacts and audit records remain intact.
 - **Static page stale:** refresh after a new GitHub Pages deployment. The recorded capture date and raw JSON link identify the evidence version.
+
+Dashboard holds use the current server approval gate, including verification expiry and instruction edits. Its recent activity comes from persisted audits; the sample explicitly has no private audit stream. Memory proof counts are separate from personal memories, and Tatum configuration alone is never shown as a passed live diagnostic. Use Refresh for current records; a failure never shows success. Contextual help explains each workspace tool.
 
 No demo video was generated or recorded. The owner will arrange it separately.
 

@@ -348,7 +348,7 @@ test('wallet loading provides native recovery when JavaScript cannot load', asyn
     const reload = page.getByRole('button', { name: 'Reload wallet connection' });
     await expect(reload).toBeVisible();
     await Promise.all([page.waitForNavigation(), reload.click()]);
-    await expect(page).toHaveURL(/\/connect\??$/);
+    await expect(page).toHaveURL(/\/connect\?mode=signin$/);
     await expect(reload).toBeVisible();
     await visit(page, '/app');
     await expect(page.getByRole('heading', { name: 'Preparing your workspace' })).toBeVisible();

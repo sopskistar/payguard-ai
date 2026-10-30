@@ -102,6 +102,7 @@ export type Snapshot = {
   storage: string;
   invoices: Invoice[];
   assessments: Record<string, Assessment>;
+  approvalGates?: Record<string, { allowed: boolean; reason: string }>;
   memories: MemoryJobView[];
   wallets: WalletView[];
   audit: AuditView[];

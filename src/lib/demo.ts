@@ -1,5 +1,6 @@
 import { DEFAULT_PREFERENCES, type Invoice, type Snapshot, type VendorTrust } from './types';
 import { evaluate } from './risk';
+import { approvalGate } from './verify';
 export const OWNER_ID = 'a0000000-0000-4000-8000-000000000001';
 export const sampleAddress = '0x' + '1'.repeat(64);
 export const changedAddress = '0x' + '2'.repeat(64);
@@ -68,6 +69,18 @@ export function publicSnapshot(): Snapshot {
     mode: 'public-demo',
     storage: 'Read-only sample dataset',
     invoices,
+    approvalGates: Object.fromEntries(
+      invoices.map((invoice) => [
+        invoice.id,
+        approvalGate(
+          invoice,
+          demoProfiles().find((p) => p.vendorId === invoice.vendorId),
+          undefined,
+          undefined,
+          'public-synthetic',
+        ),
+      ]),
+    ),
     assessments: Object.fromEntries(
       invoices.map((i) => [
         i.id,

@@ -13,9 +13,20 @@ test('refresh shows loading, honest success, timestamp and failure; public actio
     { timeout: 20000 },
   );
   await visit(page, '/app');
-  await initialSnapshot;
+  const snapshot = await (await initialSnapshot).json();
+  const actualHolds = snapshot.invoices.filter(
+    (i: { id: string; status: string }) =>
+      i.status === 'open' && snapshot.approvalGates?.[i.id]?.allowed === false,
+  ).length;
+  await expect(page.locator('.work-metrics article').nth(1).locator('strong')).toHaveText(
+    String(actualHolds),
+  );
+  await page.getByText('How this workspace works', { exact: true }).click();
+  await expect(page.locator('.work-context-help')).toContainText('current saved instructions');
   await expect(page.getByText('Public demo', { exact: true })).toBeVisible();
-  await expect(page.getByText('Published Mainnet proof', { exact: false })).toBeVisible();
+  await expect(
+    page.getByRole('link', { name: 'Inspect published Mainnet proof', exact: true }),
+  ).toBeVisible();
   let release: () => void = () => {};
   const gate = new Promise<void>((r) => (release = r));
   await page.route(
@@ -61,7 +72,7 @@ test('landing CTAs, FAQ, proof and mobile layouts are deliberate and functional'
   page,
 }) => {
   await visit(page, '/');
-  await expect(page.getByRole('heading', { name: /Same supplier/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Familiar supplier/ })).toBeVisible();
   await page.getByRole('button', { name: 'Memory ON', exact: true }).click();
   await expect(page.locator('.site-citation code')).toBeVisible();
   await page

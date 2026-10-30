@@ -1,7 +1,10 @@
 'use client';
 import Link from 'next/link';
 import { useClientReady } from './client-ready';
-import { motion, MotionConfig } from 'motion/react';
+import { AnimatePresence, motion, MotionConfig, useReducedMotion } from 'motion/react';
+import { ProductStory } from './product-story';
+import tenants from '../../docs/evidence/two-tenant-mainnet-memory.json';
+import chain from '../../docs/evidence/tatum-reconciliation.json';
 import { useState } from 'react';
 import {
   ArrowRight,
@@ -35,7 +38,7 @@ const faqs = [
   ],
   [
     'Can anyone create an account or connect a wallet?',
-    'Wallet accounts use server-verified personal-message signatures and separate records, tested in controlled environments. Production wallet onboarding is paused while Slush reviews a reported malicious-website warning. Do not override that warning. Owner Sign In remains administrator-only; the public demo needs neither. The separate Mainnet service-payment implementation remains security-gated and has no proven settlement.',
+    'Wallet accounts use server-verified personal-message signatures and separate records, tested in controlled environments. The public /connect interface permits deliberate connection only for Slush review; it cannot sign in or register an account. Production wallet onboarding is paused while Slush reviews a reported malicious-website warning. Do not override that warning. Owner Sign In remains administrator-only; the public demo needs neither. The separate Mainnet service-payment implementation remains security-gated and has no proven settlement.',
   ],
   [
     'What are the limits?',
@@ -44,6 +47,7 @@ const faqs = [
 ];
 export function Landing() {
   const ready = useClientReady();
+  const reduced = useReducedMotion();
   const [memory, setMemory] = useState(false);
   const review = judgeReview(memory, recall.policies as Policy[], recall.citations);
   return (
@@ -71,89 +75,39 @@ export function Landing() {
               transition={{ duration: 0.45 }}
             >
               <span className="site-eyebrow">
-                <span /> PAYGUARD VERIFY · PAYMENT INSTRUCTION REVIEW
+                <span /> PAYMENT INSTRUCTIONS DESERVE A SECOND LOOK
               </span>
               <h1>
-                Same supplier.
+                Familiar supplier.
                 <br />
                 Different recipient.
                 <br />
-                <em>Stop the switch.</em>
+                <em>Verify the change.</em>
               </h1>
               <p>
-                A convincing invoice can send you to the wrong wallet. Compare the payment details,
-                verify changes through a known contact, and remember the rule for next time.
+                Detect the changed recipient. Hold approval. Verify with a known contact. Then
+                remember what the next review needs to know.
               </p>
               <div className="site-hero-actions">
                 <Link href="/try" className="button primary site-cta">
                   Try Interactive Demo <ArrowRight size={18} />
                 </Link>
-                <Link href="/connect" className="button outline site-cta">
-                  Wallet security review <ArrowUpRight size={16} />
+                <Link href="/app" className="button outline site-cta">
+                  Explore the workspace <ArrowUpRight size={16} />
                 </Link>
               </div>
               <div className="site-hero-note">
                 <Check size={14} /> Three minutes <span>·</span> No account, wallet or funds needed
               </div>
               <p className="site-owner-note">
-                Practice publicly without a wallet. Private wallet onboarding is paused for a Slush
-                security review. Owner Sign In is administrator access.
+                Public practice is open. Private wallet onboarding is paused for a Slush security
+                review. <Link href="/connect">Review status & connection interface ↗</Link>
               </p>
             </motion.div>
-            <motion.div
-              className="site-case"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            >
-              <div className="site-case-top">
-                <span>
-                  <ShieldCheck size={17} /> PAYGUARD / REVIEW 001
-                </span>
-                <span className="site-sample">SYNTHETIC EXAMPLE</span>
-              </div>
-              <div className="site-case-invoice">
-                <div className="site-monogram">N</div>
-                <div>
-                  <h2>Northstar Studio</h2>
-                  <p>Monthly design retainer · NS-1048</p>
-                </div>
-                <strong>
-                  $1,250<small>.00 USD</small>
-                </strong>
-              </div>
-              <div className="site-address">
-                <span>
-                  <CheckCircle2 size={15} /> Established recipient
-                </span>
-                <code>
-                  0x1111<span>1111…1111</span>1111
-                </code>
-                <small>Previously established supplier reference</small>
-              </div>
-              <div className="site-address proposed">
-                <span>
-                  <ArrowUpRight size={15} /> Recipient on the new invoice
-                </span>
-                <code>
-                  0x2222<span>2222…2222</span>2222
-                </code>
-                <small>The amount stayed the same. The recipient did not.</small>
-              </div>
-              <div className="site-hold">
-                <LockKeyhole size={19} />
-                <div>
-                  <strong>Approval held</strong>
-                  <p>Verify this change through the supplier’s established contact.</p>
-                </div>
-              </div>
-              <div className="site-case-bottom">
-                <span>Document familiarity ≠ recipient authorization</span>
-                <span>HUMAN REVIEW REQUIRED</span>
-              </div>
-            </motion.div>
+            <ProductStory />
           </section>
           <div className="site-factbar">
+            <span className="site-fact-index">01 / THE CHECK THAT MATTERS</span>
             <span>Verify before you pay. Remember what nearly went wrong.</span>
             <span>
               <ShieldCheck size={15} /> Human decisions <i /> No supplier transfers
@@ -163,12 +117,16 @@ export function Landing() {
             <div>
               <span className="site-eyebrow">THE DETAIL THAT CHANGES EVERYTHING</span>
               <h2>
-                “Our payment details
+                The conversation is familiar.
                 <br />
-                have changed.”
+                The destination isn’t.
               </h2>
             </div>
-            <div>
+            <div className="site-problem-context">
+              <blockquote>
+                “Please use our updated payment details for this invoice.”
+                <cite>Illustrative instruction · synthetic example</cite>
+              </blockquote>
               <p>
                 Supplier impersonation often arrives inside a perfectly ordinary conversation. A
                 familiar name, amount or email thread is not enough to trust a new destination.
@@ -277,36 +235,48 @@ export function Landing() {
                   </button>
                 </div>
               </div>
-              <div className="site-learning-body" aria-live="polite">
-                <span className="site-sample">SYNTHETIC INVOICE · RECORDED REAL RECALL</span>
-                <h3>
-                  {memory
-                    ? 'Remember the escalation. Keep the hold.'
-                    : 'Recipient changed. Verification is required.'}
-                </h3>
-                <p>
-                  {memory
-                    ? 'The retrieved owner policy adds a specific instruction: escalate a repeated recipient-change pattern and use the established supplier channel.'
-                    : 'PayGuard detects the changed destination and requires an independent check. Turning memory off never turns this safeguard off.'}
-                </p>
-                <div className="site-learning-result">
-                  <ShieldCheck size={20} />
-                  <span>
-                    {review.gate.allowed ? 'Human review eligible' : 'Approval held in both modes'}
-                  </span>
-                  <strong>
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={String(memory)}
+                  className="site-learning-body"
+                  aria-live="polite"
+                  initial={{ opacity: 0, x: reduced ? 0 : 12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: reduced ? 0 : 0.2 }}
+                >
+                  <span className="site-sample">SYNTHETIC INVOICE · RECORDED REAL RECALL</span>
+                  <h3>
                     {memory
-                      ? `${review.assessment.citations.length} applicable citations`
-                      : 'Baseline checks active'}
-                  </strong>
-                </div>
-                {memory && (
-                  <div className="site-citation">
-                    <span>One actual recalled blob</span>
-                    <code>{review.assessment.citations[0]?.blobId}</code>
+                      ? 'Remember the escalation. Keep the hold.'
+                      : 'Recipient changed. Verification is required.'}
+                  </h3>
+                  <p>
+                    {memory
+                      ? 'The retrieved owner policy adds a specific instruction: escalate a repeated recipient-change pattern and use the established supplier channel.'
+                      : 'PayGuard detects the changed destination and requires an independent check. Turning memory off never turns this safeguard off.'}
+                  </p>
+                  <div className="site-learning-result">
+                    <ShieldCheck size={20} />
+                    <span>
+                      {review.gate.allowed
+                        ? 'Human review eligible'
+                        : 'Approval held in both modes'}
+                    </span>
+                    <strong>
+                      {memory
+                        ? `${review.assessment.citations.length} applicable citations`
+                        : 'Baseline checks active'}
+                    </strong>
                   </div>
-                )}
-              </div>
+                  {memory && (
+                    <div className="site-citation">
+                      <span>One actual recalled blob</span>
+                      <code>{review.assessment.citations[0]?.blobId}</code>
+                    </div>
+                  )}
+                </motion.div>
+              </AnimatePresence>
               <div className="site-memory-line">
                 <span>
                   <CheckCircle2 size={15} /> Human correction
@@ -348,11 +318,13 @@ export function Landing() {
                   relevant rule back to a later review, with confirmed job and blob provenance.
                 </p>
                 <div className="site-integration-fact">
-                  <strong>{proof.confirmedMemories.length}</strong>
+                  <strong>
+                    {proof.confirmedMemories.length + tenants.confirmedAdditionalMemories}
+                  </strong>
                   <span>
                     confirmed Mainnet records
                     <br />
-                    from synthetic learning events
+                    30 owner · 2 controlled user scopes
                   </span>
                 </div>
                 <Link href="/proof#memory" className="site-link">
@@ -378,9 +350,70 @@ export function Landing() {
                     pay the sample supplier
                   </span>
                 </div>
+                <p className="site-capture-date">
+                  Captured {chain.checkedAt.slice(0, 10)} · no service payment settled
+                </p>
                 <Link href="/proof#chain" className="site-link">
                   Inspect the transaction check <ArrowRight size={15} />
                 </Link>
+              </article>
+            </div>
+          </section>
+          <section className="site-access" id="access">
+            <div className="site-section-title">
+              <span className="site-eyebrow">CHOOSE THE RIGHT DOOR</span>
+              <h2>
+                One product.
+                <br />
+                Three clear ways in.
+              </h2>
+              <p>No wallet is needed to understand the protection.</p>
+            </div>
+            <div className="site-access-paths">
+              <article>
+                <span className="site-access-no">01</span>
+                <div>
+                  <span className="site-access-status available">OPEN TO EVERYONE</span>
+                  <h3>Practice without an account.</h3>
+                  <p>
+                    Follow a synthetic invoice from changed recipient to auditable decision. No
+                    private writes, signatures or payments.
+                  </p>
+                  <Link className="site-link" href="/try">
+                    Try Interactive Demo <ArrowRight size={16} />
+                  </Link>
+                </div>
+              </article>
+              <article>
+                <span className="site-access-no">02</span>
+                <div>
+                  <span className="site-access-status paused">WALLET ONBOARDING PAUSED</span>
+                  <h3>Your own private workspace.</h3>
+                  <p>
+                    Designed for free wallet-message sign-in and isolated customer records.
+                    Production registration remains paused pending the Slush security review. Never
+                    override a wallet warning.
+                  </p>
+                  <Link className="site-link" href="/connect">
+                    Open review-only connection interface <ArrowUpRight size={16} />
+                  </Link>
+                  <small>Connection here creates no account or authenticated session.</small>
+                </div>
+              </article>
+              <article>
+                <span className="site-access-no">03</span>
+                <div>
+                  <span className="site-access-status">ADMINISTRATOR ONLY</span>
+                  <h3>Manage the owner workspace.</h3>
+                  <p>
+                    Private owner sign-in opens persisted invoice reviews, human attestations and
+                    live provider operations. The administrator password is never needed for public
+                    practice.
+                  </p>
+                  <Link className="site-link" href="/app?signin=1">
+                    Owner Sign In <LockKeyhole size={14} />
+                  </Link>
+                </div>
               </article>
             </div>
           </section>
@@ -404,7 +437,7 @@ export function Landing() {
                 <span>01</span>
                 <div>
                   <strong>Confirmed Walrus receipts</strong>
-                  <small>30 jobs, blobs and completion timestamps</small>
+                  <small>30 owner + 2 scoped records · jobs, blobs & timestamps</small>
                 </div>
                 <ArrowUpRight size={19} />
               </a>
@@ -412,7 +445,7 @@ export function Landing() {
                 <span>02</span>
                 <div>
                   <strong>Measured learning behavior</strong>
-                  <small>Four supplier scenarios · safeguards retained</small>
+                  <small>18 synthetic contracts · four genuine recall queries</small>
                 </div>
                 <ArrowUpRight size={19} />
               </a>

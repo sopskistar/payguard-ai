@@ -1,3 +1,15 @@
+# Product-experience continuation — October 30
+
+The targeted public review-only connection and owner branding update **faf3b31** is Vercel Ready. The larger product release has passed local validation: **111 unit/integration tests; 18 browser passes, zero failures, three environment-specific skips; lint/typecheck/format/build; zero dependency advisories; 16 desktop/mobile route checks at 100% zoom with no overflow, broken images or console errors.** See [product changes and screenshots](PRODUCT_RELEASE.md) and [test evidence](TEST_RESULTS.md). Hosted validation of the new product release is recorded separately when available.
+
+The official public selector on `/connect` is connection-only, after deliberate interaction; no sign-in, session, registration or payment action is available there. Production wallet authentication and settlement remain paused. The Slush warning is **unresolved**, and the owner must use **Flag for review inside Slush without accepting the connection**. No physical wallet safety clearance is claimed.
+
+Fresh read-only provider checks preserve **32 tracked confirmed Mainnet records (30 owner + 2 controlled customer scopes)** and 18/18 synthetic learning contracts from four genuine recalls. Mainnet Tatum/facilitator preflight passed with **zero spending**. Exact financial approval is not ready: `SERVICE_PAYMENT_PAYER` and `SERVICE_PAYMENT_RECIPIENT` remain missing. [Approval worksheet](MAINNET_PAYMENT_APPROVAL.md).
+
+---
+
+## Previous validated baseline and unchanged security boundaries
+
 # PayGuard Verify — final engineering status
 
 **Validated application commit: `2571cea`.** Vercel Ready; authenticated core smoke and the complete hosted browser run passed. A later documentation/evidence checkpoint may have a different `/api/release` SHA with identical application code. The release remains incomplete at the external wallet-security and exact financial-authorization boundaries. No supplier payment, service settlement, security bypass, database reset, duplicate reseed, video or final submission form was performed.

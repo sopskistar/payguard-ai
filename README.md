@@ -1,8 +1,8 @@
 # PayGuard Verify
 
-**Verify before you pay. Remember what nearly went wrong.** Built on the existing PayGuard AI application and official branding.
+**Verify before you pay. Remember what nearly went wrong.** Supplier payment-instruction review, with human accountability and remembered context.
 
-**Wallet security gate:** Slush has reportedly flagged the production origin. Hosted wallet onboarding and new service-payment signing are paused pending review; do not override wallet warnings. The public demo and owner workspace remain available. [Investigation, evidence and prepared Slush review request](docs/SLUSH_SECURITY_REVIEW.md).
+**Wallet security gate:** Slush has reportedly flagged the production origin. Hosted wallet onboarding and new service-payment signing are paused pending review; do not override wallet warnings. The public demo and owner workspace remain available. The public [/connect review-only selector](https://payguard-ai-henna.vercel.app/connect) can reach Slush’s own **Flag for review**; it never signs, registers or authenticates. Do not accept the connection or override a warning. [Investigation, evidence and prepared Slush review request](docs/SLUSH_SECURITY_REVIEW.md).
 
 PayGuard Verify helps a human reviewer investigate supplier payment-instruction changes. It compares proposed recipients with independently established vendor profiles, flags observable business email compromise (BEC) patterns, records out-of-band verification, and recalls approved policies from Walrus Memory. Tatum Sui Mainnet gRPC supplies separate chain evidence. **A successful transfer does not establish supplier identity or authorize an instruction.** No supplier payment is ever initiated. A separate owner-only Sui Mainnet x402 service-purchase implementation is spending-disabled and security-paused; no settlement is claimed.
 
@@ -25,6 +25,10 @@ The application is implemented and locally production-tested. **30 original Walr
 | Technical article                 | [Published engineering report](https://sopskistar.github.io/payguard-ai/)                                                                                                         |
 | Agent-service payments            | [Mainnet implementation, preflight and spending gates](docs/AGENT_PAYMENTS.md) — no settled-payment award claim                                                                   |
 | Release and security status       | [Feature-by-feature completion and blockers](docs/RELEASE_STATUS.md) · [Slush review case](docs/SLUSH_SECURITY_REVIEW.md)                                                         |
+
+The homepage now includes a six-stage **synthetic product illustration** with Play, Pause, Replay and keyboard step selection. It shows the recipient change, approval hold, independent human check and the reason to remember a correction. The public memory comparison uses genuine dated recall evidence through the application’s review logic; no anonymous provider request or write occurs. The operational dashboard separates current server-evaluated holds, saved workspace activity, personal confirmed jobs and the published **30 + 2** Mainnet proof.
+
+Access is explicit: **Public demo** requires nothing; **regular wallet onboarding** remains security-paused; **Owner Sign In** is private administrator access. A public review-only wallet connection creates no application session. [Release UX, screenshots and validation](docs/PRODUCT_RELEASE.md) · [Exact payment approval worksheet—currently incomplete](docs/MAINNET_PAYMENT_APPROVAL.md).
 
 The public practice uses synthetic invoices and a synthetic callback. Its Walrus citations and Tatum receipt are dated, authentic captured results. It performs no guest memory writes, provider requests or supplier payments. Real owner review decisions are stored in Neon; the sandbox audit is local practice state.
 

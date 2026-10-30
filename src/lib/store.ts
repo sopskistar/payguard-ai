@@ -9,7 +9,7 @@ import { evaluate } from './risk';
 import { AppError } from './errors';
 import { invoiceInput } from './validation';
 import { z } from 'zod';
-import { listTrust, trustContext } from './verify-store';
+import { listTrust, trustContext, listApprovalGates } from './verify-store';
 import { instructionSignals } from './verify';
 export async function audit(
   tenantId: string,
@@ -340,6 +340,7 @@ export async function snapshot(tenantId: string): Promise<Snapshot> {
     storage: storageKind(),
     vendorProfiles,
     invoices,
+    approvalGates: await listApprovalGates(tenantId, invoices, vendorProfiles),
     assessments: Object.fromEntries(
       invoices.map((i) => [
         i.id,

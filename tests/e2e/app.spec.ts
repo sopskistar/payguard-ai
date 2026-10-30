@@ -7,7 +7,7 @@ test('public Verify journey, replay controls and responsive navigation', async (
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await visit(page, '/');
-  await expect(page.getByRole('heading', { name: /Same supplier/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Familiar supplier/ })).toBeVisible();
   await visit(page, '/app/replay');
   await expect(page.getByRole('heading', { name: 'Attack Replay Lab', exact: true })).toBeVisible();
   await page.getByRole('button', { name: /Lookalike sender/ }).click();

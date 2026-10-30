@@ -59,3 +59,7 @@ No genuine digest, successful paid result or receipt exists yet. End-to-end phys
 ## Quote expiry versus signed chain validity
 
 The five-minute quote governs PayGuard submission. Sui currently [rejects timestamp-based transaction expiration](https://github.com/MystenLabs/sui/blob/main/crates/sui-types/src/transaction.rs). The signed `ValidDuring` transaction instead binds current epoch through the next, exact genesis and nonce. Once disclosed, those signed bytes may be relayed during that chain window; cancellation is not revocation. The UI and preflight state this before any consent/signature. Timestamp fields are rejected locally rather than advertising an unsupported chain guarantee. The provider receives signed bytes only after a durable reservation; failed/interrupted verification cannot free that cap or trigger automatic resettlement.
+
+## Owner approval worksheet
+
+[Exact Mainnet approval worksheet](MAINNET_PAYMENT_APPROVAL.md) records the native-SUI price, sponsor, cap, expected report and evidence. It is explicitly **not authorized**: dedicated payer/merchant public addresses remain unconfigured, production wallet signing is paused, and no settlement occurred. The public Slush review selector is not an alternative authentication or payment-signing route.

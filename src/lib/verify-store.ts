@@ -135,6 +135,56 @@ export async function trustContext(tenantId: string, invoice: Invoice, connectio
     gate: approvalGate(invoice, profile, instruction, verification, hash),
   };
 }
+// The overview uses the same current-instruction gate as the mutation routes.
+// Batch the tenant-scoped reads; never infer an approval hold from a risk score.
+export async function listApprovalGates(
+  tenantId: string,
+  invoices: Invoice[],
+  profiles: VendorTrust[],
+) {
+  const d = await db();
+  const [instructions, checks] = await Promise.all([
+    d.select().from(s.paymentInstructions).where(eq(s.paymentInstructions.tenantId, tenantId)),
+    d
+      .select()
+      .from(s.humanVerifications)
+      .where(eq(s.humanVerifications.tenantId, tenantId))
+      .orderBy(desc(s.humanVerifications.checkedAt)),
+  ]);
+  const byInvoice = new Map(instructions.map((row) => [row.invoiceId, row]));
+  const latest = new Map<string, HumanVerification>();
+  for (const check of checks)
+    if (!latest.has(check.invoiceId))
+      latest.set(check.invoiceId, {
+        ...check,
+        checkedAt: check.checkedAt.toISOString(),
+      } as HumanVerification);
+  return Object.fromEntries(
+    invoices.map((invoice) => {
+      const row = byInvoice.get(invoice.id);
+      const instruction: PaymentInstruction | undefined = row
+        ? {
+            invoiceId: row.invoiceId,
+            senderEmail: row.senderEmail,
+            replyTo: row.replyTo,
+            message: row.message,
+            requestedContact: row.requestedContact,
+            receivedAt: row.receivedAt.toISOString(),
+          }
+        : undefined;
+      return [
+        invoice.id,
+        approvalGate(
+          invoice,
+          profiles.find((p) => p.vendorId === invoice.vendorId),
+          instruction,
+          latest.get(invoice.id),
+          instructionHash(invoice, instruction),
+        ),
+      ];
+    }),
+  );
+}
 export async function saveTrust(tenantId: string, input: z.infer<typeof profileInput>) {
   const d = await db();
   await d.transaction(async (tx) => {

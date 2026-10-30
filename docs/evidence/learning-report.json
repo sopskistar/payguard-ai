@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-29T20:05:55.311Z",
+  "checkedAt": "2026-10-30T08:38:05.013Z",
   "method": "Four live SDK recalls reused across 18 synthetic cases to limit quota; no writes. Correct measures specified gate/signal/provenance contracts, not fraud detection accuracy. Exception and supersession inputs are explicitly synthetic.",
   "metrics": {
     "cases": 18,

@@ -21,9 +21,10 @@ export function PublicMemoryLab() {
             This demo keeps your data separate.
           </h2>
           <p>
-            The public workspace uses synthetic invoices and creates no private memories. The
-            project has {publishedMemoryCount} confirmed Walrus Mainnet records, published as
-            sanitized evidence.
+            The public workspace uses synthetic invoices and creates no private memories. The owner
+            collection has {publishedMemoryCount} confirmed Walrus Mainnet records. Two additional
+            controlled customer records bring the tracked total to 32; all are separate from your
+            personal data.
           </p>
           <Link className="button primary" href="/proof#memory">
             Inspect {publishedMemoryCount} confirmed receipts <ArrowRight size={16} />

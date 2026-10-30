@@ -10,6 +10,7 @@ function LoadingWallet() {
         your network. Wallet sign-in requires JavaScript.
       </p>
       <form action="/connect" method="get">
+        <input type="hidden" name="mode" value="signin" />
         <button className="button outline" type="submit">
           Reload wallet connection
         </button>

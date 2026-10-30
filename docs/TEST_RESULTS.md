@@ -1,3 +1,19 @@
+# Product-experience release — October 30 UTC
+
+The rebuilt local application passed **111 unit/integration tests across 16 files**, lint, TypeScript, formatting and the Next.js Webpack production build. The final full local browser run collected 21 cases: **18 passed, 0 failed, 3 intentionally skipped** (two live-provider cases reserved for production and one hosted-only pause assertion). Wallet personal signatures, account switching, logout, replay prevention, cross-user isolation, official review-only connection/refusal, seven judge steps, current-instruction attestation, Refresh failure/retry, hero controls and reduced-motion behavior are covered. [Machine-readable local result](evidence/product-release-local.json).
+
+Public visual checks covered eight routes in each of 1440×1000 and 390×844 viewports at **100% zoom**: 16 HTTP-200 results, no overflow, broken images or browser errors. Public-only PNG screenshots and design details: [product release](PRODUCT_RELEASE.md). Automatic private screenshots, traces and video remain off.
+
+Fresh read-only provider checks reconfirmed **30 original + 2 controlled tenant Mainnet records**, with genuine completed jobs, matching blobs and tenant namespace evidence. Four fresh SDK recalls again met all **18 synthetic learning contracts** (11 holds, 7 allowed, zero false/missed holds in these defined cases; 59 applied / 481 excluded candidate-case pairs). Native Tatum gRPC confirmed Mainnet identity and SUI metadata at checkpoint **339718099**. Tentacle `/supported` advertised the expected exact-payment/sponsor terms; settlement remains disabled and payer/merchant are missing. No write or payment occurred. [Provider recheck](evidence/provider-recheck.json) · [Tenant recheck](evidence/two-tenant-provider-recheck.json) · [Learning](evidence/learning-report.json) · [Preflight](evidence/mainnet-service-preflight.json).
+
+Earlier failures are retained rather than counted as passes: initial PGlite setup timeouts; an implicit memory-test environment dependency fixed by explicit setup; local wallet recovery losing `mode=signin`; reduced-motion text hydration mismatch. The rebuilt full browser run above passed after fixes. A standalone TypeScript check raced a simultaneous build’s generated route types; running it after the build passed. Generated preflight JSON was formatted before the final format check.
+
+The small public-review/branding correction was deployed first on **faf3b31**, with actual production asset hashes, authentication pause and fixture connection evidence: [targeted release](evidence/public-review-release.json). Its initial combined hosted run had a navigation ERR_NETWORK_CHANGED in the refusal case; the fresh isolated refusal test passed. Physical Slush behavior remains owner-tested and unresolved; fixture success is not security clearance.
+
+---
+
+## Previous production baseline (preserved history)
+
 # Current verified application — 2571cea
 
 **Final production browser suite: 14 passed, 0 failed, 3 intentional hosted-wallet skips; zero navigation retries.** All 17 cases were collected. The full seven-step judge, owner persistence, actual Walrus recall, Tatum, Refresh loading/success/failure, responsive preflight, and current-instruction verification passed. [Machine-readable final browser result](evidence/production-browser-mainnet.json). Local full suite: 14 passed / 3 intentional skips; unit suite: 110 passed / 16 files. Lint, TypeScript, formatting and Webpack production build passed. Final npm advisory audit: zero vulnerabilities. Credential scans found zero configured/historical secret matches in workspace, decoded archives and Git history.

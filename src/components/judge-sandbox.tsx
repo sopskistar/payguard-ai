@@ -1,7 +1,7 @@
 'use client';
 import { useRef, useState } from 'react';
 import Link from 'next/link';
-import { motion, MotionConfig } from 'motion/react';
+import { motion, MotionConfig, useReducedMotion } from 'motion/react';
 import {
   ArrowRight,
   ArrowLeft,
@@ -73,6 +73,7 @@ const steps = [
 ];
 export function JudgeSandbox() {
   const ready = useClientReady();
+  const reduced = useReducedMotion();
   const [step, setStep] = useState(0),
     [on, setOn] = useState(false),
     [attestedAt, setAttestedAt] = useState<string>(),
@@ -214,7 +215,10 @@ export function JudgeSandbox() {
                 aria-valuemin={1}
                 aria-valuemax={7}
               >
-                <span style={{ width: `${((step + 1) / 7) * 100}%` }} />
+                <motion.span
+                  animate={{ width: `${((step + 1) / 7) * 100}%` }}
+                  transition={{ duration: reduced ? 0 : 0.4 }}
+                />
               </div>
               <ol aria-label="Walkthrough steps">
                 {steps.map((s, i) => (
@@ -237,9 +241,9 @@ export function JudgeSandbox() {
                 tabIndex={-1}
                 aria-labelledby="journey-step-title"
                 key={step}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.2 }}
+                initial={{ opacity: 0, x: reduced ? 0 : 14 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: reduced ? 0 : 0.22 }}
                 className="journey-stage"
               >
                 <div className="journey-stage-label">
@@ -496,7 +500,12 @@ export function JudgeSandbox() {
                         </button>
                       </div>
                     </div>
-                    <div className="journey-comparison">
+                    <motion.div
+                      className="journey-comparison"
+                      initial={false}
+                      animate={{ borderColor: on ? '#74bca4' : '#2b4350' }}
+                      transition={{ duration: reduced ? 0 : 0.3 }}
+                    >
                       <article>
                         <span>BASELINE · ALWAYS ACTIVE</span>
                         <h3>Recipient changed.</h3>
@@ -519,7 +528,7 @@ export function JudgeSandbox() {
                           {on ? learned.assessment.level : 'Baseline only'}
                         </Badge>
                       </article>
-                    </div>
+                    </motion.div>
                     {on && (
                       <details className="journey-provenance">
                         <summary>
@@ -547,6 +556,10 @@ export function JudgeSandbox() {
                 )}
                 {step === 5 && (
                   <>
+                    <p className="journey-evidence-date">
+                      Captured {chain.checkedAt.slice(0, 10)} · genuine Tatum Mainnet read. This
+                      public step replays the dated result; it makes no new provider request.
+                    </p>
                     <div className="journey-chain-result">
                       <div>
                         <span>REAL TRANSACTION EXECUTION</span>
