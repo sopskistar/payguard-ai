@@ -10,6 +10,8 @@ Actual localhost checks passed genuine HTTP 402/header/resource/idempotency, bot
 
 Application **dcca21c** is verified live on Vercel. Hosted targeted run: **7 passed / 3 failed / 0 skipped**. Two navigation failures followed `ERR_NETWORK_CHANGED`; the judge stayed unhydrated, with precise cause unconfirmed. Fresh-process checks passed the judge and product cases. The policy recheck exposed an assertion for the warning's old wording; it now requires the current explicit no-override warning and passed. All three originally affected cases pass their final focused checks; the full initial run is not relabelled green. Actual hosted preflight and review-only refusal passed. The published article returns HTTP 200 and all 47 local README links resolve. Owner-controlled funded signing remains untested, not passed.
 
+Final CSP correction permits only the official Slush metadata host in addition to the existing sources; lint/format/build pass and **494 files scan clean**. Actual anonymous browser metadata check **failed** with `ERR_FAILED`; an independent public request confirmed **HTTP 403** without an available CORS header. SDK loading/metadata is distinct from wallet connection and transaction signing: neither was attempted. The official SDK's default fallback remains unchanged, no proxy or warning override was introduced, and other providers/workflows remain available. [Failed provider check](evidence/oct31-slush-metadata.json). Production Slush clearance is still unproven.
+
 ---
 
 # Final x402 engineering audit — October 30, 2026

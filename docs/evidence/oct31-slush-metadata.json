@@ -1,0 +1,31 @@
+{
+  "checkedAt": "2026-10-31T13:14:55.971Z",
+  "origin": "http://localhost:4320",
+  "walletConnected": false,
+  "signatureRequested": false,
+  "financialTransaction": false,
+  "metadataHostAllowed": true,
+  "ok": false,
+  "failedStage": "official-metadata-request",
+  "errorClass": "TimeoutError",
+  "resourceFailures": [
+    {
+      "path": "/app",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/app",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/wallet/metadata",
+      "error": "net::ERR_FAILED"
+    }
+  ],
+  "error": "Official Slush metadata browser check did not pass; no wallet connection, signature or transaction was requested.",
+  "providerHttpStatus": 403,
+  "classification": "provider_access_denied",
+  "corsHeaderAvailable": false,
+  "sdkFallback": "Official SDK default registration remains unchanged; no custom bypass or proxy",
+  "firstCheck": "Failed before a provider response; then repeated once with stage diagnostics"
+}

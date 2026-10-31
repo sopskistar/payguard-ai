@@ -77,7 +77,7 @@
   "typecheck": "passed",
   "format": "passed",
   "credentialScan": {
-    "files": 493,
+    "files": 494,
     "matches": 0
   },
   "actualMainnet": {
@@ -95,5 +95,15 @@
     "missing": 0,
     "publishedArticleHttp": 200,
     "officialFaucetDocumentation": "Working redirect to official onboarding/get-coins"
+  },
+  "slushMetadata": {
+    "cspExactHostAllowed": true,
+    "browserPassed": false,
+    "providerHttp": 403,
+    "browserError": "net::ERR_FAILED",
+    "walletConnected": false,
+    "signatureRequested": false,
+    "notCountedAsPass": true,
+    "evidence": "oct31-slush-metadata.json"
   }
 }
