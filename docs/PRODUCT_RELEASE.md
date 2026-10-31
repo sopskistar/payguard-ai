@@ -1,3 +1,11 @@
+# October 31 product access update
+
+Application **dcca21c** is deployed. Permitted Wallet Standard providers can create/return to private accounts; Slush remains excluded from Production login and financial signing remains paused. `/connect?mode=review` preserves the public review-only interface. The [owner-local deployment](LOCAL_OWNER_PAYMENT.md) runs the same product with separate exact unsigned approval, financial capability and owner wallet signature. No warning is bypassed. Agent Services now identifies invoice IDs/status/sample context, preserves pending digests, refreshes capability without replacing prepared bytes and updates receipt state immediately. The paid checker now inspects links in both memo and instruction text. The README begins with four judge testing paths.
+
+Fresh genuine provider reads/quotes and unsigned Mainnet simulation pass. All five isolated service UI contracts pass with mocked financial responses. No funded purchase has been signed; **32 confirmed memories, zero genuine service receipts**. [Current tests and limitations](TEST_RESULTS.md). Earlier release entries below are historical.
+
+---
+
 # Mainnet service engineering verified — October 30, 2026
 
 The owner enabled Mainnet quotes and retained settlement disabled. Production quotes and usable balances pass genuine checks; unsigned exact sponsored execution simulates successfully. SDK zkLogin verification, pre-disclosure locking, separate preparation/signing controls and post-purchase consent are covered by isolated tests. Existing Walrus recall and all 32 records are preserved. **The genuine paid-service experiment remains blocked by production Slush clearance and separate approval of a fresh exact quote.** [Final readiness and owner workflow](FINAL_X402_READINESS.md). No bonus-completion or video claim is made. Earlier release entries below are historical evidence.

@@ -4,6 +4,8 @@ Account authentication and financial signing have separate policies. Permitted h
 
 Agent Services disambiguates invoices by number/status/sample context/record ID, retains the original pending digest, and updates purchase state without a reload. The README now begins with **HOW TO TEST PAYGUARD VERIFY**, including four runnable judging paths and troubleshooting. [Current readiness and real provider evidence](FINAL_X402_READINESS.md). A distinct labeled synthetic analysis request is prepared; **32 memories preserved, zero actual service settlements**. No video.
 
+Code commit **dcca21c** is verified deployed. Targeted hosted checks initially had 7 passes and 3 failures; the affected judge/product/policy cases passed final fresh-process checks, with the original failures and stale-copy test correction retained in [the ledger](evidence/oct31-tests.json). The existing published article is reachable and now points to the judge testing guide and the correct review-only route. Localhost:4320 is running with settlement disabled. The owner must inspect/approve a fresh exact quote and personally sign before any real purchase can be confirmed.
+
 ---
 
 # x402 quote and engineering audit — October 30, 2026

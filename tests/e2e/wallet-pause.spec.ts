@@ -19,7 +19,7 @@ test('hosted payment pause and Slush restriction do not disable permitted accoun
   await expect(
     page.getByRole('heading', { name: 'Wallet security review in progress' }),
   ).toBeVisible();
-  await expect(page.getByText(/Do not override wallet warnings/)).toBeVisible();
+  await expect(page.getByText(/Do not override a wallet warning/)).toBeVisible();
   await expect(page.getByRole('button', { name: 'Open Slush Security Review' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Connect Wallet' })).toHaveCount(0);
   await visit(page, '/connect');

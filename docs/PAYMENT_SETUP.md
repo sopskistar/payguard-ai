@@ -1,3 +1,11 @@
+# October 31 current setup
+
+Both existing public wallet addresses are already configured and match the authenticated Production values. Keep them unchanged. Actual Mainnet quote mode is enabled; Production settlement remains false. Wallet A has 0.005 SUI usable address balance and needs no additional conversion/funding. [Fresh read-only evidence](evidence/oct31-readiness.json). Open `/services#payment-setup` for current balances.
+
+The [owner-operated local application](LOCAL_OWNER_PAYMENT.md) supports a separately supervised purchase using the same payment implementation and Neon records. It defaults settlement false, supports exact unsigned preparation, and requires explicit local capability plus each fresh owner/wallet approval before financial submission. Production Slush clearance remains unresolved. No genuine service purchase is recorded yet. Historical configuration instructions below do not mean either existing address should be replaced or configured again.
+
+---
+
 # Configure the two existing owner wallets
 
 **Current owner state:** both existing public addresses are already configured in Vercel Production. Keep them unchanged. The balance-check correction and current evidence are in [BALANCE_CHECK_FIX.md](BALANCE_CHECK_FIX.md). Both quote/settlement switches remain false. The instructions below are reference, not a request to repeat setup.

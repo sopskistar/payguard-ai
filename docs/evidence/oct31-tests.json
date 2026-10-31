@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-31T11:44:28.755454+00:00",
+  "checkedAt": "2026-10-31T13:04:13.058237+00:00",
   "recoveredCommit": "9f5d854cdc299d79fb7303292e8f67cdb855f317",
   "focusedInitial": {
     "passed": 67,
@@ -36,7 +36,42 @@
     "preparedBytesPreservedOnCapabilityRefresh": true,
     "automaticSignature": false
   },
-  "hostedBrowser": null,
+  "hostedBrowser": {
+    "applicationCommit": "dcca21ceae52f71a523c7a1a92c8505391aade56",
+    "first": {
+      "passed": 7,
+      "failed": 3,
+      "skipped": 0,
+      "details": [
+        "Two navigation failures after ERR_NETWORK_CHANGED recovery",
+        "Judge remained unhydrated; precise cause unconfirmed"
+      ]
+    },
+    "isolatedRechecks": {
+      "judge": {
+        "passed": 1,
+        "failed": 0
+      },
+      "product": {
+        "passed": 1,
+        "failed": 0
+      },
+      "policyFirst": {
+        "passed": 0,
+        "failed": 1,
+        "cause": "Assertion expected the old warning wording; updated to the current explicit no-override warning"
+      },
+      "policyFinal": {
+        "passed": 1,
+        "failed": 0
+      }
+    },
+    "allOriginallyFailedCasesPassedOnFinalFocusedChecks": true,
+    "fullHostedRunNotRelabeledGreen": true,
+    "financialSigning": false,
+    "settlement": false,
+    "memoryWrites": false
+  },
   "build": "passed",
   "lint": "passed",
   "typecheck": "passed",
@@ -54,5 +89,11 @@
     "memoryWrites": 0,
     "confirmedMemories": 32
   },
-  "ownerInteraction": "Required: fresh exact approval and actual wallet prompt. No automatic financial action."
+  "ownerInteraction": "Required: fresh exact approval and actual wallet prompt. No automatic financial action.",
+  "links": {
+    "readmeLocalChecked": 47,
+    "missing": 0,
+    "publishedArticleHttp": 200,
+    "officialFaucetDocumentation": "Working redirect to official onboarding/get-coins"
+  }
 }

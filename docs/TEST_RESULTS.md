@@ -8,6 +8,8 @@ Actual localhost checks passed genuine HTTP 402/header/resource/idempotency, bot
 
 **32 confirmed memories and zero real service receipts remain.** Local owner approval/signing is still required for the funded experiment. Physical Production Slush acceptance remains restricted; no warning was overridden. No database reset, duplicate memory, additional conversion or video occurred.
 
+Application **dcca21c** is verified live on Vercel. Hosted targeted run: **7 passed / 3 failed / 0 skipped**. Two navigation failures followed `ERR_NETWORK_CHANGED`; the judge stayed unhydrated, with precise cause unconfirmed. Fresh-process checks passed the judge and product cases. The policy recheck exposed an assertion for the warning's old wording; it now requires the current explicit no-override warning and passed. All three originally affected cases pass their final focused checks; the full initial run is not relabelled green. Actual hosted preflight and review-only refusal passed. The published article returns HTTP 200 and all 47 local README links resolve. Owner-controlled funded signing remains untested, not passed.
+
 ---
 
 # Final x402 engineering audit — October 30, 2026

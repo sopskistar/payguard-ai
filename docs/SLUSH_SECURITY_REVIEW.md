@@ -1,3 +1,11 @@
+# October 31 access policy clarification
+
+The public Slush review-only workflow is now **[/connect?mode=review](https://payguard-ai-henna.vercel.app/connect?mode=review)**. It never signs, authenticates or spends. The default `/connect` page separately permits other compatible Wallet Standard providers to authenticate, while excluding Slush until the Production review is satisfactorily resolved. Production financial signing remains paused. Do not override any wallet warning.
+
+The owner's explicitly requested [inspected local deployment](LOCAL_OWNER_PAYMENT.md) runs the same application on loopback with its own wallet checks and separate exact financial authorization. A localhost result does not clear the Production origin. This does not alter the support case or historical evidence below.
+
+---
+
 # Public Slush review access — targeted correction
 
 Open **https://payguard-ai-henna.vercel.app/connect** without an account or owner password.
