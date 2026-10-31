@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-10-31T20:47:58.162Z",
+  "base": "https://payguard-ai-henna.vercel.app",
+  "financialAuthorization": false,
+  "walletConnection": false,
+  "settlementSubmission": false,
+  "views": [
+    {
+      "viewportWidth": 1440,
+      "display": "block",
+      "width": 752,
+      "paragraphWidths": [722, 722, 722],
+      "noOverflow": true,
+      "scale": 1
+    },
+    {
+      "viewportWidth": 390,
+      "display": "block",
+      "width": 320,
+      "paragraphWidths": [290, 290, 290],
+      "noOverflow": true,
+      "scale": 1
+    }
+  ],
+  "ok": true
+}

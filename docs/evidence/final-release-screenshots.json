@@ -1,0 +1,103 @@
+{
+  "checkedAt": "2026-10-31T20:46:26.276Z",
+  "release": {
+    "application": "PayGuard Verify",
+    "commit": "54e1aa39682ee9ef622db0356067b6ac2ccc1d25",
+    "recordedProofCount": 30,
+    "proofExportedAt": "2026-10-28T23:01:40.457Z",
+    "modes": ["public-demo", "owner-admin", "wallet-member", "recorded-proof"]
+  },
+  "video": false,
+  "walletConnection": false,
+  "publicPagesOnly": true,
+  "views": [
+    {
+      "name": "home",
+      "url": "https://payguard-ai-henna.vercel.app/",
+      "file": "docs/screenshots/final-mainnet/home-1440.png",
+      "status": 200,
+      "viewport": 1440,
+      "documentWidth": 1440,
+      "scale": 1,
+      "cssZoom": "1",
+      "devicePixelRatio": 1
+    },
+    {
+      "name": "connect",
+      "url": "https://payguard-ai-henna.vercel.app/connect",
+      "file": "docs/screenshots/final-mainnet/connect-1440.png",
+      "status": 200,
+      "viewport": 1440,
+      "documentWidth": 1440,
+      "scale": 1,
+      "cssZoom": "1",
+      "devicePixelRatio": 1
+    },
+    {
+      "name": "judge",
+      "url": "https://payguard-ai-henna.vercel.app/try",
+      "file": "docs/screenshots/final-mainnet/judge-1440.png",
+      "status": 200,
+      "viewport": 1440,
+      "documentWidth": 1440,
+      "scale": 1,
+      "cssZoom": "1",
+      "devicePixelRatio": 1
+    },
+    {
+      "name": "proof",
+      "url": "https://payguard-ai-henna.vercel.app/proof#payments",
+      "file": "docs/screenshots/final-mainnet/proof-1440.png",
+      "status": 200,
+      "viewport": 1440,
+      "documentWidth": 1440,
+      "scale": 1,
+      "cssZoom": "1",
+      "devicePixelRatio": 1
+    },
+    {
+      "name": "home",
+      "url": "https://payguard-ai-henna.vercel.app/",
+      "file": "docs/screenshots/final-mainnet/home-390.png",
+      "status": 200,
+      "viewport": 390,
+      "documentWidth": 390,
+      "scale": 1,
+      "cssZoom": "1",
+      "devicePixelRatio": 1
+    },
+    {
+      "name": "connect",
+      "url": "https://payguard-ai-henna.vercel.app/connect",
+      "file": "docs/screenshots/final-mainnet/connect-390.png",
+      "status": 200,
+      "viewport": 390,
+      "documentWidth": 390,
+      "scale": 1,
+      "cssZoom": "1",
+      "devicePixelRatio": 1
+    },
+    {
+      "name": "judge",
+      "url": "https://payguard-ai-henna.vercel.app/try",
+      "file": "docs/screenshots/final-mainnet/judge-390.png",
+      "status": 200,
+      "viewport": 390,
+      "documentWidth": 390,
+      "scale": 1,
+      "cssZoom": "1",
+      "devicePixelRatio": 1
+    },
+    {
+      "name": "proof",
+      "url": "https://payguard-ai-henna.vercel.app/proof#payments",
+      "file": "docs/screenshots/final-mainnet/proof-390.png",
+      "status": 200,
+      "viewport": 390,
+      "documentWidth": 390,
+      "scale": 1,
+      "cssZoom": "1",
+      "devicePixelRatio": 1
+    }
+  ]
+}
