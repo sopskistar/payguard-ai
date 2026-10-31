@@ -1,3 +1,9 @@
+# Verified service purchase — October 31 continuation
+
+One actual first-party x402 Sui Mainnet purchase is now reconciled. [Exact digest, quote, merchant credit, sponsor gas, approved-byte equality, audit and delivered report](FINAL_MAINNET_RELEASE.md). The original receipt reopens without resettling. Two further synthetic experiments await distinct owner approval and wallet signatures. The 0.003 SUI session cap includes unsettled reservations; the UI now shows its persisted exposure. Public message login and financial signing remain separate. Earlier zero-receipt and blanket Slush-login statements below are historical.
+
+---
+
 # Sui Mainnet x402 service payments
 
 ## Final engineering audit — October 30, 2026

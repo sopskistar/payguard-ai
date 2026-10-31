@@ -1,3 +1,11 @@
+# October 31 actual service payment
+
+One genuine first-party x402 purchase finalized at checkpoint **340211024**: [`68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx`](https://suivision.xyz/txblock/68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx). Fresh Tatum independently confirms **1,000,000 MIST merchant credit**, zero payer gas, separate sponsor gas **100,000 MIST**, exact approved/executed-byte equality and the persistent Neon report. Both payer and merchant are owner-controlled. [Payment proof](evidence/mainnet-service-reconciliation.json) · [full current report](FINAL_MAINNET_RELEASE.md).
+
+All **32** tracked Walrus job/blob/namespace records passed fresh read-only SDK revalidation. Experiment 3's new synthetic invoice recalled seven owned citations in a fresh authenticated session and retained the baseline holds; no memory was rewritten. [Recall and receipt-reopen proof](evidence/payment-experiments-preparation.json). Experiments 2 and 3 await separate owner signing and are not counted as settled transactions. Entries below are historical captures.
+
+---
+
 # October 31 — current non-spending verification
 
 Fresh authenticated Tatum Mainnet and Tentacle checks passed at checkpoint **340100235**. Both configured parties still match their existing public addresses. Wallet A has **0.027893245 SUI total / 0.022893245 coin objects / 0.005 address balance**; Wallet B is explicitly zero in all three components. [Dated provider response](evidence/oct31-readiness.json). Mainnet quotes are enabled, Production settlement disabled. The [owner-local application workflow](LOCAL_OWNER_PAYMENT.md) is a separately inspected deployment, not production Slush clearance.

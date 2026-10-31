@@ -28,7 +28,11 @@ test('owner service page explains exact Mainnet proposal and keeps spending disa
     await expect(page.getByRole('heading', { name: 'Pay for deeper evidence.' })).toBeVisible();
     await expect(page.getByRole('button', { name: /Check Mainnet proposal/ })).toBeVisible();
     await expect(
-      page.getByText(/No genuine service settlement has been demonstrated/),
+      page.getByText(
+        info.intents.some((i: { state: string }) => i.state === 'settled')
+          ? /A saved settled intent exists/
+          : /Inspect the public payment proof for recorded owner-controlled Mainnet results/,
+      ),
     ).toBeVisible();
     await page.setViewportSize({ width: 390, height: 844 });
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(

@@ -67,6 +67,21 @@ function budgetId(tenantId: string, sessionKey: string | undefined, network: str
     .update(tenantId + ':' + sessionKey + ':' + network)
     .digest('hex');
 }
+export async function serviceExposure(tenantId: string, sessionKey?: string) {
+  if (!sessionKey) return { reservedAtomic: '0', capAtomic: SERVICE_SESSION_CAP };
+  const [row] = await (
+    await db()
+  )
+    .select({ reservedAtomic: s.serviceSpendingSessions.reservedAtomic })
+    .from(s.serviceSpendingSessions)
+    .where(
+      and(
+        eq(s.serviceSpendingSessions.tenantId, tenantId),
+        eq(s.serviceSpendingSessions.id, budgetId(tenantId, sessionKey, serviceMode())),
+      ),
+    );
+  return { reservedAtomic: row?.reservedAtomic || '0', capAtomic: SERVICE_SESSION_CAP };
+}
 async function facilitator(path: string, body?: unknown) {
   const r = await fetch(FACILITATOR + path, {
     redirect: 'error',

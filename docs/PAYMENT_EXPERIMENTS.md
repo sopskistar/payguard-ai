@@ -1,4 +1,22 @@
-# Three prepared experiments — no financial authorization
+# Mainnet payment experiment ledger — October 31, 2026
+
+| Experiment                   | Verified status                                                        | Evidence / next action                                                                                                                                                                                                                                                       |
+| ---------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 · `X402-OWNER-20261031-01` | **Settled, Tatum-verified, report delivered**                          | [Mainnet `68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx`](https://suivision.xyz/txblock/68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx), quote `51d204df-71fd-44a6-ac4a-c8e0c50b4cf5`, checkpoint 340211024. Wallet B credit 0.001 SUI, payer gas zero, sponsor gas 0.0001 SUI. |
+| 2 · `X402-EXPERIMENT-02`     | **Synthetic invoice saved; fresh approval/signature required**         | [Open local Agent Services](http://localhost:4320/services?invoice=X402-EXPERIMENT-02). Distinct contradictory recipient/domain. No executed digest or paid report yet.                                                                                                      |
+| 3 · `X402-EXPERIMENT-03`     | **Live memory comparison complete; fresh approval/signature required** | [Open local Agent Services](http://localhost:4320/services?invoice=X402-EXPERIMENT-03). Claimed payout/verification-policy change. No executed digest or paid report yet.                                                                                                    |
+
+**Actual settled service total: one purchase, 1,000,000 MIST / 0.001 SUI.** Payer and merchant are both owner-controlled experiment accounts. A self-deposit, simulation, prepared hash, expired approval or cancelled quote is not another purchase. The first paid report found contradictory recipient text, a linked domain and bypass text, retaining the supplier hold. [Exact credit/gas/quote/byte/audit/report proof](evidence/mainnet-service-reconciliation.json).
+
+Two authenticated resumes returned the same saved receipt without a new signature or settlement. Experiment 3's live OFF result had zero citations; ON recalled seven confirmed supplier policies and added independent-phone-channel verification and escalation. Both modes remained High risk / verification required and preserved all baseline holds. A new authenticated session recalled a previously seen exact blob again. [All findings and exact blobs](evidence/payment-experiments-preparation.json). No new independently verified correction arose; no duplicate memory write was needed.
+
+For each remaining purchase, select the named invoice, request fresh HTTP 402 terms, inspect Mainnet/native SUI, exact 0.001 SUI / 1,000,000 MIST, Wallet A, Wallet B, Tentacle, sponsor address, zero payer gas, 2,000,000 MIST sponsor budget, five-minute application expiry and 0.003 SUI session exposure cap. Explicitly approve those terms, then separately click **Sign and submit in wallet** and approve personally in Slush. Stop at any warning/refusal or changed terms. Submit once; resume the same intent if uncertain. Count only a Tatum-confirmed merchant credit with saved receipt/report. Reopen it to prove no recharge. No financial signature is automated.
+
+The design worksheet below is historical and superseded by the verified ledger above.
+
+---
+
+# Original experiment design — no financial authorization
 
 The owner already has both wallets. All funded transactions, preparatory conversions and Walrus corrections require their own applicable owner approval. Slush clearance and setup gates remain. No experiment below has been executed in this session; historical learning evidence remains separate.
 

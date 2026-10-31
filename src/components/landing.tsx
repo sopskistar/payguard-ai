@@ -39,7 +39,7 @@ const faqs = [
   ],
   [
     'Can anyone create an account or connect a wallet?',
-    'Wallet accounts use server-verified personal-message signatures and separate records. Create or return to your private account at /connect with a permitted Wallet Standard provider. Slush production login remains under security review and is excluded from that sign-in selector; its separate review-only flow cannot authenticate or spend. Never override a wallet warning. Owner Sign In remains administrator-only; the public demo needs neither. Production Mainnet payment signing stays paused. The inspected owner-local application supports separate exact approval and signing; no genuine service settlement is yet recorded.',
+    'Create or return to a private wallet account at /connect: choose a compatible Sui wallet, review a free personal message and sign it. No email, password or funds are needed. Providers decide whether to permit the origin; stop if a wallet warns. Physical production provider compatibility is still being verified. Owner Sign In is administrator-only; Try Interactive Demo needs no account. One owner-controlled first-party 0.001 SUI Mainnet service purchase has a Tatum-confirmed receipt. Production financial signing remains paused; each local purchase requires separate exact approval and a wallet signature.',
   ],
   [
     'What are the limits?',
@@ -93,17 +93,17 @@ export function Landing() {
                 <Link href="/try" className="button primary site-cta">
                   Try Interactive Demo <ArrowRight size={18} />
                 </Link>
-                <Link href="/app" className="button outline site-cta">
-                  Explore the workspace <ArrowUpRight size={16} />
+                <Link href="/connect" className="button outline site-cta">
+                  Connect Sui Wallet <ArrowUpRight size={16} />
                 </Link>
               </div>
               <div className="site-hero-note">
                 <Check size={14} /> Three minutes <span>·</span> No account, wallet or funds needed
               </div>
               <p className="site-owner-note">
-                Public practice is open. Permitted wallets can open private accounts; Slush
-                production login remains under review.{' '}
-                <Link href="/connect">Account access & provider status ↗</Link>
+                Public practice is open. Free wallet-message registration opens a private account.
+                Providers must permit the connection; stop at any wallet warning.{' '}
+                <Link href="/connect">Wallet access & provider status ↗</Link>
               </p>
             </motion.div>
             <ProductStory />
@@ -389,17 +389,21 @@ export function Landing() {
               <article>
                 <span className="site-access-no">02</span>
                 <div>
-                  <span className="site-access-status paused">WALLET ONBOARDING PAUSED</span>
+                  <span className="site-access-status">FREE WALLET ACCOUNT</span>
                   <h3>Your own private workspace.</h3>
                   <p>
-                    Designed for free wallet-message sign-in and isolated customer records.
-                    Production registration remains paused pending the Slush security review. Never
-                    override a wallet warning.
+                    Connect a compatible Sui wallet, review a free personal message and sign it to
+                    create or reopen your private workspace. No email, password or funds required.
+                    Physical production provider compatibility is unverified; stop if a wallet
+                    warns.
                   </p>
                   <Link className="site-link" href="/connect">
-                    Open review-only connection interface <ArrowUpRight size={16} />
+                    Connect Sui Wallet <ArrowUpRight size={16} />
                   </Link>
-                  <small>Connection here creates no account or authenticated session.</small>
+                  <small>
+                    Connection alone does not authenticate. A verified personal signature opens your
+                    account.
+                  </small>
                 </div>
               </article>
               <article>

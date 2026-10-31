@@ -1,3 +1,15 @@
+# Verified executed purchase — October 31
+
+The original completed purchase is now independently reconciled: quote `51d204df-71fd-44a6-ac4a-c8e0c50b4cf5`, actual digest [`68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx`](https://suivision.xyz/txblock/68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx), successful Mainnet checkpoint 340211024. Wallet B credit is exactly **0.001 SUI**. Wallet A paid exactly that amount and zero gas; Tentacle's separate sponsor paid 0.0001 SUI. The onchain bytes equal the persisted approved bytes. [Full credit/gas/challenge/audit/report evidence](evidence/mainnet-service-reconciliation.json).
+
+Neon contains **one settled service receipt, zero settling intents and 32 confirmed memories** at the audit timestamp. Two authenticated resumes returned the same receipt; no settlement was resubmitted. The two historical prepared hashes below remain unexecuted attempts, not this successful transaction. The 0.0009 SUI explorer report is not the merchant's onchain balance change; the exact explorer screen interpretation remains unobserved.
+
+`X402-EXPERIMENT-02` and `X402-EXPERIMENT-03` now exist as open synthetic invoices. [Preparation, fresh-session recall and repeated receipt evidence](evidence/payment-experiments-preparation.json). Each fresh purchase requires its own displayed terms approval and Slush signature. No new purchase has been authorized by this audit. [Current ledger](PAYMENT_EXPERIMENTS.md).
+
+The remaining investigation below is historical and explains earlier unsigned attempts.
+
+---
+
 # Prepared-digest investigation and corrected live workflow
 
 Recovered local/origin commit: `bb2bc65`, no tracked changes; `.gitignore.save` preserved. No production build, database reset, memory write, wallet creation or SUI conversion was performed in this continuation.

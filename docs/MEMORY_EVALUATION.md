@@ -1,3 +1,9 @@
+# October 31 fresh experiment comparison
+
+The new synthetic `X402-EXPERIMENT-03` tests a claimed change to supplier payout and verification policy. Actual Memory OFF returned zero citations; ON returned seven confirmed owned citations and added supplier-specific phone-channel verification and escalation findings. Both modes remained **High risk / verification required**; every baseline hold persisted. This is recommendation enrichment, not a measured reduction in real fraud or an improved risk grade. A fresh authenticated session recalled the same confirmed policy blob again. No new memory write was needed. [Full findings and exact blobs](evidence/payment-experiments-preparation.json) · [independent 32-record SDK recheck](evidence/session-recovery-audit.json). The paid portion of experiment 3 still requires owner authorization/signature. Earlier authored learning metrics below remain separate historical results.
+
+---
+
 # Memory Learning Report — current release
 
 ## Recovery rerun — October 30, 2026

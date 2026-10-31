@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "test:e2e:qa": "node scripts/run-qa-e2e.mjs",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "node --conditions=react-server --import tsx scripts/migrate.ts",
     "db:seed-demo": "node --conditions=react-server --import tsx scripts/seed.ts",

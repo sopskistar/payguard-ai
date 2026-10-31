@@ -38,7 +38,9 @@ function Connection({
   const [choosing, setChoosing] = useState(false);
   const available = wallets.filter(
     (w) =>
-      walletProviderAllowed(w.name, slushBlocked) && w.features.includes('sui:signPersonalMessage'),
+      walletProviderAllowed(w.name, slushBlocked) &&
+      w.chains.includes('sui:mainnet') &&
+      w.features.includes('sui:signPersonalMessage'),
   );
   const previous = useRef<string | null | undefined>(undefined);
   const [challenge, setChallenge] = useState<{
@@ -172,8 +174,9 @@ function Connection({
           ))}
           {!available.length && (
             <p>
-              No permitted installed Sui wallet detected. On mobile, use your wallet’s own browser.
-              Slush remains unavailable on the production origin.
+              No compatible installed Sui wallet detected. On mobile, use your wallet’s own browser,
+              or deliberately open the official Slush web account below. Provider availability is
+              checked by the wallet; stop if it displays a warning.
             </p>
           )}
         </div>
@@ -209,6 +212,27 @@ function Connection({
           <code className="wallet-address">{account.address}</code>
           <button className="button outline full" disabled={busy} onClick={prepare}>
             {busy ? 'Working…' : 'Prepare sign-in message'}
+          </button>
+          <button
+            className="button outline full"
+            disabled={busy}
+            onClick={async () => {
+              setChallenge(undefined);
+              setBusy(true);
+              setError('');
+              try {
+                await api('auth/logout', {});
+                await dapp.disconnectWallet();
+                setChoosing(true);
+                router.refresh();
+              } catch {
+                setError('Could not complete sign-out. Retry before switching accounts.');
+              } finally {
+                setBusy(false);
+              }
+            }}
+          >
+            Sign out and choose another wallet
           </button>
         </>
       )}

@@ -40,18 +40,17 @@ export default async function ConnectPage({
                 alone does not authenticate you. Inspect the free personal-message challenge before
                 deliberately signing; it cannot authorize a transaction.
               </p>
-              {slushBlocked && (
-                <div className="notice" role="status">
-                  <strong>Slush production login remains under security review.</strong> Slush is
-                  excluded from this sign-in selector; do not override its warning. Other compatible
-                  providers may authenticate if they permit this origin. Production payment signing
-                  remains paused.{' '}
-                  <Link className="inline-link" href="/connect?mode=review">
-                    Open Slush review-only instructions
-                  </Link>
-                  . The owner-operated local workflow is documented in the repository.
-                </div>
-              )}
+              <div className="notice" role="status">
+                <strong>Free registration · no email, password or funds.</strong> Choose a wallet,
+                prepare the sign-in message, then sign it to create or reopen your private
+                workspace. Slush worked for an owner-reported localhost purchase; production
+                compatibility still needs a physical-wallet retest. Stop if any wallet warns or
+                refuses. Production financial signing remains paused.{' '}
+                <Link className="inline-link" href="/connect?mode=review">
+                  Slush warning and review instructions
+                </Link>
+                . No warning is dismissed by PayGuard.
+              </div>
             </>
           ) : (
             <>
@@ -63,8 +62,8 @@ export default async function ConnectPage({
               <p>
                 Slush Support directs domain reviews through its own warning screen. This public
                 page opens the official wallet selector so you can reach that review action. Slush
-                sign-in and production payment signing remain paused. Other permitted wallets can
-                use the separate account sign-in page.
+                production financial signing remains paused. Ordinary personal-message login is
+                available on the separate account sign-in page when the wallet permits it.
               </p>
               <ol>
                 <li>
@@ -100,6 +99,9 @@ export default async function ConnectPage({
                 connects.
               </p>
               <WalletReviewEntry />
+              <Link className="button outline full" href="/connect">
+                Return to wallet sign-in
+              </Link>
               <p>{WALLET_REVIEW_MESSAGE}</p>
               <Link className="button primary full" href="/try">
                 Try without a wallet

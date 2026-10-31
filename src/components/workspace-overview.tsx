@@ -387,7 +387,7 @@ const help: Record<string, [string, string, string]> = {
   'settings/integrations': [
     'What does a connection check prove?',
     'Diagnostics make actual provider requests. Configuration alone is not a healthy connection, and chain connectivity is not payment reconciliation.',
-    'Run a check when needed; no expensive polling runs for visual effects. Service payment signing remains paused.',
+    'Run a check when needed. Production financial signing remains paused; the supervised owner-local workflow requires separate approval for each purchase.',
   ],
 };
 export function WorkspaceGuide({ view }: { view: string }) {

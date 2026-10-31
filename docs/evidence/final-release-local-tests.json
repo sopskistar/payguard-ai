@@ -1,0 +1,239 @@
+{
+  "checkedAt": "2026-10-31T19:03:55.384Z",
+  "baseURL": "http://localhost:3005",
+  "storage": "New disposable local PGlite; not Neon",
+  "existingDataChanged": false,
+  "liveCredentials": false,
+  "financialSubmissions": false,
+  "memoryWrites": false,
+  "video": false,
+  "stats": {
+    "startTime": "2026-10-31T19:02:38.163Z",
+    "duration": 79090.62400000001,
+    "expected": 27,
+    "skipped": 2,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "tests": [
+    {
+      "title": "public Verify journey, replay controls and responsive navigation",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "anonymous users cannot read owner data or mutate records; origin is checked",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "owner intake persists through a fresh browser context, with no fictional memory",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "judge never presents active walkthrough buttons before client readiness",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "judge completes all seven clear steps, with back navigation, real evidence and no account",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "public users cannot quote, approve or settle service fees",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "LIVE Tatum transaction inspector rejects an unrelated sample payment",
+      "status": "skipped",
+      "annotations": [
+        {
+          "type": "skip",
+          "description": "Requires private owner access and an explicit real public digest. Read-only chain calls.",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/live-chain.spec.ts",
+            "line": 9,
+            "column": 8
+          }
+        }
+      ]
+    },
+    {
+      "title": "LIVE Mainnet correction is recalled in a separate owner session",
+      "status": "skipped",
+      "annotations": [
+        {
+          "type": "skip",
+          "description": "Requires explicit LIVE_MEMORY_TEST=1, private owner access and configured Neon/Walrus. Creates a real memory unless LIVE_MEMORY_REUSE=1 uses the existing confirmed correction.",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/live-memory.spec.ts",
+            "line": 7,
+            "column": 8
+          }
+        }
+      ]
+    },
+    {
+      "title": "private setup distinguishes unusable coins, usable funds, security pause and failed checks (fixtures, no settlement)",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "mobile navigation closes, traps focus, locks scroll and supports direct/back navigation",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "product story has six usable stages, play/pause/replay and no private operations",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "reduced-motion and mobile story preserve readable controls and clear access paths",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "refresh shows loading, honest success, timestamp and failure; public actions explain owner access",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "landing CTAs, FAQ, proof and mobile layouts are deliberate and functional",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "owner sign-in clears submitted credentials while the request is pending",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "owner service page explains exact Mainnet proposal and keeps spending disabled",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "validates a 402 quote, enforces the signing pause and expires without opening a wallet",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 21,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "does not attribute a saved paid report to a different unpaid intent",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 21,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "requests the minimized Walrus rule only after its separate consent click",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 21,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "separates preparation and one wallet signature, then delivers an owned analysis receipt (fully mocked)",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 21,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "prepares exact approved bytes with settlement disabled and never opens signing (fully mocked)",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 21,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "shows the real wallet rejection without submission or an automatic retry (mock wallet)",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 21,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "owner records independent verification; edited instructions invalidate approval",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "public wallet login is accessible independently of hosted financial signing",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "public official review selector connects only by choice, never signs or authenticates, and disconnects",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "wallet refusal remains with the official selector; no signature or fallback login follows",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "wallet sign-in uses a real personal signature; logout, replay and cross-user APIs are enforced",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "Wallet Standard connect UI signs in, switches accounts safely and fits mobile",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "wallet loading provides native recovery when JavaScript cannot load",
+      "status": "expected",
+      "annotations": []
+    }
+  ]
+}

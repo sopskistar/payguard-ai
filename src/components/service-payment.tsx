@@ -80,6 +80,8 @@ async function request(path: string, body: unknown) {
 
 export function ServicePayment() {
   const [data, setData] = useState<Snapshot>(),
+    [search, setSearch] = useState(''),
+    [exposure, setExposure] = useState<{ reservedAtomic: string; capAtomic: string }>(),
     [invoiceId, setInvoice] = useState(''),
     [quote, setQuote] = useState<ServiceChallenge & { id: string; expiresAt: string }>(),
     [configured, setConfigured] = useState(false),
@@ -125,6 +127,20 @@ export function ServicePayment() {
     >([]);
   const quoteExpired = !!quote && Date.parse(quote.expiresAt) <= now;
   const selectedInvoice = data?.invoices.find((i) => i.id === invoiceId);
+  const experiment =
+    selectedInvoice?.number.match(/X402-EXPERIMENT-0([23])/i)?.[1] ||
+    (selectedInvoice?.number === 'X402-OWNER-20261031-01' ? '1' : undefined);
+  const result = receipt?.result as
+    | {
+        recommendation?: string;
+        limitations?: string;
+        linkDomains?: string[];
+        conflictingRecipientMentions?: string[];
+        injectionDirective?: boolean;
+      }
+    | undefined;
+  const evidence = receipt?.evidence as
+    { receivedAtomic?: string; checkpoint?: string } | undefined;
   useEffect(() => {
     if (!quote) return;
     const timer = setInterval(() => setNow(Date.now()), 1000);
@@ -135,7 +151,12 @@ export function ServicePayment() {
       .then((s) => {
         setData(s);
         setInvoice(
-          s.invoices.find((i) => i.isDemo && i.number === 'NS-1048')?.id || s.invoices[0]?.id || '',
+          s.invoices.find(
+            (i) => i.number === new URLSearchParams(window.location.search).get('invoice'),
+          )?.id ||
+            s.invoices.find((i) => i.isDemo && i.number === 'NS-1048')?.id ||
+            s.invoices[0]?.id ||
+            '',
         );
         if (s.mode === 'owner')
           api<{
@@ -146,6 +167,7 @@ export function ServicePayment() {
             network: ServiceNetwork;
             dedicatedPayer: string | null;
             intents: typeof saved;
+            exposure?: typeof exposure;
           }>('service-payments')
             .then((r) => {
               setConfigured(r.configured);
@@ -155,6 +177,7 @@ export function ServicePayment() {
               setDedicatedPayer(r.dedicatedPayer);
               setSecurityCleared(r.securityCleared);
               setSaved(r.intents);
+              setExposure(r.exposure);
             })
             .catch((e) => setError(e.message));
       })
@@ -195,6 +218,9 @@ export function ServicePayment() {
       setError((e as Error).message);
     } finally {
       setBusy(false);
+      void api<{ exposure?: typeof exposure }>('service-payments')
+        .then((r) => setExposure(r.exposure))
+        .catch(() => {});
     }
   }
   function trackState(id: string, state: string, digest?: string) {
@@ -413,7 +439,7 @@ export function ServicePayment() {
           identity verification. Mainnet and development Testnet are supported.{' '}
           {saved.some((i) => i.state === 'settled')
             ? 'A saved settled intent exists; inspect its independently verified receipt and delivered report.'
-            : 'No genuine service settlement has been demonstrated yet.'}
+            : 'Inspect the public payment proof for recorded owner-controlled Mainnet results; this session has not loaded a saved receipt.'}
         </div>
         {!signingAllowed && (
           <div role="status" className="notice">
@@ -455,6 +481,17 @@ export function ServicePayment() {
             <PaymentSetup states={saved.map((i) => i.state)} />
             <section className="panel">
               <h2>First-party invoice consistency analysis</h2>
+              <p>
+                Owner-controlled Mainnet experiments: a service report costs 0.001 SUI. Payer and
+                merchant are both controlled by the project owner. Each purchase requires fresh
+                approval here and a separate signature in your wallet.
+              </p>
+              {exposure && (
+                <p role="status">
+                  Current authenticated-session exposure: {Number(exposure.reservedAtomic) / 1e9} /
+                  0.003 SUI, including settled purchases and all unsettled reservations.
+                </p>
+              )}
               <button
                 className="button outline"
                 disabled={busy}
@@ -581,7 +618,10 @@ export function ServicePayment() {
                       })
                     }
                   >
-                    Resume saved {i.state} intent · {i.id.slice(0, 8)}
+                    Resume saved {i.state} intent ·{' '}
+                    {data.invoices.find((v) => v.id === i.invoiceId)?.number ||
+                      i.invoiceId.slice(0, 8)}{' '}
+                    · {i.id.slice(0, 8)}
                   </button>
                 ))}
               <p>
@@ -597,6 +637,14 @@ export function ServicePayment() {
                   balance checks remain available. Settlement is separately disabled.
                 </div>
               )}
+              <Field label="Search invoices by supplier or identifier">
+                <input
+                  value={search}
+                  disabled={!!quote}
+                  placeholder="e.g. X402-EXPERIMENT-02"
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </Field>
               <Field label="Invoice requiring additional review">
                 <select
                   value={invoiceId}
@@ -604,7 +652,14 @@ export function ServicePayment() {
                   onChange={(e) => setInvoice(e.target.value)}
                 >
                   {data.invoices
-                    .filter((i: Invoice) => i.status !== 'paid')
+                    .filter(
+                      (i: Invoice) =>
+                        i.status !== 'paid' &&
+                        (i.id === invoiceId ||
+                          `${i.vendor} ${i.number} ${i.id}`
+                            .toLowerCase()
+                            .includes(search.trim().toLowerCase())),
+                    )
                     .map((i) => (
                       <option key={i.id} value={i.id}>
                         {i.vendor} · {i.number} · {i.status} ·{' '}
@@ -619,6 +674,30 @@ export function ServicePayment() {
                     <dt>Selected invoice</dt>
                     <dd>
                       {selectedInvoice.vendor} · {selectedInvoice.number}
+                    </dd>
+                  </div>
+                  {experiment && (
+                    <div>
+                      <dt>Current experiment</dt>
+                      <dd>{experiment} of 3 · synthetic invoice scenario</dd>
+                    </div>
+                  )}
+                  <div>
+                    <dt>Expected report</dt>
+                    <dd>
+                      Contradictory recipient references, linked domains and attempts to bypass
+                      safety rules. Supplier verification holds remain mandatory.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Review before purchase</dt>
+                    <dd>
+                      <Link
+                        className="inline-link"
+                        href={`/app/review?invoice=${selectedInvoice.id}`}
+                      >
+                        Open invoice and compare Memory OFF / ON
+                      </Link>
                     </dd>
                   </div>
                   <div>
@@ -641,7 +720,9 @@ export function ServicePayment() {
               )}
               <button
                 className="button primary"
-                disabled={!configured || busy || !!quote}
+                disabled={
+                  !configured || busy || !!quote || saved.some((i) => i.state === 'settling')
+                }
                 onClick={() =>
                   void run(async () => {
                     const r = await request('', { invoiceId, operationKey: crypto.randomUUID() });
@@ -932,7 +1013,58 @@ export function ServicePayment() {
                       >
                         Review another invoice
                       </button>
-                      <pre className="service-result">{JSON.stringify(receipt, null, 2)}</pre>
+                      <dl className="detail-list">
+                        <div>
+                          <dt>Confirmed Mainnet transaction</dt>
+                          <dd>
+                            <a
+                              className="inline-link"
+                              href={`https://suivision.xyz/txblock/${String(receipt.digest)}`}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {String(receipt.digest)}
+                            </a>
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>Merchant credit verified by Tatum</dt>
+                          <dd>
+                            {evidence?.receivedAtomic === '1000000'
+                              ? '0.001 SUI · 1,000,000 MIST'
+                              : 'Inspect saved evidence'}{' '}
+                            · checkpoint {evidence?.checkpoint || 'see evidence'}
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>Delivered recommendation</dt>
+                          <dd>{result?.recommendation || 'See saved report'}</dd>
+                        </div>
+                        <div>
+                          <dt>Linked domains found</dt>
+                          <dd>{result?.linkDomains?.join(', ') || 'None'}</dd>
+                        </div>
+                        <div>
+                          <dt>Conflicting recipient references</dt>
+                          <dd>{result?.conflictingRecipientMentions?.join(', ') || 'None'}</dd>
+                        </div>
+                        <div>
+                          <dt>Safety bypass text</dt>
+                          <dd>
+                            {result?.injectionDirective
+                              ? 'Detected in submitted text'
+                              : 'Not detected'}
+                          </dd>
+                        </div>
+                      </dl>
+                      <p>
+                        {result?.limitations} Reopening this receipt does not request a signature or
+                        charge again.
+                      </p>
+                      <details>
+                        <summary>Saved receipt and full report</summary>
+                        <pre className="service-result">{JSON.stringify(receipt, null, 2)}</pre>
+                      </details>
                       <p>
                         Supplier approval still requires the independent human verification
                         workflow.

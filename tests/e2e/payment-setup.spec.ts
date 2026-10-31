@@ -147,7 +147,7 @@ test('private setup distinguishes unusable coins, usable funds, security pause a
     expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(address);
   }
   await expect(
-    page.getByRole('button', { name: 'Request exact service terms', exact: true }),
+    page.getByRole('button', { name: 'Request payment quote', exact: true }),
   ).toBeDisabled();
   merchantFailed = true;
   await panel.getByRole('button', { name: /Refresh balances/ }).click();

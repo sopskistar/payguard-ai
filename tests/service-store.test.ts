@@ -25,6 +25,7 @@ import {
   rememberService,
   serviceProgress,
   recordServiceWalletEvent,
+  serviceExposure,
 } from '@/lib/service-payments';
 import { serviceNetworkInfo, type ServiceChallenge } from '@/lib/service-protocol';
 import { AppError } from '@/lib/errors';
@@ -265,9 +266,15 @@ it('requires fresh unsigned terms on the local origin while preserving the exist
 it('enforces a durable total session cap, idempotent approval and cancellation release', async () => {
   const rows = await Promise.all([quote(), quote(), quote(), quote()]);
   for (const row of rows.slice(0, 3)) await approveService(OWNER_ID, row.id, payer.toSuiAddress());
+  expect(await serviceExposure(OWNER_ID, spendingSession)).toEqual({
+    reservedAtomic: '3000000',
+    capAtomic: '3000000',
+  });
+  expect((await serviceExposure(OWNER_ID, randomUUID())).reservedAtomic).toBe('0');
   await approveService(OWNER_ID, rows[0].id, payer.toSuiAddress());
   await expect(approveService(OWNER_ID, rows[3].id, payer.toSuiAddress())).rejects.toThrow('cap');
   await cancelService(OWNER_ID, rows[0].id);
+  expect((await serviceExposure(OWNER_ID, spendingSession)).reservedAtomic).toBe('2000000');
   await approveService(OWNER_ID, rows[3].id, payer.toSuiAddress());
 });
 it('rejects a different authenticated session before submitting an approved signature', async () => {

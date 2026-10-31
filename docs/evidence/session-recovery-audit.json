@@ -1,12 +1,12 @@
 {
-  "checkedAt": "2026-10-30T11:05:12.520Z",
+  "checkedAt": "2026-10-31T18:18:21.949Z",
   "writes": false,
   "signatures": false,
   "payments": false,
   "ownerConfirmed": 30,
   "otherConfirmed": 2,
   "totalConfirmed": 32,
-  "genuineServiceReceipts": 0,
+  "genuineServiceReceipts": 1,
   "checks": [
     {
       "jobId": "ede83c85-4754-492f-9b4e-063271514fa0",

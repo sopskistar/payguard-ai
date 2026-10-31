@@ -2,6 +2,10 @@
 
 # PayGuard Verify: 2–3 minute demo
 
+**Current October 31 payment segment:** open public `/proof#payments` or the owner's saved settled intent. Show actual digest `68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx`, 0.001 SUI Wallet B credit, checkpoint 340211024 and delivered hold recommendation. Both accounts are owner-controlled; the invoice is synthetic. Reopen the receipt without a new signature. Experiments 2 and 3 remain pending separate signatures until verified. [Current ledger](PAYMENT_EXPERIMENTS.md). Historical conditional payment instructions below are superseded by this result.
+
+Show `/connect`, provider selection and free personal-message registration. Slush is no longer blanket-excluded from login, but physical production compatibility is unverified; stop at any warning. Production financial signing remains paused. Do not claim localhost cleared production. Saved proof requires no new paid signature.
+
 Preflight: production is https://payguard-ai-henna.vercel.app/; the no-account guided journey is `/try`. Preserve the existing Neon accounts, sample records and **30 owner + 2 controlled tenant confirmed Mainnet memories**. Do not reseed. Have two separate owner-authenticated browser contexts ready. Use the real digest `os1iG8zow278c6hqxbuyxnvMUjzThsD8GTY8atdfzW6` for the documented negative reconciliation; do not suggest it pays Northstar. If a gate is unavailable, say so; do not substitute mocked proof.
 
 **0:00–0:25 — The problem.** Open the landing page: “The invoice is familiar. The recipient changed. Verify before you pay.” Open Attack Replay Lab. Choose the compromised-thread replay. Show how a familiar email domain does not excuse bypassing verification. Label the correspondence synthetic and point to the FBI source.

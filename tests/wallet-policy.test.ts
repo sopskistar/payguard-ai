@@ -19,10 +19,11 @@ it('permits controlled loopback and isolated test fixtures without a public rele
     expect(serviceWalletSigningAllowed({ APP_URL: `http://${hostname}:3002` })).toBe(true);
   expect(walletOnboardingAllowed({ NODE_ENV: 'test' })).toBe(true);
 });
-it('allows message authentication on configured HTTPS or loopback while excluding production Slush', () => {
+it('allows production personal-message login independently of hosted financial signing', () => {
   const production = { VERCEL: '1', APP_URL: 'https://payguard-ai-henna.vercel.app' };
   expect(walletOnboardingAllowed(production)).toBe(true);
-  expect(slushOnboardingBlocked(production)).toBe(true);
+  expect(slushOnboardingBlocked(production)).toBe(false);
+  expect(serviceWalletSigningAllowed(production)).toBe(false);
   expect(walletProviderAllowed('Slush', true)).toBe(false);
   expect(walletProviderAllowed('Sui Wallet', true)).toBe(false);
   expect(walletProviderAllowed('Other compatible wallet', true)).toBe(true);

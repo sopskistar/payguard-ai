@@ -1,3 +1,9 @@
+# October 31 current release
+
+[Verified release continuation](FINAL_MAINNET_RELEASE.md): one real owner-controlled x402 purchase, 0.001 SUI merchant credit, saved receipt/report and duplicate-charge-free reopening. Two distinct synthetic scenarios await separate owner signing. All 32 Walrus records are rechecked; experiment 3 has seven actual fresh-session citations and unchanged mandatory holds. Slush personal-message login is provider-permitted; physical production verdict and reason for the disappeared localhost warning remain unverified. Production financial signing is separately paused. The earlier dated release captures below are historical.
+
+---
+
 # October 31 product access update
 
 Application **dcca21c** is deployed. Permitted Wallet Standard providers can create/return to private accounts; Slush remains excluded from Production login and financial signing remains paused. `/connect?mode=review` preserves the public review-only interface. The [owner-local deployment](LOCAL_OWNER_PAYMENT.md) runs the same product with separate exact unsigned approval, financial capability and owner wallet signature. No warning is bypassed. Agent Services now identifies invoice IDs/status/sample context, preserves pending digests, refreshes capability without replacing prepared bytes and updates receipt state immediately. The paid checker now inspects links in both memo and instruction text. The README begins with four judge testing paths.

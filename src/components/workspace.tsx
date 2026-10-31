@@ -2035,11 +2035,12 @@ function Settings({
         <section className="panel">
           <h2>Workspace access</h2>
           <Link className="button outline full" href="/connect">
-            Wallet access & security review
+            Connect Sui Wallet
           </Link>
           <p className="small-text muted">
-            Public connection is review-only. Wallet registration and payment signing remain paused;
-            this link cannot authenticate an account.
+            Register or return with a free personal-message signature when your wallet permits this
+            origin. No email or password is needed. Stop at a provider warning. Financial signing
+            requires separate owner authorization.
           </p>
           <p>
             {owner

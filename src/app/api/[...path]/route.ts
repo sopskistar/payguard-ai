@@ -119,7 +119,8 @@ async function handle(req: NextRequest, context: { params: Promise<{ path: strin
         allowed: walletOnboardingAllowed(),
         slushBlocked: slushOnboardingBlocked(),
         paymentSigningAllowed: serviceWalletSigningAllowed(),
-        review: 'Slush production domain review pending; never override provider warnings',
+        review:
+          'Wallet providers decide whether to permit this origin. Stop if a provider warns or refuses. Message login is separate from financial signing.',
       });
     }
     if (route === 'auth/wallet/challenge' && method === 'POST') {
@@ -475,6 +476,26 @@ async function handle(req: NextRequest, context: { params: Promise<{ path: strin
       );
     if (error instanceof AppError)
       return json({ error: error.message, code: error.code }, error.status);
+    if (process.env.NODE_ENV === 'development') {
+      // Error categories only: driver messages and SQL parameters can contain credentials.
+      const causes: { name: string; code: string | null }[] = [];
+      let cause: unknown = error;
+      for (let i = 0; cause && i < 4; i++) {
+        const value = cause as { name?: unknown; code?: unknown; cause?: unknown };
+        causes.push({
+          name:
+            typeof value.name === 'string'
+              ? value.name.replace(/[^a-zA-Z0-9_]/g, '').slice(0, 50)
+              : 'Unknown',
+          code:
+            typeof value.code === 'string' && /^[A-Z0-9_]{1,40}$/.test(value.code)
+              ? value.code
+              : null,
+        });
+        cause = value.cause;
+      }
+      console.error('PayGuard request failed', causes);
+    }
     // Never return driver messages, SQL parameters, credentials or full invoice payloads.
     return json({ error: safeError(error), code: 'REQUEST_FAILED' }, 500);
   }

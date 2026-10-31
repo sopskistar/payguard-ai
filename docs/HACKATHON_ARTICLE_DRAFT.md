@@ -2,7 +2,9 @@
 
 ## Recovery engineering update
 
-PayGuard preserves 32 tracked confirmed Mainnet memories and now prepares existing payer/merchant accounts through a private Payment Setup screen with Tatum balance categories, funding guidance, Vercel configuration and explicit security states. The first-party report remains deterministic; semantic Walrus retrieval informs policy application, and no LLM is called. No authentic service purchase has settled; the payment bonus remains unproven. [Owner guide](PAYMENT_SETUP.md) · [fresh memory/receipt audit](evidence/session-recovery-audit.json). Three experiments are prepared, each with separate approval; none is represented as executed.
+PayGuard preserves 32 tracked confirmed Mainnet memories. One real owner-controlled first-party x402 service purchase has settled: [`68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx`](https://suivision.xyz/txblock/68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx), checkpoint 340211024. Tatum independently confirms exact 0.001 SUI merchant credit, zero payer gas and separate 0.0001 SUI sponsor gas. Neon preserves the quote, approved-byte binding, receipt and deterministic report; reopening does not charge again. Both accounts belong to the project owner, not independent customers. Two further synthetic purchases await separate owner signatures. [Current results and limits](FINAL_MAINNET_RELEASE.md).
+
+The new changed-instruction experiment recalled seven actual owned Walrus citations in a fresh authenticated session. Memory ON adds supplier-specific phone-channel and escalation findings; both modes retain the High risk / verification required hold. No duplicate memory was written. Why Slush's earlier localhost warning disappeared remains inconclusive. Public message login now allows provider-permitted Slush connections; current physical production verdicts remain unverified. [Investigation](SLUSH_LOCALHOST_INVESTIGATION.md). No LLM is called. Earlier dated results below remain historical.
 
 _Technical article source, updated October 28, 2026. Mainnet results are measured; see the test ledger for hosted deployment status._
 

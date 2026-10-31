@@ -60,8 +60,11 @@ test('reduced-motion and mobile story preserve readable controls and clear acces
       zoom: visualViewport?.scale,
     })),
   ).toEqual({ fits: true, zoom: 1 });
-  await expect(page.getByText('WALLET ONBOARDING PAUSED', { exact: true })).toBeVisible();
-  await expect(page.locator('#access')).toContainText('Connection here creates no account');
+  await expect(page.getByText('FREE WALLET ACCOUNT', { exact: true })).toBeVisible();
+  await expect(page.locator('#access')).toContainText('Connection alone does not authenticate');
+  await expect(
+    page.locator('.site-hero-actions').getByRole('link', { name: 'Connect Sui Wallet' }),
+  ).toHaveAttribute('href', '/connect');
   await page.getByRole('button', { name: 'Memory ON', exact: true }).click();
   await expect(page.locator('.site-learning-result')).toContainText('Approval held in both modes');
   await expect(page.locator('.site-citation code')).not.toBeEmpty();

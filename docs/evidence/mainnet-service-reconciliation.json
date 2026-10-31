@@ -1,0 +1,172 @@
+{
+  "checkedAt": "2026-10-31T18:56:09.572Z",
+  "source": "Authenticated Tatum native Sui Mainnet gRPC and persisted Neon rows",
+  "readOnly": true,
+  "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+  "counts": {
+    "confirmedmemories": 32,
+    "settledreceipts": 1,
+    "unsettledintents": 0
+  },
+  "payments": [
+    {
+      "quoteId": "51d204df-71fd-44a6-ac4a-c8e0c50b4cf5",
+      "receiptId": "40d3c429-0b19-4c68-aa87-9726f3fb43b8",
+      "invoice": "X402-OWNER-20261031-01",
+      "digest": "68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx",
+      "explorer": "https://suivision.xyz/txblock/68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx",
+      "checkpoint": "340211024",
+      "finalized": true,
+      "network": "sui:mainnet",
+      "payer": "0xc0f3fbf8a029fe354571b58d9e079c1aa4e9ca111a2b025dca470d4bc96397a8",
+      "merchant": "0x99eac0f7be358adf9f96ce0490392f356332af96376aadf11d829a529c1a189e",
+      "sponsor": "0x6d8c6e978808e81344b6ddcc741b06d2b2b1106066d218683e0161f696878b61",
+      "merchantCreditAtomic": "1000000",
+      "payerServiceDebitAtomic": "1000000",
+      "payerGasAtomic": "0",
+      "sponsorGasAtomic": "100000",
+      "gasBudgetAtomic": "2000000",
+      "gas": {
+        "computationCost": "100000",
+        "storageCost": "0",
+        "storageRebate": "0",
+        "nonRefundableStorageFee": "0"
+      },
+      "actualBalanceChanges": [
+        {
+          "owner": {
+            "AddressOwner": "0x6d8c6e978808e81344b6ddcc741b06d2b2b1106066d218683e0161f696878b61"
+          },
+          "coinType": "0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI",
+          "amount": "-100000"
+        },
+        {
+          "owner": {
+            "AddressOwner": "0x99eac0f7be358adf9f96ce0490392f356332af96376aadf11d829a529c1a189e"
+          },
+          "coinType": "0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI",
+          "amount": "1000000"
+        },
+        {
+          "owner": {
+            "AddressOwner": "0xc0f3fbf8a029fe354571b58d9e079c1aa4e9ca111a2b025dca470d4bc96397a8"
+          },
+          "coinType": "0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI",
+          "amount": "-1000000"
+        }
+      ],
+      "exactApprovedBytesExecuted": true,
+      "preparedDigestMatchesExecution": true,
+      "challenge": {
+        "accepts": [
+          {
+            "asset": "0x2::sui::SUI",
+            "extra": {
+              "quoteId": "51d204df-71fd-44a6-ac4a-c8e0c50b4cf5",
+              "gasOwner": "0x6d8c6e978808e81344b6ddcc741b06d2b2b1106066d218683e0161f696878b61",
+              "gasBudget": "2000000",
+              "instructionHash": "95819473e5dfcdeb20bb4a314212d21f21562431eb462a415fff9a914a7d9b84"
+            },
+            "payTo": "0x99eac0f7be358adf9f96ce0490392f356332af96376aadf11d829a529c1a189e",
+            "amount": "1000000",
+            "scheme": "exact",
+            "network": "sui:mainnet",
+            "maxTimeoutSeconds": 300
+          }
+        ],
+        "resource": {
+          "url": "http://localhost:4320/api/service-payments/51d204df-71fd-44a6-ac4a-c8e0c50b4cf5",
+          "mimeType": "application/json",
+          "description": "First-party invoice analysis of invoice directive, trusted recipient change. Does not verify supplier identity."
+        },
+        "x402Version": 2
+      },
+      "approvedAt": "2026-10-31T17:37:05.934Z",
+      "settlementRequests": 1,
+      "events": [
+        {
+          "type": "service.challenge",
+          "detail": {
+            "need": ["invoice-directive", "trusted-recipient-change"],
+            "network": "sui:mainnet",
+            "firstParty": true,
+            "amountAtomic": "1000000"
+          },
+          "created_at": "2026-10-31T17:35:17.533Z"
+        },
+        {
+          "type": "service.prepared",
+          "detail": {
+            "submitted": false,
+            "preparedDigest": "68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx"
+          },
+          "created_at": "2026-10-31T17:37:04.483Z"
+        },
+        {
+          "type": "service.wallet_requested",
+          "detail": {
+            "authoritative": false,
+            "preparedDigest": "68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx"
+          },
+          "created_at": "2026-10-31T17:37:35.572Z"
+        },
+        {
+          "type": "service.settlement_requested",
+          "detail": {
+            "digest": "68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx",
+            "authoritative": false
+          },
+          "created_at": "2026-10-31T17:39:14.279Z"
+        },
+        {
+          "type": "service.settlement_response",
+          "detail": {
+            "digest": "68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx",
+            "success": true,
+            "provider": "https://facilitator.tentaclepay.com",
+            "authoritative": false,
+            "reportedPayer": "0xc0f3fbf8a029fe354571b58d9e079c1aa4e9ca111a2b025dca470d4bc96397a8",
+            "reportedDigest": "68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx",
+            "reportedNetwork": "sui:mainnet"
+          },
+          "created_at": "2026-10-31T17:39:15.608Z"
+        },
+        {
+          "type": "service.confirmation_requested",
+          "detail": {
+            "digest": "68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx",
+            "source": "Tatum native Mainnet gRPC"
+          },
+          "created_at": "2026-10-31T17:39:15.848Z"
+        },
+        {
+          "type": "service.review_completed",
+          "detail": {
+            "digest": "68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx",
+            "intentId": "51d204df-71fd-44a6-ac4a-c8e0c50b4cf5",
+            "firstParty": true,
+            "recommendation": "Hold: reconcile contradictory recipient references through the established supplier channel.",
+            "supplierApprovalUnchanged": true
+          },
+          "created_at": "2026-10-31T17:39:17.359Z"
+        }
+      ],
+      "result": {
+        "provider": "PayGuard first-party consistency analysis",
+        "limitations": "Deterministic supplemental analysis of submitted records; no external callback, email authentication or supplier identity certification.",
+        "linkDomains": ["northstar-review.example"],
+        "recommendation": "Hold: reconcile contradictory recipient references through the established supplier channel.",
+        "addressesMentioned": 1,
+        "injectionDirective": true,
+        "conflictingRecipientMentions": [
+          "0x3333333333333333333333333333333333333333333333333333333333333333"
+        ],
+        "instructionChangedSinceQuote": false,
+        "independentIdentityVerification": false
+      },
+      "firstPartyOwnerControlledAccounts": true
+    }
+  ],
+  "settledTotalAtomic": "1000000",
+  "displayReconciliation": "Merchant credit is 0.001 SUI; sponsor gas is separately charged. 0.001 minus 0.0001 equals 0.0009, but 0.0009 is not the merchant balance change. The exact SuiVision screen interpretation has not been observed."
+}

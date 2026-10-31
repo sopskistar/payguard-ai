@@ -1,3 +1,15 @@
+# October 31 verified Mainnet purchase and release continuation
+
+**Current source of truth:** [final Mainnet release report](FINAL_MAINNET_RELEASE.md), [actual payment evidence](evidence/mainnet-service-reconciliation.json), [Slush investigation](SLUSH_LOCALHOST_INVESTIGATION.md) and [validation ledger](TEST_RESULTS.md).
+
+One real first-party service purchase settled: `68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx`, checkpoint 340211024, exact 0.001 SUI Wallet B credit, zero payer gas and 0.0001 SUI sponsor gas. Approved and executed bytes match. The persistent receipt/report reopens twice without another charge. Payer and merchant are owner-controlled. Experiments 2 and 3 are distinct saved synthetic invoices awaiting separate owner signatures; they do not increase the settled total.
+
+All 32 existing Walrus jobs/blobs/namespaces passed fresh read-only checks. Experiment 3 recalled seven confirmed policies again after logout/new login, enriching findings while preserving all baseline holds. No new memory write, wallet creation, funding, conversion, reset or video occurred. Public personal-message login now permits any compatible provider that accepts the origin, including Slush; production financial signing remains paused. The reason the localhost warning disappeared and the current physical production verdict are unverified.
+
+The dated entries below are **historical checkpoints**, including their then-zero receipt counts and earlier blanket Slush restrictions. They are retained for audit and superseded by this entry.
+
+---
+
 # Payment workflow correction
 
 The two reported prepared digests are absent from finalized Mainnet execution; the application had received no signed payload. Root cause: local preparation was enabled while signing capability remained off, and prepared digests were only browser state. The existing flow now saves immutable unsigned bytes/digest before signing, records safe stage-specific errors, distinguishes prepared/submitted/settled states and offers a single-session supervised local mode. [Investigation and four steps](PAYMENT_ATTEMPTS.md). No new payment was generated or signed by the agent. Actual service receipts remain **zero** pending the owner's Slush authorization. Production Slush controls remain intact; no video.

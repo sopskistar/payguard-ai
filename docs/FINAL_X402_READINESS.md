@@ -1,3 +1,9 @@
+# Current result — October 31 continuation
+
+One genuine service purchase is now settled and independently verified, with 0.001 SUI merchant credit and a persisted report: [actual Mainnet release evidence](FINAL_MAINNET_RELEASE.md). Experiments 2 and 3 are saved distinct synthetic scenarios awaiting separate owner approval/signatures. [Live recall/preparation](evidence/payment-experiments-preparation.json). Public Slush personal-message login is available if the provider permits the origin; physical production compatibility is unverified and production financial signing remains paused. The dated readiness and zero-settlement statements below are historical, superseded by the current receipt ledger.
+
+---
+
 # October 31 — owner-local purchase capability and separate account authentication
 
 The owner explicitly authorized an inspected local deployment of the existing product for a supervised first-party purchase. [Exact launcher, preparation and wallet steps](LOCAL_OWNER_PAYMENT.md). This supersedes the earlier broad project restriction on local service experiments; it does not clear Slush’s Production classification or override any wallet warning.

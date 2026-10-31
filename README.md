@@ -4,7 +4,7 @@
 
 ## HOW TO TEST PAYGUARD VERIFY
 
-**Owner completing the Mainnet experiment:** [the prepared-digest investigation and corrected four-step purchase](docs/PAYMENT_ATTEMPTS.md) explains why the two unsigned hashes were absent from SuiScan. Use `npm run owner:local:live` in the existing configured checkout, then **Request payment quote → Review 0.001 SUI purchase → Sign and submit in wallet → Verify payment and view analysis report** at `http://localhost:4320/services`. Each exact transaction needs your own application approval and wallet signature. No new wallet, funding or conversion is needed. **Zero genuine service settlements are currently recorded.**
+**Verified October 31:** one genuine owner-controlled first-party x402 purchase settled on Sui Mainnet for **0.001 SUI**. [Transaction](https://suivision.xyz/txblock/68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx) · [exact credit, gas, quote and report](docs/evidence/mainnet-service-reconciliation.json) · [current release report](docs/FINAL_MAINNET_RELEASE.md). Experiments 2 and 3 are prepared synthetic scenarios, awaiting separate owner approval and Slush signatures. They are not settled payments. No wallet creation, funding, conversion or video is required by these instructions.
 
 ### Option A — Try in under three minutes
 
@@ -24,7 +24,7 @@ Use **Back** to revisit a stage. The [proof page](https://payguard-ai-henna.verc
 
 Open **[Connect Sui Wallet](https://payguard-ai-henna.vercel.app/connect)**, choose a permitted Wallet Standard provider, connect deliberately, select **Prepare sign-in message**, inspect the exact origin/account/expiry and then **Sign message & open workspace**. This free personal signature creates your isolated account the first time and recognizes the same account on later visits. Connection alone is not authentication. Login never signs a transaction or grants administrator access.
 
-**Slush restriction:** Production’s Slush classification remains unresolved. Slush is excluded from normal hosted login; its [review-only flow](https://payguard-ai-henna.vercel.app/connect?mode=review) remains available. Never override a wallet warning. Other providers may authenticate only if they permit the origin. The [inspected local application workflow](docs/LOCAL_OWNER_PAYMENT.md) supports the owner’s existing Slush Google account and does not clear the Production domain. Physical production-wallet compatibility is not certified.
+**Wallet compatibility:** public sign-in discovers Mainnet Wallet Standard providers with personal-message capability. The blanket Slush login exclusion has been removed; only a provider-permitted connection may proceed. Stop at any wallet warning or refusal. The owner reports successful Slush connection and financial signing at `http://localhost:4320`; the actual service payment is independently verified. Physical production Slush, Suiet, Nightly and mobile onboarding are **unverified**, not certified supported. Browser signing fixtures test the authentication contract, not those providers. [Technical Slush report](docs/SLUSH_LOCALHOST_INVESTIGATION.md). Production financial signing remains separately disabled. No email, password, funds or terminal commands are needed for a visitor’s wallet registration.
 
 Inside your own workspace:
 
@@ -41,7 +41,7 @@ Live Walrus writes need configured server delegate access/quota and explicit con
 - [Walrus proof](https://payguard-ai-henna.vercel.app/proof#memory): 30 original confirmed owner records plus [two controlled tenant records](https://payguard-ai-henna.vercel.app/proof#isolation), **32 total**. Inspect actual job/blob IDs, tenant separation and [fresh-session recall evidence](docs/evidence/final-x402-existing-memory-recall.json).
 - [Tatum Mainnet evidence](https://payguard-ai-henna.vercel.app/proof#chain): real native gRPC results, chain identity and exact reconciliation. A successful chain transaction does not prove supplier identity.
 - [Confirmed Wallet A self-deposit](docs/SUI_SELF_DEPOSIT_RESULT.md): [`6MXocsgenJghaAG5J7AAE9FqAEdkhrkjXgq13SiuBnMP`](https://suiscan.xyz/mainnet/tx/6MXocsgenJghaAG5J7AAE9FqAEdkhrkjXgq13SiuBnMP), checkpoint **339863005**. This moved 0.005 SUI within Wallet A into address balance; it is **not an x402 service payment**. Do not repeat it.
-- [x402 evidence and limitations](docs/FINAL_X402_READINESS.md): genuine HTTP 402 quotes and unsigned Mainnet simulation exist. **Zero genuine service settlements are recorded before the owner-approved purchase.** Positive receipt/report tests are simulations. Actual receipts will appear on the authenticated saved service intent and audit history only after Tatum confirms finalized merchant credit and Neon persists the result.
+- [Real x402 purchase](https://payguard-ai-henna.vercel.app/proof#payments): quote `51d204df-71fd-44a6-ac4a-c8e0c50b4cf5`, finalized checkpoint **340211024**, Wallet B credit **1,000,000 MIST**, payer gas **zero**, sponsor gas **100,000 MIST**. The saved Neon report found a contradictory recipient, `northstar-review.example` and bypass text, and retained the human hold. Both payer and merchant belong to the project owner; this is not independent customer adoption or supplier payment. Reopening the receipt twice returned the same receipt without another charge.
 
 Follow each receipt’s Mainnet explorer link or copy its full digest into SuiScan. Compare network, success, sender, asset, exact merchant credit and gas owner with the approved terms. The owner can independently query Tatum from authenticated workflows. No API key is exposed to judges.
 
@@ -74,7 +74,8 @@ Server-only live configuration names: `DATABASE_URL`, `AUTH_SECRET`, `OWNER_PASS
 ```bash
 npm run lint
 npm run typecheck
-npm test -- tests/service-protocol.test.ts tests/service-store.test.ts tests/wallet-auth.test.ts
+npm test
+npm run format:check
 npm run build
 npm run start
 # In another terminal, with the server running:
@@ -83,25 +84,21 @@ npm run test:e2e -- tests/e2e/judge.spec.ts
 
 Financial fixtures are isolated tests, not Mainnet proof. For genuine owner-local Mainnet preparation in the existing configured checkout, use `npm run owner:local`; [the exact supervised purchase procedure](docs/LOCAL_OWNER_PAYMENT.md) explains the separate live-capability flag and per-quote wallet approval. Quote mode is the literal `ENABLE_AGENT_PAYMENTS=mainnet`; `true` is invalid. Production `SERVICE_PAYMENT_SETTLEMENT_ENABLED=false` stays unchanged. Both existing wallet addresses remain configured.
 
+**Owner experiments:** use the existing running [experiment 2](http://localhost:4320/services?invoice=X402-EXPERIMENT-02) or [experiment 3](http://localhost:4320/services?invoice=X402-EXPERIMENT-03). Inspect the selected invoice, request fresh terms, explicitly approve the exact 0.001 SUI purchase, then sign separately in Slush. Resume the original intent if uncertain. Experiment 3 already has a genuine fresh-session Memory OFF/ON comparison: seven owned citations enrich the findings, while both modes keep the mandatory hold. [Exact recalled blobs and results](docs/evidence/payment-experiments-preparation.json). No new memory write was needed.
+
 Testnet is development only: `ENABLE_AGENT_PAYMENTS=testnet` needs a separate test recipient, a Testnet-capable wallet/facilitator and Tatum Testnet access. Obtain test SUI only through the [official Sui faucet instructions](https://docs.sui.io/guides/developer/getting-started/get-coins). Testnet SUI cannot fund Mainnet; the demonstrated integrations and existing owner funds are Mainnet. No faucet or funding is needed for the public demo or mocked tests.
 
 **Quick troubleshooting:** A disabled quote requires checking Payment Setup and the literal quote mode; balance refresh works without it. Coin-object funds do not equal usable address balance. A provider error displays its failed stage; unknown balances are never zero. A pending payment must resume the original digest, never be paid again. A Slush warning must be respected. Missing memories require checking the original job and indexing, not another write. For stale browser assets, reload; verify the deployed commit at [`/api/release`](https://payguard-ai-henna.vercel.app/api/release). [Current release](docs/RELEASE_STATUS.md) · [test results and retained failures](docs/TEST_RESULTS.md).
 
 ---
 
-**Wallet security gate:** Slush has reportedly flagged the production origin. Slush hosted login and production service-payment signing remain paused; permitted personal-message login is separate. The public demo and owner workspace remain available. The [/connect?mode=review selector](https://payguard-ai-henna.vercel.app/connect?mode=review) can reach Slush’s own **Flag for review**; that review mode never signs, registers or authenticates. Do not accept a review connection or override a warning. [Investigation](docs/SLUSH_SECURITY_REVIEW.md) · [owner-local application](docs/LOCAL_OWNER_PAYMENT.md).
+PayGuard Verify compares supplier payment instructions with established recipient/contact references, records human verification, and recalls consented policies from Walrus Memory. Tatum supplies separate Sui Mainnet evidence. A transfer does not establish supplier identity, and PayGuard never initiates supplier payments.
 
-PayGuard Verify helps a human reviewer investigate supplier payment-instruction changes. It compares proposed recipients with independently established vendor profiles, flags observable business email compromise (BEC) patterns, records out-of-band verification, and recalls approved policies from Walrus Memory. Tatum Sui Mainnet gRPC supplies separate chain evidence. **A successful transfer does not establish supplier identity or authorize an instruction.** No supplier payment is ever initiated. A separate owner-only Sui Mainnet x402 service-purchase implementation is spending-disabled and security-paused; no settlement is claimed.
-
-The application is deployed and production-tested; wallet security and funded service settlement remain explicitly unresolved. **30 original Walrus Mainnet memories are preserved, plus two confirmed controlled tenant proofs (32 tracked total); real semantic recall passed across a fresh owner browser session; Tatum gRPC inspected a real transaction and correctly rejected a false invoice match.** See [the proof ledger](docs/MAINNET_PROOF.md), [test results](docs/TEST_RESULTS.md), and [handoff](docs/CODEX_HANDOFF.md). The production application is public at https://payguard-ai-henna.vercel.app/. Owner browser login, secure cookies, Neon persistence across a new session, live Walrus recall and Tatum Mainnet gRPC passed on production; [fresh production core evidence](docs/evidence/production-core-smoke.json). Wallet fixtures and tenant boundaries are tested locally; Slush hosted onboarding remains restricted pending its review; permitted providers have a separate authentication flow. Two new controlled customer sessions used real Neon and Walrus Mainnet successfully; this does not certify a physical production wallet. No supplier payment or positive live payment match is claimed. The updated October 27 PayGuard Verify specification was merged safely from GitHub.
-
-Private owner wallet configuration: [Payment Setup](docs/PAYMENT_SETUP.md) · [prepared experiments](docs/PAYMENT_EXPERIMENTS.md) · [session recovery matrix](docs/SESSION_RECOVERY.md). Both wallets already exist. Settlement remains disabled.
-
-**Balance checker corrected:** both existing Production wallets are configured and verified. Read-only checks handle provider rate limits and omitted zero fields, preserve partial results and show safe stage diagnostics. Fresh October 31 checks found Mainnet quotes enabled and settlement disabled. [Original defect](docs/BALANCE_CHECK_FIX.md) · [current provider evidence](docs/evidence/oct31-readiness.json).
+The three access paths are **public practice**, **free wallet-message member authentication**, and **private owner administration**. Physical production wallet-provider verdicts remain unverified; a provider warning always stops that wallet flow. One owner-controlled first-party service purchase has a real 0.001 SUI Mainnet receipt. Production financial signing remains separately paused. [Current release and exact limitations](docs/FINAL_MAINNET_RELEASE.md).
 
 ## Judge? Start Here
 
-Current Mainnet payment status: [genuine 402 quotes, unsigned sponsor simulation and final owner workflow](docs/FINAL_X402_READINESS.md). Quotes are enabled; production signing is security-paused and **no paid-service settlement is claimed**.
+Current Mainnet payment status: [one independently verified service purchase](docs/FINAL_MAINNET_RELEASE.md), plus two synthetic experiment invoices awaiting separate owner signatures. Preparation and simulation are never counted as payments.
 
 **PayGuard Verify — Verify before you pay. Remember what nearly went wrong.**
 
@@ -116,22 +113,22 @@ Current Mainnet payment status: [genuine 402 quotes, unsigned sponsor simulation
 | Tatum Sui Mainnet                 | [Real transaction and mismatch evidence](docs/evidence/tatum-reconciliation.json)                                                                                                 |
 | Verification and architecture     | [Tests](docs/TEST_RESULTS.md) · [Architecture](docs/ARCHITECTURE.md)                                                                                                              |
 | Technical article                 | [Published engineering report](https://sopskistar.github.io/payguard-ai/)                                                                                                         |
-| Agent-service payments            | [Mainnet implementation, preflight and spending gates](docs/AGENT_PAYMENTS.md) — no settled-payment award claim                                                                   |
+| Agent-service payments            | [Actual payment ledger and remaining owner actions](docs/PAYMENT_EXPERIMENTS.md) — one genuine first-party purchase                                                               |
 | Release and security status       | [Feature-by-feature completion and blockers](docs/RELEASE_STATUS.md) · [Slush review case](docs/SLUSH_SECURITY_REVIEW.md)                                                         |
 
 The homepage now includes a six-stage **synthetic product illustration** with Play, Pause, Replay and keyboard step selection. It shows the recipient change, approval hold, independent human check and the reason to remember a correction. The public memory comparison uses genuine dated recall evidence through the application’s review logic; no anonymous provider request or write occurs. The operational dashboard separates current server-evaluated holds, saved workspace activity, personal confirmed jobs and the published **30 + 2** Mainnet proof.
 
-**Recovery validation:** 116 unit/integration tests; local browser 20 passed / 0 failed / 3 skips; latest full production 18 passed / 2 Chromium transport failures / 3 security skips, then 2 focused passes / 1 additional transport failure; lint, TypeScript, formatting and production build pass. Production application `3b55319` is verified. Earlier failures remain in [the release/test ledgers](docs/RELEASE_STATUS.md); physical hosted wallet signing and genuine settlement remain unproven.
+**Current validation:** 161 unit/integration passes; full isolated browser suite 27 passed, zero failed, two live-provider skips. Read-only real Tatum and all 32 Walrus checks passed separately. Lint, TypeScript and production build pass. Runtime dependency audit: zero advisories; development tooling has 14 moderate findings traced to one minimatch advisory. [Complete tests, failures, skips and deployment evidence](docs/TEST_RESULTS.md).
 
-Access is explicit: **Public demo** requires nothing; **permitted wallet authentication** creates a private member account; **Owner Sign In** is private administrator access. Slush remains restricted on Production. A public review-only wallet connection creates no application session. [Release UX, screenshots and validation](docs/PRODUCT_RELEASE.md) · [exact payment approval worksheet](docs/MAINNET_PAYMENT_APPROVAL.md).
+Access is explicit: **Try Interactive Demo** needs nothing; **Connect Sui Wallet** creates or returns to a private member account after a verified free personal signature; **Owner Sign In** protects administrator operations. Connection alone is not authentication. Respect provider warnings. [Slush investigation](docs/SLUSH_LOCALHOST_INVESTIGATION.md).
 
 The public practice uses synthetic invoices and a synthetic callback. Its Walrus citations and Tatum receipt are dated, authentic captured results. It performs no guest memory writes, provider requests or supplier payments. Real owner review decisions are stored in Neon; the sandbox audit is local practice state.
 
-[Connect Sui Wallet](https://payguard-ai-henna.vercel.app/connect) explains provider restrictions and offers permitted personal-message authentication. Registration, returning-user login and isolated workspaces are implemented and tested with controlled unfunded identities; physical Production Slush onboarding remains blocked pending review. Connection alone is not authentication. [Privacy and retention](https://payguard-ai-henna.vercel.app/privacy) · [Account security](docs/WALLET_SECURITY.md). Owner Sign In remains administrator-only.
+[Connect Sui Wallet](https://payguard-ai-henna.vercel.app/connect) offers provider-permitted personal-message registration and returning-user authentication. Isolated workspaces are tested with controlled unfunded identities; physical production provider acceptance remains unverified. Connection alone is not authentication. [Privacy and retention](https://payguard-ai-henna.vercel.app/privacy) · [Account security](docs/WALLET_SECURITY.md). Owner Sign In remains administrator-only.
 
 The [Memory Learning Report](https://payguard-ai-henna.vercel.app/proof#learning) measures 18 authored synthetic scenarios using four genuine recalls. The initial run found three false alarms; the corrected run met 18/18 specified contracts, preserved all baseline findings and added zero critical warnings across four unchanged controls. This is a small contract evaluation, not a real-world fraud accuracy claim. [Before](docs/evidence/learning-before.json) · [After](docs/evidence/learning-report.json).
 
-**Historical verified checkpoint (`2571cea`): 110 unit tests; full production browser suite 14 passed, 0 failed, 3 security-paused wallet skips.** Owner/Neon, new-session Walrus recall, Tatum and unsigned Mainnet preflight passed live. Physical wallet onboarding and genuine service settlement remain unproven. [Current completion matrix](docs/RELEASE_STATUS.md) · [Browser evidence](docs/evidence/production-browser-mainnet.json).
+Historical test runs and their failures remain in [the validation ledger](docs/TEST_RESULTS.md). Current physical production provider acceptance is unverified; the one genuine local service purchase is independently verified.
 
 ## What is implemented
 
@@ -154,8 +151,9 @@ Node 22.13+ is recommended (tested on Node 22.23.1).
 
 ```bash
 npm ci
-cp .env.example .env.local
+test -f .env.local || cp .env.example .env.local
 # Privately configure values in .env.local; never paste secrets in chat or commit them.
+# Only for a NEW database you created; never migrate/reseed the existing deployment for judging:
 npm run db:migrate
 npm run db:seed-demo
 npm run dev
@@ -179,6 +177,7 @@ npm test
 npm run build
 npm run start
 npm run test:e2e          # Server must be running; public browser tests
+npm run test:e2e:qa       # After build: new disposable local QA database, all live credentials disabled
 # Optional: E2E_OWNER_PASSWORD privately enables the owner/new-session persistence test
 npm run check:live       # Read-only; reports missing credentials honestly
 npm run proof:export     # Neon evidence → gitignored .data/mainnet-proof.json
@@ -211,7 +210,7 @@ No architecture path signs or submits a supplier payment. A human review approva
 
 Follow [the 2–3 minute demo script](docs/DEMO_SCRIPT.md). The crucial live sequence is: Memory OFF → changed supplier instruction → human correction → **completed Walrus job with blob ID** → later invoice → fresh authenticated browser session → actual semantic recall → Memory ON/OFF comparison.
 
-The ten-memory gate and fresh-session recall are evidenced in [MAINNET_PROOF.md](docs/MAINNET_PROOF.md). The [technical article is published](https://sopskistar.github.io/payguard-ai/). Public app and judge access are available. The owner will arrange the demo video separately; this build creates no video. The [article source](docs/HACKATHON_ARTICLE_DRAFT.md) includes measured results and genuine screenshots. The Mainnet x402 implementation includes exact native-SUI terms, durable session caps and Tatum receipt checks; spending remains disabled, Slush review is pending, and genuine settlement/bonus remain unproven.
+The ten-memory gate and fresh-session recall are evidenced in [MAINNET_PROOF.md](docs/MAINNET_PROOF.md). The [technical article is published](https://sopskistar.github.io/payguard-ai/). Public app and judge access are available. The owner will arrange the demo video separately; this build creates no video. The [article source](docs/HACKATHON_ARTICLE_DRAFT.md) includes measured results and genuine screenshots. The Mainnet x402 implementation includes exact native-SUI terms, durable session caps and Tatum receipt checks; one owner-controlled purchase is settled and verified. Production financial signing remains paused, physical production wallet behavior is unverified, and two more purchases await owner authorization/signatures.
 
 ## Security and limitations
 

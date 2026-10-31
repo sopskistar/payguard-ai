@@ -78,14 +78,18 @@ const result = {
   origin,
   reportedWarning: 'Malicious website — This site has been flagged for malicious behavior.',
   warningSource: 'Owner report; no physical Slush extension installed in this controlled browser',
-  productionOnboarding: 'BLOCKED pending provider review',
+  productionOnboarding:
+    'Personal-message login available if the provider permits this origin; physical provider verdict unverified. Financial signing remains paused.',
   pages,
   scripts: [...scripts.values()],
   lists,
   limits:
     'Read-only public origin/resource and exact-list review, not a malware certification, full dependency audit, fuzzy-list reproduction or proof the warning cleared. No wallet connected, signatures requested, or safety protection disabled.',
 };
-await writeFile('docs/evidence/slush-security-review.json', JSON.stringify(result, null, 2) + '\n');
+await writeFile(
+  'docs/evidence/slush-current-public-review.json',
+  JSON.stringify(result, null, 2) + '\n',
+);
 console.log(
   JSON.stringify({
     pages: pages.map((p) => ({

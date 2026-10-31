@@ -30,7 +30,7 @@ export function serviceWalletSigningAllowed(
 }
 export const slushOnboardingBlocked = (
   env: Readonly<Record<string, string | undefined>> = process.env,
-) => !serviceWalletSigningAllowed(env);
+) => !walletOnboardingAllowed(env);
 
 export function walletProviderAllowed(name: string, slushBlocked: boolean) {
   return !slushBlocked || !/slush|sui wallet/i.test(name);

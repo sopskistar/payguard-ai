@@ -1,3 +1,9 @@
+# Current investigation — October 31 continuation
+
+[Read the current technical report](SLUSH_LOCALHOST_INVESTIGATION.md). A real owner-controlled localhost Mainnet purchase is independently verified. The cause of the disappeared warning is inconclusive; current physical production Slush behavior is unverified. Public personal-message login now includes Slush when its provider permits the origin. No wallet warning is overridden. Production financial signing remains paused, independently of authentication. The dated restrictions and review instructions below are historical and do not describe the current login selector.
+
+---
+
 # October 31 access policy clarification
 
 The public Slush review-only workflow is now **[/connect?mode=review](https://payguard-ai-henna.vercel.app/connect?mode=review)**. It never signs, authenticates or spends. The default `/connect` page separately permits other compatible Wallet Standard providers to authenticate, while excluding Slush until the Production review is satisfactorily resolved. Production financial signing remains paused. Do not override any wallet warning.

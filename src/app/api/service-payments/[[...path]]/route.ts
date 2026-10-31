@@ -24,6 +24,7 @@ import {
   serviceSetup,
   serviceProgress,
   recordServiceWalletEvent,
+  serviceExposure,
 } from '@/lib/service-payments';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -65,6 +66,7 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
           preparationAllowed: servicePreparationAllowed(),
           securityCleared: serviceWalletSigningAllowed(),
           sessionCapAtomic: SERVICE_SESSION_CAP,
+          exposure: await serviceExposure(tenantId, actor?.sessionKey),
           dedicatedPayer: serviceAddressSchema.safeParse(process.env.SERVICE_PAYMENT_PAYER).success
             ? process.env.SERVICE_PAYMENT_PAYER
             : null,
