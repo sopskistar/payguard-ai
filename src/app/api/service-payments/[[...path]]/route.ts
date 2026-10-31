@@ -22,6 +22,8 @@ import {
   servicePreflight,
   ownedService,
   serviceSetup,
+  serviceProgress,
+  recordServiceWalletEvent,
 } from '@/lib/service-payments';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -105,10 +107,34 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
     if (path[1] === 'cancel') return NextResponse.json(await cancelService(tenantId, id));
     if (path[1] === 'approve') {
       const input = z
-        .object({ payer: serviceAddressSchema, approved: z.literal(true) })
+        .object({
+          payer: serviceAddressSchema,
+          approved: z.literal(true),
+          transaction: z
+            .string()
+            .min(20)
+            .max(20000)
+            .regex(/^[A-Za-z0-9+/=]+$/),
+        })
         .strict()
         .parse(data);
-      return NextResponse.json(await approveService(tenantId, id, input.payer, actor?.sessionKey));
+      return NextResponse.json(
+        await approveService(tenantId, id, input.payer, actor?.sessionKey, input.transaction),
+      );
+    }
+    if (path[1] === 'events') {
+      const input = z
+        .object({
+          phase: z.enum(['requested', 'error']),
+          preparedDigest: z.string().min(32).max(64),
+          code: z.string().max(60).optional(),
+          message: z.string().max(500).optional(),
+        })
+        .strict()
+        .parse(data);
+      return NextResponse.json(
+        await recordServiceWalletEvent(tenantId, id, input, actor?.sessionKey),
+      );
     }
     if (path[1] === 'remember') {
       const input = z
@@ -158,23 +184,26 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
         },
       );
     }
-    return NextResponse.json(result, {
-      status: result.state === 'pending' ? 202 : 200,
-      headers: {
-        'Cache-Control': 'private, no-store',
-        ...(result.state === 'settled'
-          ? {
-              'PAYMENT-RESPONSE': Buffer.from(
-                JSON.stringify({
-                  success: true,
-                  network: result.receipt?.network,
-                  transaction: result.receipt?.digest,
-                }),
-              ).toString('base64'),
-            }
-          : {}),
+    return NextResponse.json(
+      { ...result, progress: await serviceProgress(tenantId, id, actor?.sessionKey) },
+      {
+        status: result.state === 'pending' ? 202 : 200,
+        headers: {
+          'Cache-Control': 'private, no-store',
+          ...(result.state === 'settled'
+            ? {
+                'PAYMENT-RESPONSE': Buffer.from(
+                  JSON.stringify({
+                    success: true,
+                    network: result.receipt?.network,
+                    transaction: result.receipt?.digest,
+                  }),
+                ).toString('base64'),
+              }
+            : {}),
+        },
       },
-    });
+    );
   } catch (e) {
     return NextResponse.json(
       {

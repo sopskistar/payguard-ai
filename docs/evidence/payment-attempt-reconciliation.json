@@ -1,0 +1,59 @@
+{
+  "checkedAt": "2026-10-31T14:34:53.441Z",
+  "readOnly": true,
+  "chain": {
+    "network": "mainnet",
+    "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+    "checkpoint": "340164573"
+  },
+  "digests": [
+    {
+      "digest": "EW7k8stgW1mbqHzpL2sN257dx7rowqd6tShi8JyMh79v",
+      "found": false,
+      "error": {
+        "code": "NOT_FOUND",
+        "classification": "NOT_FOUND"
+      }
+    },
+    {
+      "digest": "46K3xCB9Ed3c6vVXoxdTqHBxYB2KZaf8ymDQLam7h1CP",
+      "found": false,
+      "error": {
+        "code": "NOT_FOUND",
+        "classification": "NOT_FOUND"
+      }
+    }
+  ],
+  "applicationEvidence": {
+    "signedPayloadsReceived": 0,
+    "facilitatorSubmissionsRecorded": 0,
+    "settlingIntents": 0,
+    "receipts": 0,
+    "configuredModeBeforeFix": {
+      "preparationAllowed": true,
+      "signingAllowed": false
+    },
+    "recentQuotes": [
+      {
+        "id": "2da6b204-5b40-4b0a-a157-3d0136a623db",
+        "state": "approved",
+        "approvedAt": "2026-10-31T14:23:04.923Z",
+        "expiresAt": "2026-10-31T14:27:22.731Z",
+        "preparedDigestSaved": false,
+        "signedPayloadReceived": false
+      },
+      {
+        "id": "e8927b2e-d73a-4033-880c-34103018022e",
+        "state": "cancelled",
+        "approvedAt": "2026-10-31T14:01:05.198Z",
+        "expiresAt": "2026-10-31T14:04:12.816Z",
+        "preparedDigestSaved": false,
+        "signedPayloadReceived": false
+      }
+    ],
+    "digestToQuoteMapping": "Unavailable in old version: prepared digests were browser-only. No one-to-one attribution is asserted."
+  },
+  "confirmedMemories": 32,
+  "newPaymentAttempt": false,
+  "walletSignatureStatus": "Not observed by PayGuard; chain NOT_FOUND does not itself prove a wallet never signed."
+}

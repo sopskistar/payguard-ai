@@ -1,3 +1,9 @@
+# Payment workflow correction
+
+The two reported prepared digests are absent from finalized Mainnet execution; the application had received no signed payload. Root cause: local preparation was enabled while signing capability remained off, and prepared digests were only browser state. The existing flow now saves immutable unsigned bytes/digest before signing, records safe stage-specific errors, distinguishes prepared/submitted/settled states and offers a single-session supervised local mode. [Investigation and four steps](PAYMENT_ATTEMPTS.md). No new payment was generated or signed by the agent. Actual service receipts remain **zero** pending the owner's Slush authorization. Production Slush controls remain intact; no video.
+
+---
+
 # October 31 — supervised local product and purchase workflow
 
 Account authentication and financial signing have separate policies. Permitted hosted wallets can create/return to tenant-isolated accounts; Slush remains excluded from hosted sign-in and Production financial signing stays paused. The review-only route is `/connect?mode=review`. [Owner-local workflow](LOCAL_OWNER_PAYMENT.md) launches the existing application on localhost:4320, preserves Neon, defaults settlement off, and supports exact unsigned preparation before a separately enabled, personally approved wallet signature. No alternative settlement backend or keys are introduced.

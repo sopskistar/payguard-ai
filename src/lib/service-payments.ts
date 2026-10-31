@@ -26,6 +26,7 @@ import { inspectServiceSettlement, serviceChainPreflight } from './integrations/
 import { verifyServiceSignature } from './integrations/service-signature';
 import { recordCorrection } from './integrations/memory';
 import { serviceWalletSigningAllowed, WALLET_REVIEW_MESSAGE } from './wallet-policy';
+import { serviceDiagnostic } from './service-diagnostics';
 import {
   serviceConfiguration,
   PaymentCheckError,
@@ -76,14 +77,30 @@ async function facilitator(path: string, body?: unknown) {
   });
   if (!r.ok && path === '/supported')
     throw Object.assign(new Error('Read-only facilitator request failed'), { status: r.status });
-  if (!r.ok)
+  const response = await r.json().catch(() => null);
+  if (!r.ok) {
+    const detail = serviceDiagnostic('tentacle' + path, response, serverSecrets());
     throw new AppError(
       502,
-      'FACILITATOR_UNAVAILABLE',
-      'Service facilitator unavailable. No settlement assumed; resume the existing intent.',
+      'FACILITATOR_HTTP_' + r.status,
+      `Tentacle ${path} HTTP ${r.status}: ${detail.message}`,
     );
-  return r.json();
+  }
+  if (!response || typeof response !== 'object')
+    throw new AppError(
+      502,
+      'FACILITATOR_RESPONSE',
+      'Tentacle returned an invalid response. Resume the original digest; no settlement assumed.',
+    );
+  return response;
 }
+const serverSecrets = () =>
+  Object.entries(process.env)
+    .filter(([k]) => /PASSWORD|SECRET|PRIVATE_KEY|API_KEY|DATABASE_URL/.test(k))
+    .map(([, v]) => v || '');
+type PreparedService = { bytes: string; digest: string; preparedAt: string };
+const storedPreparation = (approval: unknown) =>
+  (approval as { prepared?: PreparedService } | null)?.prepared;
 export async function servicePreflight(options: { allowPartial?: boolean } = {}) {
   const network = serviceMode();
   const diagnostics: PaymentDiagnostic[] = [];
@@ -404,6 +421,7 @@ export async function approveService(
   id: string,
   payer: string,
   sessionKey?: string,
+  transaction?: string,
 ) {
   // Exact terms may be reserved before the separate financial capability is enabled.
   // No signed bytes, signature verification or facilitator calls occur during approval.
@@ -435,13 +453,42 @@ export async function approveService(
         'This unsigned quote belongs to another application origin. Cancel it and request fresh terms here. Submitted digests can still be reconciled.',
       );
     const budget = budgetId(tenantId, sessionKey, terms.network);
+    let prepared: PreparedService | undefined;
+    if (transaction) {
+      validateServiceTransaction(transaction, terms, payer);
+      prepared = {
+        bytes: transaction,
+        digest: await Transaction.from(transaction).getDigest(),
+        preparedAt: new Date().toISOString(),
+      };
+      const previous = storedPreparation(row.approval);
+      if (previous && previous.bytes !== transaction)
+        throw new AppError(
+          409,
+          'PREPARED_CHANGED',
+          'Prepared bytes are immutable. Resume the existing transaction; do not replace it.',
+        );
+    }
     if (
       row.state === 'approved' &&
       row.payer === payer &&
       row.spendingSessionId === budget &&
       row.expiresAt > new Date()
-    )
-      return { approved: true };
+    ) {
+      if (prepared && !storedPreparation(row.approval)) {
+        await tx
+          .update(s.servicePaymentIntents)
+          .set({ approval: { ...(row.approval as object), prepared } })
+          .where(eq(s.servicePaymentIntents.id, id));
+        await tx.insert(s.auditEvents).values({
+          tenantId,
+          type: 'service.prepared',
+          entityId: id,
+          detail: { preparedDigest: prepared.digest, submitted: false },
+        });
+      }
+      return { approved: true, prepared: storedPreparation(row.approval) || prepared };
+    }
     if (row.expiresAt < new Date() || row.state !== 'quoted' || terms.network !== serviceMode())
       throw new AppError(
         409,
@@ -501,6 +548,7 @@ export async function approveService(
       maxPayerGasAtomic: '0',
       purpose: challenge.resource.description,
       sessionCapAtomic: SERVICE_SESSION_CAP,
+      ...(prepared ? { prepared } : {}),
     };
     await tx
       .update(s.servicePaymentIntents)
@@ -512,10 +560,20 @@ export async function approveService(
         approval,
       })
       .where(eq(s.servicePaymentIntents.id, id));
-    await tx
-      .insert(s.auditEvents)
-      .values({ tenantId, type: 'service.approved', entityId: id, detail: approval });
-    return { approved: true };
+    await tx.insert(s.auditEvents).values({
+      tenantId,
+      type: 'service.approved',
+      entityId: id,
+      detail: { ...approval, ...(prepared ? { prepared: { digest: prepared.digest } } : {}) },
+    });
+    if (prepared)
+      await tx.insert(s.auditEvents).values({
+        tenantId,
+        type: 'service.prepared',
+        entityId: id,
+        detail: { preparedDigest: prepared.digest, submitted: false },
+      });
+    return { approved: true, prepared };
   });
 }
 export async function cancelService(tenantId: string, id: string) {
@@ -631,6 +689,19 @@ export async function fulfillService(
         'Signed payment terms differ from the approved quote.',
       );
     validateServiceTransaction(payload.payload.transaction, terms, row.payer!);
+    const prepared = storedPreparation(row.approval);
+    if (!prepared)
+      throw new AppError(
+        409,
+        'PREPARATION_REQUIRED',
+        'This legacy quote has no saved prepared bytes. No payment submitted. Review a fresh quote.',
+      );
+    if (prepared.bytes !== payload.payload.transaction)
+      throw new AppError(
+        400,
+        'PREPARED_CHANGED',
+        'Signed transaction differs from the exact saved prepared bytes. Nothing submitted.',
+      );
     const digest = await Transaction.from(payload.payload.transaction).getDigest();
     const payloadHash = createHash('sha256').update(payload.payload.transaction).digest('hex');
     // Lock before ANY third party receives signed bytes. Cancellation must never release
@@ -658,15 +729,18 @@ export async function fulfillService(
         row.payer!,
         terms.network,
       );
-    } catch {
+    } catch (error) {
+      const diagnostic = serviceDiagnostic('signature-verification', error, serverSecrets());
       await audit(tenantId, 'service.signature_unverified', id, {
         digest,
         settlementRequested: false,
         signatureCheckMayDiscloseBytes: true,
+        diagnostic,
       });
       return {
         state: 'pending',
         digest,
+        diagnostic,
         message:
           'Payer signature could not be verified. The attempt remains locked because zkLogin verification may disclose signed bytes. Reconcile this digest; do not sign or settle again.',
       };
@@ -678,30 +752,38 @@ export async function fulfillService(
         paymentRequirements: terms,
       });
       if (verify.isValid !== true || (verify.payer && verify.payer !== row.payer)) {
+        const diagnostic = serviceDiagnostic('tentacle.verify', verify, serverSecrets());
         await audit(tenantId, 'service.verification_rejected', id, {
           digest,
           settlementRequested: false,
+          diagnostic,
         });
         return {
           state: 'pending',
           digest,
-          message:
-            'Facilitator verification was rejected. Signed bytes were disclosed; this attempt stays locked for independent reconciliation. No settlement or service result is assumed.',
+          diagnostic,
+          message: `Tentacle verification rejected: ${diagnostic.message} Signed bytes were disclosed; resume only this digest. No settlement assumed.`,
         };
       }
-    } catch {
+    } catch (error) {
+      const diagnostic = serviceDiagnostic('tentacle.verify', error, serverSecrets());
       await audit(tenantId, 'service.verification_indeterminate', id, {
         digest,
         settlementRequested: false,
+        diagnostic,
       });
       return {
         state: 'pending',
         digest,
-        message:
-          'Facilitator verification was interrupted. Resume the existing digest; do not sign or pay again.',
+        diagnostic,
+        message: `Tentacle verification interrupted: ${diagnostic.message} Resume the existing digest; do not sign or pay again.`,
       };
     }
     try {
+      await audit(tenantId, 'service.settlement_requested', id, {
+        digest: row.digest,
+        authoritative: false,
+      });
       const settled = await facilitator('/settle', {
         x402Version: 2,
         paymentPayload: payload,
@@ -716,12 +798,16 @@ export async function fulfillService(
         reportedPayer: typeof settled.payer === 'string' ? settled.payer.slice(0, 100) : null,
         provider: FACILITATOR,
         authoritative: false,
+        ...(settled.success !== true
+          ? { diagnostic: serviceDiagnostic('tentacle.settle', settled, serverSecrets()) }
+          : {}),
       });
-    } catch {
+    } catch (error) {
       await audit(tenantId, 'service.settlement_indeterminate', id, {
         digest: row.digest,
         provider: FACILITATOR,
         retrySettlement: false,
+        diagnostic: serviceDiagnostic('tentacle.settle', error, serverSecrets()),
       });
       /* Submission can have succeeded. Reconcile the exact digest; never sign a replacement. */
     }
@@ -736,6 +822,10 @@ export async function fulfillService(
     };
   let evidence;
   try {
+    await audit(tenantId, 'service.confirmation_requested', id, {
+      digest: row.digest,
+      source: 'Tatum native Mainnet gRPC',
+    });
     evidence = await inspectServiceSettlement(row.digest, terms, row.payer);
   } catch (error) {
     if (error instanceof AppError && error.code === 'SETTLEMENT_FAILED') {
@@ -756,11 +846,13 @@ export async function fulfillService(
       });
       return { state: 'failed', digest: row.digest, message: error.message };
     }
+    const diagnostic = serviceDiagnostic('tatum.reconciliation', error, serverSecrets());
+    await audit(tenantId, 'service.confirmation_pending', id, { digest: row.digest, diagnostic });
     return {
       state: 'pending',
       digest: row.digest,
-      message:
-        'Settlement has not been independently confirmed by Tatum. Resume this intent; no result or payment success is assumed.',
+      diagnostic,
+      message: `Tatum ${diagnostic.code}: ${diagnostic.message} No finalized merchant credit confirmed. Resume this intent; do not pay again.`,
     };
   }
   const frozen = row.analysisInput as { recipient: string; memo: string; message: string };
@@ -869,8 +961,86 @@ export async function rememberService(tenantId: string, id: string, consent = fa
   });
 }
 
+export async function serviceProgress(tenantId: string, id: string, sessionKey?: string) {
+  const row = await ownedService(tenantId, id);
+  const events = await (
+    await db()
+  )
+    .select({
+      type: s.auditEvents.type,
+      detail: s.auditEvents.detail,
+      createdAt: s.auditEvents.createdAt,
+    })
+    .from(s.auditEvents)
+    .where(and(eq(s.auditEvents.tenantId, tenantId), eq(s.auditEvents.entityId, id)))
+    .orderBy(desc(s.auditEvents.createdAt))
+    .limit(40);
+  const diagnostics = events
+    .map((e) => (e.detail as { diagnostic?: ReturnType<typeof serviceDiagnostic> }).diagnostic)
+    .filter((d): d is ReturnType<typeof serviceDiagnostic> => !!d);
+  const diagnostic =
+    diagnostics.find(
+      (d) => d.stage.startsWith('tentacle') || d.stage === 'signature-verification',
+    ) ||
+    diagnostics[0] ||
+    null;
+  const prepared = storedPreparation(row.approval);
+  const terms = serviceTermsSchema.parse((row.challenge as ServiceChallenge).accepts[0]);
+  return {
+    quoteId: id,
+    state: row.state,
+    expiresAt: row.expiresAt,
+    prepared: prepared || null,
+    executionDigest: row.digest,
+    approvalSessionMatches:
+      !!sessionKey && row.spendingSessionId === budgetId(tenantId, sessionKey, terms.network),
+    walletAttempted: events.some(
+      (e) => e.type === 'service.wallet_requested' || e.type === 'service.wallet_error',
+    ),
+    submitted: events.some((e) => e.type === 'service.settlement_requested'),
+    confirming: events.some((e) => e.type === 'service.confirmation_requested'),
+    diagnostic,
+  };
+}
+export async function recordServiceWalletEvent(
+  tenantId: string,
+  id: string,
+  event: { phase: 'requested' | 'error'; preparedDigest: string; code?: string; message?: string },
+  sessionKey?: string,
+) {
+  const row = await ownedService(tenantId, id),
+    prepared = storedPreparation(row.approval);
+  const terms = serviceTermsSchema.parse((row.challenge as ServiceChallenge).accepts[0]);
+  if (
+    !prepared ||
+    prepared.digest !== event.preparedDigest ||
+    !sessionKey ||
+    row.spendingSessionId !== budgetId(tenantId, sessionKey, terms.network)
+  )
+    throw new AppError(
+      409,
+      'PREPARED_STATE',
+      'Wallet diagnostic does not match this session and saved prepared transaction.',
+    );
+  await audit(tenantId, 'service.wallet_' + event.phase, id, {
+    preparedDigest: prepared.digest,
+    authoritative: false,
+    ...(event.phase === 'error'
+      ? {
+          diagnostic: serviceDiagnostic(
+            'wallet-signing',
+            { code: event.code, message: event.message },
+            serverSecrets(),
+          ),
+        }
+      : {}),
+  });
+  return { recorded: true };
+}
 export async function listServiceIntents(tenantId: string) {
-  return (await db())
+  const rows = await (
+    await db()
+  )
     .select({
       id: s.servicePaymentIntents.id,
       invoiceId: s.servicePaymentIntents.invoiceId,
@@ -878,9 +1048,14 @@ export async function listServiceIntents(tenantId: string) {
       state: s.servicePaymentIntents.state,
       digest: s.servicePaymentIntents.digest,
       expiresAt: s.servicePaymentIntents.expiresAt,
+      approval: s.servicePaymentIntents.approval,
     })
     .from(s.servicePaymentIntents)
     .where(eq(s.servicePaymentIntents.tenantId, tenantId))
     .orderBy(desc(s.servicePaymentIntents.createdAt), desc(s.servicePaymentIntents.id))
     .limit(30);
+  return rows.map(({ approval, ...row }) => ({
+    ...row,
+    prepared: storedPreparation(approval) || null,
+  }));
 }

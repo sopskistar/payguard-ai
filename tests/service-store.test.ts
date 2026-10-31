@@ -23,6 +23,8 @@ import {
   ownedService,
   cancelService,
   rememberService,
+  serviceProgress,
+  recordServiceWalletEvent,
 } from '@/lib/service-payments';
 import { serviceNetworkInfo, type ServiceChallenge } from '@/lib/service-protocol';
 import { AppError } from '@/lib/errors';
@@ -41,8 +43,14 @@ beforeEach(() => {
   spendingSession = randomUUID();
   verifyHook = undefined;
 });
-const approveService = (tenant: string, id: string, address: string) =>
-  approveCore(tenant, id, address, spendingSession);
+const approveService = async (tenant: string, id: string, address: string) =>
+  approveCore(
+    tenant,
+    id,
+    address,
+    spendingSession,
+    (await payload(await ownedService(tenant, id))).payload.transaction,
+  );
 const fulfillService = (tenant: string, id: string, raw?: unknown) =>
   fulfillCore(tenant, id, raw, spendingSession);
 beforeAll(async () => {
@@ -443,4 +451,82 @@ it('requires separate explicit consent for a minimized owned post-purchase Walru
   } finally {
     remember.mockRestore();
   }
+});
+
+it('persists immutable prepared bytes before signing and rejects a replacement transaction', async () => {
+  const row = await quote();
+  const p = await payload(row);
+  await approveService(OWNER_ID, row.id, payer.toSuiAddress());
+  const progress = await serviceProgress(OWNER_ID, row.id, spendingSession);
+  expect(progress.prepared?.bytes).toBe(p.payload.transaction);
+  expect(progress.prepared?.digest).toBe(await Transaction.from(p.payload.transaction).getDigest());
+  expect(progress.executionDigest).toBeNull();
+  expect(progress.submitted).toBe(false);
+  const tx = Transaction.from(p.payload.transaction);
+  tx.setGasPrice(1001);
+  const changed = Buffer.from(await tx.build()).toString('base64');
+  const signed = await payer.signTransaction(fromBase64(changed));
+  const before = settles;
+  await expect(
+    fulfillService(OWNER_ID, row.id, {
+      ...p,
+      payload: { transaction: changed, signature: signed.signature },
+    }),
+  ).rejects.toThrow('saved prepared bytes');
+  await expect(
+    approveCore(OWNER_ID, row.id, payer.toSuiAddress(), spendingSession, changed),
+  ).rejects.toThrow('immutable');
+  expect(settles).toBe(before);
+  expect((await ownedService(OWNER_ID, row.id)).state).toBe('approved');
+});
+it('records wallet rejection separately from a received or submitted payment', async () => {
+  const row = await quote();
+  await approveService(OWNER_ID, row.id, payer.toSuiAddress());
+  const prep = (await serviceProgress(OWNER_ID, row.id, spendingSession)).prepared!;
+  await recordServiceWalletEvent(
+    OWNER_ID,
+    row.id,
+    { phase: 'requested', preparedDigest: prep.digest },
+    spendingSession,
+  );
+  await recordServiceWalletEvent(
+    OWNER_ID,
+    row.id,
+    {
+      phase: 'error',
+      preparedDigest: prep.digest,
+      code: '4001',
+      message: 'User rejected the transaction.',
+    },
+    spendingSession,
+  );
+  const p = await serviceProgress(OWNER_ID, row.id, spendingSession);
+  expect(p.walletAttempted).toBe(true);
+  expect(p.executionDigest).toBeNull();
+  expect(p.submitted).toBe(false);
+  expect(p.diagnostic?.message).toBe('User rejected the transaction.');
+  await expect(
+    recordServiceWalletEvent(
+      OWNER_ID,
+      row.id,
+      { phase: 'error', preparedDigest: 'wrong' },
+      spendingSession,
+    ),
+  ).rejects.toThrow('does not match');
+});
+it('preserves the exact Tentacle rejection and never retries a settlement on resume', async () => {
+  const row = await quote();
+  await approveService(OWNER_ID, row.id, payer.toSuiAddress());
+  verifyHook = async () =>
+    Response.json({ isValid: false, invalidReason: 'Sponsored gas owner mismatch' });
+  const before = settles;
+  const r = await fulfillService(OWNER_ID, row.id, await payload(row));
+  expect(r.state).toBe('pending');
+  expect(r.message).toContain('Sponsored gas owner mismatch');
+  const p = await serviceProgress(OWNER_ID, row.id, spendingSession);
+  expect(p.submitted).toBe(false);
+  expect(p.diagnostic?.stage).toBe('tentacle.verify');
+  mock.inspect.mockRejectedValueOnce(new Error('not found'));
+  expect((await fulfillService(OWNER_ID, row.id)).state).toBe('pending');
+  expect(settles).toBe(before);
 });

@@ -1,0 +1,41 @@
+{
+  "checkedAt": "2026-10-31T17:03:35.148Z",
+  "financialOperation": false,
+  "mode": {
+    "network": "sui:mainnet",
+    "configured": true,
+    "preparationAllowed": true,
+    "signingAllowed": true,
+    "securityClearedForLocalOrigin": true
+  },
+  "check": {
+    "state": "passed",
+    "checkpoint": "340202097",
+    "balances": {
+      "payer": {
+        "totalAtomic": "27893245",
+        "coinAtomic": "22893245",
+        "addressAtomic": "5000000",
+        "derivation": "Explicit total and both components",
+        "checkedAt": "2026-10-31T17:03:54.432Z"
+      },
+      "recipient": {
+        "totalAtomic": "0",
+        "coinAtomic": "0",
+        "addressAtomic": "0",
+        "derivation": "Both components proven zero by the explicit zero total",
+        "checkedAt": "2026-10-31T17:03:54.975Z"
+      }
+    }
+  },
+  "ok": true,
+  "auditCountRead": {
+    "firstHttpDriverRead": "Unavailable after successful application/preflight reads; retried read-only through the application WebSocket driver",
+    "recovered": true
+  },
+  "counts": {
+    "memories": 32,
+    "receipts": 0,
+    "settling": 0
+  }
+}

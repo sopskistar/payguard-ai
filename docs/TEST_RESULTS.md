@@ -1,3 +1,13 @@
+# Payment-attempt correction — October 31
+
+Both owner-reported prepared hashes returned explicit Tatum `NOT_FOUND`; no signed payload, facilitator submission or receipt was recorded. The old local server allowed preparation but had signing disabled. [Exact investigation](PAYMENT_ATTEMPTS.md) · [native Mainnet query](evidence/payment-attempt-reconciliation.json). The corrected local server reports signing allowed and both wallets funded as expected; [read-only live readiness](evidence/payment-live-readiness.json) records the actual balances and unchanged 32 memories / zero receipts.
+
+Focused backend/diagnostic tests: **24 passed**. An intervening concurrent run timed out in PGlite startup (2 passed, 22 skipped by failed setup); the sequential rerun passed 24/24 without changing timeout/assertions. Focused browser cases: **6 passed**, covering exact-byte preparation, one signature/submission, rejected-wallet errors/no automatic retry, receipt attribution, expiry and explicit memory consent. These financial/provider responses are **isolated mocks**, not a funded Mainnet test. TypeScript and focused lint pass. Credential scan of source and browser assets: **511 files / zero matches**. No production build, real database reset/reseed, wallet creation, SUI conversion or memory write occurred. The existing isolated QA data was reused.
+
+Actual wallet signing and finalized merchant credit remain dependent on the owner's fresh application/wallet approval. No service settlement is claimed. A genuine idempotency check and paid-analysis memory demonstration must follow a real receipt; the current positive settlement tests are simulations only.
+
+---
+
 # October 31 — focused product and local-purchase validation
 
 Initial focused payment/authentication checks: **67 passed across 11 files**. After the final sequencing and memo-link changes, the payment store **19/19** and protocol **12/12** reruns pass. Lint, TypeScript, formatting and the final Production build pass. Credential scan: **493 files, zero matches**. [Current ledger](evidence/oct31-tests.json).

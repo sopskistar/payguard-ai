@@ -1,0 +1,37 @@
+{
+  "checkedAt": "2026-10-31T17:14:49.572821+00:00",
+  "recoveredCommit": "bb2bc65fc31f0179dde8473f6da50d44cb688a4b",
+  "unitFinal": {
+    "passed": 24,
+    "failed": 0,
+    "files": 2
+  },
+  "unitConcurrentRun": {
+    "passed": 2,
+    "skipped": 22,
+    "failedSuites": 1,
+    "cause": "PGlite startup hook exceeded 10 seconds during concurrent development compilation; no timeout/assertion was relaxed"
+  },
+  "browserFocused": {
+    "passed": 6,
+    "failed": 0,
+    "database": "Existing isolated PGlite QA data; never Neon",
+    "financialProviders": "mocked",
+    "walletSigner": "mocked",
+    "realMainnetPayment": false
+  },
+  "typecheck": "passed",
+  "focusedLint": "passed",
+  "productionBuild": "Not run at owner request; targeted development loading used",
+  "databaseReset": false,
+  "databaseSeed": false,
+  "newWallet": false,
+  "conversion": false,
+  "credentialScan": {
+    "files": 511,
+    "matches": 0
+  },
+  "realSettlements": 0,
+  "genuineEvidence": ["payment-attempt-reconciliation.json", "payment-live-readiness.json"],
+  "ownerWalletSignature": "Required; never automatic"
+}

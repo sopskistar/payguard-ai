@@ -6,17 +6,21 @@ import { AppError } from '../../src/lib/errors';
 
 try {
   const args = process.argv.slice(2);
-  if (args.some((a) => a !== '--enable-settlement'))
+  if (args.some((a) => !['--enable-settlement', '--dev'].includes(a)))
     throw new LocalOwnerError(
-      'Supported option: --enable-settlement. No arbitrary host or port is accepted.',
+      'Supported options: --enable-settlement, --dev. No arbitrary host or port is accepted.',
     );
   const source = { ...parse(await readFile('.env.local', 'utf8')), ...process.env };
   const parties = await readFile('.data/owner-payment-config.json', 'utf8')
     .then(JSON.parse)
     .catch(() => ({}));
-  const env = localOwnerConfig(source, parties, args.includes('--enable-settlement'));
+  const development = args.includes('--dev');
+  const env: NodeJS.ProcessEnv = {
+    ...localOwnerConfig(source, parties, args.includes('--enable-settlement')),
+    NODE_ENV: development ? 'development' : 'production',
+  };
   Object.assign(process.env, env);
-  await readFile('.next/BUILD_ID');
+  if (!development) await readFile('.next/BUILD_ID');
   const { servicePreflight } = await import('../../src/lib/service-payments');
   const check = await servicePreflight();
   if (!check.readyForQuotePreparation)
@@ -38,7 +42,15 @@ try {
   );
   const child = spawn(
     process.execPath,
-    ['node_modules/next/dist/bin/next', 'start', '-H', '127.0.0.1', '-p', '4320'],
+    [
+      'node_modules/next/dist/bin/next',
+      development ? 'dev' : 'start',
+      ...(development ? ['--webpack'] : []),
+      '-H',
+      '127.0.0.1',
+      '-p',
+      '4320',
+    ],
     { env, stdio: 'inherit' },
   );
   for (const signal of ['SIGINT', 'SIGTERM'] as const)

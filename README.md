@@ -4,6 +4,8 @@
 
 ## HOW TO TEST PAYGUARD VERIFY
 
+**Owner completing the Mainnet experiment:** [the prepared-digest investigation and corrected four-step purchase](docs/PAYMENT_ATTEMPTS.md) explains why the two unsigned hashes were absent from SuiScan. Use `npm run owner:local:live` in the existing configured checkout, then **Request payment quote → Review 0.001 SUI purchase → Sign and submit in wallet → Verify payment and view analysis report** at `http://localhost:4320/services`. Each exact transaction needs your own application approval and wallet signature. No new wallet, funding or conversion is needed. **Zero genuine service settlements are currently recorded.**
+
 ### Option A — Try in under three minutes
 
 Open [the live app](https://payguard-ai-henna.vercel.app/) or go directly to **[the interactive demo](https://payguard-ai-henna.vercel.app/try)**. No wallet, account, funds or credentials are required. Use **Next Step** through these seven stages:

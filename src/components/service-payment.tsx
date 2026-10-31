@@ -22,6 +22,17 @@ import { api, Badge, Field } from './ui';
 import { WALLET_REVIEW_MESSAGE } from '@/lib/wallet-policy';
 import { PaymentSetup } from './payment-setup';
 import { Brand } from './brand';
+import { serviceDiagnostic } from '@/lib/service-diagnostics';
+import { ServicePaymentTimeline } from './service-payment-timeline';
+type PaymentProgress = {
+  prepared?: { bytes: string; digest: string; preparedAt: string } | null;
+  executionDigest?: string | null;
+  approvalSessionMatches?: boolean;
+  walletAttempted?: boolean;
+  submitted?: boolean;
+  confirming?: boolean;
+  diagnostic?: ReturnType<typeof serviceDiagnostic> | null;
+};
 type WalletAccount = { address: string; chains: readonly string[]; features: readonly string[] };
 type WalletFeatures = {
   'standard:connect'?: { connect: () => Promise<{ accounts: WalletAccount[] }> };
@@ -82,10 +93,13 @@ export function ServicePayment() {
     [securityCleared, setSecurityCleared] = useState(false),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(''),
+    [statusMessage, setStatusMessage] = useState(''),
     [receipt, setReceipt] = useState<Record<string, unknown>>(),
     [pending, setPending] = useState(false),
     [paymentState, setPaymentState] = useState(''),
     [pendingDigest, setPendingDigest] = useState(''),
+    [progress, setProgress] = useState<PaymentProgress>(),
+    [storedBytes, setStoredBytes] = useState<{ bytes: string; digest: string }>(),
     [consent, setConsent] = useState(false),
     [now, setNow] = useState(() => Date.now()),
     [prepared, setPrepared] = useState<{
@@ -106,6 +120,7 @@ export function ServicePayment() {
         challenge: ServiceChallenge;
         expiresAt: string;
         digest?: string | null;
+        prepared?: { bytes: string; digest: string } | null;
       }[]
     >([]);
   const quoteExpired = !!quote && Date.parse(quote.expiresAt) <= now;
@@ -191,6 +206,23 @@ export function ServicePayment() {
       ),
     );
   }
+  async function resumeExistingPayment() {
+    if (!quote) return;
+    const r = await request('/' + quote.id + '/resume', {});
+    setProgress(r.progress);
+    setPending(r.state === 'pending');
+    setPaymentState(r.state);
+    trackState(quote.id, r.state, r.digest);
+    setStatusMessage(
+      r.message ||
+        (r.receipt
+          ? 'Finalized merchant credit verified; analysis report is available.'
+          : 'No finalized payment or delivered report is recorded.'),
+    );
+    if (r.digest) setPendingDigest(r.digest);
+    if (r.receipt) setReceipt(r.receipt);
+    if (r.progress?.walletAttempted) setSignatureAttempted(true);
+  }
   async function prepare() {
     if (!preparationAllowed) throw new Error(WALLET_REVIEW_MESSAGE);
     if (!quote || !consent) throw new Error('Review and approve every term first');
@@ -244,12 +276,22 @@ export function ServicePayment() {
       gasPrice: systemState.referenceGasPrice,
       nonce: crypto.getRandomValues(new Uint32Array(1))[0],
     });
-    const bytes = toBase64(await tx.build({ client }));
+    const bytes = storedBytes?.bytes || toBase64(await tx.build({ client }));
     validateServiceTransaction(bytes, terms, account.address);
-    await request('/' + quote.id + '/approve', { approved: true, payer: account.address });
+    const approved = await request('/' + quote.id + '/approve', {
+      approved: true,
+      payer: account.address,
+      transaction: bytes,
+    });
+    const digest = await Transaction.from(bytes).getDigest();
+    if (approved.prepared && approved.prepared.digest !== digest)
+      throw new Error(
+        'Saved preparation differs from the displayed transaction. No signature requested.',
+      );
+    setStoredBytes({ bytes, digest });
     setPrepared({
       bytes,
-      digest: await tx.getDigest(),
+      digest,
       account,
       features,
       walletName: selectedWallet.id || selectedWallet.name,
@@ -283,15 +325,47 @@ export function ServicePayment() {
     )
       throw new Error('Wallet account changed. Reconnect the exact approved payer before signing.');
     validateServiceTransaction(prepared.bytes, terms, prepared.account.address);
+    const attemptKey = 'payguard:service-sign-attempt:' + quote.id;
+    if (localStorage.getItem(attemptKey))
+      throw new Error(
+        'This exact transaction already had a wallet attempt. Resume existing payment; no repeat signature will be requested.',
+      );
+    localStorage.setItem(
+      attemptKey,
+      JSON.stringify({ digest: prepared.digest, at: new Date().toISOString() }),
+    );
     setSignatureAttempted(true);
     setPending(true);
     setPaymentState('awaiting-wallet');
-    const signed = await prepared.features['sui:signTransaction']!.signTransaction({
-      // The separate fresh click opens Slush before any network work, including Google-login popups.
-      transaction: { toJSON: () => Transaction.from(prepared.bytes).toJSON() },
-      account: prepared.account,
-      chain: terms.network,
-    });
+    let signed: { bytes: string; signature: string };
+    try {
+      // Invoke the official wallet before awaiting any server diagnostic, preserving popup activation.
+      const signing = prepared.features['sui:signTransaction']!.signTransaction({
+        // The separate fresh click opens Slush before any network work, including Google-login popups.
+        transaction: { toJSON: () => Transaction.from(prepared.bytes).toJSON() },
+        account: prepared.account,
+        chain: terms.network,
+      });
+      void request('/' + quote.id + '/events', {
+        phase: 'requested',
+        preparedDigest: prepared.digest,
+      }).catch(() => {});
+      signed = await signing;
+    } catch (e) {
+      const diagnostic = serviceDiagnostic('wallet-signing', e);
+      setPaymentState('wallet-error');
+      setPending(diagnostic.code !== '4001');
+      setProgress((previous) => ({ ...previous, diagnostic }));
+      void request('/' + quote.id + '/events', {
+        phase: 'error',
+        preparedDigest: prepared.digest,
+        code: diagnostic.code,
+        message: diagnostic.message,
+      }).catch(() => {});
+      throw new Error(
+        `Slush / wallet signing ${diagnostic.code}: ${diagnostic.message} No signed payload was submitted by PayGuard. Resume this record; no automatic retry.`,
+      );
+    }
     if (signed.bytes !== prepared.bytes)
       throw new Error(
         'Wallet changed approved transaction bytes; nothing was submitted by PayGuard',
@@ -305,6 +379,11 @@ export function ServicePayment() {
       accepted: terms,
       payload: { transaction: signed.bytes, signature: signed.signature },
     });
+    setProgress(r.progress);
+    setStatusMessage(
+      r.message ||
+        (r.receipt ? 'Tatum finalized merchant credit; the analysis report is delivered.' : ''),
+    );
     setPending(r.state === 'pending');
     setPaymentState(r.state);
     trackState(quote.id, r.state, r.digest);
@@ -472,6 +551,9 @@ export function ServicePayment() {
                     onClick={() =>
                       void run(async () => {
                         setQuote({ ...i.challenge, id: i.id, expiresAt: i.expiresAt });
+                        setStatusMessage('');
+                        setStoredBytes(i.prepared || undefined);
+                        setProgress(undefined);
                         setInvoice(i.invoiceId);
                         setReceipt(undefined);
                         setConsent(false);
@@ -480,6 +562,13 @@ export function ServicePayment() {
                         setSignatureAttempted(false);
                         setPendingDigest(i.digest || '');
                         const r = await request('/' + i.id + '/resume', {});
+                        setProgress(r.progress);
+                        if (r.progress?.prepared) setStoredBytes(r.progress.prepared);
+                        if (
+                          r.progress?.walletAttempted ||
+                          localStorage.getItem('payguard:service-sign-attempt:' + i.id)
+                        )
+                          setSignatureAttempted(true);
                         setPending(r.state === 'pending');
                         setPaymentState(r.state);
                         trackState(i.id, r.state, r.digest);
@@ -562,6 +651,9 @@ export function ServicePayment() {
                       network,
                     );
                     setQuote(r);
+                    setStatusMessage('');
+                    setStoredBytes(undefined);
+                    setProgress(undefined);
                     setSaved((items) => [
                       {
                         id: r.id,
@@ -584,11 +676,28 @@ export function ServicePayment() {
                   })
                 }
               >
-                Request exact service terms
+                Request payment quote
               </button>
               {quote && (
                 <>
                   <h3>Payment required · x402 v2</h3>
+                  <ServicePaymentTimeline
+                    quoteId={quote.id}
+                    preparedDigest={prepared?.digest || storedBytes?.digest}
+                    phase={paymentState}
+                    progress={progress}
+                    receipt={receipt}
+                  />
+                  <button
+                    className="button outline"
+                    disabled={busy}
+                    onClick={() => void run(resumeExistingPayment)}
+                  >
+                    {receipt
+                      ? 'Verify payment and view analysis report'
+                      : 'Resume existing payment'}
+                  </button>
+                  {statusMessage && <p role="status">{statusMessage}</p>}
                   <p>Reason for this quote: {quote.resource.description}</p>
                   {quoteExpired && !receipt && (
                     <p role="status">
@@ -606,6 +715,7 @@ export function ServicePayment() {
                             await request('/' + quote.id + '/cancel', {});
                           if (paymentState !== 'failed') trackState(quote.id, 'cancelled');
                           setQuote(undefined);
+                          setStatusMessage('');
                           setConsent(false);
                         })
                       }
@@ -736,7 +846,7 @@ export function ServicePayment() {
                     }
                     onClick={() => void run(prepare)}
                   >
-                    {busy ? 'Checking…' : 'Approve terms and prepare transaction · no signature'}
+                    {busy ? 'Checking…' : 'Review 0.001 SUI purchase · prepare'}
                   </button>
                   {preparationAllowed && (
                     <button
@@ -787,7 +897,7 @@ export function ServicePayment() {
                         }
                         onClick={() => void run(signPrepared)}
                       >
-                        Review and sign exact purchase in wallet
+                        Sign and submit in wallet
                       </button>
                     </>
                   )}
@@ -804,24 +914,6 @@ export function ServicePayment() {
                           ? 'Wallet signing has not completed or returned a verified response. No new signature will be requested automatically. Check the existing intent before doing anything else.'
                           : 'Submission or independent Tatum confirmation is pending. Resume the same digest; do not pay again.'}
                       </p>
-                      <button
-                        className="button outline"
-                        disabled={busy}
-                        onClick={() =>
-                          void run(async () => {
-                            const r = await request('/' + quote.id + '/resume', {});
-                            setPending(r.state === 'pending');
-                            setPaymentState(r.state);
-                            trackState(quote.id, r.state, r.digest);
-                            if (r.digest) setPendingDigest(r.digest);
-                            if (r.state === 'failed')
-                              setError(r.message || 'Tatum confirmed failed execution.');
-                            if (r.receipt) setReceipt(r.receipt);
-                          })
-                        }
-                      >
-                        Resume settlement check
-                      </button>
                     </>
                   )}
                   {receipt && (
@@ -831,6 +923,7 @@ export function ServicePayment() {
                         className="button outline"
                         onClick={() => {
                           setQuote(undefined);
+                          setStatusMessage('');
                           setReceipt(undefined);
                           setConsent(false);
                           setPaymentState('');

@@ -41,8 +41,11 @@ test.describe('isolated service UI contracts; all financial and memory responses
       await context.close();
     }
   });
-  async function pageFixture(signing = false, preparation = signing) {
+  async function pageFixture(signing = false, preparation = signing, rejectSignature = false) {
     const page = await context.newPage();
+    await page.addInitScript(() =>
+      localStorage.removeItem('payguard:service-sign-attempt:d0000000-0000-4000-8000-000000000001'),
+    );
     const calls = { quote: 0, remember: 0, approve: 0, settle: 0 };
     const challenge = (id: string) => ({
       x402Version: 2,
@@ -125,10 +128,18 @@ test.describe('isolated service UI contracts; all financial and memory responses
     });
     await page.route('**/api/service-payments/*/*', async (route) => {
       const path = new URL(route.request().url()).pathname;
+      if (path.endsWith('/events')) return route.fulfill({ json: { recorded: true } });
       if (path.endsWith('/approve')) {
         calls.approve++;
         if (!preparation) throw Error('Fixture unexpectedly attempted approval');
-        expect(route.request().postDataJSON()).toEqual({ approved: true, payer });
+        const input = route.request().postDataJSON();
+        expect(input.approved).toBe(true);
+        expect(input.payer).toBe(payer);
+        validateServiceTransaction(
+          input.transaction,
+          serviceTermsSchema.parse(challenge(quotedId).accepts[0]),
+          payer,
+        );
         return route.fulfill({ json: { approved: true } });
       }
       if (path.endsWith('/remember')) {
@@ -237,7 +248,7 @@ test.describe('isolated service UI contracts; all financial and memory responses
         return { bytes, signature: 'Zml4dHVyZQ==' }; // Deliberately not a real signature.
       });
       await page.addInitScript(
-        ({ payer }) => {
+        ({ payer, rejectSignature }) => {
           const stats = { sign: 0, execute: 0 };
           Object.assign(window, { serviceFixtureStats: stats });
           const account = {
@@ -267,6 +278,10 @@ test.describe('isolated service UI contracts; all financial and memory responses
                   chain: string;
                 }) => {
                   stats.sign++;
+                  if (rejectSignature)
+                    throw Object.assign(new Error('User rejected the transaction in Slush.'), {
+                      code: 4001,
+                    });
                   if (input.chain !== 'sui:mainnet' || input.account.address !== payer)
                     throw new Error('Wrong fixture signer');
                   return (
@@ -295,12 +310,12 @@ test.describe('isolated service UI contracts; all financial and memory responses
             }),
           );
         },
-        { payer },
+        { payer, rejectSignature },
       );
     }
     await visit(page, '/services');
     await expect(
-      page.getByRole('button', { name: 'Request exact service terms', exact: true }),
+      page.getByRole('button', { name: 'Request payment quote', exact: true }),
     ).toBeEnabled();
     return {
       page,
@@ -313,11 +328,11 @@ test.describe('isolated service UI contracts; all financial and memory responses
   test('validates a 402 quote, enforces the signing pause and expires without opening a wallet', async () => {
     const { page, calls } = await pageFixture();
     await page.clock.install();
-    await page.getByRole('button', { name: 'Request exact service terms', exact: true }).click();
+    await page.getByRole('button', { name: 'Request payment quote', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'Payment required · x402 v2' })).toBeVisible();
     await expect(page.locator('[aria-label="Selected invoice details"]')).toContainText(invoiceId);
     const approve = page.getByRole('button', {
-      name: 'Approve terms and prepare transaction · no signature',
+      name: 'Review 0.001 SUI purchase · prepare',
       exact: true,
     });
     await expect(approve).toBeDisabled();
@@ -368,17 +383,17 @@ test.describe('isolated service UI contracts; all financial and memory responses
   });
   test('separates preparation and one wallet signature, then delivers an owned analysis receipt (fully mocked)', async () => {
     const { page, calls } = await pageFixture(true);
-    await page.getByRole('button', { name: 'Request exact service terms', exact: true }).click();
+    await page.getByRole('button', { name: 'Request payment quote', exact: true }).click();
     await page.getByRole('checkbox').last().check();
     await page.getByLabel('Signing wallet').selectOption('payguard-service-fixture');
     await page
       .getByRole('button', {
-        name: 'Approve terms and prepare transaction · no signature',
+        name: 'Review 0.001 SUI purchase · prepare',
         exact: true,
       })
       .click();
     const sign = page.getByRole('button', {
-      name: 'Review and sign exact purchase in wallet',
+      name: 'Sign and submit in wallet',
       exact: true,
     });
     await expect(sign).toBeEnabled();
@@ -411,17 +426,17 @@ test.describe('isolated service UI contracts; all financial and memory responses
   });
   test('prepares exact approved bytes with settlement disabled and never opens signing (fully mocked)', async () => {
     const { page, calls, enableSigning } = await pageFixture(false, true);
-    await page.getByRole('button', { name: 'Request exact service terms', exact: true }).click();
+    await page.getByRole('button', { name: 'Request payment quote', exact: true }).click();
     await page.getByRole('checkbox').last().check();
     await page.getByLabel('Signing wallet').selectOption('payguard-service-fixture');
     await page
       .getByRole('button', {
-        name: 'Approve terms and prepare transaction · no signature',
+        name: 'Review 0.001 SUI purchase · prepare',
         exact: true,
       })
       .click();
     await expect(
-      page.getByRole('button', { name: 'Review and sign exact purchase in wallet', exact: true }),
+      page.getByRole('button', { name: 'Sign and submit in wallet', exact: true }),
     ).toBeDisabled();
     const prepared = await page.locator('.service-prepared-digest').first().textContent();
     enableSigning();
@@ -429,7 +444,7 @@ test.describe('isolated service UI contracts; all financial and memory responses
       .getByRole('button', { name: 'Refresh payment controls · no signing', exact: true })
       .click();
     await expect(
-      page.getByRole('button', { name: 'Review and sign exact purchase in wallet', exact: true }),
+      page.getByRole('button', { name: 'Sign and submit in wallet', exact: true }),
     ).toBeEnabled();
     expect(await page.locator('.service-prepared-digest').first().textContent()).toBe(prepared);
     expect(calls.approve).toBe(1);
@@ -441,6 +456,27 @@ test.describe('isolated service UI contracts; all financial and memory responses
             .serviceFixtureStats,
       ),
     ).toEqual({ sign: 0, execute: 0 });
+    await page.close();
+  });
+  test('shows the real wallet rejection without submission or an automatic retry (mock wallet)', async () => {
+    const { page, calls } = await pageFixture(true, true, true);
+    await page.getByRole('button', { name: 'Request payment quote', exact: true }).click();
+    await page.getByRole('checkbox').last().check();
+    await page.getByLabel('Signing wallet').selectOption('payguard-service-fixture');
+    await page
+      .getByRole('button', { name: 'Review 0.001 SUI purchase · prepare', exact: true })
+      .click();
+    const sign = page.getByRole('button', { name: 'Sign and submit in wallet', exact: true });
+    await expect(sign).toBeEnabled();
+    await sign.click();
+    await expect(page.locator('.error-banner')).toContainText(
+      '4001: User rejected the transaction in Slush.',
+    );
+    await expect(sign).toBeDisabled();
+    expect(calls.settle).toBe(0);
+    await expect(page.getByLabel('Payment status timeline')).toContainText(
+      'No signed submission received',
+    );
     await page.close();
   });
 });
