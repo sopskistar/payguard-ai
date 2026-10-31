@@ -113,8 +113,14 @@ async function handle(req: NextRequest, context: { params: Promise<{ path: strin
       );
     }
     if (route === 'auth/wallet/status' && method === 'GET') {
-      const { walletOnboardingAllowed } = await import('@/lib/wallet-policy');
-      return json({ allowed: walletOnboardingAllowed(), review: 'Slush domain review pending' });
+      const { walletOnboardingAllowed, slushOnboardingBlocked, serviceWalletSigningAllowed } =
+        await import('@/lib/wallet-policy');
+      return json({
+        allowed: walletOnboardingAllowed(),
+        slushBlocked: slushOnboardingBlocked(),
+        paymentSigningAllowed: serviceWalletSigningAllowed(),
+        review: 'Slush production domain review pending; never override provider warnings',
+      });
     }
     if (route === 'auth/wallet/challenge' && method === 'POST') {
       const input = z

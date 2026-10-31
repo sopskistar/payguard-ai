@@ -44,7 +44,10 @@ async function request(path: string, body: unknown) {
     body: JSON.stringify(payment ? {} : body),
   });
   const result = await r.json();
-  if (!r.ok && r.status !== 402) throw new Error(result.error || 'Service request unavailable');
+  if (!r.ok && r.status !== 402)
+    throw new Error(
+      `${result.code ? result.code + ': ' : ''}${result.error || 'Service request unavailable'}`,
+    );
   if (r.status === 402) {
     const encoded = r.headers.get('PAYMENT-REQUIRED');
     if (!encoded || encoded.length > 12000)
@@ -70,6 +73,7 @@ export function ServicePayment() {
     [quote, setQuote] = useState<ServiceChallenge & { id: string; expiresAt: string }>(),
     [configured, setConfigured] = useState(false),
     [signingAllowed, setSigningAllowed] = useState(false),
+    [preparationAllowed, setPreparationAllowed] = useState(false),
     [network, setNetwork] = useState<ServiceNetwork>('sui:mainnet'),
     [proposal, setProposal] = useState<Record<string, unknown>>(),
     [walletNames, setWalletNames] = useState<{ id: string; name: string }[]>([]),
@@ -81,6 +85,7 @@ export function ServicePayment() {
     [receipt, setReceipt] = useState<Record<string, unknown>>(),
     [pending, setPending] = useState(false),
     [paymentState, setPaymentState] = useState(''),
+    [pendingDigest, setPendingDigest] = useState(''),
     [consent, setConsent] = useState(false),
     [now, setNow] = useState(() => Date.now()),
     [prepared, setPrepared] = useState<{
@@ -100,9 +105,11 @@ export function ServicePayment() {
         invoiceId: string;
         challenge: ServiceChallenge;
         expiresAt: string;
+        digest?: string | null;
       }[]
     >([]);
   const quoteExpired = !!quote && Date.parse(quote.expiresAt) <= now;
+  const selectedInvoice = data?.invoices.find((i) => i.id === invoiceId);
   useEffect(() => {
     if (!quote) return;
     const timer = setInterval(() => setNow(Date.now()), 1000);
@@ -119,6 +126,7 @@ export function ServicePayment() {
           api<{
             configured: boolean;
             signingAllowed: boolean;
+            preparationAllowed?: boolean;
             securityCleared: boolean;
             network: ServiceNetwork;
             dedicatedPayer: string | null;
@@ -127,6 +135,7 @@ export function ServicePayment() {
             .then((r) => {
               setConfigured(r.configured);
               setSigningAllowed(r.signingAllowed);
+              setPreparationAllowed(r.preparationAllowed ?? r.signingAllowed);
               setNetwork(r.network);
               setDedicatedPayer(r.dedicatedPayer);
               setSecurityCleared(r.securityCleared);
@@ -137,7 +146,7 @@ export function ServicePayment() {
       .catch((e) => setError(e.message));
   }, []);
   useEffect(() => {
-    if (!signingAllowed) return;
+    if (!preparationAllowed) return;
     const registry = getWallets();
     const update = () =>
       setWalletNames(
@@ -161,7 +170,7 @@ export function ServicePayment() {
       offRegister();
       offUnregister();
     };
-  }, [signingAllowed, network]);
+  }, [preparationAllowed, network]);
   async function run(fn: () => Promise<void>) {
     setBusy(true);
     setError('');
@@ -173,12 +182,26 @@ export function ServicePayment() {
       setBusy(false);
     }
   }
+  function trackState(id: string, state: string, digest?: string) {
+    setSaved((items) =>
+      items.map((i) =>
+        i.id === id
+          ? { ...i, state: state === 'pending' ? 'settling' : state, ...(digest ? { digest } : {}) }
+          : i,
+      ),
+    );
+  }
   async function prepare() {
-    if (!signingAllowed) throw new Error(WALLET_REVIEW_MESSAGE);
+    if (!preparationAllowed) throw new Error(WALLET_REVIEW_MESSAGE);
     if (!quote || !consent) throw new Error('Review and approve every term first');
     if (Date.parse(quote.expiresAt) <= Date.now())
       throw new Error('Quote expired. Review fresh terms before approval.');
     const terms = serviceTermsSchema.parse(quote.accepts[0]);
+    parseServiceChallenge(
+      { x402Version: quote.x402Version, resource: quote.resource, accepts: quote.accepts },
+      window.location.origin,
+      network,
+    );
     if (terms.network !== network)
       throw new Error('Quote network differs from the selected server mode. Request fresh terms.');
     const chain = serviceNetworkInfo(terms.network);
@@ -233,6 +256,7 @@ export function ServicePayment() {
       quoteId: quote.id,
     });
     setPaymentState('approved');
+    trackState(quote.id, 'approved');
   }
   async function signPrepared() {
     if (!signingAllowed) throw new Error(WALLET_REVIEW_MESSAGE);
@@ -274,6 +298,7 @@ export function ServicePayment() {
       );
     // A lost response is indeterminate. Resume the same intent instead of signing/paying again.
     setPaymentState('submission-uncertain');
+    setPendingDigest(prepared.digest);
     const r = await request('/' + quote.id, {
       x402Version: 2,
       resource: quote.resource,
@@ -282,6 +307,7 @@ export function ServicePayment() {
     });
     setPending(r.state === 'pending');
     setPaymentState(r.state);
+    trackState(quote.id, r.state, r.digest);
     if (r.state === 'failed')
       setError(r.message || 'Tatum confirmed failed execution. No service receipt was created.');
     if (r.receipt) setReceipt(r.receipt);
@@ -305,8 +331,10 @@ export function ServicePayment() {
         </p>
         <div className="notice">
           This buys a PayGuard first-party analysis report, not supplier payment or independent
-          identity verification. Mainnet and development Testnet are supported. No genuine service
-          settlement has been demonstrated yet.
+          identity verification. Mainnet and development Testnet are supported.{' '}
+          {saved.some((i) => i.state === 'settled')
+            ? 'A saved settled intent exists; inspect its independently verified receipt and delivered report.'
+            : 'No genuine service settlement has been demonstrated yet.'}
         </div>
         {!signingAllowed && (
           <div role="status" className="notice">
@@ -314,6 +342,20 @@ export function ServicePayment() {
               ? WALLET_REVIEW_MESSAGE
               : 'Settlement remains disabled pending exact owner authorization.'}{' '}
             Service terms may be prepared, but wallet signing and new settlement are blocked.
+            {!securityCleared && (
+              <p>
+                The owner-operated localhost workflow runs this same application with its own
+                authenticated session and wallet checks. It does not clear or override Slush’s
+                production warning.{' '}
+                <Link
+                  className="inline-link"
+                  href="https://github.com/sopskistar/payguard-ai/blob/main/docs/LOCAL_OWNER_PAYMENT.md"
+                >
+                  Exact local purchase instructions
+                </Link>
+                .
+              </p>
+            )}
           </div>
         )}
         {!data ? (
@@ -334,6 +376,34 @@ export function ServicePayment() {
             <PaymentSetup states={saved.map((i) => i.state)} />
             <section className="panel">
               <h2>First-party invoice consistency analysis</h2>
+              <button
+                className="button outline"
+                disabled={busy}
+                onClick={() =>
+                  void run(async () => {
+                    const r = await api<{
+                      configured: boolean;
+                      signingAllowed: boolean;
+                      preparationAllowed: boolean;
+                      securityCleared: boolean;
+                      network: ServiceNetwork;
+                      dedicatedPayer: string | null;
+                    }>('service-payments');
+                    if (quote && (r.network !== network || r.dedicatedPayer !== dedicatedPayer))
+                      throw new Error(
+                        'Payment party or network configuration changed. Cancel the unsigned quote and inspect fresh terms.',
+                      );
+                    setConfigured(r.configured);
+                    setSigningAllowed(r.signingAllowed);
+                    setPreparationAllowed(r.preparationAllowed);
+                    setSecurityCleared(r.securityCleared);
+                    setNetwork(r.network);
+                    setDedicatedPayer(r.dedicatedPayer);
+                  })
+                }
+              >
+                Refresh payment controls · no signing
+              </button>
               <button
                 className="button outline"
                 disabled={busy}
@@ -408,9 +478,12 @@ export function ServicePayment() {
                         setMemory('');
                         setPrepared(undefined);
                         setSignatureAttempted(false);
+                        setPendingDigest(i.digest || '');
                         const r = await request('/' + i.id + '/resume', {});
                         setPending(r.state === 'pending');
                         setPaymentState(r.state);
+                        trackState(i.id, r.state, r.digest);
+                        if (r.digest) setPendingDigest(r.digest);
                         if (r.state === 'failed')
                           setError(
                             'Tatum confirmed failed execution. No service receipt was created.',
@@ -445,11 +518,38 @@ export function ServicePayment() {
                     .filter((i: Invoice) => i.status !== 'paid')
                     .map((i) => (
                       <option key={i.id} value={i.id}>
-                        {i.vendor} · {i.number}
+                        {i.vendor} · {i.number} · {i.status} ·{' '}
+                        {i.isDemo ? 'sample' : 'stored record'} · {i.id.slice(0, 8)}
                       </option>
                     ))}
                 </select>
               </Field>
+              {selectedInvoice && (
+                <dl className="detail-list" aria-label="Selected invoice details">
+                  <div>
+                    <dt>Selected invoice</dt>
+                    <dd>
+                      {selectedInvoice.vendor} · {selectedInvoice.number}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Record ID</dt>
+                    <dd>
+                      <code>{selectedInvoice.id}</code>
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Context</dt>
+                    <dd>
+                      {selectedInvoice.isDemo
+                        ? 'Synthetic sample saved in this workspace'
+                        : 'Saved workspace record; not independently certified'}{' '}
+                      · {selectedInvoice.status} · issued {selectedInvoice.issued} ·{' '}
+                      {selectedInvoice.amount} {selectedInvoice.currency}
+                    </dd>
+                  </div>
+                </dl>
+              )}
               <button
                 className="button primary"
                 disabled={!configured || busy || !!quote}
@@ -462,9 +562,24 @@ export function ServicePayment() {
                       network,
                     );
                     setQuote(r);
+                    setSaved((items) => [
+                      {
+                        id: r.id,
+                        state: 'quoted',
+                        invoiceId,
+                        challenge: {
+                          x402Version: r.x402Version,
+                          resource: r.resource,
+                          accepts: r.accepts,
+                        },
+                        expiresAt: r.expiresAt,
+                      },
+                      ...items.filter((i) => i.id !== r.id),
+                    ]);
                     setNow(Date.now());
                     setPrepared(undefined);
                     setSignatureAttempted(false);
+                    setPendingDigest('');
                     setPaymentState('quoted');
                   })
                 }
@@ -489,6 +604,7 @@ export function ServicePayment() {
                         void run(async () => {
                           if (paymentState !== 'failed')
                             await request('/' + quote.id + '/cancel', {});
+                          if (paymentState !== 'failed') trackState(quote.id, 'cancelled');
                           setQuote(undefined);
                           setConsent(false);
                         })
@@ -589,7 +705,7 @@ export function ServicePayment() {
                     terms for this first-party report. The wallet will separately request my
                     signature.
                   </label>
-                  {signingAllowed && (
+                  {preparationAllowed && (
                     <Field label="Signing wallet">
                       <select
                         disabled={busy || !!prepared}
@@ -608,7 +724,7 @@ export function ServicePayment() {
                   <button
                     className="button primary"
                     disabled={
-                      !signingAllowed ||
+                      !preparationAllowed ||
                       busy ||
                       !consent ||
                       pending ||
@@ -622,7 +738,7 @@ export function ServicePayment() {
                   >
                     {busy ? 'Checking…' : 'Approve terms and prepare transaction · no signature'}
                   </button>
-                  {signingAllowed && (
+                  {preparationAllowed && (
                     <button
                       className="button outline"
                       disabled={busy || !!prepared || signatureAttempted}
@@ -677,6 +793,12 @@ export function ServicePayment() {
                   )}
                   {pending && (
                     <>
+                      {pendingDigest && (
+                        <p className="service-prepared-digest">
+                          Original digest to reconcile: <code>{pendingDigest}</code>. This is not
+                          confirmation of success.
+                        </p>
+                      )}
                       <p role="status">
                         {paymentState === 'awaiting-wallet'
                           ? 'Wallet signing has not completed or returned a verified response. No new signature will be requested automatically. Check the existing intent before doing anything else.'
@@ -690,6 +812,8 @@ export function ServicePayment() {
                             const r = await request('/' + quote.id + '/resume', {});
                             setPending(r.state === 'pending');
                             setPaymentState(r.state);
+                            trackState(quote.id, r.state, r.digest);
+                            if (r.digest) setPendingDigest(r.digest);
                             if (r.state === 'failed')
                               setError(r.message || 'Tatum confirmed failed execution.');
                             if (r.receipt) setReceipt(r.receipt);

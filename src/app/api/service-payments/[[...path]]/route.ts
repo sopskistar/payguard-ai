@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { requireOwner, currentActor, checkOrigin, rateLimit } from '@/lib/auth';
 import { AppError, safeError } from '@/lib/errors';
-import { walletOnboardingAllowed } from '@/lib/wallet-policy';
+import { serviceWalletSigningAllowed } from '@/lib/wallet-policy';
 import {
   SERVICE_SESSION_CAP,
   serviceAddressSchema,
@@ -12,6 +12,7 @@ import {
   serviceReady,
   serviceMode,
   serviceSettlementEnabled,
+  servicePreparationAllowed,
   listServiceIntents,
   quoteService,
   approveService,
@@ -59,7 +60,8 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
           mainnetImplemented: true,
           mainnetEnabled: serviceMode() === 'sui:mainnet' && serviceSettlementEnabled(),
           signingAllowed: serviceSettlementEnabled(),
-          securityCleared: walletOnboardingAllowed(),
+          preparationAllowed: servicePreparationAllowed(),
+          securityCleared: serviceWalletSigningAllowed(),
           sessionCapAtomic: SERVICE_SESSION_CAP,
           dedicatedPayer: serviceAddressSchema.safeParse(process.env.SERVICE_PAYMENT_PAYER).success
             ? process.env.SERVICE_PAYMENT_PAYER
@@ -175,7 +177,15 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
     });
   } catch (e) {
     return NextResponse.json(
-      { error: e instanceof z.ZodError ? 'Invalid payment request' : safeError(e) },
+      {
+        error: e instanceof z.ZodError ? 'Invalid payment request' : safeError(e),
+        code:
+          e instanceof AppError
+            ? e.code
+            : e instanceof z.ZodError
+              ? 'INVALID_REQUEST'
+              : 'SERVICE_UNAVAILABLE',
+      },
       { status: e instanceof AppError ? e.status : e instanceof z.ZodError ? 400 : 500 },
     );
   }

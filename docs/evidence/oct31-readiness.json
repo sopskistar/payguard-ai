@@ -1,0 +1,333 @@
+{
+  "checkedAt": "2026-10-31T10:16:14.899Z",
+  "spending": false,
+  "memoryWrites": false,
+  "release": "9f5d854cdc299d79fb7303292e8f67cdb855f317",
+  "configuration": {
+    "payerMatches": true,
+    "recipientMatches": true,
+    "quoteEnabled": true,
+    "settlementEnabled": false,
+    "securityCleared": false
+  },
+  "check": {
+    "state": "passed",
+    "preflight": {
+      "checkedAt": "2026-10-31T10:16:21.397Z",
+      "spending": false,
+      "diagnostics": [
+        {
+          "stage": "configuration",
+          "label": "Deployed read-only payment configuration",
+          "status": "passed",
+          "checkedAt": "2026-10-31T10:16:19.156Z",
+          "classification": "verified",
+          "code": "OK",
+          "message": "Read-only check succeeded.",
+          "action": ""
+        },
+        {
+          "stage": "tentacle.supported",
+          "label": "Tentacle x402 v2 exact sponsorship",
+          "status": "passed",
+          "checkedAt": "2026-10-31T10:16:19.378Z",
+          "classification": "verified",
+          "code": "OK",
+          "message": "Read-only check succeeded.",
+          "action": ""
+        },
+        {
+          "stage": "tatum.connection",
+          "label": "Tatum native gRPC connection and authentication",
+          "status": "passed",
+          "checkedAt": "2026-10-31T10:16:19.435Z",
+          "classification": "verified",
+          "code": "OK",
+          "message": "Read-only check succeeded.",
+          "action": ""
+        },
+        {
+          "stage": "tatum.chain",
+          "label": "Sui Mainnet chain identity",
+          "status": "passed",
+          "checkedAt": "2026-10-31T10:16:19.435Z",
+          "classification": "verified",
+          "code": "OK",
+          "message": "Read-only check succeeded.",
+          "action": ""
+        },
+        {
+          "stage": "tatum.native_sui",
+          "label": "Native SUI identity and units",
+          "status": "passed",
+          "checkedAt": "2026-10-31T10:16:19.899Z",
+          "classification": "verified",
+          "code": "OK",
+          "message": "Read-only check succeeded.",
+          "action": ""
+        },
+        {
+          "stage": "tatum.protocol",
+          "label": "Address-balance gas protocol feature",
+          "status": "passed",
+          "checkedAt": "2026-10-31T10:16:20.403Z",
+          "classification": "verified",
+          "code": "OK",
+          "message": "Read-only check succeeded.",
+          "action": ""
+        },
+        {
+          "stage": "balance.payer",
+          "label": "Wallet A native SUI balance",
+          "status": "passed",
+          "checkedAt": "2026-10-31T10:16:20.895Z",
+          "classification": "verified",
+          "code": "OK",
+          "message": "Read-only check succeeded.",
+          "action": ""
+        },
+        {
+          "stage": "balance.recipient",
+          "label": "Wallet B native SUI balance",
+          "status": "passed",
+          "checkedAt": "2026-10-31T10:16:21.396Z",
+          "classification": "verified",
+          "code": "OK",
+          "message": "Read-only check succeeded.",
+          "action": ""
+        },
+        {
+          "stage": "configuration.parties",
+          "label": "Payer, merchant and sponsor separation",
+          "status": "passed",
+          "checkedAt": "2026-10-31T10:16:21.397Z",
+          "classification": "verified",
+          "code": "OK",
+          "message": "Read-only check succeeded.",
+          "action": ""
+        }
+      ],
+      "readyForExactApproval": false,
+      "readyForQuotePreparation": true,
+      "configurationReady": true,
+      "sufficientlyFunded": true,
+      "missing": [],
+      "partiesDistinct": true,
+      "payer": "0xc0f3fbf8a029fe354571b58d9e079c1aa4e9ca111a2b025dca470d4bc96397a8",
+      "recipient": "0x99eac0f7be358adf9f96ce0490392f356332af96376aadf11d829a529c1a189e",
+      "network": "sui:mainnet",
+      "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+      "asset": "0x2::sui::SUI",
+      "decimals": 9,
+      "amountAtomic": "1000000",
+      "amount": "0.001 SUI",
+      "sessionCapAtomic": "3000000",
+      "provider": "PayGuard first-party consistency analysis",
+      "independentThirdPartyPurchase": false,
+      "resourceOrigin": "https://payguard-ai-henna.vercel.app",
+      "facilitator": "https://facilitator.tentaclepay.com",
+      "sponsor": "0x6d8c6e978808e81344b6ddcc741b06d2b2b1106066d218683e0161f696878b61",
+      "maxSponsorGasAtomic": "2000000",
+      "maxPayerGasAtomic": "0",
+      "purpose": "Analyze contradictory invoice recipient mentions, embedded link domains and instruction-bypass language. Human supplier verification remains required.",
+      "expectedResult": "A persisted consistency report with concrete findings, transaction receipt and unchanged supplier-approval safeguards.",
+      "risks": [
+        "First-party buyer/seller relationship; not independent supplier identity verification.",
+        "Facilitator availability, sponsorship and full wallet compatibility remain unproven until an authorized settlement.",
+        "Signed transaction can be relayed; cancellation is only available before PayGuard discloses signed bytes to the facilitator.",
+        "The five-minute quote limits application submission. Sui timestamp expiry is unsupported; disclosed signed bytes remain relayable through the approved epoch window and cannot be revoked by cancelling a quote.",
+        "No service result is released until Tatum independently confirms exact finalized credit."
+      ],
+      "chain": {
+        "source": "Tatum native Sui gRPC",
+        "network": "sui:mainnet",
+        "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+        "checkpoint": "340100235",
+        "coinType": "0x2::sui::SUI",
+        "decimals": 9,
+        "checkedAt": "2026-10-31T10:16:21.396Z",
+        "spending": false,
+        "addressBalanceGasEnabled": true,
+        "balances": {
+          "payer": {
+            "totalAtomic": "27893245",
+            "coinAtomic": "22893245",
+            "addressAtomic": "5000000",
+            "derivation": "Explicit total and both components",
+            "checkedAt": "2026-10-31T10:16:20.895Z"
+          },
+          "recipient": {
+            "totalAtomic": "0",
+            "coinAtomic": "0",
+            "addressAtomic": "0",
+            "derivation": "Both components proven zero by the explicit zero total",
+            "checkedAt": "2026-10-31T10:16:21.396Z"
+          }
+        },
+        "diagnostics": [
+          {
+            "stage": "tatum.connection",
+            "label": "Tatum native gRPC connection and authentication",
+            "status": "passed",
+            "checkedAt": "2026-10-31T10:16:19.435Z",
+            "classification": "verified",
+            "code": "OK",
+            "message": "Read-only check succeeded.",
+            "action": ""
+          },
+          {
+            "stage": "tatum.chain",
+            "label": "Sui Mainnet chain identity",
+            "status": "passed",
+            "checkedAt": "2026-10-31T10:16:19.435Z",
+            "classification": "verified",
+            "code": "OK",
+            "message": "Read-only check succeeded.",
+            "action": ""
+          },
+          {
+            "stage": "tatum.native_sui",
+            "label": "Native SUI identity and units",
+            "status": "passed",
+            "checkedAt": "2026-10-31T10:16:19.899Z",
+            "classification": "verified",
+            "code": "OK",
+            "message": "Read-only check succeeded.",
+            "action": ""
+          },
+          {
+            "stage": "tatum.protocol",
+            "label": "Address-balance gas protocol feature",
+            "status": "passed",
+            "checkedAt": "2026-10-31T10:16:20.403Z",
+            "classification": "verified",
+            "code": "OK",
+            "message": "Read-only check succeeded.",
+            "action": ""
+          },
+          {
+            "stage": "balance.payer",
+            "label": "Wallet A native SUI balance",
+            "status": "passed",
+            "checkedAt": "2026-10-31T10:16:20.895Z",
+            "classification": "verified",
+            "code": "OK",
+            "message": "Read-only check succeeded.",
+            "action": ""
+          },
+          {
+            "stage": "balance.recipient",
+            "label": "Wallet B native SUI balance",
+            "status": "passed",
+            "checkedAt": "2026-10-31T10:16:21.396Z",
+            "classification": "verified",
+            "code": "OK",
+            "message": "Read-only check succeeded.",
+            "action": ""
+          }
+        ]
+      },
+      "securityCleared": false,
+      "settlementEnabled": false
+    },
+    "diagnostics": [
+      {
+        "stage": "configuration",
+        "label": "Deployed read-only payment configuration",
+        "status": "passed",
+        "checkedAt": "2026-10-31T10:16:19.156Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "tentacle.supported",
+        "label": "Tentacle x402 v2 exact sponsorship",
+        "status": "passed",
+        "checkedAt": "2026-10-31T10:16:19.378Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "tatum.connection",
+        "label": "Tatum native gRPC connection and authentication",
+        "status": "passed",
+        "checkedAt": "2026-10-31T10:16:19.435Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "tatum.chain",
+        "label": "Sui Mainnet chain identity",
+        "status": "passed",
+        "checkedAt": "2026-10-31T10:16:19.435Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "tatum.native_sui",
+        "label": "Native SUI identity and units",
+        "status": "passed",
+        "checkedAt": "2026-10-31T10:16:19.899Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "tatum.protocol",
+        "label": "Address-balance gas protocol feature",
+        "status": "passed",
+        "checkedAt": "2026-10-31T10:16:20.403Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "balance.payer",
+        "label": "Wallet A native SUI balance",
+        "status": "passed",
+        "checkedAt": "2026-10-31T10:16:20.895Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "balance.recipient",
+        "label": "Wallet B native SUI balance",
+        "status": "passed",
+        "checkedAt": "2026-10-31T10:16:21.396Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "configuration.parties",
+        "label": "Payer, merchant and sponsor separation",
+        "status": "passed",
+        "checkedAt": "2026-10-31T10:16:21.397Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      }
+    ],
+    "checkedAt": "2026-10-31T10:16:21.397Z",
+    "message": "Both wallet balances and provider checks succeeded."
+  },
+  "counts": {
+    "memories": 32,
+    "receipts": 0
+  },
+  "ok": true
+}

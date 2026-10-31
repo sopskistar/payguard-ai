@@ -99,7 +99,7 @@ test('public official review selector connects only by choice, never signs or au
     if (/\/api\/(auth\/wallet|auth\/login|service-payments|memory)|fullnode\./.test(r.url()))
       forbidden.push(new URL(r.url()).pathname);
   });
-  await visit(page, '/connect');
+  await visit(page, '/connect?mode=review');
   await expect(page.getByRole('button', { name: 'Open Slush Security Review' })).toBeVisible();
   expect((await counts(page)).connect).toBe(0);
   expect(await page.locator('mysten-dapp-kit-connect-modal').count()).toBe(0);
@@ -134,7 +134,7 @@ test('wallet refusal remains with the official selector; no signature or fallbac
   page,
 }) => {
   await fixture(page, true);
-  await visit(page, '/connect');
+  await visit(page, '/connect?mode=review');
   await page.getByRole('button', { name: 'Open Slush Security Review' }).click();
   await page.getByRole('button', { name: /PayGuard Review Fixture/ }).click();
   await expect(page.getByText('Connection failed', { exact: true })).toBeVisible();

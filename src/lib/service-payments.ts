@@ -25,7 +25,7 @@ import {
 import { inspectServiceSettlement, serviceChainPreflight } from './integrations/service-tatum';
 import { verifyServiceSignature } from './integrations/service-signature';
 import { recordCorrection } from './integrations/memory';
-import { walletOnboardingAllowed, WALLET_REVIEW_MESSAGE } from './wallet-policy';
+import { serviceWalletSigningAllowed, WALLET_REVIEW_MESSAGE } from './wallet-policy';
 import {
   serviceConfiguration,
   PaymentCheckError,
@@ -47,9 +47,10 @@ export const serviceReady = () => {
 export const serviceSettlementEnabled = () =>
   serviceReady() &&
   process.env.SERVICE_PAYMENT_SETTLEMENT_ENABLED === 'true' &&
-  walletOnboardingAllowed();
+  serviceWalletSigningAllowed();
+export const servicePreparationAllowed = () => serviceReady() && serviceWalletSigningAllowed();
 function requireNewSpend() {
-  if (!walletOnboardingAllowed())
+  if (!serviceWalletSigningAllowed())
     throw new AppError(503, 'WALLET_SECURITY_REVIEW', WALLET_REVIEW_MESSAGE);
   if (!serviceSettlementEnabled())
     throw new AppError(
@@ -160,7 +161,7 @@ export async function servicePreflight(options: { allowPartial?: boolean } = {})
       diagnostics.every((d) => d.status === 'passed') &&
       validParties &&
       sufficientlyFunded &&
-      walletOnboardingAllowed(),
+      serviceWalletSigningAllowed(),
     readyForQuotePreparation:
       diagnostics.every((d) => d.status === 'passed') && validParties && sufficientlyFunded,
     configurationReady: missing.length === 0 && validParties,
@@ -195,7 +196,7 @@ export async function servicePreflight(options: { allowPartial?: boolean } = {})
       'No service result is released until Tatum independently confirms exact finalized credit.',
     ],
     chain,
-    securityCleared: walletOnboardingAllowed(),
+    securityCleared: serviceWalletSigningAllowed(),
     settlementEnabled: serviceSettlementEnabled(),
   };
 }
@@ -206,7 +207,7 @@ export async function serviceSetup(check = false) {
     network: serviceMode(),
     quoteEnabled: serviceReady(),
     settlementEnabled: serviceSettlementEnabled(),
-    securityCleared: walletOnboardingAllowed(),
+    securityCleared: serviceWalletSigningAllowed(),
   };
   if (!check)
     return {
@@ -404,7 +405,16 @@ export async function approveService(
   payer: string,
   sessionKey?: string,
 ) {
-  requireNewSpend();
+  // Exact terms may be reserved before the separate financial capability is enabled.
+  // No signed bytes, signature verification or facilitator calls occur during approval.
+  if (!serviceWalletSigningAllowed())
+    throw new AppError(503, 'WALLET_SECURITY_REVIEW', WALLET_REVIEW_MESSAGE);
+  if (!servicePreparationAllowed())
+    throw new AppError(
+      503,
+      'SERVICE_DISABLED',
+      'Quote configuration is incomplete. No payment was approved.',
+    );
   const d = await db();
   return d.transaction(async (tx) => {
     const [row] = await tx
@@ -418,6 +428,12 @@ export async function approveService(
     const challenge = row.challenge as ServiceChallenge;
     const terms = serviceTermsSchema.parse(challenge.accepts[0]);
     configuredTerms(terms, payer);
+    if (new URL(challenge.resource.url).origin !== new URL(process.env.APP_URL!).origin)
+      throw new AppError(
+        409,
+        'QUOTE_ORIGIN',
+        'This unsigned quote belongs to another application origin. Cancel it and request fresh terms here. Submitted digests can still be reconciled.',
+      );
     const budget = budgetId(tenantId, sessionKey, terms.network);
     if (
       row.state === 'approved' &&

@@ -39,7 +39,7 @@ const faqs = [
   ],
   [
     'Can anyone create an account or connect a wallet?',
-    'Wallet accounts use server-verified personal-message signatures and separate records, tested in controlled environments. The public /connect interface permits deliberate connection only for Slush review; it cannot sign in or register an account. Production wallet onboarding is paused while Slush reviews a reported malicious-website warning. Do not override that warning. Owner Sign In remains administrator-only; the public demo needs neither. The separate Mainnet service-payment implementation remains security-gated and has no proven settlement.',
+    'Wallet accounts use server-verified personal-message signatures and separate records. Create or return to your private account at /connect with a permitted Wallet Standard provider. Slush production login remains under security review and is excluded from that sign-in selector; its separate review-only flow cannot authenticate or spend. Never override a wallet warning. Owner Sign In remains administrator-only; the public demo needs neither. Production Mainnet payment signing stays paused. The inspected owner-local application supports separate exact approval and signing; no genuine service settlement is yet recorded.',
   ],
   [
     'What are the limits?',
@@ -101,8 +101,9 @@ export function Landing() {
                 <Check size={14} /> Three minutes <span>·</span> No account, wallet or funds needed
               </div>
               <p className="site-owner-note">
-                Public practice is open. Private wallet onboarding is paused for a Slush security
-                review. <Link href="/connect">Review status & connection interface ↗</Link>
+                Public practice is open. Permitted wallets can open private accounts; Slush
+                production login remains under review.{' '}
+                <Link href="/connect">Account access & provider status ↗</Link>
               </p>
             </motion.div>
             <ProductStory />

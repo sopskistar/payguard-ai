@@ -176,7 +176,12 @@ it('Mainnet quotes and signatures are supported but the separate spend switch fa
   vi.stubEnv('SERVICE_PAYMENT_SETTLEMENT_ENABLED', 'false');
   const row = await quote();
   expect((row.challenge as ServiceChallenge).accepts[0].network).toBe('sui:mainnet');
-  await expect(approveService(OWNER_ID, row.id, payer.toSuiAddress())).rejects.toThrow('disabled');
+  const before = settles;
+  await approveService(OWNER_ID, row.id, payer.toSuiAddress());
+  expect(settles).toBe(before);
+  await expect(fulfillService(OWNER_ID, row.id, await payload(row))).rejects.toThrow('disabled');
+  expect((await ownedService(OWNER_ID, row.id)).state).toBe('approved');
+  expect((await ownedService(OWNER_ID, row.id)).digest).toBeNull();
   vi.stubEnv('SERVICE_PAYMENT_SETTLEMENT_ENABLED', 'true');
   await approveService(OWNER_ID, row.id, payer.toSuiAddress());
   expect((await fulfillService(OWNER_ID, row.id, await payload(row))).state).toBe('settled'); // MOCK only
@@ -234,6 +239,19 @@ it('blocks hosted wallet approval and settlement while Slush review is unresolve
   await expect(fulfillService(OWNER_ID, row.id, await payload(row))).rejects.toThrow('paused');
   expect(settles).toBe(before);
   vi.stubEnv('VERCEL', '');
+});
+
+it('requires fresh unsigned terms on the local origin while preserving the existing intent', async () => {
+  const row = await quote();
+  vi.stubEnv('APP_URL', 'http://localhost:4320');
+  try {
+    await expect(approveService(OWNER_ID, row.id, payer.toSuiAddress())).rejects.toThrow(
+      'another application origin',
+    );
+    expect((await ownedService(OWNER_ID, row.id)).state).toBe('quoted');
+  } finally {
+    vi.stubEnv('APP_URL', 'http://localhost:3000');
+  }
 });
 
 it('enforces a durable total session cap, idempotent approval and cancellation release', async () => {

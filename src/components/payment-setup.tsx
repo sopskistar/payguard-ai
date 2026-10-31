@@ -119,13 +119,15 @@ export function PaymentSetup({ states }: { states: string[] }) {
         ? 'Pending settlement: reconcile the existing digest; do not pay again'
         : failed
           ? 'Failed transaction recorded: inspect its saved evidence'
-          : preflight && !funded
-            ? 'Configured but insufficient usable funds'
-            : funded
-              ? preflight?.readyForExactApproval
-                ? 'Ready for owner authorization of a fresh exact quote'
-                : 'Configured and sufficiently funded; security clearance still required'
-              : 'Ready for non-spending preflight';
+          : settled > 0
+            ? `${settled} confirmed settled service ${settled === 1 ? 'purchase' : 'purchases'} recorded; inspect the saved receipt`
+            : preflight && !funded
+              ? 'Configured but insufficient usable funds'
+              : funded
+                ? preflight?.readyForExactApproval
+                  ? 'Ready for owner authorization of a fresh exact quote'
+                  : 'Configured and sufficiently funded; security clearance still required'
+                : 'Ready for non-spending preflight';
   return (
     <section
       id="payment-setup"

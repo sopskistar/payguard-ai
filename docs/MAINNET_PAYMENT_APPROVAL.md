@@ -1,3 +1,13 @@
+# October 31 — current approval path
+
+Use the [inspected owner-local application](LOCAL_OWNER_PAYMENT.md) if Production Slush signing is unavailable. Production financial signing remains paused; no wallet warning may be overridden. Mainnet quote preparation is already enabled in Production; settlement stays false there. The local launcher defaults settlement false and allows exact unsigned preparation/terms reservation before the owner separately enables supervised submission. No financial transaction is approved by this document or by launching the application.
+
+Both original wallet addresses remain configured. Fresh checks show sufficient Wallet A address balance; no further conversion/funding is needed. Select the labeled synthetic **X402-OWNER-20261031-01** request (record **44e4fc1d-7b50-46dd-b722-92a4881aade6**) or another useful owned anomaly. Generate a fresh five-minute HTTP 402 quote and inspect its complete sender, merchant, Mainnet/native SUI, **0.001 SUI**, zero payer gas, declared sponsor/**0.002 SUI sponsor budget**, **0.003 SUI session cap**, resource, invoice, commands and expiry. Each purchase needs separate terms approval and the owner's actual wallet signature. A previous/cancelled audit quote is not approval.
+
+After the signature, the existing protocol locks the digest, submits once and reconciles through Tatum. Only finalized exact merchant credit permits Neon receipt/report/audit completion. A pending/uncertain attempt is resumed by its original digest and never automatically re-signed. Genuine service settlements remain **zero**. Historical worksheets below remain records of earlier stages.
+
+---
+
 # Mainnet service purchase — approval worksheet (not authorized)
 
 October 30 update: both existing payer/merchant public addresses remain configured in Production. The owner-approved **0.005 SUI self-deposit succeeded** and was independently finalized through Tatum. Wallet A has **0.022893245 SUI in coin objects and 0.005 SUI in address balance**. [Actual conversion receipt](SUI_SELF_DEPOSIT_RESULT.md). Mainnet quote mode is now enabled and genuine 402 checks pass; settlement remains disabled and the hosted Slush pause remains enforced. This worksheet does not authorize a service purchase. [Final engineering and exact next steps](FINAL_X402_READINESS.md).

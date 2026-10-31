@@ -2,7 +2,11 @@ import Link from 'next/link';
 import { Brand } from '@/components/brand';
 import { WalletReviewEntry } from '@/components/wallet-review-entry';
 import { WalletEntry } from '@/components/wallet-entry';
-import { walletOnboardingAllowed, WALLET_REVIEW_MESSAGE } from '@/lib/wallet-policy';
+import {
+  walletOnboardingAllowed,
+  slushOnboardingBlocked,
+  WALLET_REVIEW_MESSAGE,
+} from '@/lib/wallet-policy';
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Connect Sui Wallet' };
 export default async function ConnectPage({
@@ -11,7 +15,8 @@ export default async function ConnectPage({
   searchParams: Promise<{ mode?: string }>;
 }) {
   const query = await searchParams;
-  const signIn = walletOnboardingAllowed() && query.mode === 'signin';
+  const signIn = walletOnboardingAllowed() && query.mode !== 'review';
+  const slushBlocked = slushOnboardingBlocked();
   return (
     <div className="site-home">
       <header className="site-nav">
@@ -25,16 +30,28 @@ export default async function ConnectPage({
       <main id="main" className="connect-page">
         <div>
           <span className="site-eyebrow">
-            {signIn ? 'CONTROLLED LOCAL WALLET SIGN-IN' : 'WALLET SECURITY REVIEW · PUBLIC ACCESS'}
+            {signIn ? 'PRIVATE WALLET ACCOUNT' : 'WALLET SECURITY REVIEW · PUBLIC ACCESS'}
           </span>
           {signIn ? (
             <>
               <h1>Connect Sui Wallet</h1>
               <p>
-                This sign-in flow is available only in controlled local development. Connection
+                Create or return to your private account using a permitted Sui wallet. Connection
                 alone does not authenticate you. Inspect the free personal-message challenge before
                 deliberately signing; it cannot authorize a transaction.
               </p>
+              {slushBlocked && (
+                <div className="notice" role="status">
+                  <strong>Slush production login remains under security review.</strong> Slush is
+                  excluded from this sign-in selector; do not override its warning. Other compatible
+                  providers may authenticate if they permit this origin. Production payment signing
+                  remains paused.{' '}
+                  <Link className="inline-link" href="/connect?mode=review">
+                    Open Slush review-only instructions
+                  </Link>
+                  . The owner-operated local workflow is documented in the repository.
+                </div>
+              )}
             </>
           ) : (
             <>
@@ -45,8 +62,9 @@ export default async function ConnectPage({
               </h1>
               <p>
                 Slush Support directs domain reviews through its own warning screen. This public
-                page opens the official wallet selector so you can reach that review action.
-                Customer sign-in and payments remain paused.
+                page opens the official wallet selector so you can reach that review action. Slush
+                sign-in and production payment signing remain paused. Other permitted wallets can
+                use the separate account sign-in page.
               </p>
               <ol>
                 <li>
@@ -69,9 +87,9 @@ export default async function ConnectPage({
           </Link>
         </div>
         <section className="panel">
-          <h2>{signIn ? 'Local wallet sign-in' : 'Slush review only'}</h2>
+          <h2>{signIn ? 'Wallet sign-in' : 'Slush review only'}</h2>
           {signIn ? (
-            <WalletEntry />
+            <WalletEntry slushBlocked={slushBlocked} />
           ) : (
             <div className="wallet-security-pause" role="status">
               <h3>Wallet security review in progress</h3>

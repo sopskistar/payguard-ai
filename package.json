@@ -29,7 +29,8 @@
     "sui:deposit:preview": "node --conditions=react-server --import tsx tools/sui-self-deposit/prepare.ts",
     "sui:deposit:review": "node --import tsx tools/sui-self-deposit/server.ts",
     "sui:deposit:check-browser": "node tools/sui-self-deposit/check-browser.mjs",
-    "sui:deposit:verify": "node --import tsx tools/sui-self-deposit/verify.ts"
+    "sui:deposit:verify": "node --import tsx tools/sui-self-deposit/verify.ts",
+    "owner:local": "node --conditions=react-server --import tsx tools/local-owner/server.ts"
   },
   "dependencies": {
     "@fontsource/manrope": "^5.2.8",

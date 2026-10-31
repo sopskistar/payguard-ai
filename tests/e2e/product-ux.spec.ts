@@ -78,7 +78,9 @@ test('landing CTAs, FAQ, proof and mobile layouts are deliberate and functional'
   await page
     .getByText('Can anyone create an account or connect a wallet?', { exact: true })
     .click();
-  await expect(page.getByText(/Production wallet onboarding is paused/)).toBeVisible();
+  await expect(
+    page.getByText(/Slush production login remains under security review/),
+  ).toBeVisible();
   const actions = page.locator('.site-hero-actions');
   const primary = await actions.getByRole('link').nth(0).boundingBox();
   const secondary = await actions.getByRole('link').nth(1).boundingBox();

@@ -1,3 +1,15 @@
+# October 31 — focused product and local-purchase validation
+
+Initial focused payment/authentication checks: **67 passed across 11 files**. After the final sequencing and memo-link changes, the payment store **19/19** and protocol **12/12** reruns pass. Lint, TypeScript, formatting and the final Production build pass. Credential scan: **493 files, zero matches**. [Current ledger](evidence/oct31-tests.json).
+
+Targeted local browser run: **15 passed / 1 failed / 1 not run**. The failed assertion mixed configured financial fixtures with an unconfigured actual QA Payment Setup response. The fixture now consistently mocks configuration, preserving the settled-count assertion. Final service rerun: **5 passed / 0 failed**, including capability refresh preserving exact prepared bytes, no signing during preparation, one synthetic sign/submission, correct receipt attribution and explicit memory consent. The other twelve targeted cases passed: personal-message login/returning account, tenant isolation, review-only refusal, public judge workflow and desktop/mobile product UX. Original failure remains recorded. All financial/memory provider responses in these UI tests are fixtures; QA uses isolated PGlite with Neon and live write credentials disabled.
+
+Actual localhost checks passed genuine HTTP 402/header/resource/idempotency, both-wallet refresh and 1280/360/390/430px layouts. The audit quote was cancelled without approval. Fresh unsigned Mainnet simulation at checkpoint **340108600 / epoch 1297** passed real validation and gas, exact 1,000,000 MIST payer debit/merchant credit, zero payer gas and simulated 100,000 MIST sponsor gas under its 2,000,000 MIST budget. [Real quote](evidence/oct31-local-quote.json) · [Unsigned simulation](evidence/oct31-local-unsigned-simulation.json). Neither is a settled transaction. A SELECT-only expected report now correctly detects the synthetic memo's conflicting address, example-link domain and bypass text. [Unpaid preview](evidence/oct31-analysis-preview.json).
+
+**32 confirmed memories and zero real service receipts remain.** Local owner approval/signing is still required for the funded experiment. Physical Production Slush acceptance remains restricted; no warning was overridden. No database reset, duplicate memory, additional conversion or video occurred.
+
+---
+
 # Final x402 engineering audit — October 30, 2026
 
 **151 unit/integration tests across 22 files pass.** Lint, TypeScript, formatting and production build pass. Full local browser rerun **23 / 0 / 3 environment skips**; earlier full run **22 / 1 / 3** on an account-switch privacy assertion. Complete wallet spec rerun **3/3**, then **five successful repetitions**. The cause of the first failure was not established. The four isolated service UI contracts also pass, including mocked prepare/sign/receipt and explicit memory consent. [Tests and limits](evidence/final-x402-tests.json).

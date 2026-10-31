@@ -1,3 +1,13 @@
+# October 31 continuation — owner-local purchase
+
+Recovered local/origin `9f5d854` with no pending tracked work or unpushed commits; preserved `.gitignore.save`. Fresh Production providers/parties passed at checkpoint 340100235. Actual quote mode is mainnet; settlement false. Both wallet balances unchanged, no repeat conversion. 32 confirmed memories remain, zero service receipts.
+
+The owner's newer instruction authorizes an inspected local deployment for service purchasing. It supersedes the earlier blanket ban on local experiments, not provider warnings. [LOCAL_OWNER_PAYMENT.md](LOCAL_OWNER_PAYMENT.md) runs the existing application on loopback:4320 with existing Neon and cached public parties in ignored `.data/owner-payment-config.json`. Default settlement false; explicit `--enable-settlement` is local capability only, followed by per-quote owner approval and wallet signature. Hosted financial signing stays paused. Personal-message authentication is separate, with hosted Slush excluded and a retained review-only route. No new payment backend, keys, database migration, seed or reset.
+
+Distinct controlled synthetic invoice X402-OWNER-20261031-01 / 44e4fc1d-7b50-46dd-b722-92a4881aade6 is prepared; no supplier payment or memory write occurred. Do not duplicate it. All real payment outcomes still require the owner to inspect/sign a fresh transaction, then independent Tatum confirmation and actual Neon receipt/report/audit evidence. Do not infer success from a signature or unsigned simulation. No video.
+
+---
+
 # Latest x402 engineering handoff — October 30, 2026
 
 Code release **787fa31** is pushed and Production-verified. Final genuine 402 and both-wallet UI refresh passed at 23:10 UTC / checkpoint 339935428; five focused hosted tests passed, including the enforced pause. Fresh 1280/390px screenshots and 360/390/430px overflow results are linked in the readiness document. Subsequent evidence-only commits do not change application behavior.

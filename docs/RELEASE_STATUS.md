@@ -1,3 +1,11 @@
+# October 31 — supervised local product and purchase workflow
+
+Account authentication and financial signing have separate policies. Permitted hosted wallets can create/return to tenant-isolated accounts; Slush remains excluded from hosted sign-in and Production financial signing stays paused. The review-only route is `/connect?mode=review`. [Owner-local workflow](LOCAL_OWNER_PAYMENT.md) launches the existing application on localhost:4320, preserves Neon, defaults settlement off, and supports exact unsigned preparation before a separately enabled, personally approved wallet signature. No alternative settlement backend or keys are introduced.
+
+Agent Services disambiguates invoices by number/status/sample context/record ID, retains the original pending digest, and updates purchase state without a reload. The README now begins with **HOW TO TEST PAYGUARD VERIFY**, including four runnable judging paths and troubleshooting. [Current readiness and real provider evidence](FINAL_X402_READINESS.md). A distinct labeled synthetic analysis request is prepared; **32 memories preserved, zero actual service settlements**. No video.
+
+---
+
 # x402 quote and engineering audit — October 30, 2026
 
 **787fa31 is deployed and independently checked on Production.** Final read-only audit at 23:10 UTC / Tatum checkpoint 339935428 passed genuine 402, both-wallet refresh and all four viewport widths. Five focused hosted regressions passed with no skips. [Captured UI](screenshots/final-x402/production-quote-390.png) · [Final evidence](evidence/final-x402-production-quote.json). All audit quotes were cancelled without approval.

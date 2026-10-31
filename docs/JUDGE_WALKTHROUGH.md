@@ -2,7 +2,7 @@
 
 ## Payment setup and current limits
 
-The private administrator can open [Agent Services → Payment Setup](https://payguard-ai-henna.vercel.app/services#payment-setup). Public judges retain account-free `/try` and `/proof`. Setup shows configuration, independent balances and readiness, not payment success. Both owner wallet accounts exist but their addresses remain unconfigured; production signing is Slush-paused. Genuine settlement count is zero. [Owner setup](PAYMENT_SETUP.md) · [exact approval worksheet](MAINNET_PAYMENT_APPROVAL.md). Do not connect a funded wallet to override a warning.
+The private administrator can open [Agent Services → Payment Setup](https://payguard-ai-henna.vercel.app/services#payment-setup). Public judges retain account-free `/try` and `/proof`. Setup shows configuration, independent balances and readiness, not payment success. Both owner addresses are configured, Wallet A has usable address funds, and Mainnet quotes are enabled; Production financial signing remains Slush-paused. Genuine settlement count is zero. [Owner-local supervised purchase](LOCAL_OWNER_PAYMENT.md) · [exact approval worksheet](MAINNET_PAYMENT_APPROVAL.md). Never override a wallet warning.
 
 **Verify before you pay. Remember what nearly went wrong.**
 
@@ -30,7 +30,7 @@ The step buttons allow direct exploration on desktop or mobile. Use keyboard Tab
 
 ## Real workspace versus public practice
 
-Hosted wallet registration is **paused pending Slush security review**. Public [/connect](https://payguard-ai-henna.vercel.app/connect) now offers **Open Slush Security Review**, then the official selector. Select the installed Slush extension and choose **Flag for review inside its warning**, without accepting the connection. No signature, account creation or authentication follows this review-only flow; an unexpected successful connection offers an ordinary disconnect. Loading the selector does not establish clearance. Do not override wallet warnings or connect a funded wallet. Registration and seven onboarding milestones are implemented and tested with controlled local identities; no physical-wallet production certification is claimed. Owner Sign In remains separate administrator access. New accounts start empty; zero personal memories does not contradict the 30 confirmed published project records. The [read-only proof](https://payguard-ai-henna.vercel.app/proof) includes the 18-case learning report and requires no wallet.
+Hosted personal-message authentication is available to permitted Wallet Standard providers at [/connect](https://payguard-ai-henna.vercel.app/connect). Slush is excluded there while its domain review is unresolved. The separate [/connect?mode=review](https://payguard-ai-henna.vercel.app/connect?mode=review) retains **Open Slush Security Review**, the official selector and no authentication or payment action. An unexpected connection offers disconnect; its absence of a warning does not establish clearance. Never override a warning. The [owner-operated local application](LOCAL_OWNER_PAYMENT.md) supports the existing Slush account without changing the Production gate. Physical Production Slush compatibility is not certified. Owner Sign In remains separate administrator access. New member accounts start empty; zero personal memories does not contradict the 30 confirmed published owner records plus two controlled tenant records. The [read-only proof](https://payguard-ai-henna.vercel.app/proof) includes the 18-case learning report and requires no wallet.
 
 ## Owner workflow
 
@@ -38,7 +38,7 @@ The [Next.js workspace](https://payguard-ai-henna.vercel.app/app) has protected 
 
 ## Troubleshooting
 
-- **A sign-in prompt appears:** `/try` needs no sign-in. Owner Sign In protects administrator operations; hosted wallet registration is paused for security review. Public practice does not access private records.
+- **A sign-in prompt appears:** `/try` needs no sign-in. Owner Sign In protects administrator operations; wallet accounts use a separate verified personal signature. Slush remains restricted on Production. Public practice does not access private records.
 - **No remembered difference:** use the recorded evidence in step 5. In the live owner app, wait for a confirmed blob and indexing; resume the original job rather than rewrite it. No returned applicable citation means no soft learned policy is applied.
 - **Invoice changed:** repeat independent verification against the current instruction hash and profile revision. A prior callback does not cover edited terms.
 - **Chain mismatch:** expected for this unrelated public digest. Do not treat the sample supplier as paid. Exact amount, coin, network, positive recipient credit and uniqueness are required.

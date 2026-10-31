@@ -3,6 +3,7 @@ import { registerBrowserDiagnostics, visit } from './browser-helpers';
 import { GrpcTypes } from '@mysten/sui/grpc';
 import { Transaction } from '@mysten/sui/transactions';
 import { toBase64 } from '@mysten/sui/utils';
+import { serviceConfiguration } from '../../src/lib/service-setup';
 import {
   decodeServicePaymentHeader,
   serviceTermsSchema,
@@ -40,7 +41,7 @@ test.describe('isolated service UI contracts; all financial and memory responses
       await context.close();
     }
   });
-  async function pageFixture(signing = false) {
+  async function pageFixture(signing = false, preparation = signing) {
     const page = await context.newPage();
     const calls = { quote: 0, remember: 0, approve: 0, settle: 0 };
     const challenge = (id: string) => ({
@@ -68,12 +69,36 @@ test.describe('isolated service UI contracts; all financial and memory responses
       ],
     });
     const expiresAt = new Date(Date.now() + 300000).toISOString();
+    await page.route('**/api/service-payments/setup', (route) =>
+      route.fulfill({
+        json: {
+          ...serviceConfiguration({
+            SERVICE_PAYMENT_PAYER: payer,
+            SERVICE_PAYMENT_RECIPIENT: merchant,
+            ENABLE_AGENT_PAYMENTS: 'mainnet',
+            SERVICE_PAYMENT_SETTLEMENT_ENABLED: signing ? 'true' : 'false',
+          }),
+          network: 'sui:mainnet',
+          quoteEnabled: true,
+          securityCleared: preparation,
+          settlementEnabled: signing,
+          check: {
+            state: 'unchecked',
+            preflight: null,
+            diagnostics: [],
+            checkedAt: null,
+            message: 'Synthetic configuration fixture; no provider call',
+          },
+        },
+      }),
+    );
     await page.route('**/api/service-payments', async (route) => {
       if (route.request().method() === 'GET')
         return route.fulfill({
           json: {
             configured: true,
             signingAllowed: signing,
+            preparationAllowed: preparation,
             securityCleared: signing,
             network: 'sui:mainnet',
             dedicatedPayer: payer,
@@ -102,7 +127,7 @@ test.describe('isolated service UI contracts; all financial and memory responses
       const path = new URL(route.request().url()).pathname;
       if (path.endsWith('/approve')) {
         calls.approve++;
-        if (!signing) throw Error('Fixture unexpectedly attempted approval');
+        if (!preparation) throw Error('Fixture unexpectedly attempted approval');
         expect(route.request().postDataJSON()).toEqual({ approved: true, payer });
         return route.fulfill({ json: { approved: true } });
       }
@@ -149,7 +174,7 @@ test.describe('isolated service UI contracts; all financial and memory responses
       }
       return route.fallback();
     });
-    if (signing) {
+    if (preparation) {
       const frame = (bytes: Uint8Array) => {
         const message = Buffer.alloc(5 + bytes.length);
         message.writeUInt32BE(bytes.length, 1);
@@ -277,13 +302,20 @@ test.describe('isolated service UI contracts; all financial and memory responses
     await expect(
       page.getByRole('button', { name: 'Request exact service terms', exact: true }),
     ).toBeEnabled();
-    return { page, calls };
+    return {
+      page,
+      calls,
+      enableSigning: () => {
+        signing = true;
+      },
+    };
   }
   test('validates a 402 quote, enforces the signing pause and expires without opening a wallet', async () => {
     const { page, calls } = await pageFixture();
     await page.clock.install();
     await page.getByRole('button', { name: 'Request exact service terms', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'Payment required · x402 v2' })).toBeVisible();
+    await expect(page.locator('[aria-label="Selected invoice details"]')).toContainText(invoiceId);
     const approve = page.getByRole('button', {
       name: 'Approve terms and prepare transaction · no signature',
       exact: true,
@@ -361,6 +393,11 @@ test.describe('isolated service UI contracts; all financial and memory responses
     await sign.click();
     await expect(page.getByText('Tatum-confirmed service receipt', { exact: true })).toBeVisible();
     expect(calls.settle).toBe(1);
+    await expect(
+      page.getByText('2 confirmed settled service purchases recorded; inspect the saved receipt', {
+        exact: true,
+      }),
+    ).toBeVisible();
     expect(calls.remember).toBe(0);
     await expect(sign).toBeDisabled();
     expect(
@@ -370,6 +407,40 @@ test.describe('isolated service UI contracts; all financial and memory responses
             .serviceFixtureStats,
       ),
     ).toEqual({ sign: 1, execute: 0 });
+    await page.close();
+  });
+  test('prepares exact approved bytes with settlement disabled and never opens signing (fully mocked)', async () => {
+    const { page, calls, enableSigning } = await pageFixture(false, true);
+    await page.getByRole('button', { name: 'Request exact service terms', exact: true }).click();
+    await page.getByRole('checkbox').last().check();
+    await page.getByLabel('Signing wallet').selectOption('payguard-service-fixture');
+    await page
+      .getByRole('button', {
+        name: 'Approve terms and prepare transaction · no signature',
+        exact: true,
+      })
+      .click();
+    await expect(
+      page.getByRole('button', { name: 'Review and sign exact purchase in wallet', exact: true }),
+    ).toBeDisabled();
+    const prepared = await page.locator('.service-prepared-digest').first().textContent();
+    enableSigning();
+    await page
+      .getByRole('button', { name: 'Refresh payment controls · no signing', exact: true })
+      .click();
+    await expect(
+      page.getByRole('button', { name: 'Review and sign exact purchase in wallet', exact: true }),
+    ).toBeEnabled();
+    expect(await page.locator('.service-prepared-digest').first().textContent()).toBe(prepared);
+    expect(calls.approve).toBe(1);
+    expect(calls.settle).toBe(0);
+    expect(
+      await page.evaluate(
+        () =>
+          (window as unknown as { serviceFixtureStats: { sign: number; execute: number } })
+            .serviceFixtureStats,
+      ),
+    ).toEqual({ sign: 0, execute: 0 });
     await page.close();
   });
 });

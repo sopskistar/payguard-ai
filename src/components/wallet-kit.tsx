@@ -4,14 +4,18 @@ import {
   DAppKitProvider,
   useCurrentAccount,
   useDAppKit,
+  useWallets,
+  useCurrentWallet,
 } from '@mysten/dapp-kit-react';
-import { ConnectButton } from '@mysten/dapp-kit-react/ui';
 import { SuiGrpcClient } from '@mysten/sui/grpc';
 import { useEffect, useRef, useState } from 'react';
 import { api } from './ui';
 import { useRouter } from 'next/navigation';
+import { walletProviderAllowed } from '@/lib/wallet-policy';
+import { getWalletUniqueIdentifier } from '@mysten/dapp-kit-core';
 const kit = createDAppKit({
   networks: ['mainnet'],
+  autoConnect: false,
   slushWalletConfig: null, // Installed Wallet Standard wallets only; no implicit external OAuth popup.
   createClient: (network) =>
     new SuiGrpcClient({ network, baseUrl: 'https://fullnode.mainnet.sui.io:443' }),
@@ -20,13 +24,22 @@ const kit = createDAppKit({
 function Connection({
   monitor = false,
   expectedAddress,
+  slushBlocked = false,
 }: {
   monitor?: boolean;
   expectedAddress?: string;
+  slushBlocked?: boolean;
 }) {
   const router = useRouter();
   const account = useCurrentAccount({ dAppKit: kit });
+  const currentWallet = useCurrentWallet({ dAppKit: kit });
   const dapp = useDAppKit(kit);
+  const wallets = useWallets({ dAppKit: kit });
+  const [choosing, setChoosing] = useState(false);
+  const available = wallets.filter(
+    (w) =>
+      walletProviderAllowed(w.name, slushBlocked) && w.features.includes('sui:signPersonalMessage'),
+  );
   const previous = useRef<string | null | undefined>(undefined);
   const [challenge, setChallenge] = useState<{
     id: string;
@@ -72,6 +85,12 @@ function Connection({
   if (monitor) return null;
   async function prepare() {
     if (!account) return;
+    if (!currentWallet || !walletProviderAllowed(currentWallet.name, slushBlocked)) {
+      setError(
+        'Slush login is unavailable on this origin pending its security review. Do not override a warning.',
+      );
+      return;
+    }
     setBusy(true);
     setError('');
     setChallenge(undefined);
@@ -86,6 +105,10 @@ function Connection({
   async function sign() {
     if (!challenge || !account || account.address !== challenge.address) {
       setChallenge(undefined);
+      return;
+    }
+    if (!currentWallet || !walletProviderAllowed(currentWallet.name, slushBlocked)) {
+      setError('This wallet provider remains restricted on this origin. No signature requested.');
       return;
     }
     setBusy(true);
@@ -112,7 +135,70 @@ function Connection({
   }
   return (
     <div className="wallet-connect-flow">
-      <ConnectButton />
+      <button
+        className="button primary full"
+        disabled={busy}
+        onClick={() => setChoosing(!choosing)}
+      >
+        Connect Wallet
+      </button>
+      {choosing && (
+        <div className="wallet-connect-flow">
+          {available.map((wallet) => (
+            <button
+              className="button outline full"
+              key={getWalletUniqueIdentifier(wallet)}
+              disabled={busy}
+              onClick={async () => {
+                if (!walletProviderAllowed(wallet.name, slushBlocked)) return;
+                setBusy(true);
+                setError('');
+                setChallenge(undefined);
+                try {
+                  await dapp.connectWallet({ wallet });
+                  setChoosing(false);
+                } catch {
+                  setError(
+                    'The wallet did not permit this connection. Respect any provider warning; no authentication or payment was completed.',
+                  );
+                } finally {
+                  setBusy(false);
+                }
+              }}
+            >
+              {wallet.name}
+              {getWalletUniqueIdentifier(wallet).endsWith('.web') ? ' · web wallet' : ''}
+            </button>
+          ))}
+          {!available.length && (
+            <p>
+              No permitted installed Sui wallet detected. On mobile, use your wallet’s own browser.
+              Slush remains unavailable on the production origin.
+            </p>
+          )}
+        </div>
+      )}
+      {!slushBlocked && (
+        <button
+          className="button outline full"
+          disabled={busy}
+          onClick={async () => {
+            setBusy(true);
+            setError('');
+            try {
+              const { registerSlushWallet } = await import('@mysten/slush-wallet');
+              if (!registerSlushWallet('PayGuard Verify')) throw new Error();
+              setChoosing(true);
+            } catch {
+              setError('Official Slush web wallet unavailable. No signature was requested.');
+            } finally {
+              setBusy(false);
+            }
+          }}
+        >
+          Use existing Slush web account
+        </button>
+      )}
       <p>
         {account
           ? 'Wallet connected. You are not signed in until the server verifies your signature.'
@@ -147,13 +233,15 @@ function Connection({
 export default function WalletKit({
   monitor = false,
   expectedAddress,
+  slushBlocked,
 }: {
   monitor?: boolean;
   expectedAddress?: string;
+  slushBlocked?: boolean;
 }) {
   return (
     <DAppKitProvider dAppKit={kit}>
-      <Connection monitor={monitor} expectedAddress={expectedAddress} />
+      <Connection monitor={monitor} expectedAddress={expectedAddress} slushBlocked={slushBlocked} />
     </DAppKitProvider>
   );
 }

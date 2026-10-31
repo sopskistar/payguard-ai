@@ -1,4 +1,20 @@
-# Final x402 engineering and live-purchase boundary
+# October 31 — owner-local purchase capability and separate account authentication
+
+The owner explicitly authorized an inspected local deployment of the existing product for a supervised first-party purchase. [Exact launcher, preparation and wallet steps](LOCAL_OWNER_PAYMENT.md). This supersedes the earlier broad project restriction on local service experiments; it does not clear Slush’s Production classification or override any wallet warning.
+
+Hosted account authentication now permits compatible Wallet Standard providers independently of financial signing. Slush is excluded from normal hosted login, its review-only route remains `/connect?mode=review`, and production financial signing remains paused. Owner administration, tenant boundaries, quotas and replay protection remain enforced. The local launcher is loopback-only, uses existing Neon and public parties, and defaults settlement off. Unsigned local preparation and exact terms approval no longer require enabling financial submission; they reserve the existing cap without sending signatures. Only the separately enabled local financial procedure can request a wallet signature after exact owner authorization.
+
+Fresh authenticated Production checks at **10:16 UTC October 31 / checkpoint 340100235** passed Tatum, Tentacle and both wallets: Wallet A total **0.027893245 SUI**, coin objects **0.022893245**, address balance **0.005**; Wallet B all zero. Actual quotes are already enabled, despite the owner's reported false value; settlement remains false. [Fresh check](evidence/oct31-readiness.json). No conversion or new funding was performed.
+
+One distinct synthetic invoice **X402-OWNER-20261031-01**, record **44e4fc1d-7b50-46dd-b722-92a4881aade6**, was prepared for the requested first-party experiment. It contains a contradictory recipient mention, example link and bypass text. It is not a real customer invoice or fraud-detection result. [Request preparation](evidence/oct31-analysis-request.json). Existing invoices and **32 confirmed memories** were preserved. **Zero genuine service receipts remain; exact owner wallet approval is still required.** No video.
+
+The actual local browser quote, both-wallet refresh and four widths pass; its unapproved audit quote was cancelled. [Local evidence](evidence/oct31-local-quote.json) · [390px capture](screenshots/oct31-local/local-quote-390.png). Fresh genuine unsigned Mainnet simulation at checkpoint **340108600 / epoch 1297** confirms the exact two commands, 0.001 SUI debit/credit and simulated 0.0001 SUI sponsor gas with no mocked gas. [Unsigned evidence](evidence/oct31-local-unsigned-simulation.json). An expected-output inspection exposed and fixed memo-link omission; both memo and instruction links are now checked. [Unpaid deterministic preview](evidence/oct31-analysis-preview.json). No actual service delivery is claimed from this preview.
+
+The **Refresh payment controls · no signing** control rereads capability after the owner-operated process restart without replacing the inspected prepared bytes or requesting a signature. Final targeted service browser tests pass **5/5** with intercepted financial responses. [Focused validation and retained first-run fixture failure](TEST_RESULTS.md). The local application is available; its financial switch remains off until the supervised procedure. Owner interaction in Slush is the remaining live-purchase dependency.
+
+---
+
+# October 30 — retained engineering and live-purchase evidence
 
 **Quote preparation is enabled and verified in Production. No x402 service payment has settled.** The owner has sufficient address-balance SUI. The unresolved Slush warning and controlled production-wallet retest remain mandatory gates before a separately approved funded purchase. The successful self-deposit is not a service settlement and must not be counted toward the payments bonus.
 

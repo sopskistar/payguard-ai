@@ -1,0 +1,206 @@
+{
+  "checkedAt": "2026-10-31T10:47:17.582Z",
+  "financialApproval": false,
+  "walletConnection": false,
+  "signature": false,
+  "settlementRequested": false,
+  "memoryWrite": false,
+  "environmentChanged": false,
+  "release": "local",
+  "execution": "Genuine loopback owner application; production Slush clearance is unchanged",
+  "configuration": {
+    "payerMatchesOriginal": true,
+    "merchantMatchesOriginal": true,
+    "quoteEnabled": true,
+    "settlementEnabled": false,
+    "securityCleared": true
+  },
+  "preflight": {
+    "state": "passed",
+    "readyForQuotePreparation": true,
+    "readyForExactApproval": true,
+    "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+    "asset": "0x2::sui::SUI",
+    "decimals": 9,
+    "checkpoint": "340107949",
+    "diagnostics": [
+      {
+        "stage": "configuration",
+        "label": "Deployed read-only payment configuration",
+        "status": "passed",
+        "checkedAt": "2026-10-31T10:47:22.106Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "tentacle.supported",
+        "label": "Tentacle x402 v2 exact sponsorship",
+        "status": "passed",
+        "checkedAt": "2026-10-31T10:47:22.742Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "tatum.connection",
+        "label": "Tatum native gRPC connection and authentication",
+        "status": "passed",
+        "checkedAt": "2026-10-31T10:47:23.680Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "tatum.chain",
+        "label": "Sui Mainnet chain identity",
+        "status": "passed",
+        "checkedAt": "2026-10-31T10:47:23.680Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "tatum.native_sui",
+        "label": "Native SUI identity and units",
+        "status": "passed",
+        "checkedAt": "2026-10-31T10:47:23.851Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "tatum.protocol",
+        "label": "Address-balance gas protocol feature",
+        "status": "passed",
+        "checkedAt": "2026-10-31T10:47:24.364Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "balance.payer",
+        "label": "Wallet A native SUI balance",
+        "status": "passed",
+        "checkedAt": "2026-10-31T10:47:24.849Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "balance.recipient",
+        "label": "Wallet B native SUI balance",
+        "status": "passed",
+        "checkedAt": "2026-10-31T10:47:25.359Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      },
+      {
+        "stage": "configuration.parties",
+        "label": "Payer, merchant and sponsor separation",
+        "status": "passed",
+        "checkedAt": "2026-10-31T10:47:25.360Z",
+        "classification": "verified",
+        "code": "OK",
+        "message": "Read-only check succeeded.",
+        "action": ""
+      }
+    ],
+    "balances": {
+      "payer": {
+        "totalAtomic": "27893245",
+        "coinAtomic": "22893245",
+        "addressAtomic": "5000000",
+        "derivation": "Explicit total and both components",
+        "checkedAt": "2026-10-31T10:47:24.849Z"
+      },
+      "recipient": {
+        "totalAtomic": "0",
+        "coinAtomic": "0",
+        "addressAtomic": "0",
+        "derivation": "Both components proven zero by the explicit zero total",
+        "checkedAt": "2026-10-31T10:47:25.359Z"
+      }
+    }
+  },
+  "before": {
+    "memories": 32,
+    "receipts": 0,
+    "spending_sessions": 0
+  },
+  "quote": {
+    "status": 402,
+    "headerBodyEqual": true,
+    "quoteId": "97e013a9-537b-4745-83ca-9b41e09b7d9b",
+    "invoice": "controlled synthetic X402-OWNER-20261031-01",
+    "firstParty": true,
+    "network": "sui:mainnet",
+    "asset": "0x2::sui::SUI",
+    "amountMist": "1000000",
+    "priceSui": "0.001",
+    "merchantMatchesConfigured": true,
+    "payerMatchesConfigured": true,
+    "sponsor": "0x6d8c6e978808e81344b6ddcc741b06d2b2b1106066d218683e0161f696878b61",
+    "sponsorBudgetMist": "2000000",
+    "payerGasCapMist": "0",
+    "sessionCapMist": "3000000",
+    "expiresAt": "2026-10-31T10:52:34.026Z",
+    "timeoutSeconds": 300,
+    "resourceBound": true,
+    "instructionHash": "95819473e5dfcdeb20bb4a314212d21f21562431eb462a415fff9a914a7d9b84",
+    "operationIdempotent": true,
+    "unpaidResourceStatus": 402,
+    "unpaidResourceSameChallenge": true,
+    "payerFingerprint": "4d843c0976858a6888635ec75d5b55a50598e5baaaaecafbcc21a11cc77b17ee",
+    "merchantFingerprint": "442915c203856a4a450f74af0c19be8e2058b604d9a772a17f563bad79d47ba9"
+  },
+  "browser": {
+    "browser": "151.0.7922.34",
+    "actualHttp402": true,
+    "sameOperationReplay": true,
+    "sameQuote": true,
+    "actualBothWalletBalanceRefresh": true,
+    "financialApproval": false,
+    "signingControlDisabled": true,
+    "slushWebPreparationOptionPresent": true,
+    "errors": [],
+    "views": [
+      {
+        "width": 1280,
+        "zoom": "100%",
+        "noOverflow": true
+      },
+      {
+        "width": 360,
+        "zoom": "100%",
+        "noOverflow": true
+      },
+      {
+        "width": 390,
+        "zoom": "100%",
+        "noOverflow": true
+      },
+      {
+        "width": 430,
+        "zoom": "100%",
+        "noOverflow": true
+      }
+    ]
+  },
+  "cancelledUnapprovedQuote": true,
+  "after": {
+    "memories": 32,
+    "receipts": 0,
+    "spending_sessions": 0
+  },
+  "ok": true
+}

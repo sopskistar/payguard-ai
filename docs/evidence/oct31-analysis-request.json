@@ -1,0 +1,17 @@
+{
+  "checkedAt": "2026-10-31T10:31:43.099Z",
+  "synthetic": true,
+  "firstPartyControlledExperiment": true,
+  "payment": false,
+  "memoryWrite": false,
+  "newSyntheticInvoice": true,
+  "invoice": {
+    "id": "44e4fc1d-7b50-46dd-b722-92a4881aade6",
+    "number": "X402-OWNER-20261031-01"
+  },
+  "counts": {
+    "memories": 32,
+    "service_receipts": 0
+  },
+  "ok": true
+}

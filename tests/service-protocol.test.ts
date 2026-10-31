@@ -26,6 +26,15 @@ const terms = serviceTermsSchema.parse({
     instructionHash: 'a'.repeat(64),
   },
 });
+it('inspects links in both the frozen invoice memo and instruction message without fetching them', () => {
+  const report = analyzeInstructionConsistency(
+    { recipient: payer, memo: 'Synthetic memo https://memo.example/review' },
+    'Synthetic instruction https://instruction.example/check',
+  );
+  expect(report.linkDomains).toEqual(['memo.example', 'instruction.example']);
+  expect(report.independentIdentityVerification).toBe(false);
+  expect(report.recommendation).toContain('independent supplier verification');
+});
 it.each(['sui:mainnet', 'sui:testnet'] as const)(
   'builds the exact unsigned %s transaction with no gas coins or execution',
   async (network) => {

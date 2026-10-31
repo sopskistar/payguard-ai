@@ -335,7 +335,7 @@ export function analyzeInstructionConsistency(
   const contradictions = addresses.filter(
     (a) => a.toLowerCase() !== invoice.recipient.toLowerCase(),
   );
-  const urls = (message.match(/https?:\/\/[^\s<>]+/g) || []).map((u) => {
+  const urls = ((invoice.memo + '\n' + message).match(/https?:\/\/[^\s<>]+/g) || []).map((u) => {
     try {
       return new URL(u).hostname;
     } catch {

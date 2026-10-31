@@ -1,3 +1,11 @@
+# October 31 — current non-spending verification
+
+Fresh authenticated Tatum Mainnet and Tentacle checks passed at checkpoint **340100235**. Both configured parties still match their existing public addresses. Wallet A has **0.027893245 SUI total / 0.022893245 coin objects / 0.005 address balance**; Wallet B is explicitly zero in all three components. [Dated provider response](evidence/oct31-readiness.json). Mainnet quotes are enabled, Production settlement disabled. The [owner-local application workflow](LOCAL_OWNER_PAYMENT.md) is a separately inspected deployment, not production Slush clearance.
+
+One clearly synthetic invoice-analysis request was added for the controlled first-party experiment. No prior invoice was replaced, no memory was created and **32 confirmed Walrus records / zero service receipts** remain. The successful self-deposit below remains distinct from an x402 purchase. No service digest, merchant credit or delivered paid report is claimed before actual owner authorization and independent verification.
+
+---
+
 # Mainnet proof ledger
 
 ## Genuine service quotes and unsigned simulation — October 30, 2026

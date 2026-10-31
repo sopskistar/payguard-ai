@@ -1,0 +1,58 @@
+{
+  "checkedAt": "2026-10-31T11:44:28.755454+00:00",
+  "recoveredCommit": "9f5d854cdc299d79fb7303292e8f67cdb855f317",
+  "focusedInitial": {
+    "passed": 67,
+    "failed": 0,
+    "files": 11
+  },
+  "finalPaymentStore": {
+    "passed": 19,
+    "failed": 0,
+    "file": "service-store.test.ts"
+  },
+  "finalProtocol": {
+    "passed": 12,
+    "failed": 0,
+    "file": "service-protocol.test.ts",
+    "memoAndMessageLinks": true
+  },
+  "targetedBrowserFirst": {
+    "passed": 15,
+    "failed": 1,
+    "notRun": 1,
+    "database": "Fresh isolated PGlite, never Neon",
+    "cause": "Financial metadata fixture was configured but Payment Setup still read unconfigured QA values; corrected the fixture without weakening receipt-count assertion"
+  },
+  "serviceBrowserAfterFixtureCorrection": {
+    "passed": 5,
+    "failed": 0,
+    "financialAndMemoryResponses": "mocked"
+  },
+  "finalServiceBrowser": {
+    "passed": 5,
+    "failed": 0,
+    "financialAndMemoryResponses": "mocked",
+    "preparedBytesPreservedOnCapabilityRefresh": true,
+    "automaticSignature": false
+  },
+  "hostedBrowser": null,
+  "build": "passed",
+  "lint": "passed",
+  "typecheck": "passed",
+  "format": "passed",
+  "credentialScan": {
+    "files": 493,
+    "matches": 0
+  },
+  "actualMainnet": {
+    "productionReadiness": "oct31-readiness.json",
+    "localQuote": "oct31-local-quote.json",
+    "unsignedSimulation": "oct31-local-unsigned-simulation.json",
+    "serviceSettlements": 0,
+    "newSignedTransactions": 0,
+    "memoryWrites": 0,
+    "confirmedMemories": 32
+  },
+  "ownerInteraction": "Required: fresh exact approval and actual wallet prompt. No automatic financial action."
+}

@@ -20,16 +20,22 @@ function LoadingWallet() {
 }
 const WalletKit = dynamic(() => import('./wallet-kit'), { ssr: false, loading: LoadingWallet });
 const Monitor = dynamic(() => import('./wallet-kit'), { ssr: false });
-export function WalletEntry() {
-  return <WalletKit />;
+export function WalletEntry({ slushBlocked = false }: { slushBlocked?: boolean }) {
+  return <WalletKit slushBlocked={slushBlocked} />;
 }
 export function WalletSessionMonitor({ expectedAddress }: { expectedAddress: string }) {
   const [allowed, setAllowed] = useState(false);
+  const [slushBlocked, setSlushBlocked] = useState(true);
   useEffect(() => {
-    void api<{ allowed: boolean }>('auth/wallet/status')
-      .then((status) => setAllowed(status.allowed))
+    void api<{ allowed: boolean; slushBlocked: boolean }>('auth/wallet/status')
+      .then((status) => {
+        setAllowed(status.allowed);
+        setSlushBlocked(status.slushBlocked);
+      })
       .catch(() => setAllowed(false));
   }, []);
-  // Do not load/auto-connect the SDK on a hosted origin under security review.
-  return allowed ? <Monitor monitor expectedAddress={expectedAddress} /> : null;
+  // The kit never automatically connects or opens a provider popup.
+  return allowed ? (
+    <Monitor monitor expectedAddress={expectedAddress} slushBlocked={slushBlocked} />
+  ) : null;
 }

@@ -3,13 +3,14 @@ import { visit } from './browser-helpers';
 import { test, expect, type BrowserContext, type Page } from '@playwright/test';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 const origin = process.env.E2E_BASE_URL || 'http://localhost:3000';
-// Hosted onboarding is intentionally paused. Never use fixtures to evade a wallet warning.
+// Account/signature fixtures run only on isolated loopback; never create test accounts on Neon.
 test.beforeEach(async ({ request }) => {
   const status = await request.get('/api/auth/wallet/status');
   expect(status.status()).toBe(200);
   test.skip(
-    !(await status.json()).allowed,
-    'Hosted wallet onboarding blocked pending Slush review; fixtures run on controlled loopback only.',
+    !(await status.json()).allowed ||
+      !['localhost', '127.0.0.1'].includes(new URL(origin).hostname),
+    'Signature/account fixtures require isolated loopback; physical hosted provider tests remain separate.',
   );
 });
 async function authenticate(context: BrowserContext, key: Ed25519Keypair) {

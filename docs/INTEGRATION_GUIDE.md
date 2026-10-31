@@ -69,7 +69,7 @@ Production is public at https://payguard-ai-henna.vercel.app. Framework Preset m
 
 `npm run judge:evidence` captures a fresh real recall of synthetic owner policies; it preserves the previous artifact if no applicable citations return. `npm run judge:publish-build` bundles the same judge component and reviewed evidence for the existing `/docs` GitHub Pages deployment. No `.env` value or provider SDK credential is included. The Next.js route remains `/try`.
 
-Service-payment configuration and signing are described in [AGENT_PAYMENTS.md](AGENT_PAYMENTS.md). `ENABLE_AGENT_PAYMENTS` defaults off. Only controlled Testnet mode is accepted; Mainnet is disabled by schema and verifier. Configure `SERVICE_PAYMENT_RECIPIENT` privately to a separate Testnet merchant. No spending key is requested. The normal Tatum key is required for independent Testnet receipt verification. Actual wallet signing/settlement must still be demonstrated before claiming the bonus.
+Service-payment configuration and signing are described in [AGENT_PAYMENTS.md](AGENT_PAYMENTS.md). `ENABLE_AGENT_PAYMENTS` defaults off; literal `mainnet` enables the demonstrated Mainnet quote implementation, with `testnet` retained for development. Configure distinct existing public payer and merchant addresses and Tatum access for the selected network. No spending key is requested. Production settlement remains false and its financial security gate remains intact. The [owner-local application](LOCAL_OWNER_PAYMENT.md) supports an explicitly enabled supervised purchase with separate exact approval and wallet signing. Actual finalized settlement and delivered analysis must exist before claiming the bonus.
 
 ## Wallet accounts
 
