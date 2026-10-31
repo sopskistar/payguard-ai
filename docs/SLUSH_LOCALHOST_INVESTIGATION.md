@@ -23,6 +23,8 @@ Paths such as `/connect` and `/services` share their origin. Scheme, hostname an
 
 The lockfile SDKs remain `@mysten/slush-wallet` 1.3.6, `@mysten/sui` 2.38.0 and the existing modern Mysten dApp Kit versions. No wallet SDK upgrade was used to claim a fix. Browser extension version is a separate fact and is not available from these package versions.
 
+Fresh [origin/header observations](evidence/slush-origin-comparison.json) show the local development CSP includes `unsafe-eval` for Next development; production excludes it and uses HTTPS/HSTS. Both allow the official Slush metadata host and retain frame/object restrictions. Current production returns `allowed=true`, `slushBlocked=false`, `paymentSigningAllowed=false`; the real selector is accessible. This is an application-policy observation, not a Slush reputation verdict. The production browser suite and [owner/session/receipt/recall smoke](evidence/final-production-service-smoke.json) pass without claiming a physical wallet connection.
+
 ## Connection, authentication and signing are separate requests
 
 1. Wallet Standard `standard:connect` requests account access only. Discovery does not automatically connect (`autoConnect:false`).

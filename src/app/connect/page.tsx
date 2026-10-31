@@ -41,15 +41,17 @@ export default async function ConnectPage({
                 deliberately signing; it cannot authorize a transaction.
               </p>
               <div className="notice" role="status">
-                <strong>Free registration · no email, password or funds.</strong> Choose a wallet,
-                prepare the sign-in message, then sign it to create or reopen your private
-                workspace. Slush worked for an owner-reported localhost purchase; production
-                compatibility still needs a physical-wallet retest. Stop if any wallet warns or
-                refuses. Production financial signing remains paused.{' '}
-                <Link className="inline-link" href="/connect?mode=review">
-                  Slush warning and review instructions
-                </Link>
-                . No warning is dismissed by PayGuard.
+                <p>
+                  <strong>Free registration · no email, password or funds.</strong> Choose a wallet,
+                  prepare the sign-in message, then sign it to create or reopen your private
+                  workspace. Slush worked for an owner-reported localhost purchase; production
+                  compatibility still needs a physical-wallet retest. Stop if any wallet warns or
+                  refuses. Production financial signing remains paused.{' '}
+                  <Link className="inline-link" href="/connect?mode=review">
+                    Slush warning and review instructions
+                  </Link>
+                  . No warning is dismissed by PayGuard.
+                </p>
               </div>
             </>
           ) : (

@@ -1,0 +1,406 @@
+{
+  "startedAt": "2026-10-31T19:10:10.353Z",
+  "baseURL": "https://payguard-ai-henna.vercel.app",
+  "isolation": "A fresh Playwright/Chromium process per spec; sequential; no automatic spec retry",
+  "mainnetMemoryWrites": false,
+  "paymentSettlement": false,
+  "video": false,
+  "passed": 20,
+  "failed": 0,
+  "skipped": 9,
+  "flaky": 0,
+  "specs": [
+    {
+      "file": "app.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "public Verify journey, replay controls and responsive navigation",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 12481
+        },
+        {
+          "title": "anonymous users cannot read owner data or mutate records; origin is checked",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 2292
+        },
+        {
+          "title": "owner intake persists through a fresh browser context, with no fictional memory",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 16326
+        }
+      ]
+    },
+    {
+      "file": "judge.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "judge never presents active walkthrough buttons before client readiness",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 2811
+        },
+        {
+          "title": "judge completes all seven clear steps, with back navigation, real evidence and no account",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 8616
+        },
+        {
+          "title": "public users cannot quote, approve or settle service fees",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 1320
+        }
+      ]
+    },
+    {
+      "file": "live-chain.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "LIVE Tatum transaction inspector rejects an unrelated sample payment",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 9462
+        }
+      ]
+    },
+    {
+      "file": "live-memory.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "LIVE Mainnet correction is recalled in a separate owner session",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 10165
+        }
+      ]
+    },
+    {
+      "file": "payment-setup.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "private setup distinguishes unusable coins, usable funds, security pause and failed checks (fixtures, no settlement)",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 4704
+        },
+        {
+          "title": "mobile navigation closes, traps focus, locks scroll and supports direct/back navigation",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 8975
+        }
+      ]
+    },
+    {
+      "file": "product-story.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "product story has six usable stages, play/pause/replay and no private operations",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 7627
+        },
+        {
+          "title": "reduced-motion and mobile story preserve readable controls and clear access paths",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 3452
+        }
+      ]
+    },
+    {
+      "file": "product-ux.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "refresh shows loading, honest success, timestamp and failure; public actions explain owner access",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 4795
+        },
+        {
+          "title": "landing CTAs, FAQ, proof and mobile layouts are deliberate and functional",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 12664
+        },
+        {
+          "title": "owner sign-in clears submitted credentials while the request is pending",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 2970
+        }
+      ]
+    },
+    {
+      "file": "service-preflight.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "owner service page explains exact Mainnet proposal and keeps spending disabled",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 7367
+        }
+      ]
+    },
+    {
+      "file": "service-workflow.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "validates a 402 quote, enforces the signing pause and expires without opening a wallet",
+          "status": "skipped",
+          "annotations": [
+            {
+              "type": "serial",
+              "location": {
+                "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+                "line": 21,
+                "column": 6
+              }
+            },
+            {
+              "type": "skip",
+              "description": "Requires isolated local owner workspace; never run financial UI fixtures on Production.",
+              "location": {
+                "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+                "line": 24,
+                "column": 10
+              }
+            }
+          ],
+          "durationMs": 0
+        },
+        {
+          "title": "does not attribute a saved paid report to a different unpaid intent",
+          "status": "skipped",
+          "annotations": [
+            {
+              "type": "serial",
+              "location": {
+                "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+                "line": 21,
+                "column": 6
+              }
+            },
+            {
+              "type": "skip",
+              "description": "Requires isolated local owner workspace; never run financial UI fixtures on Production.",
+              "location": {
+                "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+                "line": 24,
+                "column": 10
+              }
+            }
+          ],
+          "durationMs": 0
+        },
+        {
+          "title": "requests the minimized Walrus rule only after its separate consent click",
+          "status": "skipped",
+          "annotations": [
+            {
+              "type": "serial",
+              "location": {
+                "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+                "line": 21,
+                "column": 6
+              }
+            },
+            {
+              "type": "skip",
+              "description": "Requires isolated local owner workspace; never run financial UI fixtures on Production.",
+              "location": {
+                "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+                "line": 24,
+                "column": 10
+              }
+            }
+          ],
+          "durationMs": 0
+        },
+        {
+          "title": "separates preparation and one wallet signature, then delivers an owned analysis receipt (fully mocked)",
+          "status": "skipped",
+          "annotations": [
+            {
+              "type": "serial",
+              "location": {
+                "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+                "line": 21,
+                "column": 6
+              }
+            },
+            {
+              "type": "skip",
+              "description": "Requires isolated local owner workspace; never run financial UI fixtures on Production.",
+              "location": {
+                "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+                "line": 24,
+                "column": 10
+              }
+            }
+          ],
+          "durationMs": 0
+        },
+        {
+          "title": "prepares exact approved bytes with settlement disabled and never opens signing (fully mocked)",
+          "status": "skipped",
+          "annotations": [
+            {
+              "type": "serial",
+              "location": {
+                "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+                "line": 21,
+                "column": 6
+              }
+            },
+            {
+              "type": "skip",
+              "description": "Requires isolated local owner workspace; never run financial UI fixtures on Production.",
+              "location": {
+                "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+                "line": 24,
+                "column": 10
+              }
+            }
+          ],
+          "durationMs": 0
+        },
+        {
+          "title": "shows the real wallet rejection without submission or an automatic retry (mock wallet)",
+          "status": "skipped",
+          "annotations": [
+            {
+              "type": "serial",
+              "location": {
+                "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+                "line": 21,
+                "column": 6
+              }
+            },
+            {
+              "type": "skip",
+              "description": "Requires isolated local owner workspace; never run financial UI fixtures on Production.",
+              "location": {
+                "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+                "line": 24,
+                "column": 10
+              }
+            }
+          ],
+          "durationMs": 0
+        }
+      ]
+    },
+    {
+      "file": "verification.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "owner records independent verification; edited instructions invalidate approval",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 15322
+        }
+      ]
+    },
+    {
+      "file": "wallet-pause.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "public wallet login is accessible independently of hosted financial signing",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 4649
+        }
+      ]
+    },
+    {
+      "file": "wallet-review.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "public official review selector connects only by choice, never signs or authenticates, and disconnects",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 5117
+        },
+        {
+          "title": "wallet refusal remains with the official selector; no signature or fallback login follows",
+          "status": "expected",
+          "annotations": [],
+          "durationMs": 3479
+        }
+      ]
+    },
+    {
+      "file": "wallet.spec.ts",
+      "exitCode": 0,
+      "tests": [
+        {
+          "title": "wallet sign-in uses a real personal signature; logout, replay and cross-user APIs are enforced",
+          "status": "skipped",
+          "annotations": [
+            {
+              "type": "skip",
+              "description": "Signature/account fixtures require isolated loopback; physical hosted provider tests remain separate.",
+              "location": {
+                "file": "/home/sopski/payguard-ai/tests/e2e/wallet.spec.ts",
+                "line": 10,
+                "column": 8
+              }
+            }
+          ],
+          "durationMs": 672
+        },
+        {
+          "title": "Wallet Standard connect UI signs in, switches accounts safely and fits mobile",
+          "status": "skipped",
+          "annotations": [
+            {
+              "type": "skip",
+              "description": "Signature/account fixtures require isolated loopback; physical hosted provider tests remain separate.",
+              "location": {
+                "file": "/home/sopski/payguard-ai/tests/e2e/wallet.spec.ts",
+                "line": 10,
+                "column": 8
+              }
+            }
+          ],
+          "durationMs": 672
+        },
+        {
+          "title": "wallet loading provides native recovery when JavaScript cannot load",
+          "status": "skipped",
+          "annotations": [
+            {
+              "type": "skip",
+              "description": "Signature/account fixtures require isolated loopback; physical hosted provider tests remain separate.",
+              "location": {
+                "file": "/home/sopski/payguard-ai/tests/e2e/wallet.spec.ts",
+                "line": 10,
+                "column": 8
+              }
+            }
+          ],
+          "durationMs": 650
+        }
+      ]
+    }
+  ],
+  "finishedAt": "2026-10-31T19:13:05.454Z",
+  "ok": true
+}

@@ -4012,6 +4012,7 @@ tr:hover td {
   min-width: 0;
 }
 .service-prepared-digest {
+  display: block;
   overflow-wrap: anywhere;
 }
 .service-payment-page .detail-list > div {

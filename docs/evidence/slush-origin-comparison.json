@@ -1,0 +1,70 @@
+{
+  "checkedAt": "2026-10-31T19:13:38.975Z",
+  "readOnly": true,
+  "walletConnection": false,
+  "signatureRequested": false,
+  "origins": [
+    {
+      "origin": "http://localhost:4320",
+      "status": 200,
+      "headers": {
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://fullnode.testnet.sui.io https://fullnode.mainnet.sui.io https://api.slush.app; worker-src 'self' blob:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'",
+        "strict-transport-security": null,
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "camera=(), microphone=(), geolocation=()"
+      },
+      "walletStatus": {
+        "allowed": true,
+        "slushBlocked": false,
+        "paymentSigningAllowed": true,
+        "review": "Wallet providers decide whether to permit this origin. Stop if a provider warns or refuses. Message login is separate from financial signing."
+      },
+      "release": {
+        "application": "PayGuard Verify",
+        "commit": "local",
+        "recordedProofCount": 30,
+        "proofExportedAt": "2026-10-28T23:01:40.457Z",
+        "modes": ["public-demo", "owner-admin", "wallet-member", "recorded-proof"]
+      },
+      "scriptOrigins": ["http://localhost:4320"]
+    },
+    {
+      "origin": "https://payguard-ai-henna.vercel.app",
+      "status": 200,
+      "headers": {
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://fullnode.testnet.sui.io https://fullnode.mainnet.sui.io https://api.slush.app; worker-src 'self' blob:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'",
+        "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "camera=(), microphone=(), geolocation=()"
+      },
+      "walletStatus": {
+        "allowed": true,
+        "slushBlocked": false,
+        "paymentSigningAllowed": false,
+        "review": "Wallet providers decide whether to permit this origin. Stop if a provider warns or refuses. Message login is separate from financial signing."
+      },
+      "release": {
+        "application": "PayGuard Verify",
+        "commit": "df5d7ec33679bfc21faf33bb280b7a146bc1c8f7",
+        "recordedProofCount": 30,
+        "proofExportedAt": "2026-10-28T23:01:40.457Z",
+        "modes": ["public-demo", "owner-admin", "wallet-member", "recorded-proof"]
+      },
+      "scriptOrigins": ["https://payguard-ai-henna.vercel.app"]
+    }
+  ],
+  "installedSdks": {
+    "@mysten/slush-wallet": "1.3.6",
+    "@mysten/sui": "2.38.0",
+    "@mysten/dapp-kit-react": "2.1.43",
+    "@mysten/dapp-kit-core": "1.6.41"
+  },
+  "physicalExtensionVersion": null,
+  "ownerBrowserVersion": null,
+  "providerReputationVerdict": null,
+  "conclusion": "Local dev includes unsafe-eval for Next development; production excludes it and has HTTPS/HSTS. Both permit only the official Slush metadata host via CSP. These observable differences do not establish why a Slush warning disappeared. No physical wallet or reputation feed was inspected."
+}

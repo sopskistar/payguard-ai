@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-31T18:42:19.164Z",
+  "checkedAt": "2026-10-31T19:10:20.987Z",
   "origin": "https://payguard-ai-henna.vercel.app",
   "reportedWarning": "Malicious website — This site has been flagged for malicious behavior.",
   "warningSource": "Owner report; no physical Slush extension installed in this controlled browser",
@@ -66,7 +66,7 @@
       },
       "response": {
         "application": "PayGuard Verify",
-        "commit": "7a18ff9edc7e2b7a019c78b434dcad84d46da64f",
+        "commit": "df5d7ec33679bfc21faf33bb280b7a146bc1c8f7",
         "recordedProofCount": 30,
         "proofExportedAt": "2026-10-28T23:01:40.457Z",
         "modes": ["public-demo", "owner-admin", "wallet-member", "recorded-proof"]
@@ -88,9 +88,9 @@
       },
       "response": {
         "allowed": true,
-        "slushBlocked": true,
+        "slushBlocked": false,
         "paymentSigningAllowed": false,
-        "review": "Slush production domain review pending; never override provider warnings"
+        "review": "Wallet providers decide whether to permit this origin. Stop if a provider warns or refuses. Message login is separate from financial signing."
       }
     }
   ],
@@ -106,9 +106,9 @@
       "sha256": "6d19a022ada2c48011e8b7fc1cd439e5db0cfb59ec4b6666b6e9b6806a9cb359"
     },
     {
-      "url": "https://payguard-ai-henna.vercel.app/_next/static/chunks/main-app-42a87bb59456d579.js",
+      "url": "https://payguard-ai-henna.vercel.app/_next/static/chunks/main-app-f7e8dc32c7c193dc.js",
       "status": 200,
-      "sha256": "a87bf08952a7cd17d32a4f090a15611665b3721fef2d56f77f5187b547e3d8db"
+      "sha256": "f5cc2dc69ac2476871c392eb411050728d09af67f24214e7c1e360d751e29bb3"
     },
     {
       "url": "https://payguard-ai-henna.vercel.app/_next/static/chunks/app/error-df3e4d40985b75ee.js",
@@ -141,14 +141,14 @@
       "sha256": "cef7fee1adc241c8c5d18e1c9298f1f1cfe2cecbf5fc80eb7b7c8a2abc307432"
     },
     {
-      "url": "https://payguard-ai-henna.vercel.app/_next/static/chunks/733-e358e4f63839bae6.js",
+      "url": "https://payguard-ai-henna.vercel.app/_next/static/chunks/733-c5b09b48e1652660.js",
       "status": 200,
-      "sha256": "7d40a5410b5143e6b3ae56ce8a49890e64b3bed99c9013f71712a158312129ef"
+      "sha256": "6997ff7e979e4aaea0a496cc1b2ee75a099f75051133294b43ee5b2b86ec0bd8"
     },
     {
-      "url": "https://payguard-ai-henna.vercel.app/_next/static/chunks/app/page-44f6ef14581d1a8c.js",
+      "url": "https://payguard-ai-henna.vercel.app/_next/static/chunks/app/page-2311bd5fdec77923.js",
       "status": 200,
-      "sha256": "f805de30b2bc4f8cdbd7645104f4d2f3997576e84aa0c4fe5b43b3db93d769a3"
+      "sha256": "f7a8b1bb7725ea0611f3412792cce8c1ad469f5f7c5577df070346ce4ab80e40"
     },
     {
       "url": "https://payguard-ai-henna.vercel.app/_next/static/chunks/polyfills-42372ed130431b0a.js",
@@ -156,9 +156,9 @@
       "sha256": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683"
     },
     {
-      "url": "https://payguard-ai-henna.vercel.app/_next/static/chunks/webpack-2f277b4b8a7b2379.js",
+      "url": "https://payguard-ai-henna.vercel.app/_next/static/chunks/webpack-d33b655fc4091132.js",
       "status": 200,
-      "sha256": "4aeb2808a283a6b6dbbc4f14e389bef8d56c86dc5810c53f928b5594d1f3efc3"
+      "sha256": "56366591268314f29d38d528ed06307ec2a849ed2f8943eb8051ca7013acdcae"
     },
     {
       "url": "https://payguard-ai-henna.vercel.app/_next/static/chunks/app/connect/page-614300fcd763627c.js",
@@ -166,9 +166,9 @@
       "sha256": "c73ae55b6039761472bcd546dc07a8745ea40ce6d205793dac3679b41482dfc5"
     },
     {
-      "url": "https://payguard-ai-henna.vercel.app/_next/static/chunks/app/try/page-76e601261e71f443.js",
+      "url": "https://payguard-ai-henna.vercel.app/_next/static/chunks/app/try/page-721e7eb417f53a18.js",
       "status": 200,
-      "sha256": "7a9ce3a002bfee783e2969a5b1b6286f7ca9fc9afcd76268c79066ec0d259463"
+      "sha256": "acd195bffd4b6bf668be536d5df073502c6d65e8072e2ec2b796b420cdf9626d"
     }
   ],
   "lists": [
