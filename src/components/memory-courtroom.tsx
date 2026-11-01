@@ -16,7 +16,31 @@ import { PaymentEvidence } from './payment-evidence';
 import evidence from '../../docs/evidence/courtroom.json';
 import recall from '../../docs/evidence/judge-recall.json';
 import { judgeReview } from '@/lib/judge';
-import type { Assessment, Policy } from '@/lib/types';
+import type { Assessment, Finding, Policy } from '@/lib/types';
+function ReviewFindings({ items, baseline }: { items: Finding[]; baseline: Set<string> }) {
+  return (
+    <ul>
+      {items.map((f, i) => (
+        <li key={f.id + i} className={f.memoryId || !baseline.has(f.id) ? 'learned' : ''}>
+          <span className="courtroom-provenance">
+            {f.memoryId
+              ? 'Confirmed learned policy'
+              : baseline.has(f.id)
+                ? 'Retained verification rule'
+                : 'Additional context'}{' '}
+            · {f.severity}
+          </span>
+          <h3>{f.title}</h3>
+          <p>{f.evidence}</p>
+          <p>
+            <strong>Next action:</strong> {f.action}
+          </p>
+          {f.memoryId && <code>Memory reference: {f.memoryId}</code>}
+        </li>
+      ))}
+    </ul>
+  );
+}
 const stages = [
   'Inspect invoice',
   'Baseline rules',
@@ -246,6 +270,14 @@ export function MemoryCourtroom() {
             .filter((side) => view === 'both' || view === side)
             .map((side) => {
               const result = side === 'off' ? off : on;
+              const preview =
+                side === 'on'
+                  ? [
+                      ...result.findings.filter((f) => f.memoryId).slice(0, 1),
+                      ...result.findings.filter((f) => !f.memoryId).slice(0, 2),
+                    ]
+                  : result.findings.slice(0, 3);
+              const additional = result.findings.filter((f) => !preview.includes(f));
               return (
                 <article
                   key={side}
@@ -266,29 +298,19 @@ export function MemoryCourtroom() {
                   <p className="courtroom-hold">
                     <ShieldCheck size={17} /> Human verification required · approval held
                   </p>
-                  <ul>
-                    {result.findings.map((f, i) => (
-                      <li
-                        key={f.id + i}
-                        className={f.memoryId || !baseline.has(f.id) ? 'learned' : ''}
-                      >
-                        <span className="courtroom-provenance">
-                          {f.memoryId
-                            ? 'Confirmed learned policy'
-                            : baseline.has(f.id)
-                              ? 'Retained verification rule'
-                              : 'Additional context'}{' '}
-                          · {f.severity}
-                        </span>
-                        <h3>{f.title}</h3>
-                        <p>{f.evidence}</p>
-                        <p>
-                          <strong>Next action:</strong> {f.action}
-                        </p>
-                        {f.memoryId && <code>Memory reference: {f.memoryId}</code>}
-                      </li>
-                    ))}
-                  </ul>
+                  <p className="muted">
+                    {side === 'on'
+                      ? 'One remembered policy leads the comparison; baseline checks still apply.'
+                      : 'Three baseline findings lead the comparison.'}{' '}
+                    All {result.findings.length} findings remain inspectable.
+                  </p>
+                  <ReviewFindings items={preview} baseline={baseline} />
+                  {additional.length > 0 && (
+                    <details>
+                      <summary>Inspect {additional.length} additional findings</summary>
+                      <ReviewFindings items={additional} baseline={baseline} />
+                    </details>
+                  )}
                   <details>
                     <summary>
                       Inspect rule provenance and citations ({result.citations.length})

@@ -12,6 +12,10 @@ test('public Courtroom compares captured evidence, replays real attack logic, an
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Same invoice.');
   await expect(page.getByLabel('Memory OFF review')).toContainText('No learned citations');
   await expect(page.getByLabel('Memory ON review')).toContainText('7 retrieved citations');
+  const learned = page.getByLabel('Memory ON review');
+  await expect(learned.locator('ul').first().locator('li').first()).toHaveClass('learned');
+  await learned.getByText(/Inspect \d+ additional findings/).click();
+  await expect(learned.getByText('Purchased first-party analysis', { exact: true })).toBeVisible();
   await page.getByLabel('Courtroom scenario').selectOption('1');
   await expect(page.locator('.courtroom-invoice')).toContainText('X402-EXPERIMENT-02');
   await page.getByRole('button', { name: 'Replay invoice attack', exact: true }).click();

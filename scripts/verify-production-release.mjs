@@ -27,7 +27,7 @@ const report = {
   settlementSubmission: false,
   memoryWrite: false,
   physicalProviderTest: false,
-  freeAuthenticationTestProfiles: 2,
+  freeAuthenticationTestProfiles: 0,
   checks: [],
 };
 function check(name, passed) {
@@ -185,7 +185,10 @@ try {
   await ownerPage
     .getByRole('region', { name: 'Server payment capabilities' })
     .waitFor({ timeout: 30000 });
-  await ownerPage.getByText('X402-EXPERIMENT-02', { exact: true }).first().waitFor();
+  await ownerPage
+    .locator('[aria-label="Selected invoice details"]')
+    .filter({ hasText: 'X402-EXPERIMENT-02' })
+    .waitFor();
   check(
     'owner services displays loaded capabilities without a new payment',
     financialRequests === 0,
@@ -208,6 +211,7 @@ try {
       'customer free signature verified ' + index,
       (await post(context, 'auth/wallet/verify', proof)).status() === 200,
     );
+    report.freeAuthenticationTestProfiles++;
     check(
       'customer nonce replay rejected ' + index,
       (await post(context, 'auth/wallet/verify', proof)).status() === 401,

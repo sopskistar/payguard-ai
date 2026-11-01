@@ -36,23 +36,14 @@ export default async function ConnectPage({
             <>
               <h1>Connect Sui Wallet</h1>
               <p>
-                Create or return to your private account using a permitted Sui wallet. Connection
-                alone does not authenticate you. Inspect the free personal-message challenge before
-                deliberately signing; it cannot authorize a transaction.
+                Create or return to your private workspace with a free personal-message signature.
+                Wallet login never authorizes a payment.
               </p>
               <div className="notice" role="status">
                 <p>
-                  <strong>Free registration · no email, password or funds.</strong> Choose a wallet,
-                  prepare the sign-in message, then sign it to create or reopen your private
-                  workspace. Slush worked for three owner-reported localhost purchases; production
-                  compatibility still needs a physical-wallet retest. Stop if any wallet warns or
-                  refuses. Optional Mainnet analysis uses your own authenticated wallet, exact terms
-                  and a separate transaction signature. Current checkout needs address-balance SUI;
-                  physical production provider acceptance remains unverified.{' '}
-                  <Link className="inline-link" href="/connect?mode=review">
-                    Slush warning and review instructions
-                  </Link>
-                  . No warning is dismissed by PayGuard.
+                  <strong>Free registration · no email, password or funds.</strong> Choose your
+                  wallet, inspect the sign-in message, then sign. Stop if your wallet warns or
+                  refuses.
                 </p>
               </div>
             </>
@@ -81,13 +72,6 @@ export default async function ConnectPage({
               </ol>
             </>
           )}
-          <p>
-            PayGuard never asks for a recovery phrase or private key. Connection alone does not sign
-            you in. Wallet sign-in does not authorize payments or grant administrator access.
-          </p>
-          <Link href="/app?signin=1" className="inline-link">
-            Owner administrator sign in ↗
-          </Link>
         </div>
         <section className="panel">
           <h2>{signIn ? 'Wallet sign-in' : 'Slush review only'}</h2>
@@ -118,6 +102,32 @@ export default async function ConnectPage({
               </a>
             </div>
           )}
+          {signIn && (
+            <details>
+              <summary>Provider status and optional paid analysis</summary>
+              <p>
+                Slush worked for three owner-reported localhost purchases. Physical production
+                Slush, Suiet, Nightly and mobile acceptance remains unverified. Stop if a provider
+                warns or refuses; no warning is dismissed by PayGuard.
+              </p>
+              <p>
+                Optional Mainnet analysis costs 0.001 SUI from your own authenticated wallet, with
+                exact purchase approval and a separate transaction signature. Current checkout needs
+                SUI address balance; ordinary coin-object funding is not yet validated with the
+                sponsored template. Sign-in itself needs no funds.
+              </p>
+              <Link className="inline-link" href="/connect?mode=review">
+                Slush warning and review instructions
+              </Link>
+            </details>
+          )}
+          <p>
+            PayGuard never asks for a recovery phrase or private key. Connection alone does not sign
+            you in. Wallet login grants no administrator access.
+          </p>
+          <Link href="/app?signin=1" className="inline-link">
+            Owner administrator sign in ↗
+          </Link>
           <p className="muted">
             Your minimized learning policies use the application’s managed Walrus account. Raw
             invoices and private contact details stay in Neon. Read{' '}
