@@ -537,3 +537,67 @@ it('preserves the exact Tentacle rejection and never retries a settlement on res
   expect((await fulfillService(OWNER_ID, row.id)).state).toBe('pending');
   expect(settles).toBe(before);
 });
+
+it('resumes an expired unsigned quote without changing exposure and permits explicit cancellation', async () => {
+  const row = await quote(),
+    before = settles;
+  await (
+    await db()
+  )
+    .update(schema.servicePaymentIntents)
+    .set({ expiresAt: new Date(Date.now() - 1000) })
+    .where(eq(schema.servicePaymentIntents.id, row.id));
+  expect(await fulfillService(OWNER_ID, row.id)).toMatchObject({ state: 'quoted', expired: true });
+  expect(await serviceProgress(OWNER_ID, row.id, spendingSession)).toMatchObject({
+    expired: true,
+    canCancel: true,
+    walletAttempted: false,
+    submitted: false,
+    prepared: null,
+  });
+  expect((await serviceExposure(OWNER_ID, spendingSession)).reservedAtomic).toBe('0');
+  expect(await cancelService(OWNER_ID, row.id)).toEqual({ state: 'cancelled' });
+  expect((await ownedService(OWNER_ID, row.id)).state).toBe('cancelled');
+  expect(settles).toBe(before);
+});
+it('retains an expired unsigned approval reservation until explicit cancellation', async () => {
+  const row = await quote(),
+    before = settles;
+  await approveService(OWNER_ID, row.id, payer.toSuiAddress());
+  await (
+    await db()
+  )
+    .update(schema.servicePaymentIntents)
+    .set({ expiresAt: new Date(Date.now() - 1000) })
+    .where(eq(schema.servicePaymentIntents.id, row.id));
+  expect(await fulfillService(OWNER_ID, row.id)).toMatchObject({
+    state: 'approved',
+    expired: true,
+  });
+  expect((await serviceExposure(OWNER_ID, spendingSession)).reservedAtomic).toBe('1000000');
+  await cancelService(OWNER_ID, row.id);
+  expect((await serviceExposure(OWNER_ID, spendingSession)).reservedAtomic).toBe('0');
+  expect(settles).toBe(before);
+});
+it('keeps a wallet-attempt reservation and rejects cancellation even without a received payload', async () => {
+  const row = await quote(),
+    before = settles;
+  await approveService(OWNER_ID, row.id, payer.toSuiAddress());
+  const prepared = (await serviceProgress(OWNER_ID, row.id, spendingSession)).prepared!;
+  await recordServiceWalletEvent(
+    OWNER_ID,
+    row.id,
+    { phase: 'requested', preparedDigest: prepared.digest },
+    spendingSession,
+  );
+  expect(await serviceProgress(OWNER_ID, row.id, spendingSession)).toMatchObject({
+    canCancel: false,
+    walletAttempted: true,
+    submitted: false,
+  });
+  await expect(cancelService(OWNER_ID, row.id)).rejects.toMatchObject({
+    code: 'SIGNATURE_UNCERTAIN',
+  });
+  expect((await serviceExposure(OWNER_ID, spendingSession)).reservedAtomic).toBe('1000000');
+  expect(settles).toBe(before);
+});

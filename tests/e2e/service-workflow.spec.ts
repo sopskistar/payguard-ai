@@ -41,7 +41,12 @@ test.describe('isolated service UI contracts; all financial and memory responses
       await context.close();
     }
   });
-  async function pageFixture(signing = false, preparation = signing, rejectSignature = false) {
+  async function pageFixture(
+    signing = false,
+    preparation = signing,
+    rejectSignature = false,
+    expired = false,
+  ) {
     const page = await context.newPage();
     await page.addInitScript(() =>
       localStorage.removeItem('payguard:service-sign-attempt:d0000000-0000-4000-8000-000000000001'),
@@ -71,7 +76,7 @@ test.describe('isolated service UI contracts; all financial and memory responses
         },
       ],
     });
-    const expiresAt = new Date(Date.now() + 300000).toISOString();
+    const expiresAt = new Date(Date.now() + (expired ? -1000 : 300000)).toISOString();
     await page.route('**/api/service-payments/setup', (route) =>
       route.fulfill({
         json: {
@@ -105,6 +110,17 @@ test.describe('isolated service UI contracts; all financial and memory responses
             securityCleared: signing,
             network: 'sui:mainnet',
             dedicatedPayer: payer,
+            capabilities: {
+              origin,
+              environment: signing || preparation ? 'local' : 'production',
+              connectionAvailable: true,
+              authenticationAvailable: true,
+              financialOriginAllowed: preparation,
+              providerVerdict: 'unobserved',
+              financialRestriction: preparation
+                ? null
+                : 'Production transaction preparation/signing is restricted by PayGuard application policy; the provider verdict is unverified.',
+            },
             intents: [
               { id: paidId, invoiceId, challenge: challenge(paidId), state: 'settled', expiresAt },
               {
@@ -129,6 +145,7 @@ test.describe('isolated service UI contracts; all financial and memory responses
     await page.route('**/api/service-payments/*/*', async (route) => {
       const path = new URL(route.request().url()).pathname;
       if (path.endsWith('/events')) return route.fulfill({ json: { recorded: true } });
+      if (path.endsWith('/cancel')) return route.fulfill({ json: { state: 'cancelled' } });
       if (path.endsWith('/approve')) {
         calls.approve++;
         if (!preparation) throw Error('Fixture unexpectedly attempted approval');
@@ -159,7 +176,12 @@ test.describe('isolated service UI contracts; all financial and memory responses
           },
         });
       if (path.includes(quotedId) && path.endsWith('/resume'))
-        return route.fulfill({ json: { state: 'quoted' } });
+        return route.fulfill({
+          json: {
+            state: 'quoted',
+            progress: { expired, canCancel: true, walletAttempted: false, submitted: false },
+          },
+        });
       return route.fallback();
     });
     await page.route('**/api/service-payments/*', async (route) => {
@@ -477,6 +499,86 @@ test.describe('isolated service UI contracts; all financial and memory responses
     await expect(page.getByLabel('Payment status timeline')).toContainText(
       'No signed submission received',
     );
+    await page.close();
+  });
+  test('waits for server capability before showing a financial restriction', async () => {
+    const { page } = await pageFixture(true);
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    await page.route('**/api/service-payments', async (route) => {
+      if (route.request().method() === 'GET') await gate;
+      return route.fallback();
+    });
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await expect(page.getByText('Checking payment capability…', { exact: true })).toBeVisible();
+    await expect(
+      page.getByText('Production transaction signing restricted', { exact: true }),
+    ).toHaveCount(0);
+    await expect(
+      page.getByRole('button', { name: 'Request payment quote', exact: true }),
+    ).toBeDisabled();
+    release();
+    await expect(
+      page.getByText('Local signing available · owner approval required', { exact: true }),
+    ).toBeVisible();
+    await expect(page.getByRole('region', { name: 'Server payment capabilities' })).toContainText(
+      'Free personal-message login',
+    );
+    await page.close();
+  });
+  test('automatically restores an expired invoice quote and requires explicit cancellation before fresh terms', async () => {
+    const { page, calls } = await pageFixture(true, true, false, true);
+    await visit(page, '/services?invoice=NS-1048');
+    const cancel = page.getByRole('button', { name: 'Cancel expired unsigned quote', exact: true });
+    await expect(cancel).toBeEnabled();
+    expect(calls.quote).toBe(0);
+    await expect(
+      page.getByRole('button', { name: 'Review 0.001 SUI purchase · prepare', exact: true }),
+    ).toBeDisabled();
+    await cancel.click();
+    await expect(
+      page.getByRole('button', { name: 'Request payment quote', exact: true }),
+    ).toBeEnabled();
+    expect(calls).toEqual({ quote: 0, remember: 0, approve: 0, settle: 0 });
+    await page.close();
+  });
+  test('shows a sanitized database failure separately and retries only status reads', async () => {
+    const { page, calls } = await pageFixture(true);
+    let failing = true;
+    await page.route('**/api/service-payments', (route) => {
+      if (failing && route.request().method() === 'GET')
+        return route.fulfill({
+          status: 503,
+          json: {
+            error: 'The Neon database connection failed during this request.',
+            code: 'DATABASE_CONNECTION',
+            diagnostic: {
+              category: 'database',
+              code: 'DATABASE_CONNECTION',
+              stage: 'payment-status',
+              message: 'The Neon database connection failed during this request.',
+              action: 'Reload payment status. Never repeat a signature or settlement.',
+            },
+          },
+        });
+      return route.fallback();
+    });
+    await page.reload();
+    await expect(page.locator('.error-banner[role="alert"]')).toContainText('DATABASE_CONNECTION');
+    await expect(page.locator('.error-banner[role="alert"]')).toContainText('payment-status');
+    await expect(
+      page.getByText('Production transaction signing restricted', { exact: true }),
+    ).toHaveCount(0);
+    failing = false;
+    await page
+      .getByRole('button', { name: 'Retry workspace and payment status · no signing', exact: true })
+      .click();
+    await expect(
+      page.getByText('Local signing available · owner approval required', { exact: true }),
+    ).toBeVisible();
+    expect(calls).toEqual({ quote: 0, remember: 0, approve: 0, settle: 0 });
     await page.close();
   });
 });

@@ -1,3 +1,13 @@
+# November 1 targeted Experiment 2 recovery
+
+- **83 focused unit/integration checks pass in 13 files**: wallet/owner authentication, replay/binding, signature/protocol checks, cap/reservations, settlement idempotency, expired unsigned recovery, uncertain-signature cancellation refusal, request-local Neon pool lifecycle and diagnostic redaction.
+- **16 focused production-build browser checks pass, zero failed/skipped**, in a fresh disposable local PGlite database with all live payment/memory credentials disabled. Capability loading, exact invoice resume, expiry/cancellation, safe status retry, mocked one-signature/one-submission, wallet rejection, login/logout/account switching and mobile layout pass. [Final results](evidence/experiment-02-browser-tests.json).
+- The initial browser run was **15 passed / one failed**: a generic alert locator matched both the payment alert and Next.js's route announcer. Narrowing it to the payment alert fixed the test; the same 16 checks passed without changing application behavior or security requirements. [Initial results](evidence/experiment-02-browser-tests-initial.json).
+- TypeScript, whole-repository lint, changed-file formatting, diff checks and one production build pass. Current credential scan: **798 files, zero matches**. Dependencies/schema were not changed.
+- The real existing localhost owner server passes login, metadata, unsigned expired resume and one safe cancellation. Quote `d7b6a9ab-de6d-4921-ab93-09ae7763c1c7` remains historically saved as cancelled. No new quote, approval, wallet signature, settlement or memory write occurred. Neon remains **one receipt / zero settling / 32 confirmed memories**. Desktop/mobile recovery screenshots pass without overflow. [Full recovery evidence and limits](EXPERIMENT_02_RECOVERY.md).
+
+These targeted checks extend the historical full release runs below. They do not certify current physical Slush/Suiet/Nightly/mobile behavior or claim another settled purchase.
+
 # October 31 final Mainnet continuation validation
 
 - **161 unit/integration tests pass in 24 files**, including real unfunded personal signatures, challenge replay/expiry/binding, tenant isolation, caps/reservations, concurrent settlement locks and no duplicate charge on resume.

@@ -608,6 +608,22 @@ export async function cancelService(tenantId: string, id: string) {
         'ALREADY_SUBMITTED',
         'A submitted payment cannot be cancelled. Reconcile the existing digest; do not pay again.',
       );
+    const attempts = await tx
+      .select({ type: s.auditEvents.type })
+      .from(s.auditEvents)
+      .where(and(eq(s.auditEvents.tenantId, tenantId), eq(s.auditEvents.entityId, id)));
+    if (
+      row.payloadHash ||
+      row.digest ||
+      attempts.some(
+        (e) => e.type === 'service.wallet_requested' || e.type === 'service.wallet_error',
+      )
+    )
+      throw new AppError(
+        409,
+        'SIGNATURE_UNCERTAIN',
+        'A wallet attempt is recorded. Reconcile the original prepared digest before releasing its reservation; do not request a replacement payment.',
+      );
     if (row.state === 'approved' && row.spendingSessionId) {
       const [budget] = await tx
         .select()
@@ -662,6 +678,18 @@ export async function fulfillService(
     );
   const challenge = row.challenge as ServiceChallenge;
   const terms = serviceTermsSchema.parse(challenge.accepts[0]);
+
+  if (
+    raw === undefined &&
+    ['quoted', 'approved'].includes(row.state) &&
+    row.expiresAt <= new Date()
+  )
+    return {
+      state: row.state,
+      expired: true,
+      message:
+        'This quote has expired. Inspect the saved signing/submission status; only an unsigned, unsubmitted quote can be cancelled for fresh terms.',
+    };
 
   const invoice = await ownedInvoice(tenantId, row.invoiceId);
   const context = await trustContext(tenantId, invoice);
@@ -1005,6 +1033,14 @@ export async function serviceProgress(tenantId: string, id: string, sessionKey?:
     quoteId: id,
     state: row.state,
     expiresAt: row.expiresAt,
+    expired: row.expiresAt <= new Date(),
+    canCancel:
+      ['quoted', 'approved'].includes(row.state) &&
+      !row.payloadHash &&
+      !row.digest &&
+      !events.some(
+        (e) => e.type === 'service.wallet_requested' || e.type === 'service.wallet_error',
+      ),
     prepared: prepared || null,
     executionDigest: row.digest,
     approvalSessionMatches:

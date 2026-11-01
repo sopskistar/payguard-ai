@@ -1,7 +1,7 @@
 // Personal-message authentication and financial signing have separate policies.
 // A provider warning must never be overridden, including on localhost.
 export const WALLET_REVIEW_MESSAGE =
-  'Production payment signing is paused while the Slush domain warning is unresolved. Do not override a wallet warning. The public demo, owner workspace and permitted personal-message login remain available. The owner can inspect and run the same application locally; localhost does not clear the production domain.';
+  'Production transaction signing is paused by PayGuard’s hosted-origin policy. Wallet connection and free personal-message login are separate. A current physical-provider verdict is unverified. Do not override a wallet warning.';
 export function walletOnboardingAllowed(
   env: Readonly<Record<string, string | undefined>> = process.env,
 ) {
@@ -34,4 +34,35 @@ export const slushOnboardingBlocked = (
 
 export function walletProviderAllowed(name: string, slushBlocked: boolean) {
   return !slushBlocked || !/slush|sui wallet/i.test(name);
+}
+
+export function walletOperationPolicy(
+  env: Readonly<Record<string, string | undefined>> = process.env,
+) {
+  const connectionAvailable = walletOnboardingAllowed(env);
+  const financialOriginAllowed = serviceWalletSigningAllowed(env);
+  let origin: string | null = null;
+  try {
+    origin = new URL(env.APP_URL || '').origin;
+  } catch {}
+  const environment =
+    env.VERCEL ||
+    (origin && !['localhost', '127.0.0.1', '[::1]'].includes(new URL(origin).hostname))
+      ? 'production'
+      : origin
+        ? 'local'
+        : 'unconfigured';
+  return {
+    origin,
+    environment,
+    connectionAvailable,
+    authenticationAvailable: connectionAvailable,
+    financialOriginAllowed,
+    providerVerdict: 'unobserved',
+    financialRestriction: financialOriginAllowed
+      ? null
+      : environment === 'production'
+        ? 'Production transaction preparation/signing is restricted by PayGuard application policy. A current physical provider verdict has not been verified; this is separate from free wallet login.'
+        : 'The server has no permitted transaction-signing origin. Check APP_URL.',
+  };
 }

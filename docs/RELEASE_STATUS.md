@@ -1,3 +1,7 @@
+# November 1 targeted payment recovery
+
+Experiment 2's expired unsigned quote `d7b6a9ab-de6d-4921-ab93-09ae7763c1c7` is safely cancelled and retained for audit. The exact local invoice link restores existing active intents and accurately displays server capabilities. Request-scoped Neon pools and bounded diagnostics address backend connection failures previously hidden as generic errors. No fresh quote, wallet request or payment was generated; counts remain one settled receipt / zero settling / 32 memories. Local owner-authorized signing is enabled; production financial preparation/signing is still restricted by application policy, separately from permitted public wallet login. Physical production provider verdicts remain unverified. [Recovery, restrictions and next steps](EXPERIMENT_02_RECOVERY.md).
+
 # October 31 verified Mainnet purchase and release continuation
 
 **Current source of truth:** [final Mainnet release report](FINAL_MAINNET_RELEASE.md), [actual payment evidence](evidence/mainnet-service-reconciliation.json), [Slush investigation](SLUSH_LOCALHOST_INVESTIGATION.md) and [validation ledger](TEST_RESULTS.md).

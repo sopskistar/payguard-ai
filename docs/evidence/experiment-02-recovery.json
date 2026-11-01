@@ -1,0 +1,213 @@
+{
+  "checkedAt": "2026-11-01T06:23:30.265Z",
+  "existingIntentBefore": {
+    "checkedAt": "2026-11-01T06:04:28.923Z",
+    "readOnly": true,
+    "intents": [
+      {
+        "id": "d7b6a9ab-de6d-4921-ab93-09ae7763c1c7",
+        "number": "X402-EXPERIMENT-02",
+        "state": "quoted",
+        "created_at": "2026-10-31T21:07:56.992Z",
+        "expires_at": "2026-10-31T21:12:55.669Z",
+        "approved_at": null,
+        "digest": null,
+        "received_payload": false,
+        "payer_set": false,
+        "reserved_session": false,
+        "has_approval": false,
+        "prepared_digest": null,
+        "prepared_bytes_length": null,
+        "reserved_atomic": null,
+        "cap_atomic": null
+      }
+    ],
+    "audit": [
+      {
+        "type": "service.challenge",
+        "entity_id": "d7b6a9ab-de6d-4921-ab93-09ae7763c1c7",
+        "detail": {
+          "need": ["invoice-directive", "trusted-recipient-change"],
+          "network": "sui:mainnet",
+          "firstParty": true,
+          "amountAtomic": "1000000"
+        },
+        "created_at": "2026-10-31T21:07:57.282Z"
+      }
+    ],
+    "receipts": [
+      {
+        "digest": "68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx",
+        "intent_id": "51d204df-71fd-44a6-ac4a-c8e0c50b4cf5",
+        "created_at": "2026-10-31T17:39:17.359Z"
+      }
+    ],
+    "counts": [
+      {
+        "memories": 32,
+        "receipts": 1,
+        "settling": 0
+      }
+    ]
+  },
+  "existingIntentAfter": {
+    "checkedAt": "2026-11-01T06:23:30.265Z",
+    "readOnly": true,
+    "intents": [
+      {
+        "id": "d7b6a9ab-de6d-4921-ab93-09ae7763c1c7",
+        "number": "X402-EXPERIMENT-02",
+        "state": "cancelled",
+        "created_at": "2026-10-31T21:07:56.992Z",
+        "expires_at": "2026-10-31T21:12:55.669Z",
+        "approved_at": null,
+        "digest": null,
+        "received_payload": false,
+        "payer_set": false,
+        "reserved_session": false,
+        "has_approval": false,
+        "prepared_digest": null,
+        "prepared_bytes_length": null,
+        "reserved_atomic": null,
+        "cap_atomic": null
+      }
+    ],
+    "audit": [
+      {
+        "type": "service.challenge",
+        "entity_id": "d7b6a9ab-de6d-4921-ab93-09ae7763c1c7",
+        "detail": {
+          "need": ["invoice-directive", "trusted-recipient-change"],
+          "network": "sui:mainnet",
+          "firstParty": true,
+          "amountAtomic": "1000000"
+        },
+        "created_at": "2026-10-31T21:07:57.282Z"
+      },
+      {
+        "type": "service.cancelled",
+        "entity_id": "d7b6a9ab-de6d-4921-ab93-09ae7763c1c7",
+        "detail": {
+          "submitted": false
+        },
+        "created_at": "2026-11-01T06:23:00.493Z"
+      }
+    ],
+    "receipts": [
+      {
+        "digest": "68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx",
+        "intent_id": "51d204df-71fd-44a6-ac4a-c8e0c50b4cf5",
+        "created_at": "2026-10-31T17:39:17.359Z"
+      }
+    ],
+    "counts": [
+      {
+        "memories": 32,
+        "receipts": 1,
+        "settling": 0
+      }
+    ]
+  },
+  "localBrowserRecovery": {
+    "checkedAt": "2026-11-01T06:22:37.029Z",
+    "intentId": "d7b6a9ab-de6d-4921-ab93-09ae7763c1c7",
+    "automaticPayment": false,
+    "signatureRequested": false,
+    "quoteRequested": false,
+    "checks": [
+      {
+        "name": "owner login",
+        "passed": true
+      },
+      {
+        "name": "original quote is unsigned, unsubmitted and expired",
+        "passed": true
+      },
+      {
+        "name": "actual local preparation and signing enabled",
+        "passed": true
+      },
+      {
+        "name": "existing resume is expired and safely cancellable",
+        "passed": true
+      },
+      {
+        "name": "exact invoice automatically restores its existing quote",
+        "passed": true
+      },
+      {
+        "name": "header accurately reports local capability",
+        "passed": true
+      },
+      {
+        "name": "no false production warning",
+        "passed": true
+      },
+      {
+        "name": "one explicit cancellation preserves historical row",
+        "passed": true
+      },
+      {
+        "name": "fresh quote button is ready without requesting it",
+        "passed": true
+      },
+      {
+        "name": "no quote, approval, wallet request or financial submission",
+        "passed": true
+      },
+      {
+        "name": "saved original row is cancelled",
+        "passed": true
+      },
+      {
+        "name": "mobile page has no horizontal overflow",
+        "passed": true
+      }
+    ],
+    "capabilities": {
+      "origin": "http://localhost:4320",
+      "environment": "local",
+      "connectionAvailable": true,
+      "authenticationAvailable": true,
+      "financialOriginAllowed": true,
+      "providerVerdict": "unobserved",
+      "financialRestriction": null
+    },
+    "signingAllowed": true,
+    "preparationAllowed": true,
+    "exposure": {
+      "reservedAtomic": "0",
+      "capAtomic": "3000000"
+    },
+    "nextButton": "Request payment quote"
+  },
+  "readOnlyTransportProbe": {
+    "checkedAt": "2026-11-01T06:05:05.318Z",
+    "readOnly": true,
+    "checks": [
+      {
+        "transport": "Native WebSocket transaction",
+        "attempt": 0,
+        "ok": true
+      },
+      {
+        "transport": "Native WebSocket transaction",
+        "attempt": 1,
+        "ok": true
+      },
+      {
+        "transport": "Native WebSocket transaction",
+        "attempt": 2,
+        "ok": true
+      },
+      {
+        "transport": "HTTP query",
+        "ok": true
+      }
+    ]
+  },
+  "noFinancialSignature": true,
+  "noNewQuote": true,
+  "noNewPayment": true,
+  "noMemoryWrite": true
+}

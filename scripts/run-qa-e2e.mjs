@@ -78,6 +78,7 @@ try {
         'node_modules/@playwright/test/cli.js',
         'test',
         '--reporter=./tests/credential-redaction-reporter.ts,list,json',
+        ...process.argv.slice(2),
       ],
       'browser.log',
     );
@@ -108,7 +109,7 @@ try {
     tests,
   };
   await writeFile(
-    'docs/evidence/final-release-local-tests.json',
+    process.env.PAYGUARD_QA_EVIDENCE || 'docs/evidence/final-release-local-tests.json',
     JSON.stringify(summary, null, 2) + '\n',
   );
   console.log(JSON.stringify(summary.stats));

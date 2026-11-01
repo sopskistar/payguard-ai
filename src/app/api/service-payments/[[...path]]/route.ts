@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { requireOwner, currentActor, checkOrigin, rateLimit } from '@/lib/auth';
-import { AppError, safeError } from '@/lib/errors';
-import { serviceWalletSigningAllowed } from '@/lib/wallet-policy';
+import { AppError } from '@/lib/errors';
+import { withDatabaseRequest } from '@/db';
+import { requestFailure } from '@/lib/request-diagnostics';
+import { serviceWalletSigningAllowed, walletOperationPolicy } from '@/lib/wallet-policy';
 import {
   SERVICE_SESSION_CAP,
   serviceAddressSchema,
@@ -30,12 +32,14 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 async function handle(req: NextRequest, { params }: { params: Promise<{ path?: string[] }> }) {
+  let stage = 'owner-authentication';
   try {
     if (req.method !== 'GET') checkOrigin(req);
     const tenantId = await requireOwner();
     const actor = await currentActor();
     if (req.method !== 'GET') await rateLimit(tenantId + ':service-payments', 30);
     const path = (await params).path || [];
+    stage = req.method === 'GET' ? 'payment-status' : !path.length ? 'quote' : 'payment-request';
     if (path.length > 2) throw new AppError(404, 'NOT_FOUND', 'Unknown service action');
     if (req.method === 'GET' && path.length === 1 && ['setup', 'setup-check'].includes(path[0])) {
       await rateLimit(tenantId + ':service-setup', 15);
@@ -63,6 +67,7 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
           mainnetImplemented: true,
           mainnetEnabled: serviceMode() === 'sui:mainnet' && serviceSettlementEnabled(),
           signingAllowed: serviceSettlementEnabled(),
+          capabilities: walletOperationPolicy(),
           preparationAllowed: servicePreparationAllowed(),
           securityCleared: serviceWalletSigningAllowed(),
           sessionCapAtomic: SERVICE_SESSION_CAP,
@@ -106,6 +111,18 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
       );
     }
     const id = z.string().uuid().parse(path[0]);
+    stage =
+      path[1] === 'approve'
+        ? 'terms-approval'
+        : path[1] === 'cancel'
+          ? 'quote-cancellation'
+          : path[1] === 'resume'
+            ? 'payment-resume'
+            : path[1] === 'events'
+              ? 'wallet-diagnostic'
+              : path[1] === 'remember'
+                ? 'memory-consent'
+                : 'settlement-request';
     if (path[1] === 'cancel') return NextResponse.json(await cancelService(tenantId, id));
     if (path[1] === 'approve') {
       const input = z
@@ -207,19 +224,24 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
       },
     );
   } catch (e) {
+    if (!(e instanceof z.ZodError)) {
+      const failure = requestFailure(e, stage);
+      if (failure.status >= 500)
+        console.error('PayGuard payment request failed', failure.diagnostic);
+      return NextResponse.json(failure, {
+        status: failure.status,
+        headers: { 'Cache-Control': 'private, no-store' },
+      });
+    }
     return NextResponse.json(
       {
-        error: e instanceof z.ZodError ? 'Invalid payment request' : safeError(e),
-        code:
-          e instanceof AppError
-            ? e.code
-            : e instanceof z.ZodError
-              ? 'INVALID_REQUEST'
-              : 'SERVICE_UNAVAILABLE',
+        error: 'Invalid payment request',
+        code: 'INVALID_REQUEST',
       },
-      { status: e instanceof AppError ? e.status : e instanceof z.ZodError ? 400 : 500 },
+      { status: 400 },
     );
   }
 }
-export const GET = handle;
-export const POST = handle;
+const scoped: typeof handle = (req, context) => withDatabaseRequest(() => handle(req, context));
+export const GET = scoped;
+export const POST = scoped;

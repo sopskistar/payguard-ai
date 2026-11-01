@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z, ZodError } from 'zod';
 import { and, eq, sql } from 'drizzle-orm';
 import { randomUUID } from 'node:crypto';
-import { db, storageKind } from '@/db';
+import { db, storageKind, withDatabaseRequest } from '@/db';
+import { requestFailure } from '@/lib/request-diagnostics';
 import * as s from '@/db/schema';
 import {
   checkOrigin,
@@ -496,11 +497,16 @@ async function handle(req: NextRequest, context: { params: Promise<{ path: strin
       }
       console.error('PayGuard request failed', causes);
     }
-    // Never return driver messages, SQL parameters, credentials or full invoice payloads.
-    return json({ error: safeError(error), code: 'REQUEST_FAILED' }, 500);
+    const failure = requestFailure(
+      error,
+      req.method === 'GET' ? 'workspace-read' : 'workspace-operation',
+    );
+    console.error('PayGuard workspace request failed', failure.diagnostic);
+    return json(failure, failure.status);
   }
 }
-export const GET = handle;
-export const POST = handle;
-export const PATCH = handle;
-export const DELETE = handle;
+const scoped: typeof handle = (req, context) => withDatabaseRequest(() => handle(req, context));
+export const GET = scoped;
+export const POST = scoped;
+export const PATCH = scoped;
+export const DELETE = scoped;

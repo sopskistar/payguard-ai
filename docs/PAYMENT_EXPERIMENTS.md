@@ -1,5 +1,7 @@
 # Mainnet payment experiment ledger — October 31, 2026
 
+**November 1 update:** Experiment 2 quote `d7b6a9ab-de6d-4921-ab93-09ae7763c1c7` expired unsigned and was explicitly cancelled after verification. No new quote/payment was requested. Next: **Request payment quote** on the existing Experiment 2 local page. [Recovery evidence and capability restrictions](EXPERIMENT_02_RECOVERY.md). The settled total below remains one.
+
 | Experiment                   | Verified status                                                        | Evidence / next action                                                                                                                                                                                                                                                       |
 | ---------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1 · `X402-OWNER-20261031-01` | **Settled, Tatum-verified, report delivered**                          | [Mainnet `68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx`](https://suivision.xyz/txblock/68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx), quote `51d204df-71fd-44a6-ac4a-c8e0c50b4cf5`, checkpoint 340211024. Wallet B credit 0.001 SUI, payer gas zero, sponsor gas 0.0001 SUI. |

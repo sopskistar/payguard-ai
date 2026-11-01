@@ -4,6 +4,8 @@
 
 ## HOW TO TEST PAYGUARD VERIFY
 
+**November 1 payment recovery:** Experiment 2's expired unsigned quote was safely cancelled; no additional payment occurred. On the existing [local Experiment 2 page](http://localhost:4320/services?invoice=X402-EXPERIMENT-02), the next button is **Request payment quote**, followed by fresh exact terms acceptance and a separate owner-controlled wallet signature. Capability loading and safe error diagnostics now distinguish backend failures, wallet login and financial signing. [Recovery and current restrictions](docs/EXPERIMENT_02_RECOVERY.md).
+
 **Verified October 31:** one genuine owner-controlled first-party x402 purchase settled on Sui Mainnet for **0.001 SUI**. [Transaction](https://suivision.xyz/txblock/68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx) · [exact credit, gas, quote and report](docs/evidence/mainnet-service-reconciliation.json) · [current release report](docs/FINAL_MAINNET_RELEASE.md). Experiments 2 and 3 are prepared synthetic scenarios, awaiting separate owner approval and Slush signatures. They are not settled payments. No wallet creation, funding, conversion or video is required by these instructions.
 
 ### Option A — Try in under three minutes

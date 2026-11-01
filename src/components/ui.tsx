@@ -179,13 +179,16 @@ export async function api<T = Record<string, unknown>>(
   }
   const result = await response.json();
   if (!response.ok)
-    throw new Error(
-      [
-        result.error,
-        ...(result.details || []).map(
-          (d: { field: string; message: string }) => `${d.field}: ${d.message}`,
-        ),
-      ].join(' '),
+    throw Object.assign(
+      new Error(
+        [
+          result.error,
+          ...(result.details || []).map(
+            (d: { field: string; message: string }) => `${d.field}: ${d.message}`,
+          ),
+        ].join(' '),
+      ),
+      { code: result.code, diagnostic: result.diagnostic, status: response.status },
     );
   return result as T;
 }

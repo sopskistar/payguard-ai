@@ -1,3 +1,7 @@
+# Experiment 2 recovery — November 1
+
+Intent `d7b6a9ab-de6d-4921-ab93-09ae7763c1c7` expired at October 31, 21:12:55.669 UTC with no approval, prepared transaction, payer, signature payload, execution digest or spending reservation. A backend approval HTTP 500 and repeated database connection failures had been hidden behind generic diagnostics. The original socket-close reason was not retained; no wallet rejection is established. After authenticated read-only resume and exact-row verification, one cancellation succeeded at November 1, 06:23:00.493 UTC. The historical row remains cancelled. No replacement quote or financial request was made. Neon still has **one receipt, zero settling intents and 32 confirmed memories**. [Technical recovery and next button](EXPERIMENT_02_RECOVERY.md) · [evidence](evidence/experiment-02-recovery.json).
+
 # Verified executed purchase — October 31
 
 The original completed purchase is now independently reconciled: quote `51d204df-71fd-44a6-ac4a-c8e0c50b4cf5`, actual digest [`68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx`](https://suivision.xyz/txblock/68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx), successful Mainnet checkpoint 340211024. Wallet B credit is exactly **0.001 SUI**. Wallet A paid exactly that amount and zero gas; Tentacle's separate sponsor paid 0.0001 SUI. The onchain bytes equal the persisted approved bytes. [Full credit/gas/challenge/audit/report evidence](evidence/mainnet-service-reconciliation.json).

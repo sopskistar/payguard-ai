@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { getWallets } from '@wallet-standard/app';
 import { SuiGrpcClient } from '@mysten/sui/grpc';
@@ -24,6 +24,28 @@ import { PaymentSetup } from './payment-setup';
 import { Brand } from './brand';
 import { serviceDiagnostic } from '@/lib/service-diagnostics';
 import { ServicePaymentTimeline } from './service-payment-timeline';
+import type { RequestDiagnostic } from '@/lib/request-diagnostics';
+import type { walletOperationPolicy } from '@/lib/wallet-policy';
+type SavedIntent = {
+  id: string;
+  state: string;
+  invoiceId: string;
+  challenge: ServiceChallenge;
+  expiresAt: string;
+  digest?: string | null;
+  prepared?: { bytes: string; digest: string } | null;
+};
+type PaymentMetadata = {
+  configured: boolean;
+  signingAllowed: boolean;
+  preparationAllowed?: boolean;
+  securityCleared: boolean;
+  network: ServiceNetwork;
+  dedicatedPayer: string | null;
+  intents: SavedIntent[];
+  exposure?: { reservedAtomic: string; capAtomic: string };
+  capabilities?: ReturnType<typeof walletOperationPolicy>;
+};
 type PaymentProgress = {
   prepared?: { bytes: string; digest: string; preparedAt: string } | null;
   executionDigest?: string | null;
@@ -32,6 +54,8 @@ type PaymentProgress = {
   submitted?: boolean;
   confirming?: boolean;
   diagnostic?: ReturnType<typeof serviceDiagnostic> | null;
+  canCancel?: boolean;
+  expired?: boolean;
 };
 type WalletAccount = { address: string; chains: readonly string[]; features: readonly string[] };
 type WalletFeatures = {
@@ -53,11 +77,31 @@ async function request(path: string, body: unknown) {
       ...(payment ? { 'PAYMENT-SIGNATURE': encodeServicePaymentHeader(body) } : {}),
     },
     body: JSON.stringify(payment ? {} : body),
+  }).catch(() => {
+    throw Object.assign(
+      new Error('The connection was interrupted before payment status was returned.'),
+      {
+        diagnostic: {
+          category: 'network',
+          stage: 'payment-request',
+          code: 'NETWORK_UNCERTAIN',
+          message: 'The connection was interrupted before payment status was returned.',
+          action:
+            'Verify the existing payment before retrying. No automatic signature or settlement retry will be made.',
+        } satisfies RequestDiagnostic,
+      },
+    );
   });
-  const result = await r.json();
+  const result = await r.json().catch(() => ({
+    error: 'The server did not return a readable payment response.',
+    code: 'INVALID_RESPONSE',
+  }));
   if (!r.ok && r.status !== 402)
-    throw new Error(
-      `${result.code ? result.code + ': ' : ''}${result.error || 'Service request unavailable'}`,
+    throw Object.assign(
+      new Error(
+        `${result.code ? result.code + ': ' : ''}${result.error || 'Service request unavailable'}`,
+      ),
+      { code: result.code, diagnostic: result.diagnostic, status: r.status },
     );
   if (r.status === 402) {
     const encoded = r.headers.get('PAYMENT-REQUIRED');
@@ -79,7 +123,13 @@ async function request(path: string, body: unknown) {
 }
 
 export function ServicePayment() {
+  const quoteOperation = useRef<{ invoiceId: string; key: string } | undefined>(undefined);
   const [data, setData] = useState<Snapshot>(),
+    [capabilityState, setCapabilityState] = useState<'loading' | 'ready' | 'error' | 'anonymous'>(
+      'loading',
+    ),
+    [capabilities, setCapabilities] = useState<PaymentMetadata['capabilities']>(),
+    [diagnostic, setDiagnostic] = useState<RequestDiagnostic>(),
     [search, setSearch] = useState(''),
     [exposure, setExposure] = useState<{ reservedAtomic: string; capAtomic: string }>(),
     [invoiceId, setInvoice] = useState(''),
@@ -92,7 +142,6 @@ export function ServicePayment() {
     [walletNames, setWalletNames] = useState<{ id: string; name: string }[]>([]),
     [walletName, setWalletName] = useState(''),
     [dedicatedPayer, setDedicatedPayer] = useState<string | null>(null),
-    [securityCleared, setSecurityCleared] = useState(false),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(''),
     [statusMessage, setStatusMessage] = useState(''),
@@ -114,17 +163,7 @@ export function ServicePayment() {
     }>(),
     [signatureAttempted, setSignatureAttempted] = useState(false),
     [memory, setMemory] = useState(''),
-    [saved, setSaved] = useState<
-      {
-        id: string;
-        state: string;
-        invoiceId: string;
-        challenge: ServiceChallenge;
-        expiresAt: string;
-        digest?: string | null;
-        prepared?: { bytes: string; digest: string } | null;
-      }[]
-    >([]);
+    [saved, setSaved] = useState<SavedIntent[]>([]);
   const quoteExpired = !!quote && Date.parse(quote.expiresAt) <= now;
   const selectedInvoice = data?.invoices.find((i) => i.id === invoiceId);
   const experiment =
@@ -141,48 +180,116 @@ export function ServicePayment() {
     | undefined;
   const evidence = receipt?.evidence as
     { receivedAtomic?: string; checkpoint?: string } | undefined;
+  const showError = useCallback((e: unknown) => {
+    const failure = e as Error & { diagnostic?: RequestDiagnostic; code?: string; status?: number };
+    setError(failure.message || 'Payment status unavailable.');
+    setDiagnostic(
+      failure.diagnostic ||
+        (failure.status === 401 || failure.status === 403
+          ? {
+              category: 'authentication',
+              stage: 'owner-authentication',
+              code: failure.code || 'AUTH_REQUIRED',
+              message: 'Owner authentication is required for payment operations.',
+              action: 'Use Owner administrator sign in, then reload the saved payment.',
+            }
+          : undefined),
+    );
+  }, []);
+  const openSavedIntent = useCallback(async (i: SavedIntent) => {
+    setQuote({ ...i.challenge, id: i.id, expiresAt: i.expiresAt });
+    setPaymentState(i.state);
+    setPending(i.state === 'settling');
+    setStoredBytes(i.prepared || undefined);
+    setInvoice(i.invoiceId);
+    setReceipt(undefined);
+    setConsent(false);
+    setMemory('');
+    setPrepared(undefined);
+    setSignatureAttempted(false);
+    setPendingDigest(i.digest || '');
+    setProgress(undefined);
+    setStatusMessage('');
+    const r = await request('/' + i.id + '/resume', {});
+    setProgress(r.progress);
+    if (r.progress?.prepared) setStoredBytes(r.progress.prepared);
+    setSignatureAttempted(
+      !!r.progress?.walletAttempted ||
+        !!localStorage.getItem('payguard:service-sign-attempt:' + i.id),
+    );
+    setPending(r.state === 'pending');
+    setPaymentState(r.state);
+    setSaved((items) =>
+      items.map((saved) =>
+        saved.id === i.id
+          ? { ...saved, state: r.state === 'pending' ? 'settling' : r.state }
+          : saved,
+      ),
+    );
+    setStatusMessage(r.message || '');
+    if (r.digest) setPendingDigest(r.digest);
+    if (r.receipt) setReceipt(r.receipt);
+  }, []);
+  const applyMetadata = useCallback((r: PaymentMetadata) => {
+    setConfigured(r.configured);
+    setSigningAllowed(r.signingAllowed);
+    setPreparationAllowed(r.preparationAllowed ?? r.signingAllowed);
+    setNetwork(r.network);
+    setDedicatedPayer(r.dedicatedPayer);
+    setSaved(r.intents);
+    setExposure(r.exposure);
+    setCapabilities(r.capabilities);
+    setCapabilityState('ready');
+  }, []);
+  const loadWorkspace = useCallback(
+    async (restore = false) => {
+      setCapabilityState('loading');
+      setError('');
+      setDiagnostic(undefined);
+      try {
+        const s = await api<Snapshot>('snapshot');
+        setData(s);
+        const requested = new URLSearchParams(window.location.search).get('invoice');
+        const selected =
+          s.invoices.find((i) => i.number === requested) ||
+          s.invoices.find((i) => i.isDemo && i.number === 'NS-1048') ||
+          s.invoices[0];
+        if (restore) setInvoice(selected?.id || '');
+        if (s.mode !== 'owner') {
+          setCapabilityState('anonymous');
+          return;
+        }
+        const r = await api<PaymentMetadata>('service-payments');
+        applyMetadata(r);
+        if (restore && requested && selected) {
+          const existing =
+            r.intents.find(
+              (i) =>
+                i.invoiceId === selected.id && ['quoted', 'approved', 'settling'].includes(i.state),
+            ) || r.intents.find((i) => i.invoiceId === selected.id && i.state === 'settled');
+          if (existing)
+            try {
+              await openSavedIntent(existing);
+            } catch (e) {
+              showError(e);
+            }
+        }
+      } catch (e) {
+        setCapabilityState('error');
+        showError(e);
+      }
+    },
+    [applyMetadata, openSavedIntent, showError],
+  );
   useEffect(() => {
     if (!quote) return;
     const timer = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(timer);
   }, [quote]);
   useEffect(() => {
-    api<Snapshot>('snapshot')
-      .then((s) => {
-        setData(s);
-        setInvoice(
-          s.invoices.find(
-            (i) => i.number === new URLSearchParams(window.location.search).get('invoice'),
-          )?.id ||
-            s.invoices.find((i) => i.isDemo && i.number === 'NS-1048')?.id ||
-            s.invoices[0]?.id ||
-            '',
-        );
-        if (s.mode === 'owner')
-          api<{
-            configured: boolean;
-            signingAllowed: boolean;
-            preparationAllowed?: boolean;
-            securityCleared: boolean;
-            network: ServiceNetwork;
-            dedicatedPayer: string | null;
-            intents: typeof saved;
-            exposure?: typeof exposure;
-          }>('service-payments')
-            .then((r) => {
-              setConfigured(r.configured);
-              setSigningAllowed(r.signingAllowed);
-              setPreparationAllowed(r.preparationAllowed ?? r.signingAllowed);
-              setNetwork(r.network);
-              setDedicatedPayer(r.dedicatedPayer);
-              setSecurityCleared(r.securityCleared);
-              setSaved(r.intents);
-              setExposure(r.exposure);
-            })
-            .catch((e) => setError(e.message));
-      })
-      .catch((e) => setError(e.message));
-  }, []);
+    const timer = setTimeout(() => void loadWorkspace(true), 0);
+    return () => clearTimeout(timer);
+  }, [loadWorkspace]);
   useEffect(() => {
     if (!preparationAllowed) return;
     const registry = getWallets();
@@ -212,10 +319,11 @@ export function ServicePayment() {
   async function run(fn: () => Promise<void>) {
     setBusy(true);
     setError('');
+    setDiagnostic(undefined);
     try {
       await fn();
     } catch (e) {
-      setError((e as Error).message);
+      showError(e);
     } finally {
       setBusy(false);
       void api<{ exposure?: typeof exposure }>('service-payments')
@@ -250,6 +358,7 @@ export function ServicePayment() {
     if (r.progress?.walletAttempted) setSignatureAttempted(true);
   }
   async function prepare() {
+    if (capabilityState !== 'ready') throw new Error('Reload server capabilities before approval.');
     if (!preparationAllowed) throw new Error(WALLET_REVIEW_MESSAGE);
     if (!quote || !consent) throw new Error('Review and approve every term first');
     if (Date.parse(quote.expiresAt) <= Date.now())
@@ -273,7 +382,22 @@ export function ServicePayment() {
     const selectedWallet = wallets.find((w) => (w.id || w.name) === walletName);
     if (!selectedWallet) throw new Error('Choose the compatible wallet you intend to use.');
     const features = selectedWallet.features as WalletFeatures;
-    const accounts = (await features['standard:connect']!.connect()).accounts;
+    let accounts: WalletAccount[];
+    try {
+      accounts = (await features['standard:connect']!.connect()).accounts;
+    } catch (e) {
+      const detail = serviceDiagnostic('wallet-connection', e);
+      throw Object.assign(new Error(`Wallet connection ${detail.code}: ${detail.message}`), {
+        diagnostic: {
+          category: 'wallet',
+          stage: detail.stage,
+          code: detail.code,
+          message: detail.message,
+          action:
+            'Respect a provider warning or refusal. Connection does not authorize a financial signature.',
+        } satisfies RequestDiagnostic,
+      });
+    }
     const account = accounts.find(
       (a) =>
         a.chains.includes(terms.network) &&
@@ -327,6 +451,7 @@ export function ServicePayment() {
     trackState(quote.id, 'approved');
   }
   async function signPrepared() {
+    if (capabilityState !== 'ready') throw new Error('Reload server capabilities before signing.');
     if (!signingAllowed) throw new Error(WALLET_REVIEW_MESSAGE);
     if (
       !quote ||
@@ -388,8 +513,20 @@ export function ServicePayment() {
         code: diagnostic.code,
         message: diagnostic.message,
       }).catch(() => {});
-      throw new Error(
-        `Slush / wallet signing ${diagnostic.code}: ${diagnostic.message} No signed payload was submitted by PayGuard. Resume this record; no automatic retry.`,
+      throw Object.assign(
+        new Error(
+          `Slush / wallet signing ${diagnostic.code}: ${diagnostic.message} No signed payload was submitted by PayGuard. Resume this record; no automatic retry.`,
+        ),
+        {
+          diagnostic: {
+            category: 'wallet',
+            stage: 'wallet-signing',
+            code: diagnostic.code,
+            message: diagnostic.message,
+            action:
+              'Respect any warning or refusal. Verify this intent; no automatic signature or settlement retry is made.',
+          } satisfies RequestDiagnostic,
+        },
       );
     }
     if (signed.bytes !== prepared.bytes)
@@ -425,7 +562,19 @@ export function ServicePayment() {
         </Link>
         <Link href="/app/review">← Verify Instructions</Link>
         <Link href="/app">Overview</Link>
-        <Badge tone="amber">Mainnet implementation · spending gated</Badge>
+        <Badge tone={capabilityState === 'ready' && signingAllowed ? 'mint' : 'amber'}>
+          {capabilityState === 'loading'
+            ? 'Checking payment capability…'
+            : capabilityState === 'error'
+              ? 'Payment capability unavailable'
+              : capabilityState === 'anonymous'
+                ? 'Owner sign-in required'
+                : signingAllowed
+                  ? 'Local signing available · owner approval required'
+                  : capabilities?.environment === 'production'
+                    ? 'Production transaction signing restricted'
+                    : 'Transaction signing disabled by application configuration'}
+        </Badge>
       </header>
       <main id="main" className="judge-intro">
         <h1>Pay for deeper evidence.</h1>
@@ -441,27 +590,71 @@ export function ServicePayment() {
             ? 'A saved settled intent exists; inspect its independently verified receipt and delivered report.'
             : 'Inspect the public payment proof for recorded owner-controlled Mainnet results; this session has not loaded a saved receipt.'}
         </div>
-        {!signingAllowed && (
-          <div role="status" className="notice">
-            {!securityCleared
-              ? WALLET_REVIEW_MESSAGE
-              : 'Settlement remains disabled pending exact owner authorization.'}{' '}
-            Service terms may be prepared, but wallet signing and new settlement are blocked.
-            {!securityCleared && (
-              <p>
-                The owner-operated localhost workflow runs this same application with its own
-                authenticated session and wallet checks. It does not clear or override Slush’s
-                production warning.{' '}
-                <Link
-                  className="inline-link"
-                  href="https://github.com/sopskistar/payguard-ai/blob/main/docs/LOCAL_OWNER_PAYMENT.md"
-                >
-                  Exact local purchase instructions
-                </Link>
-                .
-              </p>
-            )}
-          </div>
+        {capabilityState === 'loading' && (
+          <p role="status">
+            Loading workspace and server capabilities. Wallet/provider status is not yet known.
+          </p>
+        )}
+        {capabilityState === 'ready' && (
+          <section className="notice service-preflight" aria-label="Server payment capabilities">
+            <h2>Connection, login and purchase permissions</h2>
+            <dl className="detail-list">
+              <div>
+                <dt>Wallet connection</dt>
+                <dd>
+                  {capabilities?.connectionAvailable === false
+                    ? 'Unavailable on this configured origin'
+                    : 'Wallet Standard available; provider permission required'}
+                </dd>
+              </div>
+              <div>
+                <dt>Wallet authentication</dt>
+                <dd>
+                  <Link href="/connect">Free personal-message login</Link> · separate from financial
+                  approval
+                </dd>
+              </div>
+              <div>
+                <dt>Mainnet quotes</dt>
+                <dd>{configured ? 'Available' : 'Configuration incomplete or quotes disabled'}</dd>
+              </div>
+              <div>
+                <dt>Unsigned transaction preparation</dt>
+                <dd>
+                  {preparationAllowed
+                    ? 'Available after exact owner terms acceptance'
+                    : capabilities?.financialRestriction ||
+                      'Unavailable under the current application policy'}
+                </dd>
+              </div>
+              <div>
+                <dt>Transaction signing</dt>
+                <dd>
+                  {signingAllowed
+                    ? 'Available locally after exact owner approval; the wallet separately requests your signature'
+                    : capabilities?.financialRestriction ||
+                      'Settlement capability is disabled in server configuration'}
+                </dd>
+              </div>
+              <div>
+                <dt>Actual provider decision</dt>
+                <dd>
+                  {progress?.diagnostic?.stage === 'wallet-signing'
+                    ? progress.diagnostic.message
+                    : 'No provider rejection is inferred from server capability. Stop if your wallet warns or refuses.'}
+                </dd>
+              </div>
+            </dl>
+          </section>
+        )}
+        {(capabilityState === 'error' || diagnostic) && (
+          <button
+            className="button outline"
+            disabled={busy}
+            onClick={() => void loadWorkspace(!quote)}
+          >
+            Retry workspace and payment status · no signing
+          </button>
         )}
         {!data ? (
           <p>Loading owner workspace…</p>
@@ -497,24 +690,12 @@ export function ServicePayment() {
                 disabled={busy}
                 onClick={() =>
                   void run(async () => {
-                    const r = await api<{
-                      configured: boolean;
-                      signingAllowed: boolean;
-                      preparationAllowed: boolean;
-                      securityCleared: boolean;
-                      network: ServiceNetwork;
-                      dedicatedPayer: string | null;
-                    }>('service-payments');
+                    const r = await api<PaymentMetadata>('service-payments');
                     if (quote && (r.network !== network || r.dedicatedPayer !== dedicatedPayer))
                       throw new Error(
                         'Payment party or network configuration changed. Cancel the unsigned quote and inspect fresh terms.',
                       );
-                    setConfigured(r.configured);
-                    setSigningAllowed(r.signingAllowed);
-                    setPreparationAllowed(r.preparationAllowed);
-                    setSecurityCleared(r.securityCleared);
-                    setNetwork(r.network);
-                    setDedicatedPayer(r.dedicatedPayer);
+                    applyMetadata(r);
                   })
                 }
               >
@@ -585,38 +766,7 @@ export function ServicePayment() {
                     className="button outline"
                     key={i.id}
                     disabled={busy}
-                    onClick={() =>
-                      void run(async () => {
-                        setQuote({ ...i.challenge, id: i.id, expiresAt: i.expiresAt });
-                        setStatusMessage('');
-                        setStoredBytes(i.prepared || undefined);
-                        setProgress(undefined);
-                        setInvoice(i.invoiceId);
-                        setReceipt(undefined);
-                        setConsent(false);
-                        setMemory('');
-                        setPrepared(undefined);
-                        setSignatureAttempted(false);
-                        setPendingDigest(i.digest || '');
-                        const r = await request('/' + i.id + '/resume', {});
-                        setProgress(r.progress);
-                        if (r.progress?.prepared) setStoredBytes(r.progress.prepared);
-                        if (
-                          r.progress?.walletAttempted ||
-                          localStorage.getItem('payguard:service-sign-attempt:' + i.id)
-                        )
-                          setSignatureAttempted(true);
-                        setPending(r.state === 'pending');
-                        setPaymentState(r.state);
-                        trackState(i.id, r.state, r.digest);
-                        if (r.digest) setPendingDigest(r.digest);
-                        if (r.state === 'failed')
-                          setError(
-                            'Tatum confirmed failed execution. No service receipt was created.',
-                          );
-                        if (r.receipt) setReceipt(r.receipt);
-                      })
-                    }
+                    onClick={() => void run(() => openSavedIntent(i))}
                   >
                     Resume saved {i.state} intent ·{' '}
                     {data.invoices.find((v) => v.id === i.invoiceId)?.number ||
@@ -721,11 +871,20 @@ export function ServicePayment() {
               <button
                 className="button primary"
                 disabled={
-                  !configured || busy || !!quote || saved.some((i) => i.state === 'settling')
+                  capabilityState !== 'ready' ||
+                  !configured ||
+                  busy ||
+                  !!quote ||
+                  saved.some((i) => i.state === 'settling')
                 }
                 onClick={() =>
                   void run(async () => {
-                    const r = await request('', { invoiceId, operationKey: crypto.randomUUID() });
+                    if (quoteOperation.current?.invoiceId !== invoiceId)
+                      quoteOperation.current = { invoiceId, key: crypto.randomUUID() };
+                    const r = await request('', {
+                      invoiceId,
+                      operationKey: quoteOperation.current.key,
+                    });
                     parseServiceChallenge(
                       { x402Version: r.x402Version, resource: r.resource, accepts: r.accepts },
                       window.location.origin,
@@ -761,7 +920,9 @@ export function ServicePayment() {
               </button>
               {quote && (
                 <>
-                  <h3>Payment required · x402 v2</h3>
+                  <h3>
+                    {receipt ? 'Purchase confirmed · saved receipt' : 'Payment required · x402 v2'}
+                  </h3>
                   <ServicePaymentTimeline
                     quoteId={quote.id}
                     preparedDigest={prepared?.digest || storedBytes?.digest}
@@ -789,19 +950,24 @@ export function ServicePayment() {
                   {!pending && !receipt && (
                     <button
                       className="button outline small"
-                      disabled={busy}
+                      disabled={busy || signatureAttempted || progress?.canCancel === false}
                       onClick={() =>
                         void run(async () => {
                           if (paymentState !== 'failed')
                             await request('/' + quote.id + '/cancel', {});
                           if (paymentState !== 'failed') trackState(quote.id, 'cancelled');
                           setQuote(undefined);
+                          quoteOperation.current = undefined;
                           setStatusMessage('');
                           setConsent(false);
                         })
                       }
                     >
-                      {paymentState === 'failed' ? 'Close failed record' : 'Cancel unpaid quote'}
+                      {paymentState === 'failed'
+                        ? 'Close failed record'
+                        : quoteExpired && progress?.canCancel
+                          ? 'Cancel expired unsigned quote'
+                          : 'Cancel unpaid quote'}
                     </button>
                   )}
                   <dl className="detail-list">
@@ -915,6 +1081,7 @@ export function ServicePayment() {
                   <button
                     className="button primary"
                     disabled={
+                      capabilityState !== 'ready' ||
                       !preparationAllowed ||
                       busy ||
                       !consent ||
@@ -969,6 +1136,7 @@ export function ServicePayment() {
                       <button
                         className="button primary"
                         disabled={
+                          capabilityState !== 'ready' ||
                           !signingAllowed ||
                           busy ||
                           !consent ||
@@ -1004,6 +1172,7 @@ export function ServicePayment() {
                         className="button outline"
                         onClick={() => {
                           setQuote(undefined);
+                          quoteOperation.current = undefined;
                           setStatusMessage('');
                           setReceipt(undefined);
                           setConsent(false);
@@ -1104,12 +1273,35 @@ export function ServicePayment() {
           </>
         )}
         {error && (
-          <p role="alert" className="error-banner">
-            {error}{' '}
+          <div role="alert" className="error-banner">
+            <p>{error}</p>
+            {diagnostic && (
+              <dl className="detail-list">
+                <div>
+                  <dt>Problem</dt>
+                  <dd>
+                    {diagnostic.category} · {diagnostic.code}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Stage</dt>
+                  <dd>{diagnostic.stage}</dd>
+                </div>
+                <div>
+                  <dt>Next step</dt>
+                  <dd>{diagnostic.action}</dd>
+                </div>
+              </dl>
+            )}
+            {diagnostic?.category === 'authentication' && (
+              <Link className="button outline" href="/app?signin=1">
+                Owner administrator sign in
+              </Link>
+            )}
             <button className="button outline small" onClick={() => setError('')}>
               Dismiss
             </button>
-          </p>
+          </div>
         )}
         <Link
           className="inline-link"

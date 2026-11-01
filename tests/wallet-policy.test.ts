@@ -4,6 +4,7 @@ import {
   serviceWalletSigningAllowed,
   walletProviderAllowed,
   slushOnboardingBlocked,
+  walletOperationPolicy,
 } from '@/lib/wallet-policy';
 it('keeps hosted financial signing paused independently of authentication or development flags', () => {
   for (const env of [
@@ -13,6 +14,30 @@ it('keeps hosted financial signing paused independently of authentication or dev
     {},
   ])
     expect(serviceWalletSigningAllowed(env as NodeJS.ProcessEnv)).toBe(false);
+});
+it('reports origin capability separately from an unobserved provider verdict', () => {
+  const local = walletOperationPolicy({ APP_URL: 'http://localhost:4320' });
+  expect(local).toMatchObject({
+    environment: 'local',
+    connectionAvailable: true,
+    authenticationAvailable: true,
+    financialOriginAllowed: true,
+    providerVerdict: 'unobserved',
+    financialRestriction: null,
+  });
+  const production = walletOperationPolicy({
+    VERCEL: '1',
+    APP_URL: 'https://payguard-ai-henna.vercel.app',
+  });
+  expect(production).toMatchObject({
+    environment: 'production',
+    connectionAvailable: true,
+    authenticationAvailable: true,
+    financialOriginAllowed: false,
+    providerVerdict: 'unobserved',
+  });
+  expect(production.financialRestriction).toContain('application policy');
+  expect(walletOperationPolicy({}).connectionAvailable).toBe(false);
 });
 it('permits controlled loopback and isolated test fixtures without a public release override', () => {
   for (const hostname of ['localhost', '127.0.0.1', '[::1]'])
