@@ -188,8 +188,8 @@ export function PaymentSetup({ states }: { states: string[] }) {
               [
                 'Security clearance',
                 setup.securityCleared
-                  ? 'Controlled local environment only; no production Slush clearance implied'
-                  : 'Blocked: unresolved Slush review. No production signing.',
+                  ? 'Configured origin permitted; physical wallet-provider acceptance is separate'
+                  : 'Configured origin does not permit signing. Check HTTPS and APP_URL.',
               ],
               ['Account control', setup.controlVerification],
             ].map(([label, value]) => (

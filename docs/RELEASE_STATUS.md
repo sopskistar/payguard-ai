@@ -1,3 +1,13 @@
+# Final hackathon release status
+
+Three Tatum-verified Mainnet service purchases and three delivered reports are reconciled, total 0.003 SUI. The public Memory Courtroom replays three fresh OFF/ON comparisons, genuine provenance and an attack through the existing engine. All 32 confirmed memory jobs/blobs were rechecked; new-session recall matched.
+
+Customer checkout now binds its payer to the authenticated wallet and permits configured HTTPS origins, with a 20-purchase global pilot and 0.003 SUI persistent wallet exposure limit. Physical production providers and ordinary-coin fallback remain unverified; the verified address-balance template is available conditionally on provider permission and funds. No extra payment, memory write, reset or video occurred. [Current release and limitations](PRODUCT_RELEASE.md) · [three-payment ledger](PAYMENT_EXPERIMENTS.md).
+
+The remaining entries are dated historical checkpoints, including their then-current smaller payment counts and earlier hosted restrictions.
+
+---
+
 # November 1 local Neon transport recovery
 
 The reported recurrence was reproduced outside the application in fresh Node processes. Database URL/role checks and verified IPv4 TLS passed; failed requests showed IPv4 timeouts and unreachable IPv6. The existing request scope is retained. Connection acquisition now has one bounded retry before application SQL; no statement, transaction callback or financial operation is replayed. The supervised local launcher allows a longer address-attempt window, propagated to the actual Next.js child. [Observed causes, uncertainty, validation and next controls](NEON_CONNECTION_RECOVERY.md). Existing receipt and 32 memories remain preserved.

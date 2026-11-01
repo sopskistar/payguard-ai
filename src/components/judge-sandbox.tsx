@@ -159,6 +159,9 @@ export function JudgeSandbox() {
             <Brand />
           </Link>
           <div>
+            <Link href="/courtroom">
+              Memory Courtroom <ExternalLink size={13} />
+            </Link>
             <Link href="/proof">
               Mainnet proof <ExternalLink size={13} />
             </Link>

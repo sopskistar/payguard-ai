@@ -3,11 +3,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="payguard-release" content="courtroom-three-receipts" />
+    <title>The invoice was familiar. The recipient was not. — PayGuard Verify</title>
     <meta
       name="description"
-      content="How PayGuard Verify uses genuine Walrus Mainnet memory and Tatum Sui gRPC to review supplier payment-instruction changes."
+      content="Memory Courtroom, 32 confirmed Walrus Mainnet records and three Tatum-verified x402 purchases. An honest account of what works and what remains."
     />
-    <title>The invoice was familiar. The recipient was not. — PayGuard Verify</title>
     <style>
       :root {
         color-scheme: dark;
@@ -118,391 +119,283 @@
           transition: color 0.15s;
         }
       }
+
+      header {
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      header nav {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      header img {
+        vertical-align: middle;
+        margin-right: 10px;
+      }
+      main a,
+      code {
+        overflow-wrap: anywhere;
+      }
+      table {
+        display: block;
+        overflow: auto;
+        max-width: 100%;
+        font-size: 13px;
+        border-collapse: collapse;
+      }
+      td,
+      th {
+        padding: 12px;
+        min-width: 115px;
+        border: 1px solid #28444f;
+        text-align: left;
+      }
+      td a {
+        overflow-wrap: anywhere;
+      }
+      pre {
+        overflow: auto;
+      }
+      h1 {
+        scroll-margin-top: 20px;
+      }
     </style>
   </head>
   <body>
     <header>
-      <strong>PayGuard Verify · Engineering</strong
-      ><a href="https://github.com/sopskistar/payguard-ai">Source &amp; evidence ↗</a>
+      <a href="https://payguard-ai-henna.vercel.app/"
+        ><img src="try/brand/icon.png" width="30" height="30" alt="" />PayGuard Verify</a
+      >
+      <nav>
+        <a href="https://payguard-ai-henna.vercel.app/courtroom">Memory Courtroom</a
+        ><a href="https://payguard-ai-henna.vercel.app/try">Free demo</a
+        ><a href="https://github.com/sopskistar/payguard-ai">Repository</a>
+      </nav>
     </header>
     <main>
       <h1 dir="auto">The invoice was familiar. The recipient was not.</h1>
-      <section>
-        <h2>October 31: one genuine Mainnet service purchase</h2>
-        <p>
-          The existing app preserves 32 confirmed Walrus records. A real owner-controlled
-          first-party x402 purchase finalized at checkpoint 340211024:
-          <a href="https://suivision.xyz/txblock/68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx"
-            >68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx</a
-          >. Tatum independently confirms 0.001 SUI merchant credit, zero payer gas and separate
-          0.0001 SUI sponsor gas. Approved and executed bytes match; the Neon receipt and report
-          reopen without charging again. Both payer and merchant are controlled by the project
-          owner. The supplier scenario is synthetic; this is not independent customer adoption.
-        </p>
-        <p>
-          Two further synthetic purchase scenarios await separate owner approvals and wallet
-          signatures. The changed-instruction scenario has real fresh-session Walrus recall: seven
-          confirmed citations enrich verification/escalation findings while both memory modes keep
-          the human hold. No new memory write was needed. Slush's earlier localhost warning
-          disappeared for the owner, but its cause and current physical production verdict remain
-          unverified. Public personal-message login permits Slush when the wallet permits the
-          origin; no warning is overridden. Production financial signing remains paused.
-        </p>
-        <p>
-          <a href="https://payguard-ai-henna.vercel.app/try">Try the no-wallet three-minute demo</a>
-          · <a href="https://payguard-ai-henna.vercel.app/proof#payments">Actual payment proof</a> ·
-          <a
-            href="https://github.com/sopskistar/payguard-ai/blob/main/docs/FINAL_MAINNET_RELEASE.md"
-            >Current results and limitations</a
-          >
-          ·
-          <a
-            href="https://github.com/sopskistar/payguard-ai/blob/main/docs/SLUSH_LOCALHOST_INVESTIGATION.md"
-            >Slush investigation</a
-          >
-        </p>
-        <p>
-          The dated article and engineering notes below are historical captures; earlier
-          zero-settlement and blanket Slush-login restrictions are superseded by this update. No
-          video was created.
-        </p>
-      </section>
-      <p>
-        <strong>Judge? Start here:</strong>
-        <a href="https://github.com/sopskistar/payguard-ai#how-to-test-payguard-verify"
-          >HOW TO TEST PAYGUARD VERIFY</a
+      <p dir="auto">
+        PayGuard Verify asks a narrow question before a supplier payment: what changed, and who
+        independently verified it? It combines a private review workspace, approved policy learning
+        on Walrus Mainnet, Tatum transaction reconciliation and opt-in x402 analysis. The public
+        <strong
+          ><a href="https://payguard-ai-henna.vercel.app/courtroom" rel="nofollow"
+            >Memory Courtroom</a
+          ></strong
         >
-        has four runnable paths, starting with the three-minute no-wallet demo.
+        makes that evidence inspectable without a wallet or payment.
       </p>
-      <p>
-        <a href="https://github.com/sopskistar/payguard-ai/blob/main/docs/MAINNET_PROOF.md"
-          >30 confirmed Mainnet memories: proof ledger</a
+      <p dir="auto">
+        <a href="https://payguard-ai-henna.vercel.app/" rel="nofollow">Live application</a> ·
+        <a href="https://payguard-ai-henna.vercel.app/try" rel="nofollow"
+          >Try the seven-step demo</a
+        >
+        · <a href="https://github.com/sopskistar/payguard-ai">Public repository</a> ·
+        <a href="https://payguard-ai-henna.vercel.app/proof" rel="nofollow"
+          >Verified Mainnet proof</a
+        >
+      </p>
+      <h2 dir="auto">A familiar name does not verify a new recipient</h2>
+      <p dir="auto">
+        The application compares an invoice's proposed recipient with a supplier reference
+        established independently of that invoice. Changed recipients, conflicting addresses,
+        mismatched contact details and instructions to skip verification become concrete findings. A
+        rule score is not a fraud probability. A human records an independent verification outcome
+        for an exact instruction snapshot; editing those instructions invalidates the old
+        attestation. PayGuard does not claim to observe the phone call or prove supplier identity.
+      </p>
+      <h2 dir="auto">Remember the approved correction, not the private document</h2>
+      <p dir="auto">
+        An authenticated reviewer can explicitly consent to a minimized policy such as “verify
+        recipient changes through the pre-established contact.” Raw invoices, contacts and detailed
+        verification notes stay in Neon. Walrus receives a minimized policy with pseudonymous scope
+        references. A durable accepted job must complete with an actual blob ID before it counts as
+        confirmed. Pending work resumes its existing job rather than duplicating a write.
+      </p>
+      <p dir="auto">
+        Later semantic recall is tenant-scoped. Returned text is untrusted until it matches an exact
+        confirmed tenant-owned record and an applicable authoritative policy. Memory OFF excludes
+        learned soft policies while retaining mandatory checks. Memory ON applies only relevant
+        confirmed context; empty or unavailable recall produces no invented improvement.
+      </p>
+      <p dir="auto">
+        We preserved and freshly rechecked <strong>32 confirmed Mainnet records</strong>: 30
+        original owner policies and two controlled tenant records. No new memory was needed for the
+        final release. In fresh application reviews of three existing synthetic experiments, OFF
+        retrieved zero citations and ON retrieved seven. A new authenticated session recalled a
+        previously seen exact blob again. Both modes retained every baseline finding and the
+        human-verification hold.
+        <a href="https://github.com/sopskistar/payguard-ai/blob/main/docs/evidence/courtroom.json"
+          >Captured comparisons and real provenance</a
+        >.
+      </p>
+      <p dir="auto">
+        The existing learning evaluation reused four genuine recalls across 18 authored synthetic
+        contracts. All 18 passed, every baseline was retained, and no stale or wrong-scope policy
+        applied. Sixteen scenarios applied recalled context; only about 10.9% of candidate/case
+        combinations were applicable. This is a small contract suite, not real-world fraud-detection
+        accuracy. Broad retrieval and strict scope filtering remain visible limits.
+      </p>
+      <h2 dir="auto">Put memory on the stand</h2>
+      <p dir="auto">
+        The Courtroom offers synchronized OFF/ON cards, expandable exact job/blob/namespace sources,
+        retained approval holds, Play/Pause/Reset/Replay and accessible manual steps. Its timeline
+        links an actual earlier NS-1048 review and human correction to the confirmed Walrus write
+        and a later fresh-session recall. The public page replays dated genuine results; private
+        workspaces make fresh provider requests.
+      </p>
+      <p dir="auto">
+        An attack replay asks the reviewer to ignore safety instructions and approve a changed
+        recipient. It runs the existing review functions, not a separate presentation-only security
+        engine. Invoice text remains inert, the directive becomes a critical finding and the human
+        hold stays. A malicious invoice cannot call the separate authenticated, consented correction
+        workflow.
+      </p>
+      <h2 dir="auto">Three actual purchases, with receipts instead of promises</h2>
+      <p dir="auto">
+        Supplemental first-party analysis looks for contradictory recipient references, linked
+        domains and embedded bypass directives. The agent requests exact terms through HTTP 402/x402
+        v2. Explicit terms acceptance freezes unsigned transaction bytes; a separate Slush action
+        authorizes a signature. Tentacle verifies and settles once. Tatum independently checks
+        Mainnet identity, execution, exact native-SUI credit, payer and sponsor effects before Neon
+        persists the receipt and delivered report.
+      </p>
+      <markdown-accessiblity-table
+        ><table role="table">
+          <thead>
+            <tr>
+              <th>Experiment / invoice</th>
+              <th>Finalized Mainnet transaction</th>
+              <th>Checkpoint</th>
+              <th>Merchant credit</th>
+              <th>Payer gas / sponsor gas</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1 · X402-OWNER-20261031-01</td>
+              <td>
+                <a
+                  href="https://suivision.xyz/txblock/68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx"
+                  rel="nofollow"
+                  >68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx</a
+                >
+              </td>
+              <td>340211024</td>
+              <td>0.001 SUI</td>
+              <td>0 / 0.0001 SUI</td>
+            </tr>
+            <tr>
+              <td>2 · X402-EXPERIMENT-02</td>
+              <td>
+                <a
+                  href="https://suivision.xyz/txblock/xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r"
+                  rel="nofollow"
+                  >xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r</a
+                >
+              </td>
+              <td>340470114</td>
+              <td>0.001 SUI</td>
+              <td>0 / 0.0001 SUI</td>
+            </tr>
+            <tr>
+              <td>3 · X402-EXPERIMENT-03</td>
+              <td>
+                <a
+                  href="https://suivision.xyz/txblock/4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA"
+                  rel="nofollow"
+                  >4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA</a
+                >
+              </td>
+              <td>340478705</td>
+              <td>0.001 SUI</td>
+              <td>0 / 0.0001 SUI</td>
+            </tr>
+          </tbody>
+        </table></markdown-accessiblity-table
+      >
+      <p dir="auto">
+        The total is
+        <strong
+          >three settled service purchases, three delivered reports and 0.003 SUI merchant
+          credit</strong
+        >. Tatum verifies matching approved/executed bytes and one settlement submission for each
+        distinct quote. Each merchant credit is exactly 1,000,000 MIST; payer gas is zero and
+        sponsor gas is separately 100,000 MIST. All three saved receipts reopened twice without
+        another charge.
+        <a
+          href="https://github.com/sopskistar/payguard-ai/blob/main/docs/evidence/mainnet-service-reconciliation.json"
+          >Full challenge, effects, audit and report evidence</a
+        >.
+      </p>
+      <p dir="auto">
+        The payer and merchant are two different accounts controlled by the developer for these
+        experiments. These are real service fees on synthetic supplier scenarios, not independent
+        customer adoption, supplier payments or proof of actual fraud prevention. A 0.0009 SUI
+        explorer summary is not the merchant's actual balance change: effects establish 0.001 credit
+        and separate 0.0001 sponsor gas. The original display's aggregation rule was not captured,
+        so no hidden merchant fee is inferred.
+      </p>
+      <p dir="auto">
+        Tatum also supports a separate negative example: an actual successful public transaction did
+        not pay the synthetic supplier expectation, so the review correctly returned Mismatch. A
+        successful chain transaction must never become a fabricated invoice receipt.
+      </p>
+      <h2 dir="auto">A real workspace, with an optional paid path</h2>
+      <p dir="auto">
+        Visitors can use the public demo and Courtroom immediately. A free personal-message
+        signature registers or restores a private Sui wallet workspace; server nonces, replay
+        protection, origin checks, session revocation and tenant authorization protect it. Owner
+        administration remains separate and never requires judges to know OWNER_PASSWORD.
+      </p>
+      <p dir="auto">
+        Authenticated members can opt into a real <strong>0.001 SUI</strong> analysis on their own
+        eligible invoice. The payer is bound to their verified wallet and server-created intent; it
+        never falls back to the owner wallet. HTTPS production origins are permitted, with the
+        wallet provider retaining full warning/refusal control. The public sponsored pilot is
+        limited to 20 reserved/settled purchases and 0.003 SUI per wallet across sessions, including
+        unsettled reservations. Sponsor gas budget is at most 0.002 SUI per attempt. Uncertain
+        payments resume their original intent; statements, authorizations and settlements are never
+        automatically replayed.
+      </p>
+      <p dir="auto">
+        The verified payment template currently needs SUI address balance. The SDK supports ordinary
+        coin selection, but the alternate template has not been established end to end with this
+        facilitator, so that fallback is not enabled. No conversion occurs automatically. Physical
+        hosted Slush, Suiet, Nightly and mobile acceptance remains unverified; the three local Slush
+        purchases do not certify the hosted domain. Stop at any provider warning.
+      </p>
+      <h2 dir="auto">What remains human</h2>
+      <p dir="auto">
+        The review and paid report are deterministic; this build does not call an LLM. Pattern rules
+        can miss attacks or flag legitimate instructions. Memory has retention, indexing and
+        provider limits. Application audit is not immutable against a database administrator. The
+        Courtroom exposes those boundaries rather than using a fabricated live-activity feed or
+        fraud-confidence statistic.
+      </p>
+      <p dir="auto">
+        The repository contains unit, integration and browser checks, real-provider evidence,
+        security scans and a concise recording plan. No additional Mainnet payment, memory write,
+        wallet creation or funding was performed to make the final proof. The owner will record the
+        2–3 minute demo video separately.
+        <a href="https://github.com/sopskistar/payguard-ai#how-to-test-payguard-verify"
+          >How to test</a
         >
         ·
         <a href="https://github.com/sopskistar/payguard-ai/blob/main/docs/TEST_RESULTS.md"
           >Test results</a
         >
+        ·
+        <a href="https://github.com/sopskistar/payguard-ai/blob/main/docs/DEMO_SCRIPT.md"
+          >Recording plan</a
+        >.
       </p>
-      <img
-        src="screenshots/landing.png"
-        alt="PayGuard Verify landing page using the official branding"
-      />
-      <p dir="auto">
-        <em
-          >Published engineering report · October 28, 2026. Mainnet results are measured; the public
-          application is live at payguard-ai-henna.vercel.app.</em
-        >
-      </p>
-      <p dir="auto">
-        A payment request can look routine while changing the one detail that matters: who gets
-        paid. The FBI's
-        <a
-          href="https://www.fbi.gov/how-we-can-help-you/common-frauds-and-scams/business-email-compromise"
-          rel="nofollow"
-          >business email compromise guidance</a
-        >
-        describes vendor impersonation, subtle address changes and compromised correspondence. It
-        recommends independently verifying changes using a known channel. PayGuard Verify turns that
-        review practice into an observable workflow.
-      </p>
-      <h2 dir="auto">Start with a reference, not a score</h2>
-      <p dir="auto">
-        The application records a vendor's established recipient, email domain and independent
-        contact. A new instruction is compared against that reference. Changed recipients,
-        mismatched reply-to details, urgency and instructions to skip verification become explicit
-        findings. We do not call the resulting rule score a fraud probability. A matching email
-        domain does not authenticate a message, and a syntactically valid wallet does not prove
-        supplier control.
-      </p>
-      <h2 dir="auto">The human establishes the fact</h2>
-      <p dir="auto">
-        A reviewer contacts the supplier through the previously established channel and records what
-        happened. The attestation is bound to an instruction snapshot and vendor-profile revision.
-        Editing either invalidates it; concurrent edits and approvals use database row locks. These
-        records are human assertions, not claims that our app observed a phone call. No supplier
-        payment is initiated.
-      </p>
-      <h2 dir="auto">Walrus remembers why</h2>
-      <p dir="auto">
-        Corrections become minimized policy templates with pseudonymous references. Raw invoice
-        documents, correspondence, contacts and detailed explanations are not sent to Walrus. The
-        server uses the Walrus Memory delegate SDK, records an accepted job ID durably, and waits
-        for a completed result before showing a confirmed blob. A timeout remains pending and
-        resumes the same job.
-      </p>
-      <p dir="auto">
-        When a later invoice is reviewed, semantic recall queries the owner's stable namespace.
-        Returned content is untrusted until it matches the exact confirmed tenant-owned payload. The
-        deterministic engine then applies the matching authoritative policy, with a visible
-        citation. Memory OFF removes learned soft-policy application while retaining mandatory
-        checks. An empty recall result produces no invented improvement.
-      </p>
-      <p dir="auto">
-        On October 28 we confirmed all twelve distinct seeded policies on Walrus Mainnet. These are
-        fictional business events with real storage receipts. The first seed's job was
-        <code class="notranslate">4d590890-db79-4329-986f-10f52d32d5c7</code>, returning blob
-        <code class="notranslate">pPYsV-RKCESYlutuJDdc9lj9pxV2ixSA_zMHRDr2CM4</code>. Interrupted
-        writes resumed their accepted IDs; no pending job entered the confirmed count.
-      </p>
-      <p dir="auto">
-        A new server process reviewed a later Northstar sample invoice at
-        <code class="notranslate">2026-10-28T14:06:45.669Z</code>. OFF retained recipient-change
-        warnings. ON retrieved twelve confirmed memories and applied three matching vendor policies,
-        moving the review from “Needs review” to “High risk / verification required.” The proof file
-        records the exact returned citations; this was not a local policy lookup dressed as recall.
-      </p>
-      <p dir="auto">
-        A separate browser experiment then created a thirteenth confirmed memory, logged out, closed
-        the first context, signed in through a new context, and reviewed a later invoice. The test
-        passed in 56.8 seconds: the new assessment cited the exact blob written in the first
-        session. Neither OFF nor ON bypasses the independent-verification gate.
-        <a href="https://github.com/sopskistar/payguard-ai/blob/main/docs/MAINNET_PROOF.md"
-          >Completion and recall evidence</a
-        >
-        includes all thirteen job/blob pairs.
-      </p>
-      <h2 dir="auto">Tatum supplies a different kind of evidence</h2>
-      <p dir="auto">
-        The backend uses native Sui Mainnet gRPC through Tatum, with TLS and a server-only API key.
-        It verifies service identity, fetches transaction effects and balance changes, resolves coin
-        decimals, and compares exact atomic units. Gas-payer rebates are excluded from payment
-        matching. Fiat invoices need an explicitly agreed token amount. Database uniqueness protects
-        against digest reuse.
-      </p>
-      <p dir="auto">
-        This chain evidence answers whether the expected address received the expected token amount.
-        It does not answer whether the supplier authorized the instruction. Keeping those questions
-        separate is central to the product.
-      </p>
-      <p dir="auto">
-        Tatum identified Sui Mainnet as <code class="notranslate">35834a8a</code> and reported
-        service checkpoint <code class="notranslate">339079915</code>. We inspected the real public
-        digest <code class="notranslate">os1iG8zow278c6hqxbuyxnvMUjzThsD8GTY8atdfzW6</code>,
-        finalized in checkpoint <code class="notranslate">339078672</code>. Its successful execution
-        did not prove a payment to our sample vendor: the transaction showed a SUI debit from its
-        sender, while the sample recipient received zero. Live coin metadata returned nine decimals.
-        Our reconciliation returned <strong>Mismatch</strong> against the synthetic expectation of
-        <code class="notranslate">500000000000</code> atomic units.
-      </p>
-      <p dir="auto">
-        That negative result is useful. A successful transaction pasted into a review must not
-        become a fabricated receipt. No transfer was sent and no invoice was marked paid. Positive
-        matching remains covered by synthetic fixtures; this article makes no claim of a real
-        positive supplier payment. Tip discovery was intermittent, so the demo uses the actual known
-        digest with honest provider failures.
-      </p>
-      <h2 dir="auto">What we tested and what remains</h2>
-      <p dir="auto">
-        The automated suite covers attack replay controls, changed-recipient gates, stale human
-        verification, parsing, reconciliation edge cases and durable memory state transitions.
-        Provider fixtures are explicitly synthetic. Local PostgreSQL tests establish application
-        behavior, not Neon or Mainnet connectivity. Fresh-session learning was demonstrated
-        separately with live credentials; hosted deployment validation is recorded independently in
-        the test ledger.
-      </p>
-      <p dir="auto">
-        Memory is subject to retention epochs and semantic indexing delays. Deterministic patterns
-        can miss attacks or flag legitimate requests. Our audit is append-only through the app, not
-        immutable against a database administrator. These limits remain visible rather than hidden
-        behind a confidence badge.
-      </p>
-      <p dir="auto">
-        The narrow MVP deliberately uses a single active supplier reference with invoice-scoped
-        attestations, rather than claiming a complete vendor identity system. The replay includes
-        changed recipients, lookalike domains, compromised threads, a negative control, duplicates,
-        legitimate exception context and the exact prompt-injection phrase from our adversarial
-        test. New exception memories require a current independent attestation, remain
-        invoice-scoped and expire after thirty days.
-      </p>
-      <p dir="auto">
-        <a target="_blank" rel="noopener noreferrer" href="screenshots/verification.png"
-          ><img
-            src="screenshots/verification.png"
-            alt="Instruction comparison"
-            style="max-width: 100%"
-        /></a>
-      </p>
-      <p dir="auto">
-        Hosted application verification has passed. The remaining submission work is the separately
-        owner-approved genuine service purchase, an owner-arranged recorded demonstration, and the
-        required account/dashboard details. This report is published directly from the public source
-        repository. The repository contains the application, reproducible checks and reviewed real
-        evidence. No x402/MPP settlement or payment bonus is claimed.
-      </p>
-      <section>
-        <h2>Update: 30 confirmed memories and an interactive judge journey</h2>
-        <p>
-          The original thirteen records were preserved. A bounded seventeen-event expansion reached
-          thirty confirmed Mainnet memories, with zero pending or failed jobs. A fresh live
-          evaluation retained all baseline findings in four supplier reviews, applied zero stale or
-          wrongly scoped rules, and added zero critical findings to one unchanged control.
-        </p>
-        <p>
-          <a href="try/">Open the three-minute public judge sandbox</a> ·
-          <a href="https://github.com/sopskistar/payguard-ai/blob/main/docs/MEMORY_EVALUATION.md"
-            >Measured learning quality</a
-          >
-          ·
-          <a href="https://github.com/sopskistar/payguard-ai/blob/main/docs/AGENT_PAYMENTS.md"
-            >Mainnet service-payment implementation and gates</a
-          >
-        </p>
-        <p>
-          The judge uses the same application logic with synthetic business events and genuine
-          recorded provider evidence. The Mainnet x402 implementation has exact native-SUI terms,
-          spending caps and Tatum receipt checks. No service payment has settled; spending remains
-          disabled and Slush review is pending. The Vercel app is publicly accessible. The owner
-          will arrange the video separately.
-        </p>
-      </section>
-      <section>
-        <h2>An evaluation that exposed a real false alarm</h2>
-        <p>
-          Four genuine Walrus recalls were reused across 18 authored synthetic scenarios. The first
-          run met 15/18 contracts and exposed three extra recipient warnings on established
-          destinations with sparse invoice history. After anchoring the learned comparison to the
-          established supplier reference, the repeated run met 18/18 contracts, retained every
-          baseline finding, and added no critical warnings on four unchanged controls. Sixteen
-          scenarios applied remembered context; only 10.9% of candidate/case combinations were
-          applicable. These are small contract checks, not real-world fraud accuracy or a ranking
-          precision measurement.
-        </p>
-        <p>
-          <a href="https://payguard-ai-henna.vercel.app/proof#learning"
-            >Inspect the full learning report and before/after evidence</a
-          >
-        </p>
-        <h2>A wallet account, not a supplier identity claim</h2>
-        <p>
-          <strong>Current security gate:</strong> the owner reports a Slush malicious-website
-          warning on the production origin. Slush hosted login and Production financial signing
-          remain paused. Other permitted Wallet Standard providers can authenticate private
-          accounts. Do not override wallet warnings. The public judge journey and owner workspace
-          remain available. Controlled wallet fixtures do not certify physical Slush onboarding.
-          <a
-            href="https://github.com/sopskistar/payguard-ai/blob/main/docs/SLUSH_SECURITY_REVIEW.md"
-            >Read the investigation and limitations</a
-          >.
-        </p>
-        <p>
-          Connect Sui Wallet creates an individual account only after a domain/browser-bound,
-          expiring, one-time personal message is verified by the backend. Connection alone grants no
-          access. Records and confirmed memory provenance are scoped to that account; administrator
-          rights remain separate. Storage is operator-managed. Signing in cannot send funds or
-          establish who owns a supplier destination.
-        </p>
-        <p>
-          <a href="https://payguard-ai-henna.vercel.app/try"
-            >Try the seven-step public judge journey</a
-          >
-          · <a href="https://payguard-ai-henna.vercel.app/connect">Wallet onboarding status</a> ·
-          <a href="https://github.com/sopskistar/payguard-ai/blob/main/docs/WALLET_SECURITY.md"
-            >Security design and limitations</a
-          >
-        </p>
-      </section>
-      <section>
-        <h2>Controlled two-customer Mainnet learning proof</h2>
-        <p>
-          The original 30 memories remain intact. Two independently authenticated simulated wallet
-          users each confirmed one sponsored Mainnet correction, logged out, signed in again, and
-          recalled their own rule on a later synthetic invoice. Both directions denied foreign
-          invoice and memory access. The tracked confirmed total is 32. These are real Neon/provider
-          operations through the local app, not certification of hosted physical-wallet onboarding.
-        </p>
-        <p>
-          <a
-            href="https://github.com/sopskistar/payguard-ai/blob/main/docs/evidence/two-tenant-mainnet-memory.json"
-            >Read the two-customer proof</a
-          >. Slush review was submitted by the owner; the production wallet pause remains.
-        </p>
-      </section>
-      <section>
-        <h2>Existing-wallet payment preparation</h2>
-        <p>
-          October 30 recovery validation: 116 unit/integration tests and a full local browser run of
-          20 passed, 0 failed, 3 explicit environment skips. The latest hosted full run had 18
-          passes, 2 Chromium transport failures and 3 security-paused wallet skips; focused reruns
-          passed the original failing cases but hit one further transport reset. No clean
-          uninterrupted hosted run or physical-wallet certification is claimed.
-          <a href="https://github.com/sopskistar/payguard-ai/blob/main/docs/TEST_RESULTS.md"
-            >Complete test ledger</a
-          >.
-        </p>
-        <p>
-          PayGuard now prepares the two existing owner wallets through an administrator-only Payment
-          Setup screen. Tatum checks Mainnet identity and separates coin-object funds from usable
-          address balance. Configuration, funding, security clearance, exact owner authorization and
-          settlement are separate states. Quotes cost 0.001 SUI with a 0.003 SUI session exposure
-          cap; settlement remains disabled and Slush review unresolved. No genuine paid-service
-          receipt exists.
-        </p>
-        <p>
-          The agent applies deterministic invoice safeguards and genuine semantic Walrus recall. The
-          supplemental first-party report analyzes contradictory recipient references, link domains
-          and bypass instructions; it cannot establish supplier identity or remove human holds.
-          Three separately approved experiments are prepared, with no invented payment or
-          avoided-purchase results.
-          <a href="https://github.com/sopskistar/payguard-ai/blob/main/docs/PAYMENT_SETUP.md"
-            >Owner setup guide</a
-          >.
-        </p>
-        <h2>Verified production release — ec74c88</h2>
-        <p>
-          Application commit ec74c88 passed every hosted spec in isolated Chromium processes: 18
-          passed, zero failed, and three intentional wallet-fixture skips while Slush review is
-          unresolved. Owner/Neon persistence, fresh-session Walrus recall and Tatum Mainnet reads
-          passed independently. The unit suite has 111 passing tests. The initial shared-browser run
-          had two transport failures; these are preserved separately. The isolated run required zero
-          navigation retries. The expanded payment proposal works on mobile, and human attestation
-          waits for current instruction data.
-        </p>
-        <p>
-          Both existing payer/merchant addresses and sufficient usable Mainnet funds are verified;
-          genuine HTTP 402 quotes are enabled. Production settlement stays disabled. The
-          <a href="https://github.com/sopskistar/payguard-ai/blob/main/docs/LOCAL_OWNER_PAYMENT.md"
-            >inspected owner-local application</a
-          >
-          supports unsigned preparation followed by separately enabled capability and exact
-          owner/wallet approval. No service payment has settled; a simulation or the completed
-          self-deposit is not a service receipt.
-          <a href="https://github.com/sopskistar/payguard-ai/blob/main/docs/RELEASE_STATUS.md"
-            >Read the evidence and limitations</a
-          >.
-        </p>
-      </section>
-      <section>
-        <h2>See the instruction change, then inspect the proof</h2>
-        <p>
-          The product now introduces the review with a six-stage interactive illustration: invoice,
-          changed recipient, detection, approval hold, human check and remembered context. Play,
-          Pause, Replay and manual steps are available, with reduced-motion support. The
-          illustration is synthetic; the separate Memory OFF/ON comparison uses dated genuine recall
-          and retains the hard approval hold.
-        </p>
-        <p>
-          The workspace displays current server-evaluated approval holds and persisted audit events,
-          rather than a simulated live feed. Its personal memory count is separate from the 30 owner
-          and two controlled customer Mainnet records. A configured integration is not labeled as a
-          successful diagnostic.
-        </p>
-        <p>
-          The public
-          <a href="https://payguard-ai-henna.vercel.app/connect?mode=review"
-            >review-only wallet selector</a
-          >
-          lets the owner reach Slush’s own Flag for review action without owner credentials. It
-          cannot sign, register or create a session. No security clearance or service-payment
-          settlement is claimed.
-          <a href="https://github.com/sopskistar/payguard-ai/blob/main/docs/PRODUCT_RELEASE.md"
-            >Current UX and validation evidence</a
-          >.
-        </p>
-      </section>
     </main>
     <footer>
-      Published from the PayGuard Verify source repository. Synthetic business scenarios; genuine
-      Mainnet storage and read-only chain evidence. No supplier payments are initiated.
+      Published from the project repository. Three recorded owner-controlled Mainnet service
+      purchases; synthetic business scenarios. No private credentials, video or new payment is
+      included.
     </footer>
   </body>
 </html>

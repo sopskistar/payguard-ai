@@ -7,6 +7,7 @@ import { credentials } from '@grpc/grpc-js';
 import { Transaction } from '@mysten/sui/transactions';
 import { toBase64 } from '@mysten/sui/utils';
 import { writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import { normalizeGrpcTransaction } from '../src/lib/integrations/tatum';
 import { validateServiceSettlement } from '../src/lib/integrations/service-tatum';
 import { canonicalCoin } from '../src/lib/validation';
@@ -14,12 +15,13 @@ import {
   serviceTermsSchema,
   validateServiceTransaction,
   MAINNET_GENESIS,
+  analyzeInstructionConsistency,
 } from '../src/lib/service-protocol';
 
 config({ path: '.env.local', quiet: true });
 const sql = neon(process.env.DATABASE_URL!);
 const rows =
-  await sql`select r.id,r.intent_id,r.digest,r.network,r.result,r.created_at,i.challenge,i.approval,i.payer,i.payload_hash,i.state,i.approved_at,v.number from service_payment_receipts r join service_payment_intents i on i.id=r.intent_id join invoices v on v.id=i.invoice_id order by r.created_at`;
+  await sql`select r.id,r.intent_id,r.digest,r.network,r.result,r.created_at,r.tenant_id as receipt_tenant,i.tenant_id as intent_tenant,i.invoice_id,i.analysis_input,i.instruction_hash,i.challenge,i.approval,i.payer,i.payload_hash,i.state,i.approved_at,v.number from service_payment_receipts r join service_payment_intents i on i.id=r.intent_id join invoices v on v.id=i.invoice_id order by r.created_at`;
 const transport = new GrpcTransport({
   host: 'sui-mainnet-grpc.gateway.tatum.io:443',
   channelCredentials: credentials.createSsl(),
@@ -51,6 +53,22 @@ try {
     const tx = normalizeGrpcTransaction(executed);
     const received = validateServiceSettlement(tx, row.digest, terms, row.payer);
     const prepared = row.approval.prepared;
+    const expectedReport = analyzeInstructionConsistency(
+      row.analysis_input,
+      row.analysis_input.message,
+    );
+    const reportMatchesFrozenInput = Object.entries(expectedReport).every(
+      ([key, value]) => JSON.stringify(row.result[key]) === JSON.stringify(value),
+    );
+    const approvalMatchesChallenge =
+      row.approval.network === terms.network &&
+      row.approval.asset === terms.asset &&
+      row.approval.amountAtomic === terms.amount &&
+      row.approval.payer === row.payer &&
+      row.approval.recipient === terms.payTo &&
+      row.approval.gasOwner === terms.extra.gasOwner &&
+      row.approval.resource === row.challenge.resource.url &&
+      row.instruction_hash === terms.extra.instructionHash;
     validateServiceTransaction(prepared.bytes, terms, row.payer);
     const preparedDigest = await Transaction.from(prepared.bytes).getDigest();
     const exactBytes =
@@ -63,7 +81,10 @@ try {
       preparedDigest !== row.digest ||
       prepared.digest !== row.digest ||
       row.state !== 'settled' ||
-      !row.payload_hash
+      row.payload_hash !== createHash('sha256').update(prepared.bytes).digest('hex') ||
+      !reportMatchesFrozenInput ||
+      !approvalMatchesChallenge ||
+      row.receipt_tenant !== row.intent_tenant
     )
       throw Error('Receipt binding incomplete');
     const gasAtomic = (gas.computationCost! + gas.storageCost! - gas.storageRebate!).toString();
@@ -87,7 +108,9 @@ try {
     if (
       settlementRequests.length !== 1 ||
       !events.some((e) => e.type === 'service.challenge') ||
-      !events.some((e) => e.type === 'service.review_completed')
+      !events.some(
+        (e) => e.type === 'service.review_completed' && e.detail.intentId === row.intent_id,
+      )
     )
       throw Error('Settlement audit mismatch');
     payments.push({
@@ -111,6 +134,10 @@ try {
       actualBalanceChanges: tx.balanceChanges,
       exactApprovedBytesExecuted: exactBytes,
       preparedDigestMatchesExecution: true,
+      approvalMatchesChallenge,
+      deliveredReportMatchesFrozenInput: reportMatchesFrozenInput,
+      receiptAndIntentTenantMatch: true,
+      invoiceAssociationVerified: true,
       challenge: row.challenge,
       approvedAt: row.approved_at,
       settlementRequests: settlementRequests.length,

@@ -377,6 +377,10 @@ export function Workspace({
           </div>
           <p className="nav-label">WORKSPACE</p>
           <nav aria-label="Main navigation">
+            <Link className="nav-link" href="/courtroom" onClick={() => setDrawer(false)}>
+              <BrainCircuit size={19} />
+              <span>Memory Courtroom</span>
+            </Link>
             {nav.map((n) => (
               <Link
                 key={n.id}
@@ -394,11 +398,7 @@ export function Workspace({
                 {n.id === 'memory' && <span className="new-label">LEARN</span>}
               </Link>
             ))}
-            <Link
-              className="nav-link"
-              href="/services#payment-setup"
-              onClick={() => setDrawer(false)}
-            >
+            <Link className="nav-link" href="/services" onClick={() => setDrawer(false)}>
               <Zap size={19} />
               <span>Agent Services</span>
             </Link>

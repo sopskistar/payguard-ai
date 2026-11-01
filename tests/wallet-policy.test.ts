@@ -6,14 +6,16 @@ import {
   slushOnboardingBlocked,
   walletOperationPolicy,
 } from '@/lib/wallet-policy';
-it('keeps hosted financial signing paused independently of authentication or development flags', () => {
+it('rejects unconfigured/insecure hosted origins without denying valid HTTPS hosting', () => {
   for (const env of [
     { VERCEL: '1', APP_URL: 'http://localhost:3000', NODE_ENV: 'test' },
-    { APP_URL: 'https://payguard-ai-henna.vercel.app', NODE_ENV: 'test' },
-    { APP_URL: 'https://other-public.example', NODE_ENV: 'production' },
+    { APP_URL: 'http://public.example', NODE_ENV: 'production' },
     {},
   ])
     expect(serviceWalletSigningAllowed(env as NodeJS.ProcessEnv)).toBe(false);
+  expect(
+    serviceWalletSigningAllowed({ VERCEL: '1', APP_URL: 'https://payguard-ai-henna.vercel.app' }),
+  ).toBe(true);
 });
 it('reports origin capability separately from an unobserved provider verdict', () => {
   const local = walletOperationPolicy({ APP_URL: 'http://localhost:4320' });
@@ -33,10 +35,10 @@ it('reports origin capability separately from an unobserved provider verdict', (
     environment: 'production',
     connectionAvailable: true,
     authenticationAvailable: true,
-    financialOriginAllowed: false,
+    financialOriginAllowed: true,
     providerVerdict: 'unobserved',
   });
-  expect(production.financialRestriction).toContain('application policy');
+  expect(production.financialRestriction).toBeNull();
   expect(walletOperationPolicy({}).connectionAvailable).toBe(false);
 });
 it('permits controlled loopback and isolated test fixtures without a public release override', () => {
@@ -48,7 +50,7 @@ it('allows production personal-message login independently of hosted financial s
   const production = { VERCEL: '1', APP_URL: 'https://payguard-ai-henna.vercel.app' };
   expect(walletOnboardingAllowed(production)).toBe(true);
   expect(slushOnboardingBlocked(production)).toBe(false);
-  expect(serviceWalletSigningAllowed(production)).toBe(false);
+  expect(serviceWalletSigningAllowed(production)).toBe(true);
   expect(walletProviderAllowed('Slush', true)).toBe(false);
   expect(walletProviderAllowed('Sui Wallet', true)).toBe(false);
   expect(walletProviderAllowed('Other compatible wallet', true)).toBe(true);

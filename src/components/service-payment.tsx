@@ -22,6 +22,7 @@ import { api, Badge, Field } from './ui';
 import { WALLET_REVIEW_MESSAGE } from '@/lib/wallet-policy';
 import { PaymentSetup } from './payment-setup';
 import { Brand } from './brand';
+import { WalletSessionMonitor } from './wallet-entry';
 import { serviceDiagnostic } from '@/lib/service-diagnostics';
 import { ServicePaymentTimeline } from './service-payment-timeline';
 import type { RequestDiagnostic } from '@/lib/request-diagnostics';
@@ -45,6 +46,13 @@ type PaymentMetadata = {
   intents: SavedIntent[];
   exposure?: { reservedAtomic: string; capAtomic: string };
   capabilities?: ReturnType<typeof walletOperationPolicy>;
+  audience?: 'owner' | 'customer';
+  publicPilot?: {
+    reservedAtomic: string;
+    capAtomic: string;
+    purchases: number;
+    walletCapAtomic: string;
+  };
 };
 type PaymentProgress = {
   prepared?: { bytes: string; digest: string; preparedAt: string } | null;
@@ -129,6 +137,7 @@ export function ServicePayment() {
       'loading',
     ),
     [capabilities, setCapabilities] = useState<PaymentMetadata['capabilities']>(),
+    [publicPilot, setPublicPilot] = useState<PaymentMetadata['publicPilot']>(),
     [diagnostic, setDiagnostic] = useState<RequestDiagnostic>(),
     [search, setSearch] = useState(''),
     [exposure, setExposure] = useState<{ reservedAtomic: string; capAtomic: string }>(),
@@ -165,6 +174,9 @@ export function ServicePayment() {
     [memory, setMemory] = useState(''),
     [saved, setSaved] = useState<SavedIntent[]>([]);
   const quoteExpired = !!quote && Date.parse(quote.expiresAt) <= now;
+  const funding = proposal?.fundingCompatibility as
+    | { addressAtomic?: string | null; coinAtomic?: string | null; ordinaryCoinFallback?: string }
+    | undefined;
   const selectedInvoice = data?.invoices.find((i) => i.id === invoiceId);
   const experiment =
     selectedInvoice?.number.match(/X402-EXPERIMENT-0([23])/i)?.[1] ||
@@ -188,10 +200,12 @@ export function ServicePayment() {
         (failure.status === 401 || failure.status === 403
           ? {
               category: 'authentication',
-              stage: 'owner-authentication',
+              stage: 'workspace-authentication',
               code: failure.code || 'AUTH_REQUIRED',
-              message: 'Owner authentication is required for payment operations.',
-              action: 'Use Owner administrator sign in, then reload the saved payment.',
+              message:
+                'Authenticate your wallet or authorized administrator workspace before purchasing.',
+              action:
+                'Connect your Sui wallet, inspect the free sign-in message, then reload your own saved payment.',
             }
           : undefined),
     );
@@ -239,6 +253,7 @@ export function ServicePayment() {
     setSaved(r.intents);
     setExposure(r.exposure);
     setCapabilities(r.capabilities);
+    setPublicPilot(r.publicPilot);
     setCapabilityState('ready');
   }, []);
   const loadWorkspace = useCallback(
@@ -255,7 +270,7 @@ export function ServicePayment() {
           s.invoices.find((i) => i.isDemo && i.number === 'NS-1048') ||
           s.invoices[0];
         if (restore) setInvoice(selected?.id || '');
-        if (s.mode !== 'owner') {
+        if (s.mode === 'public-demo') {
           setCapabilityState('anonymous');
           return;
         }
@@ -418,7 +433,7 @@ export function ServicePayment() {
     if (chainIdentifier !== chain.genesis) throw new Error('Unexpected Sui chain identifier');
     if (BigInt(balance.addressBalance) < BigInt(terms.amount))
       throw new Error(
-        'The dedicated wallet needs sufficient native SUI address balance for this sponsored protocol. Coin-object holdings alone do not qualify. No deposit or payment was initiated.',
+        'The signing wallet needs sufficient native SUI address balance for the current sponsored transaction template. Coin-object funding has not been validated with this facilitator. No deposit or payment was initiated.',
       );
     const tx = buildServiceTransaction(terms, account.address, {
       genesis: chainIdentifier,
@@ -515,7 +530,7 @@ export function ServicePayment() {
       }).catch(() => {});
       throw Object.assign(
         new Error(
-          `Slush / wallet signing ${diagnostic.code}: ${diagnostic.message} No signed payload was submitted by PayGuard. Resume this record; no automatic retry.`,
+          `Wallet signing ${diagnostic.code}: ${diagnostic.message} No signed payload was submitted by PayGuard. Resume this record; no automatic retry.`,
         ),
         {
           diagnostic: {
@@ -556,24 +571,28 @@ export function ServicePayment() {
   }
   return (
     <div className="judge-shell service-payment-page">
+      {data?.mode === 'member' && data.identity?.walletAddress && (
+        <WalletSessionMonitor expectedAddress={data.identity.walletAddress} />
+      )}
       <header className="judge-header">
         <Link href="/" aria-label="PayGuard home">
           <Brand />
         </Link>
         <Link href="/app/review">← Verify Instructions</Link>
         <Link href="/app">Overview</Link>
+        <Link href="/courtroom">Courtroom</Link>
         <Badge tone={capabilityState === 'ready' && signingAllowed ? 'mint' : 'amber'}>
           {capabilityState === 'loading'
             ? 'Checking payment capability…'
             : capabilityState === 'error'
               ? 'Payment capability unavailable'
               : capabilityState === 'anonymous'
-                ? 'Owner sign-in required'
+                ? 'Workspace sign-in required'
                 : signingAllowed
-                  ? 'Local signing available · owner approval required'
-                  : capabilities?.environment === 'production'
-                    ? 'Production transaction signing restricted'
-                    : 'Transaction signing disabled by application configuration'}
+                  ? capabilities?.environment === 'production'
+                    ? 'Wallet signing available · exact approval required'
+                    : 'Local signing available · owner approval required'
+                  : 'Transaction signing disabled by server configuration'}
         </Badge>
       </header>
       <main id="main" className="judge-intro">
@@ -622,7 +641,7 @@ export function ServicePayment() {
                 <dt>Unsigned transaction preparation</dt>
                 <dd>
                   {preparationAllowed
-                    ? 'Available after exact owner terms acceptance'
+                    ? 'Available after exact purchase terms acceptance'
                     : capabilities?.financialRestriction ||
                       'Unavailable under the current application policy'}
                 </dd>
@@ -631,7 +650,7 @@ export function ServicePayment() {
                 <dt>Transaction signing</dt>
                 <dd>
                   {signingAllowed
-                    ? 'Available locally after exact owner approval; the wallet separately requests your signature'
+                    ? 'Available after exact purchase approval; your wallet separately requests a financial signature'
                     : capabilities?.financialRestriction ||
                       'Settlement capability is disabled in server configuration'}
                 </dd>
@@ -657,11 +676,11 @@ export function ServicePayment() {
           </button>
         )}
         {!data ? (
-          <p>Loading owner workspace…</p>
-        ) : data.mode !== 'owner' ? (
+          <p>Loading your workspace…</p>
+        ) : data.mode === 'public-demo' ? (
           <p>
-            <Link className="button primary" href="/app?signin=1">
-              Sign in through the owner workspace
+            <Link className="button primary" href="/connect">
+              Connect and authenticate your wallet
             </Link>{' '}
             before quoting a service. Public judges can inspect{' '}
             <Link className="inline-link" href="/try">
@@ -671,18 +690,33 @@ export function ServicePayment() {
           </p>
         ) : (
           <>
-            <PaymentSetup states={saved.map((i) => i.state)} />
+            {data.mode === 'owner' && <PaymentSetup states={saved.map((i) => i.state)} />}
             <section className="panel">
               <h2>First-party invoice consistency analysis</h2>
               <p>
-                Owner-controlled Mainnet experiments: a service report costs 0.001 SUI. Payer and
-                merchant are both controlled by the project owner. Each purchase requires fresh
-                approval here and a separate signature in your wallet.
+                {data.mode === 'owner'
+                  ? 'Owner-controlled Mainnet experiments: payer and merchant are different owner-controlled accounts. '
+                  : 'Optional real purchase using only your authenticated wallet. The configured merchant receives the service fee. '}
+                A first-party report costs 0.001 SUI. Each purchase requires fresh exact terms
+                approval and a separate signature in your wallet. The free Courtroom needs no
+                purchase.
               </p>
+              {data.mode === 'member' && publicPilot && (
+                <p className="notice">
+                  Limited sponsored Mainnet pilot: {publicPilot.purchases} purchases total; 0.003
+                  SUI per authenticated wallet across sessions, including unsettled reservations.
+                  Sponsor gas budget is at most 0.002 SUI per attempt. Ordinary coin-object SUI is
+                  not automatically converted.{' '}
+                  <Link href="/courtroom">Evaluate the free Memory Courtroom</Link>.
+                </p>
+              )}
               {exposure && (
                 <p role="status">
-                  Current authenticated-session exposure: {Number(exposure.reservedAtomic) / 1e9} /
-                  0.003 SUI, including settled purchases and all unsettled reservations.
+                  {data.mode === 'member'
+                    ? 'Your wallet’s persistent pilot exposure'
+                    : 'Current authenticated-session exposure'}
+                  : {Number(exposure.reservedAtomic) / 1e9} / 0.003 SUI, including settled purchases
+                  and all unsettled reservations.
                 </p>
               )}
               <button
@@ -716,17 +750,30 @@ export function ServicePayment() {
                 <section className="notice service-preflight">
                   <h3>Read-only purchase preflight</h3>
                   <p>
-                    This is a proposal, not permission to spend. Buyer and seller may both be
-                    controlled by the project; this is not an independent third-party identity
-                    check.
+                    This proposal does not authorize spending. PayGuard supplies a first-party
+                    consistency report, not independent supplier identity verification. The three
+                    published experiments used owner-controlled accounts; this proposal uses the
+                    payer shown below.
                   </p>
                   <dl className="detail-list">
                     {[
                       ['Network', proposal.network],
                       ['Exact service fee', `${proposal.amount} · ${proposal.amountAtomic} MIST`],
                       ['Coin type', proposal.asset],
-                      ['Dedicated payer', proposal.payer || 'Not configured'],
+                      ['Authenticated payer', proposal.payer || 'Not configured'],
                       ['Merchant recipient', proposal.recipient || 'Not configured'],
+                      [
+                        'Usable address-balance SUI',
+                        funding?.addressAtomic != null
+                          ? `${Number(funding.addressAtomic) / 1e9} SUI`
+                          : 'Not returned',
+                      ],
+                      [
+                        'Ordinary coin-object SUI',
+                        funding?.coinAtomic != null
+                          ? `${Number(funding.coinAtomic) / 1e9} SUI · alternate template not enabled`
+                          : 'Not returned',
+                      ],
                       ['Provider', proposal.provider],
                       ['Service origin', proposal.resourceOrigin],
                       ['Facilitator', proposal.facilitator],
@@ -747,8 +794,8 @@ export function ServicePayment() {
                   <p role="status">
                     {proposal.configurationReady
                       ? proposal.sufficientlyFunded
-                        ? 'Parties and usable funds are verified. Exact owner approval and wallet-security clearance are still required before signing.'
-                        : 'Parties are configured. Usable address-balance funds, exact owner approval and wallet-security clearance are still required before signing.'
+                        ? 'Parties and usable funds are verified. Exact purchase approval and provider permission are still required before signing.'
+                        : 'Parties are configured, but usable address-balance SUI is insufficient. Ordinary coin-object SUI is not automatically converted. Use the free Courtroom or a compatible funded address balance.'
                       : `Proposal is incomplete. Configure public address names: ${Array.isArray(proposal.missing) ? proposal.missing.join(', ') : 'review server configuration'}. All parties must differ.`}
                   </p>
                   <details>
@@ -776,9 +823,9 @@ export function ServicePayment() {
                 ))}
               <p>
                 Deterministic supplemental analysis, not an independent identity check or a phone
-                call. No spending key is stored by PayGuard. The sponsored native-SUI protocol
-                requires address-balance funds; ordinary coin-object holdings alone are
-                insufficient. PayGuard never moves funds into address balance automatically.
+                call. No spending key is stored by PayGuard. This release’s verified payment
+                template uses address-balance SUI; ordinary coin-object fallback is not enabled.
+                PayGuard never converts or moves those funds automatically.
               </p>
               {!configured && (
                 <div role="status" className="notice">
@@ -786,6 +833,16 @@ export function ServicePayment() {
                   configuration status. ENABLE_AGENT_PAYMENTS=false keeps quotes off while read-only
                   balance checks remain available. Settlement is separately disabled.
                 </div>
+              )}
+              {data.invoices.length === 0 && (
+                <p className="notice">
+                  Your private workspace has no invoices yet.{' '}
+                  <Link href="/app/vendors">Establish a supplier reference</Link>, then{' '}
+                  <Link href="/app/invoices">
+                    add a clearly labeled synthetic or user-owned invoice
+                  </Link>
+                  . Paid analysis is optional; the <Link href="/courtroom">Courtroom is free</Link>.
+                </p>
               )}
               <Field label="Search invoices by supplier or identifier">
                 <input
@@ -873,6 +930,7 @@ export function ServicePayment() {
                 disabled={
                   capabilityState !== 'ready' ||
                   !configured ||
+                  !invoiceId ||
                   busy ||
                   !!quote ||
                   saved.some((i) => i.state === 'settling')
@@ -1294,8 +1352,13 @@ export function ServicePayment() {
               </dl>
             )}
             {diagnostic?.category === 'authentication' && (
-              <Link className="button outline" href="/app?signin=1">
-                Owner administrator sign in
+              <Link
+                className="button outline"
+                href={data?.mode === 'owner' ? '/app?signin=1' : '/connect'}
+              >
+                {data?.mode === 'owner'
+                  ? 'Owner administrator sign in'
+                  : 'Authenticate your Sui wallet'}
               </Link>
             )}
             <button className="button outline small" onClick={() => setError('')}>

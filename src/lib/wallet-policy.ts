@@ -1,7 +1,7 @@
 // Personal-message authentication and financial signing have separate policies.
 // A provider warning must never be overridden, including on localhost.
 export const WALLET_REVIEW_MESSAGE =
-  'Production transaction signing is paused by PayGuard’s hosted-origin policy. Wallet connection and free personal-message login are separate. A current physical-provider verdict is unverified. Do not override a wallet warning.';
+  'Wallet operations require a configured HTTPS or loopback origin and provider permission. Free message login and exact financial authorization are separate. Stop at any wallet warning or refusal.';
 export function walletOnboardingAllowed(
   env: Readonly<Record<string, string | undefined>> = process.env,
 ) {
@@ -19,14 +19,8 @@ export function walletOnboardingAllowed(
 export function serviceWalletSigningAllowed(
   env: Readonly<Record<string, string | undefined>> = process.env,
 ) {
-  if (env.VERCEL || env.APP_URL?.includes('payguard-ai-henna.vercel.app')) return false;
-  if (env.NODE_ENV === 'test') return true; // Isolated, unfunded signature fixtures only.
-  try {
-    const origin = new URL(env.APP_URL || '');
-    return ['localhost', '127.0.0.1', '[::1]'].includes(origin.hostname);
-  } catch {
-    return false;
-  }
+  if (env.VERCEL && !env.APP_URL?.startsWith('https://')) return false;
+  return walletOnboardingAllowed(env);
 }
 export const slushOnboardingBlocked = (
   env: Readonly<Record<string, string | undefined>> = process.env,
@@ -62,7 +56,7 @@ export function walletOperationPolicy(
     financialRestriction: financialOriginAllowed
       ? null
       : environment === 'production'
-        ? 'Production transaction preparation/signing is restricted by PayGuard application policy. A current physical provider verdict has not been verified; this is separate from free wallet login.'
+        ? 'The configured hosted origin is not permitted. Check HTTPS and APP_URL. Provider acceptance remains a separate decision.'
         : 'The server has no permitted transaction-signing origin. Check APP_URL.',
   };
 }

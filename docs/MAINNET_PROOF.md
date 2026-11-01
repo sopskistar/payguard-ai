@@ -1,3 +1,17 @@
+# Final independently verified Mainnet proof
+
+| Experiment / invoice       | Finalized Mainnet transaction                                                                                              | Checkpoint | Merchant credit | Payer gas / sponsor gas |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------- | --------------- | ----------------------- |
+| 1 · X402-OWNER-20261031-01 | [68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx](https://suivision.xyz/txblock/68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx) | 340211024  | 0.001 SUI       | 0 / 0.0001 SUI          |
+| 2 · X402-EXPERIMENT-02     | [xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r](https://suivision.xyz/txblock/xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r)   | 340470114  | 0.001 SUI       | 0 / 0.0001 SUI          |
+| 3 · X402-EXPERIMENT-03     | [4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA](https://suivision.xyz/txblock/4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA) | 340478705  | 0.001 SUI       | 0 / 0.0001 SUI          |
+
+Three settled receipts and delivered reports; 0.003 SUI aggregate merchant credit. Exact effects, gas, HTTP 402 challenges, quote/byte binding and one-submission audit are in [the reconciliation](evidence/mainnet-service-reconciliation.json). All three were reopened twice without charging. Accounts are owner-controlled; supplier scenarios are synthetic.
+
+All 32 existing Walrus jobs/blobs were rechecked; a fresh session recalled an exact previously seen blob. [Courtroom capture](evidence/courtroom.json) · [current release](PRODUCT_RELEASE.md). The following dated entries are preserved historical checkpoints; their smaller counts and disabled-status statements are superseded by this entry.
+
+---
+
 # October 31 actual service payment
 
 One genuine first-party x402 purchase finalized at checkpoint **340211024**: [`68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx`](https://suivision.xyz/txblock/68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx). Fresh Tatum independently confirms **1,000,000 MIST merchant credit**, zero payer gas, separate sponsor gas **100,000 MIST**, exact approved/executed-byte equality and the persistent Neon report. Both payer and merchant are owner-controlled. [Payment proof](evidence/mainnet-service-reconciliation.json) · [full current report](FINAL_MAINNET_RELEASE.md).

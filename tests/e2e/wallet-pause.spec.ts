@@ -16,12 +16,12 @@ test('public wallet login is accessible independently of hosted financial signin
       new URL(process.env.E2E_BASE_URL || 'http://localhost:3000').hostname,
     )
   )
-    expect(paymentSigningAllowed).toBe(false);
+    expect(paymentSigningAllowed).toBe(true);
   await visit(page, '/connect?mode=review');
   await expect(
     page.getByRole('heading', { name: 'Wallet security review in progress' }),
   ).toBeVisible();
-  await expect(page.getByText(/Do not override a wallet warning/)).toBeVisible();
+  await expect(page.getByText(/Stop at any wallet warning or refusal/)).toBeVisible();
   await expect(page.getByRole('button', { name: 'Open Slush Security Review' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Connect Wallet' })).toHaveCount(0);
   await visit(page, '/connect');

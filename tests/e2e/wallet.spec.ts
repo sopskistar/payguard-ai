@@ -136,7 +136,10 @@ test('wallet sign-in uses a real personal signature; logout, replay and cross-us
         (await a.request.post('/api/' + route, { headers: { origin }, data: {} })).status(),
         route,
       ).toBe(403);
-    expect((await a.request.get('/api/service-payments')).status()).toBe(403);
+    const customer = await a.request.get('/api/service-payments');
+    expect(customer.status()).toBe(200);
+    expect((await customer.json()).dedicatedPayer).toBe(alice.toSuiAddress());
+    expect((await a.request.get('/api/service-payments/setup')).status()).toBe(403);
     const supplier = await a.request.post('/api/vendors', {
       headers: { origin },
       data: { name: 'Synthetic wallet QA supplier' },
@@ -203,7 +206,7 @@ test('wallet sign-in uses a real personal signature; logout, replay and cross-us
             data: {},
           })
         ).status(),
-      ).toBe(403);
+      ).toBe(route === 'approve' || route === 'remember' ? 400 : 404);
     await a.request.post('/api/wallets/remove', { headers: { origin }, data: { id: watchId } });
     for (const route of ['review', 'instructions/context', 'corrections']) {
       const data =

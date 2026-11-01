@@ -10,7 +10,8 @@ import chain from '../../../docs/evidence/tatum-reconciliation.json';
 import recheck from '../../../docs/evidence/provider-recheck.json';
 import tenants from '../../../docs/evidence/two-tenant-mainnet-memory.json';
 import tenantRecheck from '../../../docs/evidence/two-tenant-provider-recheck.json';
-import payments from '../../../docs/evidence/mainnet-service-reconciliation.json';
+import { PaymentEvidence } from '@/components/payment-evidence';
+import courtroom from '../../../docs/evidence/courtroom.json';
 export const metadata: Metadata = { title: 'Read-only Mainnet evidence' };
 const repo = 'https://github.com/sopskistar/payguard-ai/blob/main/docs/';
 export default function ProofPage() {
@@ -19,6 +20,9 @@ export default function ProofPage() {
       <header className="site-nav">
         <Link href="/" aria-label="PayGuard home">
           <Brand />
+        </Link>
+        <Link className="site-link" href="/courtroom">
+          Memory Courtroom ↗
         </Link>
         <Link className="site-link" href="/try">
           Try Interactive Demo <ArrowRight size={15} />
@@ -44,49 +48,22 @@ export default function ProofPage() {
             </span>
           </div>
         </div>
-        <section id="payments" className="proof-section">
-          <span className="site-eyebrow">OWNER-CONTROLLED FIRST-PARTY x402 EXPERIMENT</span>
-          <h2>{payments.payments.length} confirmed service purchase.</h2>
-          <p>
-            Recorded evidence checked {payments.checkedAt}. Payer and merchant are both controlled
-            by the project owner. The invoice scenario is synthetic; the Sui Mainnet payment is
-            real. Experiments 2 and 3 need separate owner authorization and wallet signatures.
-          </p>
-          {payments.payments.map((payment) => (
-            <article key={payment.digest} className="proof-details">
-              <h3>{payment.invoice} · 0.001 SUI merchant credit</h3>
-              <p>
-                <a className="inline-link" href={payment.explorer} target="_blank" rel="noreferrer">
-                  {payment.digest}
-                </a>
-              </p>
-              <p>
-                Checkpoint {payment.checkpoint}. Tatum verified exact merchant credit of 1,000,000
-                MIST, zero payer gas and 100,000 MIST sponsor gas. Approved bytes match executed
-                bytes. The saved receipt reopens without a new payment.
-              </p>
-              <p>
-                {payment.result.recommendation} This deterministic first-party report cannot certify
-                supplier identity.
-              </p>
-            </article>
-          ))}
-          <a className="inline-link" href={repo + 'evidence/mainnet-service-reconciliation.json'}>
-            Inspect payment, quote, gas and audit evidence ↗
-          </a>
+        <section id="payments">
+          <PaymentEvidence />
         </section>
         <section id="memory" className="proof-section">
           <span className="site-eyebrow">01 / WALRUS MEMORY MAINNET</span>
-          <h2>{memories.confirmedMemories.length} confirmed memories.</h2>
+          <h2>{courtroom.confirmedMemories} confirmed memories across three scopes.</h2>
           <p>
-            Every published record has a provider-completed job and blob. All {recheck.confirmed}{' '}
+            The 30 owner records below and two controlled tenant records have provider-completed
+            jobs and blobs. All 32 were rechecked at {courtroom.capturedAt}. All {recheck.confirmed}{' '}
             were independently rechecked through the SDK at {recheck.checkedAt}. Business content is
             minimized synthetic policy learning; no raw invoices or customer contacts are published.
           </p>
           <div className="proof-metrics">
             <div>
               <strong>{memories.confirmedMemories.length}</strong>
-              <span>confirmed records</span>
+              <span>confirmed owner records</span>
             </div>
             <div>
               <strong>
@@ -331,9 +308,10 @@ export default function ProofPage() {
               No real positive supplier payment match is claimed by the unrelated test transaction.
             </li>
             <li>
-              One owner-controlled first-party x402 Mainnet service purchase is verified above. Two
-              further purchases await separate owner signatures. Production financial signing
-              remains paused; no supplier transfer is performed by this application.
+              Three owner-controlled first-party x402 Mainnet service purchases are verified above.
+              Optional customer checkout binds the payer to the authenticated wallet under a limited
+              sponsorship pilot. Provider permission and address-balance compatibility remain
+              separate prerequisites. No supplier transfer is performed by this application.
             </li>
             <li>
               Wallet accounts use server-verified personal messages and isolated records.

@@ -125,6 +125,21 @@ export function WorkspaceOverview({
         ))}
       </div>
       <div className="work-status-grid">
+        <section className="panel work-courtroom-card">
+          <span className="eyebrow">PUBLIC LEARNING & PROVENANCE</span>
+          <h2>Put remembered context on the stand.</h2>
+          <p>
+            Compare the same synthetic invoice with Memory OFF and ON. Inspect actual Walrus
+            citations and three verified service purchases, separately from your private account
+            activity.
+          </p>
+          <Link href="/courtroom" className="button primary">
+            Open Memory Courtroom <ArrowRight size={16} />
+          </Link>
+          <Link href="/services" className="inline-link">
+            Optional analysis for your own invoice ↗
+          </Link>
+        </section>
         <section className="panel work-memory-status">
           <div className="panel-top">
             <h2>
@@ -387,7 +402,7 @@ const help: Record<string, [string, string, string]> = {
   'settings/integrations': [
     'What does a connection check prove?',
     'Diagnostics make actual provider requests. Configuration alone is not a healthy connection, and chain connectivity is not payment reconciliation.',
-    'Run a check when needed. Production financial signing remains paused; the supervised owner-local workflow requires separate approval for each purchase.',
+    'Run a read-only check when needed. Optional wallet checkout requires usable funds, exact purchase approval and a separate wallet signature. The Courtroom remains free.',
   ],
 };
 export function WorkspaceGuide({ view }: { view: string }) {

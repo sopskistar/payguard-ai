@@ -1,3 +1,15 @@
+# Current final-release payment access
+
+Three owner-controlled Mainnet service purchases have settled and their saved reports reopen without another charge. [Actual transaction ledger](PAYMENT_EXPERIMENTS.md) · [current product release](PRODUCT_RELEASE.md).
+
+Normal wallet members use /connect and /services without OWNER_PASSWORD. Their verified wallet is the payer; the configured merchant remains the recipient. Public checkout permits configured HTTPS origins, retains provider warnings, requires usable address-balance SUI, and has a 20-purchase global pilot plus 0.003 SUI per-wallet persistent exposure cap. Ordinary coin fallback and physical hosted-provider acceptance remain unverified. Public evaluation is free.
+
+The private local launcher remains available for administrator-controlled experiments with the existing dedicated accounts. SERVICE_PAYMENT_SETTLEMENT_ENABLED controls that owner flow; PUBLIC_SERVICE_PAYMENTS_ENABLED=false separately pauses new customer checkout. No additional payment, funding or conversion was made for this release.
+
+The material below is historical implementation/configuration detail; prior blanket hosted denials and zero/one-payment status statements are superseded.
+
+---
+
 # October 31 current setup
 
 Both existing public wallet addresses are already configured and match the authenticated Production values. Keep them unchanged. Actual Mainnet quote mode is enabled; Production settlement remains false. Wallet A has 0.005 SUI usable address balance and needs no additional conversion/funding. [Fresh read-only evidence](evidence/oct31-readiness.json). Open `/services#payment-setup` for current balances.

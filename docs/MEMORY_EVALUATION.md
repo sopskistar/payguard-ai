@@ -1,3 +1,11 @@
+# Final reverified learning evidence
+
+All 32 previously confirmed jobs/blobs remain confirmed. Existing experimental invoices 1, 2 and 3 each produced OFF = 0 / ON = 7 retrieved citations in fresh application reviews, with mandatory approval holds and all baseline findings retained. After logout and a new authenticated context, Experiment 3 recalled a previously seen exact blob again. The public [Memory Courtroom](https://payguard-ai-henna.vercel.app/courtroom) replays those dated responses, not anonymous live provider calls. [Exact provenance and timeline](evidence/courtroom.json). No new memory was written.
+
+A fresh rerun of the existing evaluation used four genuine recalls for 18 authored synthetic contracts: 18 passed; 18 baseline-preserved; 16 scenarios applied recalled context; four controls had zero added critical warnings; zero stale/wrong-scope applications. [Current machine-readable results](evidence/learning-report.json). This is a small contract suite, not real-world fraud-detection accuracy. Current results supersede the dated historical captures below.
+
+---
+
 # October 31 fresh experiment comparison
 
 The new synthetic `X402-EXPERIMENT-03` tests a claimed change to supplier payout and verification policy. Actual Memory OFF returned zero citations; ON returned seven confirmed owned citations and added supplier-specific phone-channel verification and escalation findings. Both modes remained **High risk / verification required**; every baseline hold persisted. This is recommendation enrichment, not a measured reduction in real fraud or an improved risk grade. A fresh authenticated session recalled the same confirmed policy blob again. No new memory write was needed. [Full findings and exact blobs](evidence/payment-experiments-preparation.json) · [independent 32-record SDK recheck](evidence/session-recovery-audit.json). The paid portion of experiment 3 still requires owner authorization/signature. Earlier authored learning metrics below remain separate historical results.

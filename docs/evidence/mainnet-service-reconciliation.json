@@ -1,11 +1,11 @@
 {
-  "checkedAt": "2026-10-31T20:41:20.756Z",
+  "checkedAt": "2026-11-01T13:57:28.677Z",
   "source": "Authenticated Tatum native Sui Mainnet gRPC and persisted Neon rows",
   "readOnly": true,
   "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
   "counts": {
     "confirmedmemories": 32,
-    "settledreceipts": 1,
+    "settledreceipts": 3,
     "unsettledintents": 0
   },
   "payments": [
@@ -57,6 +57,10 @@
       ],
       "exactApprovedBytesExecuted": true,
       "preparedDigestMatchesExecution": true,
+      "approvalMatchesChallenge": true,
+      "deliveredReportMatchesFrozenInput": true,
+      "receiptAndIntentTenantMatch": true,
+      "invoiceAssociationVerified": true,
       "challenge": {
         "accepts": [
           {
@@ -165,8 +169,330 @@
         "independentIdentityVerification": false
       },
       "firstPartyOwnerControlledAccounts": true
+    },
+    {
+      "quoteId": "d31d1a52-b0b3-4c5c-ba82-5902c5eaef4f",
+      "receiptId": "ce6ea6a2-f13f-4c56-af79-3ec5c7a110db",
+      "invoice": "X402-EXPERIMENT-02",
+      "digest": "xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r",
+      "explorer": "https://suivision.xyz/txblock/xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r",
+      "checkpoint": "340470114",
+      "finalized": true,
+      "network": "sui:mainnet",
+      "payer": "0xc0f3fbf8a029fe354571b58d9e079c1aa4e9ca111a2b025dca470d4bc96397a8",
+      "merchant": "0x99eac0f7be358adf9f96ce0490392f356332af96376aadf11d829a529c1a189e",
+      "sponsor": "0x6d8c6e978808e81344b6ddcc741b06d2b2b1106066d218683e0161f696878b61",
+      "merchantCreditAtomic": "1000000",
+      "payerServiceDebitAtomic": "1000000",
+      "payerGasAtomic": "0",
+      "sponsorGasAtomic": "100000",
+      "gasBudgetAtomic": "2000000",
+      "gas": {
+        "computationCost": "100000",
+        "storageCost": "0",
+        "storageRebate": "0",
+        "nonRefundableStorageFee": "0"
+      },
+      "actualBalanceChanges": [
+        {
+          "owner": {
+            "AddressOwner": "0x6d8c6e978808e81344b6ddcc741b06d2b2b1106066d218683e0161f696878b61"
+          },
+          "coinType": "0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI",
+          "amount": "-100000"
+        },
+        {
+          "owner": {
+            "AddressOwner": "0x99eac0f7be358adf9f96ce0490392f356332af96376aadf11d829a529c1a189e"
+          },
+          "coinType": "0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI",
+          "amount": "1000000"
+        },
+        {
+          "owner": {
+            "AddressOwner": "0xc0f3fbf8a029fe354571b58d9e079c1aa4e9ca111a2b025dca470d4bc96397a8"
+          },
+          "coinType": "0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI",
+          "amount": "-1000000"
+        }
+      ],
+      "exactApprovedBytesExecuted": true,
+      "preparedDigestMatchesExecution": true,
+      "approvalMatchesChallenge": true,
+      "deliveredReportMatchesFrozenInput": true,
+      "receiptAndIntentTenantMatch": true,
+      "invoiceAssociationVerified": true,
+      "challenge": {
+        "accepts": [
+          {
+            "asset": "0x2::sui::SUI",
+            "extra": {
+              "quoteId": "d31d1a52-b0b3-4c5c-ba82-5902c5eaef4f",
+              "gasOwner": "0x6d8c6e978808e81344b6ddcc741b06d2b2b1106066d218683e0161f696878b61",
+              "gasBudget": "2000000",
+              "instructionHash": "99878d0fd6690cd4f7224497386b2f89b7dc30c87d969935fae09e2d3aba1574"
+            },
+            "payTo": "0x99eac0f7be358adf9f96ce0490392f356332af96376aadf11d829a529c1a189e",
+            "amount": "1000000",
+            "scheme": "exact",
+            "network": "sui:mainnet",
+            "maxTimeoutSeconds": 300
+          }
+        ],
+        "resource": {
+          "url": "http://localhost:4320/api/service-payments/d31d1a52-b0b3-4c5c-ba82-5902c5eaef4f",
+          "mimeType": "application/json",
+          "description": "First-party invoice analysis of invoice directive, trusted recipient change. Does not verify supplier identity."
+        },
+        "x402Version": 2
+      },
+      "approvedAt": "2026-11-01T11:06:28.677Z",
+      "settlementRequests": 1,
+      "events": [
+        {
+          "type": "service.challenge",
+          "detail": {
+            "need": ["invoice-directive", "trusted-recipient-change"],
+            "network": "sui:mainnet",
+            "firstParty": true,
+            "amountAtomic": "1000000"
+          },
+          "created_at": "2026-11-01T11:05:54.975Z"
+        },
+        {
+          "type": "service.prepared",
+          "detail": {
+            "submitted": false,
+            "preparedDigest": "xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r"
+          },
+          "created_at": "2026-11-01T11:06:28.098Z"
+        },
+        {
+          "type": "service.wallet_requested",
+          "detail": {
+            "authoritative": false,
+            "preparedDigest": "xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r"
+          },
+          "created_at": "2026-11-01T11:06:37.912Z"
+        },
+        {
+          "type": "service.settlement_requested",
+          "detail": {
+            "digest": "xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r",
+            "authoritative": false
+          },
+          "created_at": "2026-11-01T11:07:02.167Z"
+        },
+        {
+          "type": "service.settlement_response",
+          "detail": {
+            "digest": "xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r",
+            "success": true,
+            "provider": "https://facilitator.tentaclepay.com",
+            "authoritative": false,
+            "reportedPayer": "0xc0f3fbf8a029fe354571b58d9e079c1aa4e9ca111a2b025dca470d4bc96397a8",
+            "reportedDigest": "xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r",
+            "reportedNetwork": "sui:mainnet"
+          },
+          "created_at": "2026-11-01T11:07:03.498Z"
+        },
+        {
+          "type": "service.confirmation_requested",
+          "detail": {
+            "digest": "xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r",
+            "source": "Tatum native Mainnet gRPC"
+          },
+          "created_at": "2026-11-01T11:07:04.013Z"
+        },
+        {
+          "type": "service.review_completed",
+          "detail": {
+            "digest": "xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r",
+            "intentId": "d31d1a52-b0b3-4c5c-ba82-5902c5eaef4f",
+            "firstParty": true,
+            "recommendation": "Hold: reconcile contradictory recipient references through the established supplier channel.",
+            "supplierApprovalUnchanged": true
+          },
+          "created_at": "2026-11-01T11:07:05.902Z"
+        }
+      ],
+      "result": {
+        "provider": "PayGuard first-party consistency analysis",
+        "limitations": "Deterministic supplemental analysis of submitted records; no external callback, email authentication or supplier identity certification.",
+        "linkDomains": ["northstar-billing-review.example"],
+        "recommendation": "Hold: reconcile contradictory recipient references through the established supplier channel.",
+        "addressesMentioned": 1,
+        "injectionDirective": true,
+        "conflictingRecipientMentions": [
+          "0x3333333333333333333333333333333333333333333333333333333333333333"
+        ],
+        "instructionChangedSinceQuote": false,
+        "independentIdentityVerification": false
+      },
+      "firstPartyOwnerControlledAccounts": true
+    },
+    {
+      "quoteId": "4a4d6014-5e9e-430d-8bcb-dad596733876",
+      "receiptId": "ded5c799-ccc3-4c64-b813-34093325ecb1",
+      "invoice": "X402-EXPERIMENT-03",
+      "digest": "4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA",
+      "explorer": "https://suivision.xyz/txblock/4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA",
+      "checkpoint": "340478705",
+      "finalized": true,
+      "network": "sui:mainnet",
+      "payer": "0xc0f3fbf8a029fe354571b58d9e079c1aa4e9ca111a2b025dca470d4bc96397a8",
+      "merchant": "0x99eac0f7be358adf9f96ce0490392f356332af96376aadf11d829a529c1a189e",
+      "sponsor": "0x6d8c6e978808e81344b6ddcc741b06d2b2b1106066d218683e0161f696878b61",
+      "merchantCreditAtomic": "1000000",
+      "payerServiceDebitAtomic": "1000000",
+      "payerGasAtomic": "0",
+      "sponsorGasAtomic": "100000",
+      "gasBudgetAtomic": "2000000",
+      "gas": {
+        "computationCost": "100000",
+        "storageCost": "0",
+        "storageRebate": "0",
+        "nonRefundableStorageFee": "0"
+      },
+      "actualBalanceChanges": [
+        {
+          "owner": {
+            "AddressOwner": "0x6d8c6e978808e81344b6ddcc741b06d2b2b1106066d218683e0161f696878b61"
+          },
+          "coinType": "0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI",
+          "amount": "-100000"
+        },
+        {
+          "owner": {
+            "AddressOwner": "0x99eac0f7be358adf9f96ce0490392f356332af96376aadf11d829a529c1a189e"
+          },
+          "coinType": "0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI",
+          "amount": "1000000"
+        },
+        {
+          "owner": {
+            "AddressOwner": "0xc0f3fbf8a029fe354571b58d9e079c1aa4e9ca111a2b025dca470d4bc96397a8"
+          },
+          "coinType": "0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI",
+          "amount": "-1000000"
+        }
+      ],
+      "exactApprovedBytesExecuted": true,
+      "preparedDigestMatchesExecution": true,
+      "approvalMatchesChallenge": true,
+      "deliveredReportMatchesFrozenInput": true,
+      "receiptAndIntentTenantMatch": true,
+      "invoiceAssociationVerified": true,
+      "challenge": {
+        "accepts": [
+          {
+            "asset": "0x2::sui::SUI",
+            "extra": {
+              "quoteId": "4a4d6014-5e9e-430d-8bcb-dad596733876",
+              "gasOwner": "0x6d8c6e978808e81344b6ddcc741b06d2b2b1106066d218683e0161f696878b61",
+              "gasBudget": "2000000",
+              "instructionHash": "fa827c2d309ce63c19a71636b09353b5fbc8329446ec8e4cf6fae5fed607c294"
+            },
+            "payTo": "0x99eac0f7be358adf9f96ce0490392f356332af96376aadf11d829a529c1a189e",
+            "amount": "1000000",
+            "scheme": "exact",
+            "network": "sui:mainnet",
+            "maxTimeoutSeconds": 300
+          }
+        ],
+        "resource": {
+          "url": "http://localhost:4320/api/service-payments/4a4d6014-5e9e-430d-8bcb-dad596733876",
+          "mimeType": "application/json",
+          "description": "First-party invoice analysis of invoice directive, trusted recipient change. Does not verify supplier identity."
+        },
+        "x402Version": 2
+      },
+      "approvedAt": "2026-11-01T11:41:24.129Z",
+      "settlementRequests": 1,
+      "events": [
+        {
+          "type": "service.challenge",
+          "detail": {
+            "need": ["invoice-directive", "trusted-recipient-change"],
+            "network": "sui:mainnet",
+            "firstParty": true,
+            "amountAtomic": "1000000"
+          },
+          "created_at": "2026-11-01T11:41:05.356Z"
+        },
+        {
+          "type": "service.prepared",
+          "detail": {
+            "submitted": false,
+            "preparedDigest": "4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA"
+          },
+          "created_at": "2026-11-01T11:41:23.118Z"
+        },
+        {
+          "type": "service.wallet_requested",
+          "detail": {
+            "authoritative": false,
+            "preparedDigest": "4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA"
+          },
+          "created_at": "2026-11-01T11:41:35.914Z"
+        },
+        {
+          "type": "service.settlement_requested",
+          "detail": {
+            "digest": "4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA",
+            "authoritative": false
+          },
+          "created_at": "2026-11-01T11:41:48.223Z"
+        },
+        {
+          "type": "service.settlement_response",
+          "detail": {
+            "digest": "4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA",
+            "success": true,
+            "provider": "https://facilitator.tentaclepay.com",
+            "authoritative": false,
+            "reportedPayer": "0xc0f3fbf8a029fe354571b58d9e079c1aa4e9ca111a2b025dca470d4bc96397a8",
+            "reportedDigest": "4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA",
+            "reportedNetwork": "sui:mainnet"
+          },
+          "created_at": "2026-11-01T11:41:49.483Z"
+        },
+        {
+          "type": "service.confirmation_requested",
+          "detail": {
+            "digest": "4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA",
+            "source": "Tatum native Mainnet gRPC"
+          },
+          "created_at": "2026-11-01T11:41:49.726Z"
+        },
+        {
+          "type": "service.review_completed",
+          "detail": {
+            "digest": "4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA",
+            "intentId": "4a4d6014-5e9e-430d-8bcb-dad596733876",
+            "firstParty": true,
+            "recommendation": "Hold: reconcile contradictory recipient references through the established supplier channel.",
+            "supplierApprovalUnchanged": true
+          },
+          "created_at": "2026-11-01T11:41:50.656Z"
+        }
+      ],
+      "result": {
+        "provider": "PayGuard first-party consistency analysis",
+        "limitations": "Deterministic supplemental analysis of submitted records; no external callback, email authentication or supplier identity certification.",
+        "linkDomains": ["northstar-new-payment.example"],
+        "recommendation": "Hold: reconcile contradictory recipient references through the established supplier channel.",
+        "addressesMentioned": 1,
+        "injectionDirective": true,
+        "conflictingRecipientMentions": [
+          "0x4444444444444444444444444444444444444444444444444444444444444444"
+        ],
+        "instructionChangedSinceQuote": false,
+        "independentIdentityVerification": false
+      },
+      "firstPartyOwnerControlledAccounts": true
     }
   ],
-  "settledTotalAtomic": "1000000",
+  "settledTotalAtomic": "3000000",
   "displayReconciliation": "Merchant credit is 0.001 SUI; sponsor gas is separately charged. 0.001 minus 0.0001 equals 0.0009, but 0.0009 is not the merchant balance change. The exact SuiVision screen interpretation has not been observed."
 }

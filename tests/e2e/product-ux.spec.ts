@@ -78,7 +78,7 @@ test('landing CTAs, FAQ, proof and mobile layouts are deliberate and functional'
   await page
     .getByText('Can anyone create an account or connect a wallet?', { exact: true })
     .click();
-  await expect(page.getByText(/Providers decide whether to permit the origin/)).toBeVisible();
+  await expect(page.getByText(/Stop if the provider warns or refuses/)).toBeVisible();
   const actions = page.locator('.site-hero-actions');
   const primary = await actions.getByRole('link').nth(0).boundingBox();
   const secondary = await actions.getByRole('link').nth(1).boundingBox();
@@ -100,7 +100,9 @@ test('landing CTAs, FAQ, proof and mobile layouts are deliberate and functional'
   await expect(page.getByRole('dialog')).toContainText('public demo');
   await page.getByRole('button', { name: 'Close dialog' }).click();
   await visit(page, '/proof');
-  await expect(page.getByRole('heading', { name: '30 confirmed memories.' })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: '32 confirmed memories across three scopes.' }),
+  ).toBeVisible();
   await page.getByText('Inspect all job IDs, blobs and completion times', { exact: true }).click();
   await expect(page.locator('#memory .proof-receipts article')).toHaveCount(30);
   await expect(page.locator('#isolation .proof-receipts article')).toHaveCount(2);

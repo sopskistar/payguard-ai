@@ -1,3 +1,21 @@
+# Final provider and origin status
+
+Three Slush-authorized owner-controlled Mainnet purchases are independently verified in [the ledger](PAYMENT_EXPERIMENTS.md). This establishes executed transactions; the physical browser/provider behavior is owner-reported. The earlier localhost warning's disappearance is not conclusively explained.
+
+The blanket Vercel financial-signing denial has been removed. Configured HTTPS/loopback origins may use the existing nonce-protected personal-message login and explicit transaction-signing implementation, subject to server configuration, verified wallet ownership, limits and provider permission. A regular customer cannot access administrator configuration or use the owner payer. Warnings/refusals are surfaced and respected, never suppressed.
+
+| Operation / provider                              | Observed evidence                                                                            | Current conclusion                                                                |
+| ------------------------------------------------- | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Slush, localhost financial purchase               | Owner reports three successful signatures; Tatum/Neon reconcile all three executed purchases | Established controlled Mainnet path; exact browser/extension version not supplied |
+| Hosted Slush connection and free personal message | Integration implemented; current physical observation not available to automation            | Unverified; test stages separately and stop at warning                            |
+| Hosted Slush financial signature                  | Legitimate HTTPS customer checkout implemented with wallet-bound payer and caps              | Physical acceptance unverified; no new paid test was initiated                    |
+| Suiet / Nightly / mobile                          | Wallet Standard discovery and controlled signing contracts                                   | Physical provider compatibility unverified                                        |
+| Simulated Wallet Standard providers               | Isolated login, account-switching, rejection and financial UI contracts                      | API/UI evidence only; not physical-wallet certification                           |
+
+Current SDKs and warning enforcement are unchanged. A Node/Neon connectivity correction does not alter Slush reputation. Customer checkout currently uses the independently settled address-withdrawal template; ordinary-coin fallback is a separate unverified integration mode. See [current release](PRODUCT_RELEASE.md). Historical origin/header/SDK investigation follows.
+
+---
+
 # Slush localhost and production investigation — October 31, 2026
 
 The disappearance of the earlier localhost warning has **not been conclusively explained**. The owner reports a warning-free connection and transaction signature at `http://localhost:4320`; Neon and a fresh authenticated Tatum query independently confirm the resulting Mainnet purchase. This proves that the signed payment executed, not why Slush permitted that browser request or that every future connection will be permitted.

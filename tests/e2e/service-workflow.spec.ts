@@ -46,8 +46,18 @@ test.describe('isolated service UI contracts; all financial and memory responses
     preparation = signing,
     rejectSignature = false,
     expired = false,
+    customer = false,
   ) {
     const page = await context.newPage();
+    let setupRequests = 0;
+    if (customer) {
+      await page.route('**/api/snapshot', async (route) => {
+        const snapshot = await (await route.fetch()).json();
+        return route.fulfill({
+          json: { ...snapshot, mode: 'member', identity: { walletAddress: payer } },
+        });
+      });
+    }
     await page.addInitScript(() =>
       localStorage.removeItem('payguard:service-sign-attempt:d0000000-0000-4000-8000-000000000001'),
     );
@@ -77,8 +87,9 @@ test.describe('isolated service UI contracts; all financial and memory responses
       ],
     });
     const expiresAt = new Date(Date.now() + (expired ? -1000 : 300000)).toISOString();
-    await page.route('**/api/service-payments/setup', (route) =>
-      route.fulfill({
+    await page.route('**/api/service-payments/setup', (route) => {
+      setupRequests++;
+      return route.fulfill({
         json: {
           ...serviceConfiguration({
             SERVICE_PAYMENT_PAYER: payer,
@@ -98,8 +109,8 @@ test.describe('isolated service UI contracts; all financial and memory responses
             message: 'Synthetic configuration fixture; no provider call',
           },
         },
-      }),
-    );
+      });
+    });
     await page.route('**/api/service-payments', async (route) => {
       if (route.request().method() === 'GET')
         return route.fulfill({
@@ -110,6 +121,17 @@ test.describe('isolated service UI contracts; all financial and memory responses
             securityCleared: signing,
             network: 'sui:mainnet',
             dedicatedPayer: payer,
+            audience: customer ? 'customer' : 'owner',
+            ...(customer
+              ? {
+                  publicPilot: {
+                    reservedAtomic: '0',
+                    capAtomic: '20000000',
+                    purchases: 20,
+                    walletCapAtomic: '3000000',
+                  },
+                }
+              : {}),
             capabilities: {
               origin,
               environment: signing || preparation ? 'local' : 'production',
@@ -342,6 +364,7 @@ test.describe('isolated service UI contracts; all financial and memory responses
     return {
       page,
       calls,
+      setupRequests: () => setupRequests,
       enableSigning: () => {
         signing = true;
       },
@@ -444,6 +467,24 @@ test.describe('isolated service UI contracts; all financial and memory responses
             .serviceFixtureStats,
       ),
     ).toEqual({ sign: 1, execute: 0 });
+    await page.close();
+  });
+  test('offers customer checkout without administrator configuration or an automatic charge (fully mocked)', async () => {
+    const { page, calls, setupRequests } = await pageFixture(true, true, false, false, true);
+    await expect(page.getByText(/SUI per authenticated wallet across sessions/)).toBeVisible();
+    expect(setupRequests()).toBe(0);
+    await page.getByRole('button', { name: 'Request payment quote', exact: true }).click();
+    await page.getByRole('checkbox').last().check();
+    await page.getByLabel('Signing wallet').selectOption('payguard-service-fixture');
+    await page
+      .getByRole('button', { name: 'Review 0.001 SUI purchase · prepare', exact: true })
+      .click();
+    expect(calls.settle).toBe(0);
+    await page.getByRole('button', { name: 'Sign and submit in wallet', exact: true }).click();
+    await expect(page.getByText('Tatum-confirmed service receipt', { exact: true })).toBeVisible();
+    expect(calls.settle).toBe(1);
+    expect(calls.remember).toBe(0);
+    expect(setupRequests()).toBe(0);
     await page.close();
   });
   test('prepares exact approved bytes with settlement disabled and never opens signing (fully mocked)', async () => {

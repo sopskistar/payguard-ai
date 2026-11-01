@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useClientReady } from './client-ready';
 import { AnimatePresence, motion, MotionConfig, useReducedMotion } from 'motion/react';
 import { ProductStory } from './product-story';
+import { PaymentEvidence } from './payment-evidence';
 import { Brand } from './brand';
 import tenants from '../../docs/evidence/two-tenant-mainnet-memory.json';
 import chain from '../../docs/evidence/tatum-reconciliation.json';
@@ -39,7 +40,7 @@ const faqs = [
   ],
   [
     'Can anyone create an account or connect a wallet?',
-    'Create or return to a private wallet account at /connect: choose a compatible Sui wallet, review a free personal message and sign it. No email, password or funds are needed. Providers decide whether to permit the origin; stop if a wallet warns. Physical production provider compatibility is still being verified. Owner Sign In is administrator-only; Try Interactive Demo needs no account. One owner-controlled first-party 0.001 SUI Mainnet service purchase has a Tatum-confirmed receipt. Production financial signing remains paused; each local purchase requires separate exact approval and a wallet signature.',
+    'Create or return to a private wallet account at /connect using a free personal-message signature. No email, password or funds are needed for registration. Optional real analysis costs 0.001 SUI from your authenticated wallet under a limited sponsored pilot; current checkout requires usable address-balance SUI. Stop if the provider warns or refuses. Three owner-controlled purchases have Tatum-confirmed receipts. Physical hosted-provider acceptance is separate from integration tests. The Courtroom and interactive demo are free.',
   ],
   [
     'What are the limits?',
@@ -61,6 +62,7 @@ export function Landing() {
           <nav aria-label="Page sections">
             <a href="#how-it-works">How it works</a>
             <a href="#evidence">Real evidence</a>
+            <Link href="/courtroom">Memory Courtroom</Link>
             <a href="#questions">Questions</a>
           </nav>
           <Link href="/app?signin=1" className="site-owner">
@@ -101,6 +103,10 @@ export function Landing() {
                 <Check size={14} /> Three minutes <span>·</span> No account, wallet or funds needed
               </div>
               <p className="site-owner-note">
+                <Link className="site-link" href="/courtroom">
+                  Enter the Memory Courtroom · compare OFF / ON ↗
+                </Link>
+                <br />
                 Public practice is open. Free wallet-message registration opens a private account.
                 Providers must permit the connection; stop at any wallet warning.{' '}
                 <Link href="/connect">Wallet access & provider status ↗</Link>
@@ -353,7 +359,8 @@ export function Landing() {
                   </span>
                 </div>
                 <p className="site-capture-date">
-                  Captured {chain.checkedAt.slice(0, 10)} · no service payment settled
+                  Captured {chain.checkedAt.slice(0, 10)} · this separate sample demonstrates a
+                  mismatch
                 </p>
                 <Link href="/proof#chain" className="site-link">
                   Inspect the transaction check <ArrowRight size={15} />
@@ -482,6 +489,7 @@ export function Landing() {
               ))}
             </div>
           </section>
+          <PaymentEvidence compact />
           <section className="site-final">
             <img src="/brand/icon.png" alt="" />
             <span className="site-eyebrow">VERIFY BEFORE YOU PAY.</span>

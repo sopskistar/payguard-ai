@@ -1,3 +1,11 @@
+# Current settlement ledger
+
+All three reported purchases are now independently reconciled: [three-payment ledger](PAYMENT_EXPERIMENTS.md). Their actual execution digests are distinct from the historical prepared/expired hashes below. Total settled: three / 0.003 SUI. The earlier cancelled Experiment 2 quote was not reused; its later successful purchase has its own persisted quote and receipt. No further payment was made for this audit.
+
+Historical investigation follows; prior zero/one-receipt counts are superseded.
+
+---
+
 # Experiment 2 recovery — November 1
 
 Intent `d7b6a9ab-de6d-4921-ab93-09ae7763c1c7` expired at October 31, 21:12:55.669 UTC with no approval, prepared transaction, payer, signature payload, execution digest or spending reservation. A backend approval HTTP 500 and repeated database connection failures had been hidden behind generic diagnostics. The original socket-close reason was not retained; no wallet rejection is established. After authenticated read-only resume and exact-row verification, one cancellation succeeded at November 1, 06:23:00.493 UTC. The historical row remains cancelled. No replacement quote or financial request was made. Neon still has **one receipt, zero settling intents and 32 confirmed memories**. [Technical recovery and next button](EXPERIMENT_02_RECOVERY.md) · [evidence](evidence/experiment-02-recovery.json).

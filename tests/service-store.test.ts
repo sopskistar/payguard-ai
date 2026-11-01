@@ -26,6 +26,7 @@ import {
   serviceProgress,
   recordServiceWalletEvent,
   serviceExposure,
+  publicServiceExposure,
 } from '@/lib/service-payments';
 import { serviceNetworkInfo, type ServiceChallenge } from '@/lib/service-protocol';
 import { AppError } from '@/lib/errors';
@@ -112,11 +113,11 @@ async function quote() {
   const invoice = (await listInvoices(OWNER_ID)).find((i) => i.number === 'NS-1048')!;
   return quoteService(OWNER_ID, invoice.id, randomUUID());
 }
-async function payload(row: Awaited<ReturnType<typeof quote>>) {
+async function payload(row: Awaited<ReturnType<typeof quote>>, signer = payer) {
   const challenge = row.challenge as ServiceChallenge;
   const t = challenge.accepts[0];
   const tx = new Transaction();
-  tx.setSender(payer.toSuiAddress());
+  tx.setSender(signer.toSuiAddress());
   tx.setGasOwner(t.extra.gasOwner);
   tx.setGasBudget(t.extra.gasBudget);
   tx.setGasPrice(1000);
@@ -143,7 +144,7 @@ async function payload(row: Awaited<ReturnType<typeof quote>>) {
   });
   tx.pure.string(t.extra.quoteId);
   const bytes = Buffer.from(await tx.build()).toString('base64');
-  const signed = await payer.signTransaction(fromBase64(bytes));
+  const signed = await signer.signTransaction(fromBase64(bytes));
   return {
     x402Version: 2,
     resource: challenge.resource,
@@ -183,18 +184,24 @@ it('retains pending settlement through independent-verifier failure; resume neve
 it('Mainnet quotes and signatures are supported but the separate spend switch fails closed', async () => {
   vi.stubEnv('ENABLE_AGENT_PAYMENTS', 'mainnet');
   vi.stubEnv('SERVICE_PAYMENT_SETTLEMENT_ENABLED', 'false');
-  const row = await quote();
-  expect((row.challenge as ServiceChallenge).accepts[0].network).toBe('sui:mainnet');
-  const before = settles;
-  await approveService(OWNER_ID, row.id, payer.toSuiAddress());
-  expect(settles).toBe(before);
-  await expect(fulfillService(OWNER_ID, row.id, await payload(row))).rejects.toThrow('disabled');
-  expect((await ownedService(OWNER_ID, row.id)).state).toBe('approved');
-  expect((await ownedService(OWNER_ID, row.id)).digest).toBeNull();
-  vi.stubEnv('SERVICE_PAYMENT_SETTLEMENT_ENABLED', 'true');
-  await approveService(OWNER_ID, row.id, payer.toSuiAddress());
-  expect((await fulfillService(OWNER_ID, row.id, await payload(row))).state).toBe('settled'); // MOCK only
-  vi.stubEnv('ENABLE_AGENT_PAYMENTS', 'testnet');
+  try {
+    const row = await quote();
+    expect((row.challenge as ServiceChallenge).accepts[0].network).toBe('sui:mainnet');
+    const before = settles;
+    await approveService(OWNER_ID, row.id, payer.toSuiAddress());
+    expect(settles).toBe(before);
+    await expect(fulfillService(OWNER_ID, row.id, await payload(row))).rejects.toMatchObject({
+      code: 'SPENDING_DISABLED',
+    });
+    expect((await ownedService(OWNER_ID, row.id)).state).toBe('approved');
+    expect((await ownedService(OWNER_ID, row.id)).digest).toBeNull();
+    vi.stubEnv('SERVICE_PAYMENT_SETTLEMENT_ENABLED', 'true');
+    await approveService(OWNER_ID, row.id, payer.toSuiAddress());
+    expect((await fulfillService(OWNER_ID, row.id, await payload(row))).state).toBe('settled'); // MOCK only
+  } finally {
+    vi.stubEnv('SERVICE_PAYMENT_SETTLEMENT_ENABLED', 'true');
+    vi.stubEnv('ENABLE_AGENT_PAYMENTS', 'testnet');
+  }
 });
 it('refuses Mainnet quotes with a missing payer, reused merchant, insufficient address balance or unavailable provider', async () => {
   vi.stubEnv('ENABLE_AGENT_PAYMENTS', 'mainnet');
@@ -207,7 +214,7 @@ it('refuses Mainnet quotes with a missing payer, reused merchant, insufficient a
     mock.preflight.mockResolvedValueOnce({
       balances: { payer: { addressAtomic: '0', coinAtomic: '5000000' } },
     });
-    await expect(quote()).rejects.toThrow('sufficient address-balance');
+    await expect(quote()).rejects.toMatchObject({ code: 'PAYMENT_NOT_READY' });
     mock.preflight.mockRejectedValueOnce(new Error('Synthetic provider outage'));
     await expect(quote()).rejects.toThrow('Synthetic provider outage');
   } finally {
@@ -239,15 +246,22 @@ it('cancels an approved intent durably and never settles a cancelled proof', asy
   expect((await fulfillService(OWNER_ID, row.id, await payload(row))).state).toBe('cancelled');
   expect(settles).toBe(before);
 });
-it('blocks hosted wallet approval and settlement while Slush review is unresolved', async () => {
+it('rejects a hosted runtime misconfigured with a loopback origin without submitting', async () => {
   const row = await quote();
   await approveService(OWNER_ID, row.id, payer.toSuiAddress());
   vi.stubEnv('VERCEL', '1');
   const before = settles;
-  await expect(approveService(OWNER_ID, row.id, payer.toSuiAddress())).rejects.toThrow('paused');
-  await expect(fulfillService(OWNER_ID, row.id, await payload(row))).rejects.toThrow('paused');
-  expect(settles).toBe(before);
-  vi.stubEnv('VERCEL', '');
+  try {
+    await expect(approveService(OWNER_ID, row.id, payer.toSuiAddress())).rejects.toMatchObject({
+      code: 'WALLET_SECURITY_REVIEW',
+    });
+    await expect(fulfillService(OWNER_ID, row.id, await payload(row))).rejects.toMatchObject({
+      code: 'WALLET_SECURITY_REVIEW',
+    });
+    expect(settles).toBe(before);
+  } finally {
+    vi.stubEnv('VERCEL', '');
+  }
 });
 
 it('requires fresh unsigned terms on the local origin while preserving the existing intent', async () => {
@@ -600,4 +614,131 @@ it('keeps a wallet-attempt reservation and rejects cancellation even without a r
   });
   expect((await serviceExposure(OWNER_ID, spendingSession)).reservedAtomic).toBe('1000000');
   expect(settles).toBe(before);
+});
+
+async function memberCheckout() {
+  const id = randomUUID(),
+    key = Ed25519Keypair.generate();
+  await (await db()).insert(schema.users).values({
+    id,
+    role: 'member',
+    walletAddress: key.toSuiAddress(),
+    name: 'Isolated checkout fixture',
+    settings: DEFAULT_PREFERENCES,
+  });
+  await seedDemo(id);
+  const invoice = (await listInvoices(id)).find((i) => i.number === 'NS-1048')!;
+  const fresh = () => quoteService(id, invoice.id, randomUUID());
+  return { id, key, invoice, fresh };
+}
+it('supports HTTPS customer quotes, exact wallet binding and a saved receipt without owner funds (mock settlement)', async () => {
+  vi.stubEnv('APP_URL', 'https://payguard.example');
+  vi.stubEnv('ENABLE_AGENT_PAYMENTS', 'mainnet');
+  vi.stubEnv('SERVICE_PAYMENT_SETTLEMENT_ENABLED', 'false');
+  try {
+    const member = await memberCheckout(),
+      session = randomUUID(),
+      row = await member.fresh();
+    expect((row.challenge as ServiceChallenge).accepts[0].extra.authenticatedPayer).toBe(
+      member.key.toSuiAddress(),
+    );
+    expect(mock.preflight).toHaveBeenLastCalledWith(
+      'sui:mainnet',
+      expect.objectContaining({ payer: member.key.toSuiAddress() }),
+      { allowPartial: true },
+    );
+    const proof = await payload(row, member.key);
+    await expect(
+      approveCore(member.id, row.id, payer.toSuiAddress(), session, proof.payload.transaction),
+    ).rejects.toMatchObject({ code: 'PAYER_ALLOWLIST' });
+    await approveCore(
+      member.id,
+      row.id,
+      member.key.toSuiAddress(),
+      session,
+      proof.payload.transaction,
+    );
+    const before = settles;
+    const first = await fulfillCore(member.id, row.id, proof, session);
+    expect(first.state).toBe('settled');
+    const again = await fulfillCore(member.id, row.id, undefined, randomUUID());
+    expect(again.receipt?.id).toBe(first.receipt?.id);
+    expect(settles).toBe(before + 1);
+    await expect(ownedService(OWNER_ID, row.id)).rejects.toMatchObject({ code: 'NOT_FOUND' });
+    expect((await serviceExposure(member.id, randomUUID())).reservedAtomic).toBe('1000000');
+  } finally {
+    vi.stubEnv('APP_URL', 'http://localhost:3000');
+    vi.stubEnv('ENABLE_AGENT_PAYMENTS', 'testnet');
+    vi.stubEnv('SERVICE_PAYMENT_SETTLEMENT_ENABLED', 'true');
+  }
+});
+it('counts customer reservations across sessions and releases only explicitly cancelled unsigned terms', async () => {
+  const member = await memberCheckout(),
+    rows = await Promise.all([1, 2, 3, 4].map(() => member.fresh()));
+  const initial = await publicServiceExposure();
+  for (const row of rows.slice(0, 3))
+    await approveCore(
+      member.id,
+      row.id,
+      member.key.toSuiAddress(),
+      randomUUID(),
+      (await payload(row, member.key)).payload.transaction,
+    );
+  expect((await serviceExposure(member.id, randomUUID())).reservedAtomic).toBe('3000000');
+  await expect(member.fresh()).rejects.toMatchObject({ code: 'WALLET_CAP' });
+  await expect(
+    approveCore(
+      member.id,
+      rows[3].id,
+      member.key.toSuiAddress(),
+      randomUUID(),
+      (await payload(rows[3], member.key)).payload.transaction,
+    ),
+  ).rejects.toMatchObject({ code: 'SESSION_CAP' });
+  expect(
+    BigInt((await publicServiceExposure()).reservedAtomic) - BigInt(initial.reservedAtomic),
+  ).toBe(3000000n);
+  await cancelService(member.id, rows[0].id);
+  expect((await serviceExposure(member.id, randomUUID())).reservedAtomic).toBe('2000000');
+  expect(
+    BigInt((await publicServiceExposure()).reservedAtomic) - BigInt(initial.reservedAtomic),
+  ).toBe(2000000n);
+});
+it('fails closed when the customer pilot is paused while existing owned receipts remain readable', async () => {
+  const member = await memberCheckout();
+  vi.stubEnv('PUBLIC_SERVICE_PAYMENTS_ENABLED', 'false');
+  try {
+    await expect(member.fresh()).rejects.toMatchObject({ code: 'PUBLIC_CHECKOUT_PAUSED' });
+  } finally {
+    vi.stubEnv('PUBLIC_SERVICE_PAYMENTS_ENABLED', '');
+  }
+});
+it('serializes the global public sponsor cap across different customers (no live funds)', async () => {
+  const a = await memberCheckout(),
+    b = await memberCheckout(),
+    rows = await Promise.all([a.fresh(), b.fresh()]);
+  await (
+    await db()
+  )
+    .update(schema.serviceSpendingSessions)
+    .set({ reservedAtomic: '19000000' })
+    .where(eq(schema.serviceSpendingSessions.payer, 'public-sponsored-pilot-ledger'));
+  const attempts = await Promise.allSettled(
+    [a, b].map(async (member, i) =>
+      approveCore(
+        member.id,
+        rows[i].id,
+        member.key.toSuiAddress(),
+        randomUUID(),
+        (await payload(rows[i], member.key)).payload.transaction,
+      ),
+    ),
+  );
+  expect(attempts.filter((r) => r.status === 'fulfilled')).toHaveLength(1);
+  expect(
+    attempts
+      .filter((r) => r.status === 'rejected')
+      .map((r) => (r as PromiseRejectedResult).reason.code),
+  ).toEqual(['SPONSOR_CAP']);
+  expect((await publicServiceExposure()).reservedAtomic).toBe('20000000');
 });

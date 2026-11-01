@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-10-28T23:01:55.911Z",
+  "capturedAt": "2026-11-01T12:54:13.186Z",
   "source": "Actual authenticated Walrus semantic recall; recorded public replay, not a live guest query",
   "syntheticBusinessData": true,
   "vendorMapping": "Synthetic Neon vendor mapped to bundled Northstar fixture for deterministic replay",
@@ -143,7 +143,7 @@
   ],
   "off": {
     "level": "Needs review",
-    "score": 45,
+    "score": 60,
     "findings": [
       {
         "id": "trusted-recipient-change",
@@ -155,7 +155,7 @@
       {
         "id": "near-duplicate",
         "title": "Possible duplicate billing",
-        "evidence": "Same amount, currency and recipient within three days of NS-cross-session-1793196392827. This is a possible match.",
+        "evidence": "Same amount, currency and recipient within three days of QA-verification-1793256391678. This is a possible match.",
         "severity": "warning",
         "action": "Compare service periods and invoice line items."
       },
@@ -167,11 +167,11 @@
         "action": "Verify payout details through an independent, established channel."
       },
       {
-        "id": "due-soon",
-        "title": "Payment due soon",
-        "evidence": "Due in 3 day(s).",
-        "severity": "info",
-        "action": "Schedule a review before the due date."
+        "id": "overdue",
+        "title": "Invoice is overdue",
+        "evidence": "1 day(s) past the due date. Urgency does not establish legitimacy.",
+        "severity": "warning",
+        "action": "Confirm the payment schedule; keep verification checks."
       }
     ],
     "citations": [],
@@ -192,7 +192,7 @@
       {
         "id": "near-duplicate",
         "title": "Possible duplicate billing",
-        "evidence": "Same amount, currency and recipient within three days of NS-cross-session-1793196392827. This is a possible match.",
+        "evidence": "Same amount, currency and recipient within three days of QA-verification-1793256391678. This is a possible match.",
         "severity": "warning",
         "action": "Compare service periods and invoice line items."
       },
@@ -204,11 +204,11 @@
         "action": "Verify payout details through an independent, established channel."
       },
       {
-        "id": "due-soon",
-        "title": "Payment due soon",
-        "evidence": "Due in 3 day(s).",
-        "severity": "info",
-        "action": "Schedule a review before the due date."
+        "id": "overdue",
+        "title": "Invoice is overdue",
+        "evidence": "1 day(s) past the due date. Urgency does not establish legitimacy.",
+        "severity": "warning",
+        "action": "Confirm the payment schedule; keep verification checks."
       },
       {
         "id": "policy-6651bfb1-0b09-4ac4-b126-a55555ed3dd1",

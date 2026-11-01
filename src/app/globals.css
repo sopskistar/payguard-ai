@@ -4035,3 +4035,519 @@ tr:hover td {
   outline: 2px solid var(--mint);
   outline-offset: 3px;
 }
+
+/* Memory Courtroom: original components, sharing the established PayGuard identity. */
+.courtroom-page main {
+  max-width: 1180px;
+  margin: auto;
+  padding: 52px 28px 64px;
+}
+.courtroom-page h1 {
+  font-size: clamp(2.5rem, 5.5vw, 4.8rem);
+  line-height: 1.04;
+  letter-spacing: -0.055em;
+  margin: 20px 0;
+}
+.courtroom-page h1 em {
+  font-style: normal;
+  color: #56e8c1;
+}
+.courtroom-page p {
+  line-height: 1.7;
+  color: #a6bdc9;
+}
+.courtroom-hero {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 48px;
+  align-items: center;
+  margin-bottom: 38px;
+}
+.courtroom-case-file,
+.courtroom-console,
+.courtroom-invoice,
+.courtroom-learning,
+.courtroom-review,
+.payment-evidence-grid article {
+  border: 1px solid #24404d;
+  background: #0c1d29;
+  border-radius: 18px;
+  padding: 25px;
+  min-width: 0;
+}
+.courtroom-case-file p {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.courtroom-case-file svg {
+  flex: none;
+  color: #55e7be;
+  margin-top: 4px;
+}
+.courtroom-facts {
+  display: flex;
+  gap: 25px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+.courtroom-facts span {
+  display: grid;
+  gap: 5px;
+  color: #9bb3c1;
+  font-size: 12px;
+}
+.courtroom-facts strong {
+  font-size: 30px;
+  color: #e6f8f4;
+  letter-spacing: -0.04em;
+}
+.courtroom-console {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  align-items: end;
+}
+.courtroom-console label {
+  flex: 1 1 330px;
+  color: #c5dce6;
+  display: grid;
+  gap: 10px;
+}
+.courtroom-console select {
+  max-width: 100%;
+  width: 100%;
+  background: #071721;
+  border: 1px solid #365463;
+  color: #edf9f8;
+  border-radius: 9px;
+  padding: 12px;
+  font-size: 14px;
+}
+.courtroom-playback {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.courtroom-steps {
+  flex-basis: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  list-style: none;
+  padding: 0;
+  gap: 8px;
+  margin: 10px 0 0;
+}
+.courtroom-steps button {
+  border: 1px solid #25424f;
+  border-radius: 10px;
+  background: #091824;
+  color: #abc0cc;
+  min-height: 84px;
+  width: 100%;
+  padding: 12px;
+  text-align: left;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.courtroom-steps span {
+  display: block;
+  color: #62d9df;
+  font-size: 11px;
+  margin-bottom: 8px;
+}
+.courtroom-steps [aria-current='step'] {
+  border-color: #51e6bd;
+  background: #10332f;
+  color: #e1fff5;
+}
+.courtroom-invoice {
+  margin: 26px 0;
+  border-left: 3px solid #dba95a;
+}
+.courtroom-invoice h2 {
+  margin: 12px 0;
+}
+.courtroom-invoice blockquote {
+  margin: 20px 0;
+  padding: 16px;
+  background: #08151e;
+  border-radius: 8px;
+  color: #e3d8bc;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.courtroom-view {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 24px 0 14px;
+}
+.courtroom-view [aria-pressed='true'] {
+  border-color: #56e8c1;
+  color: #56e8c1;
+}
+.courtroom-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+.courtroom-comparison.single {
+  grid-template-columns: 1fr;
+  max-width: 800px;
+  margin: auto;
+}
+.courtroom-review.on {
+  border-top: 3px solid #55e7be;
+}
+.courtroom-review.off {
+  border-top: 3px solid #8299b7;
+}
+.courtroom-review header h2 {
+  font-size: 30px;
+  margin: 10px 0;
+}
+.courtroom-review ul {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.courtroom-review li {
+  padding: 18px;
+  border: 1px solid #203d4a;
+  border-radius: 11px;
+  background: #0a1924;
+}
+.courtroom-review li.learned {
+  border-color: #32675b;
+  background: #0c2828;
+}
+.courtroom-review h3 {
+  font-size: 15px;
+  margin: 10px 0;
+}
+.courtroom-review p {
+  font-size: 13px;
+}
+.courtroom-provenance {
+  color: #7cccd1;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.courtroom-review code,
+.courtroom-learning code,
+.payment-evidence code,
+.evidence-digest {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.courtroom-hold {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: #edc990 !important;
+  border: 1px solid #655135;
+  padding: 12px;
+  border-radius: 8px;
+  background: #282318;
+}
+.courtroom-citation {
+  border-top: 1px solid #294653;
+  margin-top: 15px;
+  padding-top: 10px;
+}
+.courtroom-citation dt {
+  color: #8baab8;
+  font-size: 11px;
+  margin-top: 12px;
+}
+.courtroom-citation dd {
+  margin: 7px 0;
+  font-size: 12px;
+  color: #c2dce3;
+}
+.courtroom-page summary {
+  cursor: pointer;
+  color: #b7dfda;
+  line-height: 1.6;
+}
+.courtroom-verdict {
+  display: flex;
+  gap: 20px;
+  padding: 30px 0;
+  align-items: flex-start;
+}
+.courtroom-verdict > svg {
+  flex: none;
+  color: #56e8c1;
+  margin-top: 5px;
+}
+.courtroom-verdict h2 {
+  font-size: 23px;
+  line-height: 1.3;
+  margin: 0;
+}
+.courtroom-learning ol {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin: 28px 0;
+}
+.courtroom-learning li {
+  border-top: 2px solid #4fae9d;
+  padding-top: 15px;
+  font-size: 12px;
+}
+.courtroom-learning time {
+  display: block;
+  font-size: 10px;
+  color: #96b4c1;
+  margin-top: 12px;
+  overflow-wrap: anywhere;
+}
+.payment-evidence {
+  margin: 45px 0;
+}
+.evidence-section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.evidence-section-heading h2 {
+  font-size: clamp(23px, 3vw, 34px);
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+.evidence-section-heading > strong {
+  color: #57e8c0;
+  font-size: 16px;
+}
+.payment-evidence > p {
+  font-size: 13px;
+  line-height: 1.7;
+  color: #a6bdc9;
+}
+.payment-evidence-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+  margin: 20px 0;
+}
+.payment-evidence-grid article {
+  padding: 20px;
+  border-top: 2px solid #5ccfb8;
+}
+.payment-evidence-grid h3 {
+  font-size: 15px;
+  overflow-wrap: anywhere;
+  margin: 14px 0;
+}
+.evidence-credit {
+  font-size: 28px !important;
+  color: #e4fff5 !important;
+  letter-spacing: -0.03em;
+}
+.evidence-credit span {
+  display: block;
+  font-size: 11px;
+  color: #84b9ad;
+  letter-spacing: 0;
+}
+.payment-evidence-grid p {
+  font-size: 12px;
+  line-height: 1.7;
+  color: #aec4ce;
+}
+.evidence-digest {
+  display: block;
+  font-size: 11px;
+  line-height: 1.7;
+}
+.payment-evidence-grid .detail-list {
+  font-size: 11px;
+}
+.payment-evidence-flow {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 25px;
+}
+.payment-evidence-flow li {
+  color: #9dd5ce;
+  font-size: 11px;
+  border: 1px solid #2d514f;
+  padding: 8px 12px;
+  border-radius: 25px;
+}
+.payment-evidence > details {
+  border-block: 1px solid #2b444f;
+  padding: 16px 0;
+  margin: 20px 0;
+}
+.courtroom-footer {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding-top: 25px;
+  border-top: 1px solid #25404d;
+}
+.courtroom-page button:focus-visible,
+.courtroom-page a:focus-visible,
+.courtroom-page select:focus-visible {
+  outline: 3px solid #7beae2;
+  outline-offset: 4px;
+}
+@media (max-width: 800px) {
+  .courtroom-hero {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .courtroom-comparison {
+    grid-template-columns: 1fr;
+  }
+  .payment-evidence-grid {
+    grid-template-columns: 1fr;
+  }
+  .courtroom-learning ol {
+    grid-template-columns: 1fr;
+  }
+  .courtroom-learning li {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .courtroom-steps {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .courtroom-page main {
+    padding: 32px 20px 45px;
+  }
+  .courtroom-page .site-nav nav {
+    gap: 10px;
+    font-size: 11px;
+    flex-wrap: wrap;
+  }
+  .courtroom-console,
+  .courtroom-invoice,
+  .courtroom-learning,
+  .courtroom-review {
+    padding: 19px;
+  }
+  .courtroom-view .button,
+  .courtroom-playback .button {
+    font-size: 12px;
+    padding: 10px 12px;
+  }
+  .courtroom-page .site-nav {
+    padding-inline: 18px;
+  }
+  .courtroom-case-file {
+    padding: 20px;
+  }
+  .courtroom-verdict {
+    gap: 12px;
+  }
+  .courtroom-verdict h2 {
+    font-size: 20px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .courtroom-page * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+.site-home > .payment-evidence,
+.site-home main > .payment-evidence {
+  max-width: 1180px;
+  padding: 40px 28px;
+  margin: auto;
+}
+.work-courtroom-card {
+  grid-column: 1/-1;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 12px 28px;
+  border-color: #2d6c62 !important;
+  background: linear-gradient(120deg, #0b2529, #0a1925) !important;
+}
+.work-courtroom-card .eyebrow,
+.work-courtroom-card h2,
+.work-courtroom-card p {
+  grid-column: 1;
+}
+.work-courtroom-card .button {
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: end;
+  align-self: start;
+}
+.work-courtroom-card .inline-link {
+  grid-column: 2;
+  grid-row: 3;
+  justify-self: end;
+}
+.journey-header > div {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.site-hero-actions {
+  flex-wrap: wrap;
+}
+.service-payment-page .judge-header {
+  flex-wrap: wrap;
+}
+@media (max-width: 650px) {
+  .work-courtroom-card {
+    grid-template-columns: 1fr;
+  }
+  .work-courtroom-card .button,
+  .work-courtroom-card .inline-link {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
+  }
+  .courtroom-page .site-nav {
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  .site-home main > .payment-evidence {
+    padding: 28px 20px;
+  }
+}
+.courtroom-comparison[data-stage='1'] .off {
+  box-shadow: 0 0 0 2px #8299b7;
+}
+.courtroom-comparison[data-stage='2'] .on,
+.courtroom-comparison[data-stage='3'] .on {
+  box-shadow: 0 0 0 2px #55e7be;
+}
+.courtroom-comparison[data-stage='4'] .courtroom-hold {
+  border-color: #edc990;
+}
+.evidence-digest {
+  font-size: 13px;
+}
+.courtroom-page .site-nav nav {
+  display: flex;
+}
+.courtroom-review ul {
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+}
+.courtroom-review li {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}

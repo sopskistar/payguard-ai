@@ -1,5 +1,7 @@
 # Experiment 2 recovery — November 1, 2026
 
+**Current outcome:** Experiment 2 and Experiment 3 subsequently settled using separate fresh intents and owner-controlled Slush signatures. There are now three reconciled receipts and three delivered reports. The original `d7b6a9ab` intent remains cancelled and was never reused. [Final payment ledger](PAYMENT_EXPERIMENTS.md) · [verified effects and report bindings](evidence/mainnet-service-reconciliation.json). The investigation below is historical and does not describe an outstanding payment blocker.
+
 **Later November 1 correction:** the owner reproduced database connection errors after this release. Fresh-process probes confirmed intermittent local TCP/WebSocket/HTTPS establishment failures, including unreachable IPv6 and IPv4 attempt timeouts. The request-scoped pool change below was not a complete transport fix. [New focused recovery, evidence and owner controls](NEON_CONNECTION_RECOVERY.md).
 
 The expired, unsigned Experiment 2 quote was cancelled once after checking the exact Neon row and the authenticated localhost resume response. No new quote, approval, wallet signature or payment was requested. Experiment 1 remains the only settled purchase. [Recovery evidence](evidence/experiment-02-recovery.json).

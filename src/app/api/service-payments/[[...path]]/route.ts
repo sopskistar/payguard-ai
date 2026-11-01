@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { requireOwner, currentActor, checkOrigin, rateLimit } from '@/lib/auth';
+import { requireWorkspace, checkOrigin, rateLimit } from '@/lib/auth';
 import { AppError } from '@/lib/errors';
 import { withDatabaseRequest } from '@/db';
 import { requestFailure } from '@/lib/request-diagnostics';
@@ -27,21 +27,35 @@ import {
   serviceProgress,
   recordServiceWalletEvent,
   serviceExposure,
+  publicServiceExposure,
+  publicServiceEnabled,
 } from '@/lib/service-payments';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 async function handle(req: NextRequest, { params }: { params: Promise<{ path?: string[] }> }) {
-  let stage = 'owner-authentication';
+  let stage = 'workspace-authentication';
   try {
     if (req.method !== 'GET') checkOrigin(req);
-    const tenantId = await requireOwner();
-    const actor = await currentActor();
+    const actor = await requireWorkspace();
+    const tenantId = actor.tenantId;
+    if (actor.role === 'member' && !actor.walletAddress)
+      throw new AppError(
+        403,
+        'WALLET_AUTH_REQUIRED',
+        'A verified wallet account is required for customer checkout.',
+      );
     if (req.method !== 'GET') await rateLimit(tenantId + ':service-payments', 30);
     const path = (await params).path || [];
     stage = req.method === 'GET' ? 'payment-status' : !path.length ? 'quote' : 'payment-request';
     if (path.length > 2) throw new AppError(404, 'NOT_FOUND', 'Unknown service action');
     if (req.method === 'GET' && path.length === 1 && ['setup', 'setup-check'].includes(path[0])) {
+      if (actor.role !== 'owner')
+        throw new AppError(
+          403,
+          'OWNER_REQUIRED',
+          'Administrator integration settings are private. Use your wallet checkout compatibility check.',
+        );
       await rateLimit(tenantId + ':service-setup', 15);
       return NextResponse.json(await serviceSetup(path[0] === 'setup-check'), {
         headers: { 'Cache-Control': 'private, no-store' },
@@ -49,9 +63,15 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
     }
     if (req.method === 'GET' && path.length === 1 && path[0] === 'preflight') {
       await rateLimit(tenantId + ':service-preflight', 15);
-      return NextResponse.json(await servicePreflight(), {
-        headers: { 'Cache-Control': 'private, no-store' },
-      });
+      if (actor.role !== 'owner') await rateLimit('service:public-provider-reads', 200);
+      return NextResponse.json(
+        await servicePreflight({
+          payer: actor.role === 'member' ? actor.walletAddress || undefined : undefined,
+        }),
+        {
+          headers: { 'Cache-Control': 'private, no-store' },
+        },
+      );
     }
     if (req.method === 'GET' && path.length)
       throw new AppError(
@@ -62,19 +82,24 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
     if (req.method === 'GET' && !path.length)
       return NextResponse.json(
         {
-          configured: serviceReady(),
+          configured: serviceReady() && (actor.role === 'owner' || publicServiceEnabled()),
           network: serviceMode(),
           mainnetImplemented: true,
-          mainnetEnabled: serviceMode() === 'sui:mainnet' && serviceSettlementEnabled(),
-          signingAllowed: serviceSettlementEnabled(),
+          mainnetEnabled: serviceMode() === 'sui:mainnet' && serviceSettlementEnabled(tenantId),
+          signingAllowed: serviceSettlementEnabled(tenantId),
+          audience: actor.role === 'member' ? 'customer' : 'owner',
+          publicPilot: await publicServiceExposure(),
           capabilities: walletOperationPolicy(),
-          preparationAllowed: servicePreparationAllowed(),
+          preparationAllowed: servicePreparationAllowed(tenantId),
           securityCleared: serviceWalletSigningAllowed(),
           sessionCapAtomic: SERVICE_SESSION_CAP,
           exposure: await serviceExposure(tenantId, actor?.sessionKey),
-          dedicatedPayer: serviceAddressSchema.safeParse(process.env.SERVICE_PAYMENT_PAYER).success
-            ? process.env.SERVICE_PAYMENT_PAYER
-            : null,
+          dedicatedPayer:
+            actor.role === 'member'
+              ? actor.walletAddress
+              : serviceAddressSchema.safeParse(process.env.SERVICE_PAYMENT_PAYER).success
+                ? process.env.SERVICE_PAYMENT_PAYER
+                : null,
           intents: await listServiceIntents(tenantId),
         },
         { headers: { 'Cache-Control': 'private, no-store' } },
@@ -95,6 +120,10 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
       }
     const data = size ? JSON.parse(Buffer.concat(chunks).toString()) : {};
     if (!path.length) {
+      if (actor.role !== 'owner') {
+        await rateLimit('service:public-quotes', 100);
+        await rateLimit(tenantId + ':public-quotes', 8);
+      }
       const input = z
         .object({ invoiceId: z.string().uuid(), operationKey: z.string().uuid() })
         .parse(data);

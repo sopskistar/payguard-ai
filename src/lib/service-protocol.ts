@@ -46,6 +46,7 @@ export const serviceTermsSchema = z
       gasBudget: z.literal('2000000'),
       quoteId: z.string().uuid(),
       instructionHash: z.string().regex(/^[a-f0-9]{64}$/),
+      authenticatedPayer: serviceAddressSchema.optional(),
     }),
   })
   .refine((t) => t.payTo !== t.extra.gasOwner, 'Merchant must differ from gas sponsor');
@@ -171,6 +172,11 @@ export function buildServiceTransaction(
 }
 // This local allowlist is stricter than the facilitator: one destination, no arbitrary app calls.
 export function validateServiceTransaction(bytes: string, terms: ServiceTerms, payer: string) {
+  if (
+    terms.extra.authenticatedPayer &&
+    terms.extra.authenticatedPayer !== normalizeSuiAddress(payer)
+  )
+    throw new Error('Transaction payer differs from the authenticated quote');
   const d = Transaction.from(fromBase64(bytes)).getData();
   if (
     d.sender !== normalizeSuiAddress(payer) ||

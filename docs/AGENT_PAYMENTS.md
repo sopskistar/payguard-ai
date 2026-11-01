@@ -1,3 +1,15 @@
+# Current final-release payment access
+
+Three owner-controlled Mainnet service purchases have settled and their saved reports reopen without another charge. [Actual transaction ledger](PAYMENT_EXPERIMENTS.md) · [current product release](PRODUCT_RELEASE.md).
+
+Normal wallet members use /connect and /services without OWNER_PASSWORD. Their verified wallet is the payer; the configured merchant remains the recipient. Public checkout permits configured HTTPS origins, retains provider warnings, requires usable address-balance SUI, and has a 20-purchase global pilot plus 0.003 SUI per-wallet persistent exposure cap. Ordinary coin fallback and physical hosted-provider acceptance remain unverified. Public evaluation is free.
+
+The private local launcher remains available for administrator-controlled experiments with the existing dedicated accounts. SERVICE_PAYMENT_SETTLEMENT_ENABLED controls that owner flow; PUBLIC_SERVICE_PAYMENTS_ENABLED=false separately pauses new customer checkout. No additional payment, funding or conversion was made for this release.
+
+The material below is historical implementation/configuration detail; prior blanket hosted denials and zero/one-payment status statements are superseded.
+
+---
+
 # Verified service purchase — October 31 continuation
 
 One actual first-party x402 Sui Mainnet purchase is now reconciled. [Exact digest, quote, merchant credit, sponsor gas, approved-byte equality, audit and delivered report](FINAL_MAINNET_RELEASE.md). The original receipt reopens without resettling. Two further synthetic experiments await distinct owner approval and wallet signatures. The 0.003 SUI session cap includes unsettled reservations; the UI now shows its persisted exposure. Public message login and financial signing remain separate. Earlier zero-receipt and blanket Slush-login statements below are historical.

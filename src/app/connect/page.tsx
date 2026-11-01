@@ -44,9 +44,11 @@ export default async function ConnectPage({
                 <p>
                   <strong>Free registration · no email, password or funds.</strong> Choose a wallet,
                   prepare the sign-in message, then sign it to create or reopen your private
-                  workspace. Slush worked for an owner-reported localhost purchase; production
+                  workspace. Slush worked for three owner-reported localhost purchases; production
                   compatibility still needs a physical-wallet retest. Stop if any wallet warns or
-                  refuses. Production financial signing remains paused.{' '}
+                  refuses. Optional Mainnet analysis uses your own authenticated wallet, exact terms
+                  and a separate transaction signature. Current checkout needs address-balance SUI;
+                  physical production provider acceptance remains unverified.{' '}
                   <Link className="inline-link" href="/connect?mode=review">
                     Slush warning and review instructions
                   </Link>
@@ -64,8 +66,8 @@ export default async function ConnectPage({
               <p>
                 Slush Support directs domain reviews through its own warning screen. This public
                 page opens the official wallet selector so you can reach that review action. Slush
-                production financial signing remains paused. Ordinary personal-message login is
-                available on the separate account sign-in page when the wallet permits it.
+                provider warnings remain authoritative. Ordinary personal-message login is available
+                on the separate account sign-in page when the wallet permits it.
               </p>
               <ol>
                 <li>

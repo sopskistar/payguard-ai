@@ -3,6 +3,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { and, eq, desc } from 'drizzle-orm';
 import { Transaction } from '@mysten/sui/transactions';
 import { db } from '@/db';
+import { OWNER_ID } from './demo';
 import * as s from '@/db/schema';
 import { ownedInvoice, audit } from './store';
 import { trustContext } from './verify-store';
@@ -45,30 +46,77 @@ export const serviceReady = () => {
     (serviceMode() !== 'sui:mainnet' || config.partiesValid)
   );
 };
-export const serviceSettlementEnabled = () =>
+export const PUBLIC_SERVICE_CAP = '20000000'; // Limited pilot: at most 20 reserved/settled purchases.
+export const publicServiceEnabled = () => process.env.PUBLIC_SERVICE_PAYMENTS_ENABLED !== 'false';
+export const serviceSettlementEnabled = (tenantId = OWNER_ID) =>
   serviceReady() &&
-  process.env.SERVICE_PAYMENT_SETTLEMENT_ENABLED === 'true' &&
+  (tenantId === OWNER_ID
+    ? process.env.SERVICE_PAYMENT_SETTLEMENT_ENABLED === 'true'
+    : publicServiceEnabled()) &&
   serviceWalletSigningAllowed();
-export const servicePreparationAllowed = () => serviceReady() && serviceWalletSigningAllowed();
-function requireNewSpend() {
+export const servicePreparationAllowed = (tenantId = OWNER_ID) =>
+  serviceReady() &&
+  serviceWalletSigningAllowed() &&
+  (tenantId === OWNER_ID || publicServiceEnabled());
+function requireNewSpend(tenantId: string) {
   if (!serviceWalletSigningAllowed())
     throw new AppError(503, 'WALLET_SECURITY_REVIEW', WALLET_REVIEW_MESSAGE);
-  if (!serviceSettlementEnabled())
+  if (!serviceSettlementEnabled(tenantId))
     throw new AppError(
       503,
       'SPENDING_DISABLED',
-      'Settlement is disabled. Prepare and approve exact terms before enabling SERVICE_PAYMENT_SETTLEMENT_ENABLED.',
+      'New settlement is paused by server configuration. You can inspect saved payments without signing or submitting again.',
     );
 }
 function budgetId(tenantId: string, sessionKey: string | undefined, network: string) {
   if (!sessionKey || sessionKey.length < 32)
     throw new AppError(403, 'SPENDING_SESSION', 'An authenticated spending session is required.');
+  if (tenantId !== OWNER_ID) return walletBudgetId(tenantId, network);
   return createHash('sha256')
     .update(tenantId + ':' + sessionKey + ':' + network)
     .digest('hex');
 }
+const walletBudgetId = (tenantId: string, network: string) =>
+  createHash('sha256')
+    .update(tenantId + ':authenticated-wallet-pilot-v1:' + network)
+    .digest('hex');
+async function checkoutPayer(tenantId: string) {
+  if (tenantId === OWNER_ID) return process.env.SERVICE_PAYMENT_PAYER;
+  const [user] = await (
+    await db()
+  )
+    .select({ wallet: s.users.walletAddress, role: s.users.role })
+    .from(s.users)
+    .where(eq(s.users.id, tenantId));
+  if (!user?.wallet || user.role !== 'member')
+    throw new AppError(
+      403,
+      'WALLET_AUTH_REQUIRED',
+      'Authenticate your own Sui wallet before purchasing analysis.',
+    );
+  return serviceAddressSchema.parse(user.wallet);
+}
+const pilotBudgetId = () =>
+  createHash('sha256')
+    .update('payguard:public-sponsored-pilot:v1:' + serviceMode())
+    .digest('hex');
+export async function publicServiceExposure() {
+  const [row] = await (
+    await db()
+  )
+    .select({ reservedAtomic: s.serviceSpendingSessions.reservedAtomic })
+    .from(s.serviceSpendingSessions)
+    .where(eq(s.serviceSpendingSessions.id, pilotBudgetId()));
+  return {
+    reservedAtomic: row?.reservedAtomic || '0',
+    capAtomic: PUBLIC_SERVICE_CAP,
+    purchases: 20,
+    walletCapAtomic: SERVICE_SESSION_CAP,
+  };
+}
 export async function serviceExposure(tenantId: string, sessionKey?: string) {
-  if (!sessionKey) return { reservedAtomic: '0', capAtomic: SERVICE_SESSION_CAP };
+  if (!sessionKey && tenantId === OWNER_ID)
+    return { reservedAtomic: '0', capAtomic: SERVICE_SESSION_CAP };
   const [row] = await (
     await db()
   )
@@ -77,7 +125,12 @@ export async function serviceExposure(tenantId: string, sessionKey?: string) {
     .where(
       and(
         eq(s.serviceSpendingSessions.tenantId, tenantId),
-        eq(s.serviceSpendingSessions.id, budgetId(tenantId, sessionKey, serviceMode())),
+        eq(
+          s.serviceSpendingSessions.id,
+          tenantId === OWNER_ID
+            ? budgetId(tenantId, sessionKey, serviceMode())
+            : walletBudgetId(tenantId, serviceMode()),
+        ),
       ),
     );
   return { reservedAtomic: row?.reservedAtomic || '0', capAtomic: SERVICE_SESSION_CAP };
@@ -116,7 +169,7 @@ const serverSecrets = () =>
 type PreparedService = { bytes: string; digest: string; preparedAt: string };
 const storedPreparation = (approval: unknown) =>
   (approval as { prepared?: PreparedService } | null)?.prepared;
-export async function servicePreflight(options: { allowPartial?: boolean } = {}) {
+export async function servicePreflight(options: { allowPartial?: boolean; payer?: string } = {}) {
   const network = serviceMode();
   const diagnostics: PaymentDiagnostic[] = [];
   const config = serviceConfiguration(process.env);
@@ -147,7 +200,7 @@ export async function servicePreflight(options: { allowPartial?: boolean } = {})
       return address.data;
     },
   );
-  const payer = serviceAddressSchema.safeParse(process.env.SERVICE_PAYMENT_PAYER);
+  const payer = serviceAddressSchema.safeParse(options.payer || process.env.SERVICE_PAYMENT_PAYER);
   const recipient = serviceAddressSchema.safeParse(process.env.SERVICE_PAYMENT_RECIPIENT);
   const chain = await serviceChainPreflight(
     network,
@@ -210,12 +263,19 @@ export async function servicePreflight(options: { allowPartial?: boolean } = {})
     amount: '0.001 SUI',
     sessionCapAtomic: SERVICE_SESSION_CAP,
     provider: 'PayGuard first-party consistency analysis',
-    independentThirdPartyPurchase: false,
+    supplierIdentityVerified: false,
     resourceOrigin: process.env.APP_URL ? new URL(process.env.APP_URL).origin : null,
     facilitator: FACILITATOR,
     sponsor,
     maxSponsorGasAtomic: '2000000',
     maxPayerGasAtomic: '0',
+    fundingCompatibility: {
+      mode: 'address-balance',
+      addressAtomic: chain.balances.payer?.addressAtomic ?? null,
+      coinAtomic: chain.balances.payer?.coinAtomic ?? null,
+      ordinaryCoinFallback:
+        'Not enabled: coinWithBalance can resolve coins in the SDK, but this release only validates the already-settled address-withdrawal template. Facilitator compatibility with the alternate template is unverified. No conversion is performed.',
+    },
     purpose:
       'Analyze contradictory invoice recipient mentions, embedded link domains and instruction-bypass language. Human supplier verification remains required.',
     expectedResult:
@@ -287,18 +347,22 @@ export async function serviceSetup(check = false) {
   }
 }
 export type ServiceSetup = Awaited<ReturnType<typeof serviceSetup>>;
-function configuredTerms(terms: import('./service-protocol').ServiceTerms, payer: string) {
+function configuredTerms(
+  terms: import('./service-protocol').ServiceTerms,
+  payer: string,
+  expectedPayer = process.env.SERVICE_PAYMENT_PAYER,
+) {
   if (terms.network !== serviceMode() || terms.payTo !== process.env.SERVICE_PAYMENT_RECIPIENT)
     throw new AppError(
       409,
       'CONFIG_CHANGED',
       'Network or merchant configuration changed. Review a fresh quote.',
     );
-  if (terms.network === 'sui:mainnet' && process.env.SERVICE_PAYMENT_PAYER !== payer)
+  if (terms.network === 'sui:mainnet' && expectedPayer !== payer)
     throw new AppError(
       403,
       'PAYER_ALLOWLIST',
-      'Mainnet approval requires the dedicated SERVICE_PAYMENT_PAYER.',
+      'Mainnet approval must use the server-bound authenticated payer.',
     );
 }
 export async function quoteService(tenantId: string, invoiceId: string, operationKey: string) {
@@ -334,6 +398,29 @@ export async function quoteService(tenantId: string, invoiceId: string, operatio
     return old;
   }
   const invoice = await ownedInvoice(tenantId, invoiceId);
+  const expectedPayer = await checkoutPayer(tenantId);
+  if (tenantId !== OWNER_ID && !publicServiceEnabled())
+    throw new AppError(
+      503,
+      'PUBLIC_CHECKOUT_PAUSED',
+      'The public sponsored pilot is paused. Saved receipts remain available.',
+    );
+  if (tenantId !== OWNER_ID) {
+    const pilot = await publicServiceExposure();
+    if (BigInt(pilot.reservedAtomic) >= BigInt(pilot.capAtomic))
+      throw new AppError(
+        409,
+        'SPONSOR_CAP',
+        'All public pilot sponsorship slots are reserved or used. The Courtroom remains free.',
+      );
+    const wallet = await serviceExposure(tenantId);
+    if (BigInt(wallet.reservedAtomic) >= BigInt(wallet.capAtomic))
+      throw new AppError(
+        409,
+        'WALLET_CAP',
+        'Your wallet’s 0.003 SUI pilot exposure is reserved or used, including previous sessions. Reopen a saved receipt or use the free Courtroom.',
+      );
+  }
   const context = await trustContext(tenantId, invoice);
   if (!context.signals.length)
     throw new AppError(
@@ -346,12 +433,12 @@ export async function quoteService(tenantId: string, invoiceId: string, operatio
     /0x[a-fA-F0-9]{64}|https?:\/\/|ignore.{0,80}(?:instructions|safety|rules)/i.test(text);
   const network = serviceMode();
   if (network === 'sui:mainnet') {
-    const readiness = await servicePreflight();
+    const readiness = await servicePreflight({ payer: expectedPayer });
     if (!readiness.configurationReady || !readiness.sufficientlyFunded)
       throw new AppError(
         409,
         'PAYMENT_NOT_READY',
-        'Mainnet quote requires distinct configured parties and independently checked sufficient address-balance SUI. Open Payment Setup. No signing or payment occurred.',
+        'This verified sponsored template needs 0.001 SUI in the authenticated payer’s address balance. Ordinary coin-object SUI is reported separately and is not automatically converted. No quote, signature or payment was created. Inspect compatibility before purchasing; the public demo remains free.',
       );
   }
   const supported = await facilitator('/supported');
@@ -378,6 +465,7 @@ export async function quoteService(tenantId: string, invoiceId: string, operatio
       gasBudget: '2000000',
       quoteId: id,
       instructionHash: context.instructionHash,
+      ...(tenantId !== OWNER_ID ? { authenticatedPayer: expectedPayer } : {}),
     },
   });
   if (kind?.extra?.gasBudget !== terms.extra.gasBudget)
@@ -442,12 +530,15 @@ export async function approveService(
   // No signed bytes, signature verification or facilitator calls occur during approval.
   if (!serviceWalletSigningAllowed())
     throw new AppError(503, 'WALLET_SECURITY_REVIEW', WALLET_REVIEW_MESSAGE);
-  if (!servicePreparationAllowed())
+  if (!servicePreparationAllowed(tenantId))
     throw new AppError(
       503,
       'SERVICE_DISABLED',
       'Quote configuration is incomplete. No payment was approved.',
     );
+  const expectedPayer = await checkoutPayer(tenantId);
+  if (tenantId !== OWNER_ID && !publicServiceEnabled())
+    throw new AppError(503, 'PUBLIC_CHECKOUT_PAUSED', 'Public checkout is paused.');
   const d = await db();
   return d.transaction(async (tx) => {
     const [row] = await tx
@@ -460,7 +551,7 @@ export async function approveService(
     if (!row) throw new AppError(404, 'NOT_FOUND', 'Service intent not found.');
     const challenge = row.challenge as ServiceChallenge;
     const terms = serviceTermsSchema.parse(challenge.accepts[0]);
-    configuredTerms(terms, payer);
+    configuredTerms(terms, payer, expectedPayer);
     if (new URL(challenge.resource.url).origin !== new URL(process.env.APP_URL!).origin)
       throw new AppError(
         409,
@@ -512,6 +603,34 @@ export async function approveService(
       );
     if (payer === terms.payTo || payer === terms.extra.gasOwner)
       throw new AppError(400, 'PAYER', 'Payer must differ from merchant and gas sponsor.');
+    if (tenantId !== OWNER_ID) {
+      await tx
+        .insert(s.serviceSpendingSessions)
+        .values({
+          id: pilotBudgetId(),
+          tenantId: OWNER_ID,
+          network: terms.network,
+          asset: terms.asset,
+          payer: 'public-sponsored-pilot-ledger',
+          capAtomic: PUBLIC_SERVICE_CAP,
+        })
+        .onConflictDoNothing();
+      const [pilot] = await tx
+        .select()
+        .from(s.serviceSpendingSessions)
+        .where(eq(s.serviceSpendingSessions.id, pilotBudgetId()))
+        .for('update');
+      if (!pilot || BigInt(pilot.reservedAtomic) + BigInt(terms.amount) > BigInt(pilot.capAtomic))
+        throw new AppError(
+          409,
+          'SPONSOR_CAP',
+          'The public pilot’s 20-purchase sponsorship capacity is reserved or used. Reopen an existing receipt or use the free Courtroom.',
+        );
+      await tx
+        .update(s.serviceSpendingSessions)
+        .set({ reservedAtomic: (BigInt(pilot.reservedAtomic) + BigInt(terms.amount)).toString() })
+        .where(eq(s.serviceSpendingSessions.id, pilot.id));
+    }
     await tx
       .insert(s.serviceSpendingSessions)
       .values({
@@ -625,12 +744,25 @@ export async function cancelService(tenantId: string, id: string) {
         'A wallet attempt is recorded. Reconcile the original prepared digest before releasing its reservation; do not request a replacement payment.',
       );
     if (row.state === 'approved' && row.spendingSessionId) {
+      const terms = serviceTermsSchema.parse((row.challenge as ServiceChallenge).accepts[0]);
+      if (tenantId !== OWNER_ID) {
+        const [pilot] = await tx
+          .select()
+          .from(s.serviceSpendingSessions)
+          .where(eq(s.serviceSpendingSessions.id, pilotBudgetId()))
+          .for('update');
+        if (!pilot || BigInt(pilot.reservedAtomic) < BigInt(terms.amount))
+          throw new AppError(409, 'BUDGET_STATE', 'Public reservation requires reconciliation.');
+        await tx
+          .update(s.serviceSpendingSessions)
+          .set({ reservedAtomic: (BigInt(pilot.reservedAtomic) - BigInt(terms.amount)).toString() })
+          .where(eq(s.serviceSpendingSessions.id, pilot.id));
+      }
       const [budget] = await tx
         .select()
         .from(s.serviceSpendingSessions)
         .where(eq(s.serviceSpendingSessions.id, row.spendingSessionId))
         .for('update');
-      const terms = serviceTermsSchema.parse((row.challenge as ServiceChallenge).accepts[0]);
       if (
         !budget ||
         budget.tenantId !== tenantId ||
@@ -705,8 +837,8 @@ export async function fulfillService(
         state: 'approved',
         message: 'Exact terms are approved; no signed payment has been submitted.',
       };
-    requireNewSpend();
-    configuredTerms(terms, row.payer!);
+    requireNewSpend(tenantId);
+    configuredTerms(terms, row.payer!, await checkoutPayer(tenantId));
     if (row.spendingSessionId !== budgetId(tenantId, sessionKey, terms.network) || !row.approval)
       throw new AppError(
         403,

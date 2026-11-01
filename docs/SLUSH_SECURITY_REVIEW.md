@@ -1,6 +1,6 @@
-# Current investigation — October 31 continuation
+# Current investigation — November 1 final release
 
-[Read the current technical report](SLUSH_LOCALHOST_INVESTIGATION.md). A real owner-controlled localhost Mainnet purchase is independently verified. The cause of the disappeared warning is inconclusive; current physical production Slush behavior is unverified. Public personal-message login now includes Slush when its provider permits the origin. No wallet warning is overridden. Production financial signing remains paused, independently of authentication. The dated restrictions and review instructions below are historical and do not describe the current login selector.
+[Read the current technical report](SLUSH_LOCALHOST_INVESTIGATION.md). Three owner-controlled localhost Mainnet purchases are independently reconciled. The cause of the disappeared warning remains inconclusive; current physical production Slush behavior is unverified. Public personal-message login includes Slush when its provider permits the origin. HTTPS financial signing is permitted by application origin policy; customer checkout binds its payer to the authenticated wallet under a bounded pilot. The owner's financial switch remains separate. No provider warning is overridden. Ordinary coin-object funding is not yet validated with the existing sponsored transaction template. The dated restrictions, zero-payment statements and advisory counts below are historical; [current tests and scans](TEST_RESULTS.md) supersede them.
 
 ---
 

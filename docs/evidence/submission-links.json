@@ -1,0 +1,36 @@
+{
+  "checkedAt": "2026-11-01T13:28:22.362Z",
+  "official": "https://recall-tatum-walrus.vercel.app/",
+  "submitted": false,
+  "page": "https://recall-tatum-walrus.vercel.app/",
+  "links": [
+    {
+      "text": "01Get your API keyCreate a free Tatum account. You need the dashboard account ID on the submission form.Sign up for an API key",
+      "url": "https://dashboard.tatum.io/"
+    },
+    {
+      "text": "01Open the Memory dashboardCreate a Walrus Memory agent. The public key under Delegate keys is the MEMWAL_AGENT_ID on the form.Open Memory dashboard",
+      "url": "https://memory.walrus.xyz/dashboard"
+    },
+    {
+      "text": "Walrus Discord",
+      "url": "https://discord.gg/walrusprotocol"
+    },
+    {
+      "text": "Join Discord",
+      "url": "https://discord.gg/hR6NG7sNXE"
+    },
+    {
+      "text": "Tatum Discord",
+      "url": "https://discord.gg/hR6NG7sNXE"
+    },
+    {
+      "text": "Walrus Discord",
+      "url": "https://discord.gg/walrusprotocol"
+    }
+  ],
+  "popups": [],
+  "dialogText": [
+    "Tatum x WalrusHackathon submissionStay on this page and fill the form below. Deadline 10 Nov, 17:00 UTC.×01ContactHow we reach youEmail *Discord handle *LinkedIn *Telegram ID OptionalHow did you hear about this event? *Select oneWalrus SocialsTatum SocialsAdsHackathon ListingsFriendsSearchOthersWhich community or account did you hear about us through? OptionalIs this your first Web3 project? *Select oneYesNo02AccountsTatum + Walrus Memory identityMEMWAL_AGENT_ID is the Public key under Delegate keys on memory.walrus.xyz/dashboard.Tatum ID *In My Account then My Account Info. dashboard.tatum.ioSUI address *Account ID (SUI) *You receive this after you created your first delegate key on memory.walrus.xyz/dashboard.MEMWAL_AGENT_ID *03ProjectWhat you shippedProject description *Short demo video (2 to 3 min) *GitHub repo *Additional documentation Optional04FeedbackHelps partners improveHow was your experience building with Walrus? *Docs, developer tools, bugs or limitations, and what could be improved.How was your experience building with the Tatum AI Builder? *Prompting, generated app quality, dashboard, and what could be improved. If you did not use AI Builder, say so briefly.One bug or friction point with Walrus Memory OptionalSocial post links Optional, extra pointsI am 18+ and agree to the Event Rules, the Tatum Terms of Use, the Walrus General Terms of Service, and the Walrus Privacy Policy. I understand prizes are not guaranteed, judging decisions are final, and I am responsible for any taxes if I win.Submit projectCancel"
+  ]
+}

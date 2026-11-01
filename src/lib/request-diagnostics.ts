@@ -85,11 +85,11 @@ export function requestFailure(error: unknown, stage: string) {
       message: error.message,
       action:
         category === 'authentication'
-          ? 'Use Owner administrator sign in, then reload this saved payment.'
+          ? 'Connect your Sui wallet or use your authorized administrator sign-in, then reload your own saved payment.'
           : category === 'expiry'
             ? 'Verify the existing intent. Cancel only a confirmed unsigned, unsubmitted quote before requesting fresh terms.'
             : category === 'exposure'
-              ? 'Review the 0.003 SUI session exposure and existing reservations. Do not discard an uncertain payment.'
+              ? 'Review the 0.003 SUI wallet/session exposure, public pilot capacity and existing reservations. Do not discard an uncertain payment.'
               : category === 'reservation'
                 ? 'Resume the original intent; do not create a replacement payment.'
                 : category === 'quota'
