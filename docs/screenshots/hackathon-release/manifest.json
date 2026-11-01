@@ -1,0 +1,252 @@
+{
+  "capturedAt": "2026-11-01T14:36:13.912Z",
+  "base": "https://payguard-ai-henna.vercel.app",
+  "release": {
+    "application": "PayGuard Verify",
+    "commit": "f51cb76f9813e47de052e3fa2bce88c6ba5946a7",
+    "recordedProofCount": 32,
+    "ownerProofCount": 30,
+    "proofExportedAt": "2026-11-01T12:49:41.554Z",
+    "modes": ["public-demo", "owner-admin", "wallet-member", "recorded-proof"]
+  },
+  "browser": "Chromium",
+  "zoom": "100%",
+  "deviceScaleFactor": 1,
+  "reducedMotion": true,
+  "publicPagesOnly": true,
+  "video": false,
+  "checks": [
+    {
+      "route": "/",
+      "width": 360,
+      "viewport": 360,
+      "content": 360,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    },
+    {
+      "route": "/",
+      "width": 390,
+      "viewport": 390,
+      "content": 390,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    },
+    {
+      "route": "/",
+      "width": 430,
+      "viewport": 430,
+      "content": 430,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    },
+    {
+      "route": "/courtroom",
+      "width": 360,
+      "viewport": 360,
+      "content": 360,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    },
+    {
+      "route": "/courtroom",
+      "width": 390,
+      "viewport": 390,
+      "content": 390,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    },
+    {
+      "route": "/courtroom",
+      "width": 430,
+      "viewport": 430,
+      "content": 430,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    },
+    {
+      "route": "/proof",
+      "width": 360,
+      "viewport": 360,
+      "content": 360,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    },
+    {
+      "route": "/proof",
+      "width": 390,
+      "viewport": 390,
+      "content": 390,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    },
+    {
+      "route": "/proof",
+      "width": 430,
+      "viewport": 430,
+      "content": 430,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    },
+    {
+      "route": "/connect",
+      "width": 360,
+      "viewport": 360,
+      "content": 360,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    },
+    {
+      "route": "/connect",
+      "width": 390,
+      "viewport": 390,
+      "content": 390,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    },
+    {
+      "route": "/connect",
+      "width": 430,
+      "viewport": 430,
+      "content": 430,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    },
+    {
+      "route": "/try",
+      "width": 360,
+      "viewport": 360,
+      "content": 360,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    },
+    {
+      "route": "/try",
+      "width": 390,
+      "viewport": 390,
+      "content": 390,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    },
+    {
+      "route": "/try",
+      "width": 430,
+      "viewport": 430,
+      "content": 430,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    }
+  ],
+  "screenshots": [
+    {
+      "route": "/",
+      "width": 1440,
+      "height": 1000,
+      "file": "docs/screenshots/hackathon-release/home-desktop-1440.png",
+      "capturedAt": "2026-11-01T14:36:17.485Z"
+    },
+    {
+      "route": "/",
+      "width": 390,
+      "height": 844,
+      "file": "docs/screenshots/hackathon-release/home-mobile-390.png",
+      "capturedAt": "2026-11-01T14:36:18.053Z"
+    },
+    {
+      "route": "/courtroom",
+      "width": 1440,
+      "height": 1000,
+      "file": "docs/screenshots/hackathon-release/courtroom-desktop-1440.png",
+      "capturedAt": "2026-11-01T14:36:20.850Z"
+    },
+    {
+      "route": "/courtroom",
+      "width": 360,
+      "height": 844,
+      "file": "docs/screenshots/hackathon-release/courtroom-mobile-360.png",
+      "capturedAt": "2026-11-01T14:36:21.289Z"
+    },
+    {
+      "route": "/courtroom",
+      "width": 390,
+      "height": 844,
+      "file": "docs/screenshots/hackathon-release/courtroom-mobile-390.png",
+      "capturedAt": "2026-11-01T14:36:22.296Z"
+    },
+    {
+      "route": "/courtroom",
+      "width": 430,
+      "height": 844,
+      "file": "docs/screenshots/hackathon-release/courtroom-mobile-430.png",
+      "capturedAt": "2026-11-01T14:36:22.835Z"
+    },
+    {
+      "route": "/proof",
+      "width": 1440,
+      "height": 1000,
+      "file": "docs/screenshots/hackathon-release/proof-desktop-1440.png",
+      "capturedAt": "2026-11-01T14:36:27.739Z"
+    },
+    {
+      "route": "/proof",
+      "width": 390,
+      "height": 844,
+      "file": "docs/screenshots/hackathon-release/proof-mobile-390.png",
+      "capturedAt": "2026-11-01T14:36:28.922Z"
+    },
+    {
+      "route": "/connect",
+      "width": 1440,
+      "height": 1000,
+      "file": "docs/screenshots/hackathon-release/connect-desktop-1440.png",
+      "capturedAt": "2026-11-01T14:36:32.176Z"
+    },
+    {
+      "route": "/connect",
+      "width": 390,
+      "height": 844,
+      "file": "docs/screenshots/hackathon-release/connect-mobile-390.png",
+      "capturedAt": "2026-11-01T14:36:32.550Z"
+    },
+    {
+      "route": "/try",
+      "width": 1440,
+      "height": 1000,
+      "file": "docs/screenshots/hackathon-release/judge-desktop-1440.png",
+      "capturedAt": "2026-11-01T14:36:34.383Z"
+    },
+    {
+      "route": "/try",
+      "width": 390,
+      "height": 844,
+      "file": "docs/screenshots/hackathon-release/judge-mobile-390.png",
+      "capturedAt": "2026-11-01T14:36:34.514Z"
+    }
+  ],
+  "consoleErrors": [],
+  "article": {
+    "url": "https://sopskistar.github.io/payguard-ai/",
+    "status": 200,
+    "updatedMarker": true,
+    "linksCourtroom": true,
+    "allThreeDigests": true
+  },
+  "staticJudgeStatus": 200,
+  "financialRequests": 0,
+  "ok": true
+}

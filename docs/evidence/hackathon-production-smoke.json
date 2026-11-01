@@ -1,0 +1,376 @@
+{
+  "checkedAt": "2026-11-01T14:36:10.800Z",
+  "base": "https://payguard-ai-henna.vercel.app",
+  "quoteRequested": false,
+  "transactionSignatureRequested": false,
+  "settlementSubmission": false,
+  "memoryWrite": false,
+  "physicalProviderTest": false,
+  "freeAuthenticationTestProfiles": 2,
+  "checks": [
+    {
+      "name": "release HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "exact deployed source SHA",
+      "passed": true
+    },
+    {
+      "name": "public route /",
+      "passed": true
+    },
+    {
+      "name": "public route /courtroom",
+      "passed": true
+    },
+    {
+      "name": "public route /try",
+      "passed": true
+    },
+    {
+      "name": "public route /proof",
+      "passed": true
+    },
+    {
+      "name": "public route /connect",
+      "passed": true
+    },
+    {
+      "name": "public route /services",
+      "passed": true
+    },
+    {
+      "name": "public route /app",
+      "passed": true
+    },
+    {
+      "name": "anonymous financial records protected",
+      "passed": true
+    },
+    {
+      "name": "auth/wallet/status HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "HTTPS wallet connection/authentication and financial origin permitted",
+      "passed": true
+    },
+    {
+      "name": "owner login",
+      "passed": true
+    },
+    {
+      "name": "secure owner session flags",
+      "passed": true
+    },
+    {
+      "name": "snapshot HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "Neon owner workspace and 30 isolated owner memories",
+      "passed": true
+    },
+    {
+      "name": "service-payments HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "production origin policy is separate from owner financial switch",
+      "passed": true
+    },
+    {
+      "name": "fresh production OFF/ON reviews",
+      "passed": true
+    },
+    {
+      "name": "production verification gate",
+      "passed": true
+    },
+    {
+      "name": "real production recall enriches review and preserves the hold",
+      "passed": true
+    },
+    {
+      "name": "owned synthetic invoice X402-OWNER-20261031-01",
+      "passed": true
+    },
+    {
+      "name": "unique persisted settled intent X402-OWNER-20261031-01",
+      "passed": true
+    },
+    {
+      "name": "receipt reopens twice X402-OWNER-20261031-01",
+      "passed": true
+    },
+    {
+      "name": "same receipt and exact merchant credit X402-OWNER-20261031-01",
+      "passed": true
+    },
+    {
+      "name": "saved analysis matches reconciled report X402-OWNER-20261031-01",
+      "passed": true
+    },
+    {
+      "name": "owned synthetic invoice X402-EXPERIMENT-02",
+      "passed": true
+    },
+    {
+      "name": "unique persisted settled intent X402-EXPERIMENT-02",
+      "passed": true
+    },
+    {
+      "name": "receipt reopens twice X402-EXPERIMENT-02",
+      "passed": true
+    },
+    {
+      "name": "same receipt and exact merchant credit X402-EXPERIMENT-02",
+      "passed": true
+    },
+    {
+      "name": "saved analysis matches reconciled report X402-EXPERIMENT-02",
+      "passed": true
+    },
+    {
+      "name": "owned synthetic invoice X402-EXPERIMENT-03",
+      "passed": true
+    },
+    {
+      "name": "unique persisted settled intent X402-EXPERIMENT-03",
+      "passed": true
+    },
+    {
+      "name": "receipt reopens twice X402-EXPERIMENT-03",
+      "passed": true
+    },
+    {
+      "name": "same receipt and exact merchant credit X402-EXPERIMENT-03",
+      "passed": true
+    },
+    {
+      "name": "saved analysis matches reconciled report X402-EXPERIMENT-03",
+      "passed": true
+    },
+    {
+      "name": "owner services displays loaded capabilities without a new payment",
+      "passed": true
+    },
+    {
+      "name": "customer challenge 0",
+      "passed": true
+    },
+    {
+      "name": "customer free signature verified 0",
+      "passed": true
+    },
+    {
+      "name": "customer nonce replay rejected 0",
+      "passed": true
+    },
+    {
+      "name": "auth/session HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "snapshot HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "service-payments HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "empty isolated customer workspace 0",
+      "passed": true
+    },
+    {
+      "name": "customer checkout uses authenticated payer and bounded pilot 0",
+      "passed": true
+    },
+    {
+      "name": "customer cannot inspect administrator settings 0",
+      "passed": true
+    },
+    {
+      "name": "customer cannot reopen an owner receipt 0",
+      "passed": true
+    },
+    {
+      "name": "customer challenge 1",
+      "passed": true
+    },
+    {
+      "name": "customer free signature verified 1",
+      "passed": true
+    },
+    {
+      "name": "customer nonce replay rejected 1",
+      "passed": true
+    },
+    {
+      "name": "auth/session HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "independent customer identities",
+      "passed": true
+    },
+    {
+      "name": "snapshot HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "service-payments HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "empty isolated customer workspace 1",
+      "passed": true
+    },
+    {
+      "name": "customer checkout uses authenticated payer and bounded pilot 1",
+      "passed": true
+    },
+    {
+      "name": "customer cannot inspect administrator settings 1",
+      "passed": true
+    },
+    {
+      "name": "customer cannot reopen an owner receipt 1",
+      "passed": true
+    },
+    {
+      "name": "explicit logout",
+      "passed": true
+    },
+    {
+      "name": "auth/session HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "session revoked",
+      "passed": true
+    },
+    {
+      "name": "explicit logout",
+      "passed": true
+    },
+    {
+      "name": "auth/session HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "session revoked",
+      "passed": true
+    },
+    {
+      "name": "explicit logout",
+      "passed": true
+    },
+    {
+      "name": "auth/session HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "session revoked",
+      "passed": true
+    }
+  ],
+  "release": {
+    "application": "PayGuard Verify",
+    "commit": "f51cb76f9813e47de052e3fa2bce88c6ba5946a7",
+    "recordedProofCount": 32,
+    "ownerProofCount": 30,
+    "proofExportedAt": "2026-11-01T12:49:41.554Z",
+    "modes": ["public-demo", "owner-admin", "wallet-member", "recorded-proof"]
+  },
+  "walletStatus": {
+    "allowed": true,
+    "slushBlocked": false,
+    "paymentSigningAllowed": true,
+    "review": "Wallet providers decide whether to permit this origin. Stop if a provider warns or refuses. Message login is separate from financial signing."
+  },
+  "ownerCookie": {
+    "secure": true,
+    "httpOnly": true,
+    "sameSiteStrict": true
+  },
+  "ownerMemories": 30,
+  "ownerPaymentPolicy": {
+    "configured": true,
+    "preparationAllowed": true,
+    "signingAllowed": true,
+    "capabilities": {
+      "origin": "https://payguard-ai-henna.vercel.app",
+      "environment": "production",
+      "connectionAvailable": true,
+      "authenticationAvailable": true,
+      "financialOriginAllowed": true,
+      "providerVerdict": "unobserved",
+      "financialRestriction": null
+    }
+  },
+  "memory": {
+    "invoice": "X402-EXPERIMENT-03",
+    "offCitations": 0,
+    "onCitations": 7,
+    "baselineRetained": true,
+    "previouslyConfirmedBlobsOnly": true,
+    "humanHold": true,
+    "freshAuthenticatedProductionSession": true,
+    "source": "Actual authenticated Production Walrus recall; no memory write"
+  },
+  "receipts": [
+    {
+      "invoice": "X402-OWNER-20261031-01",
+      "digest": "68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx",
+      "sameReceiptOnResume": true,
+      "merchantCreditAtomic": "1000000",
+      "resultHash": "aade6446981aeedb518f29acb1973698f70e3f913fc0f58d8cf287ec70046058"
+    },
+    {
+      "invoice": "X402-EXPERIMENT-02",
+      "digest": "xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r",
+      "sameReceiptOnResume": true,
+      "merchantCreditAtomic": "1000000",
+      "resultHash": "9790535a253057bba67001275db6d9ddb470a0282971511372d7470f928c1cf3"
+    },
+    {
+      "invoice": "X402-EXPERIMENT-03",
+      "digest": "4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA",
+      "sameReceiptOnResume": true,
+      "merchantCreditAtomic": "1000000",
+      "resultHash": "1eff857e3be3f118a5893894e861c4098ca3dff438b7accf357468cd502d3163"
+    }
+  ],
+  "customers": [
+    {
+      "memberAuthenticated": true,
+      "emptyIsolatedWorkspace": true,
+      "ownPayer": true,
+      "signingAvailableInApplication": true,
+      "pilot": {
+        "reservedAtomic": "0",
+        "capAtomic": "20000000",
+        "purchases": 20,
+        "walletCapAtomic": "3000000"
+      },
+      "physicalProviderAcceptance": "unverified"
+    },
+    {
+      "memberAuthenticated": true,
+      "emptyIsolatedWorkspace": true,
+      "ownPayer": true,
+      "signingAvailableInApplication": true,
+      "pilot": {
+        "reservedAtomic": "0",
+        "capAtomic": "20000000",
+        "purchases": 20,
+        "walletCapAtomic": "3000000"
+      },
+      "physicalProviderAcceptance": "unverified"
+    }
+  ],
+  "ok": true
+}

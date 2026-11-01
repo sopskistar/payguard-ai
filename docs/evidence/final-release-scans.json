@@ -1,6 +1,6 @@
 {
-  "checkedAt": "2026-11-01T14:12:23.222Z",
-  "sourceAndBrowserAssetsScanned": 940,
+  "checkedAt": "2026-11-01T14:39:58.206Z",
+  "sourceAndBrowserAssetsScanned": 1074,
   "credentialMatches": [],
   "committedCredentialMatches": [],
   "approvedPrivateEnvironmentFileExcluded": true,
@@ -83,7 +83,7 @@
           "severity": "moderate",
           "isDirect": false,
           "via": ["@typescript-eslint/typescript-estree", "@typescript-eslint/utils"],
-          "effects": ["@typescript-eslint/eslint-plugin"],
+          "effects": [],
           "range": ">=6.16.0",
           "nodes": ["node_modules/@typescript-eslint/type-utils"],
           "fixAvailable": true
@@ -112,7 +112,7 @@
           "severity": "moderate",
           "isDirect": false,
           "via": ["@typescript-eslint/typescript-estree"],
-          "effects": ["typescript-eslint"],
+          "effects": ["@typescript-eslint/eslint-plugin", "typescript-eslint"],
           "range": ">=6.16.0",
           "nodes": ["node_modules/@typescript-eslint/utils"],
           "fixAvailable": {

@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-11-01T14:37:08.453Z",
+  "readOnly": true,
+  "confirmedMemoryCount": 32,
+  "original32IdsJobsBlobsNamespacesUnchanged": true,
+  "originalFingerprint": "b1ec97c1458db89cdeacda2bbf33bc10cbfe1a24b8843f0b64886dcb84ca09a0",
+  "currentFingerprint": "b1ec97c1458db89cdeacda2bbf33bc10cbfe1a24b8843f0b64886dcb84ca09a0",
+  "counts": {
+    "receipts": 3,
+    "settling": 0,
+    "settlement_requests": 3
+  },
+  "originalExpiredIntent": {
+    "state": "cancelled",
+    "no_payload": true,
+    "no_digest": true
+  },
+  "providerWrites": false,
+  "financialSubmissions": false,
+  "ok": true
+}

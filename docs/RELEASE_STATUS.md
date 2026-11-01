@@ -1,3 +1,11 @@
+# Final deployed verification — November 1
+
+Application source `f51cb76f9813e47de052e3fa2bce88c6ba5946a7` is Vercel Ready and verified on the live origin. Three receipts/reports total 0.003 SUI merchant credit; all original 32 memory references are unchanged. Production checks pass: 13 public browser cases and 67 actual API assertions, including fresh 0/7 recall, free member authentication and saved-receipt reopening. [Complete tests and limits](TEST_RESULTS.md) · [Screenshots](screenshots/hackathon-release/manifest.json) · [Published article](https://sopskistar.github.io/payguard-ai/).
+
+Final handoff changes after that source commit contain evidence and documentation only. Physical hosted-wallet acceptance and ordinary coin-object funding remain unverified. The owner still records the planned 2–3 minute video and supplies private submission-form fields; neither video nor form submission was created here.
+
+---
+
 # Final hackathon release status
 
 Three Tatum-verified Mainnet service purchases and three delivered reports are reconciled, total 0.003 SUI. The public Memory Courtroom replays three fresh OFF/ON comparisons, genuine provenance and an attack through the existing engine. All 32 confirmed memory jobs/blobs were rechecked; new-session recall matched.

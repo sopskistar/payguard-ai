@@ -1,3 +1,9 @@
+## Final production verification — November 1
+
+Actual HTTPS production API checks pass two free personal-message registrations using unfunded SDK test identities, nonce replay rejection, isolated member workspaces, own-payer checkout metadata and denied administrator/owner-receipt access. The application permits connection, authentication and exact financial signing; the provider verdict remains unobserved. These are cryptographic API/fixture checks, not installed-extension acceptance. [67-check live evidence](evidence/hackathon-production-smoke.json) · [13-case public browser run](evidence/hackathon-production-public-tests.json).
+
+No conclusive evidence identifies why Slush stopped warning on localhost. No physical hosted Slush/Suiet/Nightly/mobile result was supplied during this release, and no additional financial signature was requested. Original provider warnings remain authoritative.
+
 # Final provider and origin status
 
 Three Slush-authorized owner-controlled Mainnet purchases are independently verified in [the ledger](PAYMENT_EXPERIMENTS.md). This establishes executed transactions; the physical browser/provider behavior is owner-reported. The earlier localhost warning's disappearance is not conclusively explained.

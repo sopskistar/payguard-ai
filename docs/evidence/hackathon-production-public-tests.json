@@ -1,0 +1,92 @@
+{
+  "checkedAt": "2026-11-01T14:37:16.917Z",
+  "release": {
+    "application": "PayGuard Verify",
+    "commit": "f51cb76f9813e47de052e3fa2bce88c6ba5946a7",
+    "recordedProofCount": 32,
+    "ownerProofCount": 30,
+    "proofExportedAt": "2026-11-01T12:49:41.554Z",
+    "modes": ["public-demo", "owner-admin", "wallet-member", "recorded-proof"]
+  },
+  "base": "https://payguard-ai-henna.vercel.app",
+  "ownerCredentials": false,
+  "privateRecords": false,
+  "financialSubmission": false,
+  "providerWrites": false,
+  "physicalWalletProviderTests": false,
+  "stats": {
+    "startTime": "2026-11-01T14:36:13.131Z",
+    "duration": 62586.006,
+    "expected": 13,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "tests": [
+    {
+      "title": "public Courtroom compares captured evidence, replays real attack logic, and never calls payment APIs",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "Courtroom remains usable at three mobile widths and with reduced motion",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "judge never presents active walkthrough buttons before client readiness",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "judge completes all seven clear steps, with back navigation, real evidence and no account",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "public users cannot quote, approve or settle service fees",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "product story has six usable stages, play/pause/replay and no private operations",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "reduced-motion and mobile story preserve readable controls and clear access paths",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "refresh shows loading, honest success, timestamp and failure; public actions explain owner access",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "landing CTAs, FAQ, proof and mobile layouts are deliberate and functional",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "owner sign-in clears submitted credentials while the request is pending",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "public wallet login is accessible independently of hosted financial signing",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "public official review selector connects only by choice, never signs or authenticates, and disconnects",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "wallet refusal remains with the official selector; no signature or fallback login follows",
+      "status": "expected",
+      "annotations": []
+    }
+  ]
+}

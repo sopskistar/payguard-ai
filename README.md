@@ -75,7 +75,7 @@ npm run build
 npm run test:e2e:qa
 ```
 
-The QA runner creates a new disposable PGlite database and disables live payment/memory credentials. Financial tests use fixtures; they never spend Mainnet funds. Live provider evidence is captured separately. [Results, failures and skips](docs/TEST_RESULTS.md) · [Neon transport recovery](docs/NEON_CONNECTION_RECOVERY.md).
+The QA runner creates a new disposable PGlite database and disables live payment/memory credentials. Financial tests use fixtures; they never spend Mainnet funds. Live provider evidence is captured separately. [Results, failures and skips](docs/TEST_RESULTS.md) · [Production screenshots at 100% zoom](docs/screenshots/hackathon-release/manifest.json) · [Live authentication, recall and receipts](docs/evidence/hackathon-production-smoke.json) · [Neon transport recovery](docs/NEON_CONNECTION_RECOVERY.md).
 
 ## 8. Demo and submission
 
