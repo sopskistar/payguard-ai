@@ -591,7 +591,9 @@ export function ServicePayment() {
                 : signingAllowed
                   ? capabilities?.environment === 'production'
                     ? 'Wallet signing available · exact approval required'
-                    : 'Local signing available · owner approval required'
+                    : data?.mode === 'member'
+                      ? 'Local wallet signing available · exact approval required'
+                      : 'Local signing available · owner approval required'
                   : 'Transaction signing disabled by server configuration'}
         </Badge>
       </header>

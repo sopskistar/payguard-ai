@@ -397,7 +397,7 @@ const help: Record<string, [string, string, string]> = {
   settings: [
     'How do workspace settings affect reviews?',
     'Review thresholds and preferences guide the deterministic assessment. Integration diagnostics are deliberate live reads with dated results.',
-    'Agent Services is a separate, capped purchase workflow. Production signing and settlement remain security-paused.',
+    'Agent Services is a separate, capped purchase workflow. Authenticate your wallet, inspect exact terms and separately authorize any financial signature. Provider permission and funding compatibility still apply.',
   ],
   'settings/integrations': [
     'What does a connection check prove?',

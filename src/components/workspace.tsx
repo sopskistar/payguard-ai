@@ -2040,7 +2040,7 @@ function Settings({
           <p className="small-text muted">
             Register or return with a free personal-message signature when your wallet permits this
             origin. No email or password is needed. Stop at a provider warning. Financial signing
-            requires separate owner authorization.
+            requires your separate approval of the exact purchase and a transaction signature.
           </p>
           <p>
             {owner

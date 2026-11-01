@@ -1,4 +1,4 @@
-// Read-only product/payment verification plus two free, unfunded authentication test profiles.
+// Read-only payment/provider verification, normal review audits and two free unfunded auth profiles.
 // Never requests a quote, approves, signs a transaction, submits settlement or writes memory.
 import { config } from 'dotenv';
 import { chromium } from '@playwright/test';
@@ -91,6 +91,41 @@ try {
       metadata.preparationAllowed &&
       metadata.capabilities.financialOriginAllowed &&
       metadata.capabilities.providerVerdict === 'unobserved',
+  );
+  const memoryInvoice = snapshot.invoices.find(
+    (i) => i.number === 'X402-EXPERIMENT-03' && i.isDemo,
+  );
+  if (!memoryInvoice) throw Error('Existing synthetic memory comparison invoice missing.');
+  const offResponse = await post(owner, 'review', { invoiceId: memoryInvoice.id, memoryOn: false });
+  const onResponse = await post(owner, 'review', { invoiceId: memoryInvoice.id, memoryOn: true });
+  check(
+    'fresh production OFF/ON reviews',
+    offResponse.status() === 200 && onResponse.status() === 200,
+  );
+  const off = await offResponse.json(),
+    on = await onResponse.json();
+  const gateResponse = await post(owner, 'instructions/context', { invoiceId: memoryInvoice.id });
+  check('production verification gate', gateResponse.status() === 200);
+  const verification = await gateResponse.json();
+  const captured = JSON.parse(await readFile('docs/evidence/courtroom.json'));
+  const approvedBlobs = new Set(captured.freshRecall.citations.map((c) => c.blobId));
+  report.memory = {
+    invoice: memoryInvoice.number,
+    offCitations: off.citations.length,
+    onCitations: on.citations.length,
+    baselineRetained: off.findings.every((f) => on.findings.some((g) => f.id === g.id)),
+    previouslyConfirmedBlobsOnly: on.citations.every((c) => approvedBlobs.has(c.blobId)),
+    humanHold: verification.gate.allowed === false,
+    freshAuthenticatedProductionSession: true,
+    source: 'Actual authenticated Production Walrus recall; no memory write',
+  };
+  check(
+    'real production recall enriches review and preserves the hold',
+    report.memory.offCitations === 0 &&
+      report.memory.onCitations === 7 &&
+      report.memory.baselineRetained &&
+      report.memory.previouslyConfirmedBlobsOnly &&
+      report.memory.humanHold,
   );
   report.receipts = [];
   for (const payment of evidence.payments) {

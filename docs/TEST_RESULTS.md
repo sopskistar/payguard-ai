@@ -14,6 +14,8 @@ An initial focused backend run retained old hosted-denial/readiness expectations
 
 Physical hosted Slush/Suiet/Nightly/mobile acceptance and why the earlier localhost warning disappeared remain unverified. Application HTTPS signing permission and real cryptographic API authentication do not certify a physical provider. The current sponsored template supports the already-proven address-balance path; ordinary coin-object funding is not validated with this facilitator template. No additional real payment, memory write, database reset or video was made for this release. Normal authenticated reviews create audit/assessment records; the existing 32 confirmed memories are preserved.
 
+After correcting the last three stale workspace/signing labels, the affected production-build workspace and payment UI suite passed **13/13**, zero failures/skips. [Focused final-copy ledger](evidence/final-hackathon-copy-tests.json). No financial behavior changed.
+
 Production deployment, read-only receipt reopening, free live authentication, screenshots and article checks are recorded after publication. Entries below are historical and their earlier counts/restrictions are superseded by this section and [PRODUCT_RELEASE](PRODUCT_RELEASE.md).
 
 ---
