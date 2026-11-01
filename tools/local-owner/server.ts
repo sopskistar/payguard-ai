@@ -1,5 +1,9 @@
 import { readFile } from 'node:fs/promises';
 import { spawn } from 'node:child_process';
+import {
+  getDefaultAutoSelectFamilyAttemptTimeout,
+  setDefaultAutoSelectFamilyAttemptTimeout,
+} from 'node:net';
 import { parse } from 'dotenv';
 import { localOwnerConfig, LocalOwnerError } from './config';
 import { AppError } from '../../src/lib/errors';
@@ -20,6 +24,11 @@ try {
     NODE_ENV: development ? 'development' : 'production',
   };
   Object.assign(process.env, env);
+  // WSL's measured IPv4 RTT approaches Node's 250ms family-attempt default;
+  // unreachable IPv6 cannot rescue a prematurely abandoned IPv4 attempt.
+  // Keep address-family fallback and verified TLS; change only this local runtime.
+  const connectionAttemptMs = Math.max(2000, getDefaultAutoSelectFamilyAttemptTimeout());
+  setDefaultAutoSelectFamilyAttemptTimeout(connectionAttemptMs);
   if (!development) await readFile('.next/BUILD_ID');
   const { servicePreflight } = await import('../../src/lib/service-payments');
   const check = await servicePreflight();
@@ -43,6 +52,7 @@ try {
   const child = spawn(
     process.execPath,
     [
+      `--network-family-autoselection-attempt-timeout=${connectionAttemptMs}`,
       'node_modules/next/dist/bin/next',
       development ? 'dev' : 'start',
       ...(development ? ['--webpack'] : []),

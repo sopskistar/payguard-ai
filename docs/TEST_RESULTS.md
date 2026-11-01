@@ -1,3 +1,11 @@
+# November 1 Neon connection recurrence repair
+
+**Final results:** 183 unit/integration tests in 27 files and 16 focused production-build browser checks pass with zero skips. TypeScript, repository lint, formatting, diff checks and one production build pass. Credential scan: 644 files / zero matches. Two initial unit runs each passed 158 but aborted 25 payment-store cases in the default 10-second cold PGlite setup deadline; giving that setup the existing 30-second test budget produced the full 183-pass run without changing assertions.
+
+Fresh-process probes reproduced local TCP/WebSocket/HTTPS failures independently of stale application pools. The fix bounds pre-SQL connection acquisition recovery and adjusts only local runtime attempt timing. A real-driver fault-injection check recovered before SQL, then completed only identity reads and a read-only transaction. No SQL statement, commit or financial operation is automatically replayed. [Full investigation and limits](NEON_CONNECTION_RECOVERY.md).
+
+The genuine owner workflow passes two clean server starts, preserved-session authentication, 24 concurrent status reads in six rounds, exact Experiment 2 selection, enabled fresh-quote controls and real read-only provider readiness. Experiment 1 reopened twice without charging; the complete saved receipt/report hashes match. All 32 existing confirmed memory identities/namespaces/blob references match before/after. No quote, approval, signature, settlement or memory write occurred. [Sanitized evidence](evidence/neon-connection-recovery.json) · [isolated browser ledger](evidence/neon-connection-browser-tests.json).
+
 # November 1 targeted Experiment 2 recovery
 
 - **83 focused unit/integration checks pass in 13 files**: wallet/owner authentication, replay/binding, signature/protocol checks, cap/reservations, settlement idempotency, expired unsigned recovery, uncertain-signature cancellation refusal, request-local Neon pool lifecycle and diagnostic redaction.

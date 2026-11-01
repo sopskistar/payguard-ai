@@ -1,6 +1,7 @@
 import 'server-only';
 import { drizzle as neonDrizzle } from 'drizzle-orm/neon-serverless';
-import { Pool } from '@neondatabase/serverless';
+import type { Pool } from '@neondatabase/serverless';
+import { RecoveringNeonPool } from './neon-pool';
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { drizzle as localDrizzle, type PgliteDatabase } from 'drizzle-orm/pglite';
 import * as schema from './schema';
@@ -24,7 +25,7 @@ export async function withDatabaseRequest<T>(operation: () => Promise<T>): Promi
   });
 }
 function neonDatabase() {
-  const pool = new Pool({
+  const pool = new RecoveringNeonPool({
     connectionString: process.env.DATABASE_URL,
     connectionTimeoutMillis: 12000,
     idleTimeoutMillis: 20000,

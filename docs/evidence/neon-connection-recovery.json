@@ -1,0 +1,1247 @@
+{
+  "checkedAt": "2026-11-01T10:36:36.175Z",
+  "baselineCommit": "97a0e2a785224b72f960c8c60e4971b0c0683558",
+  "readOnlyDatabaseInvestigation": true,
+  "financialAuthorization": false,
+  "newQuote": false,
+  "signature": false,
+  "settlement": false,
+  "memoryWrite": false,
+  "databaseIdentity": {
+    "database": "neondb",
+    "role": "neondb_owner",
+    "projectAndBranchReturnedByPostgres": true,
+    "sameProjectAndBranchAfterRestart": true,
+    "friendlyConsoleLabels": "Owner-reported PayGuardAI / Primary; control-plane labels not independently fetched"
+  },
+  "configuration": {
+    "database": "neondb",
+    "role": "neondb_owner",
+    "sslmode": "require",
+    "channelBinding": "require",
+    "neonHost": true,
+    "envOverridesFile": false,
+    "proxyEnvironmentPresent": [],
+    "tlsValidationDisabled": false
+  },
+  "runningChildConfiguration": [
+    {
+      "pid": 3441544,
+      "databaseMatchesFile": true,
+      "authConfigurationMatchesFile": true,
+      "database": "neondb",
+      "role": "neondb_owner",
+      "appOrigin": "http://localhost:4320",
+      "environment": "development",
+      "wsOptionsPresent": true,
+      "proxyEnvironmentPresent": []
+    }
+  ],
+  "network": {
+    "dnsIpv4": 3,
+    "dnsIpv6": 3,
+    "tls": [
+      {
+        "family": 4,
+        "authorized": true,
+        "protocol": "TLSv1.3",
+        "ms": 1249
+      },
+      {
+        "family": 4,
+        "authorized": true,
+        "protocol": "TLSv1.3",
+        "ms": 1514
+      },
+      {
+        "family": 4,
+        "authorized": true,
+        "protocol": "TLSv1.3",
+        "ms": 2671
+      },
+      {
+        "family": 6,
+        "ms": 1,
+        "errorCode": "ENETUNREACH"
+      }
+    ],
+    "initialQueryOutcomes": [
+      {
+        "transport": "HTTPS",
+        "ok": false,
+        "ms": 806,
+        "codes": ["ETIMEDOUT", "ENETUNREACH"]
+      },
+      {
+        "transport": "HTTPS",
+        "ok": false,
+        "ms": 1560,
+        "codes": ["ETIMEDOUT", "ENETUNREACH"]
+      },
+      {
+        "transport": "HTTPS",
+        "ok": false,
+        "ms": 2414,
+        "codes": ["ETIMEDOUT", "ENETUNREACH"]
+      },
+      {
+        "transport": "Native WebSocket",
+        "ok": false,
+        "ms": 1129,
+        "codes": []
+      },
+      {
+        "transport": "Native WebSocket",
+        "ok": true,
+        "ms": 1795,
+        "codes": []
+      },
+      {
+        "transport": "Native WebSocket",
+        "ok": false,
+        "ms": 891,
+        "codes": []
+      }
+    ],
+    "defaultWindowThenSuccessful": {
+      "checkedAt": "2026-11-01T10:09:52.382Z",
+      "mode": "default",
+      "node": "v22.23.1",
+      "autoSelectFamily": true,
+      "attemptTimeout": 250,
+      "dnsOrder": "verbatim",
+      "nodeOptionNames": null,
+      "readOnly": true,
+      "checks": [
+        {
+          "transport": "HTTPS",
+          "attempt": 0,
+          "ok": true,
+          "ms": 1787,
+          "identity": {
+            "database": "neondb",
+            "role": "neondb_owner"
+          }
+        },
+        {
+          "transport": "HTTPS",
+          "attempt": 1,
+          "ok": true,
+          "ms": 709,
+          "identity": {
+            "database": "neondb",
+            "role": "neondb_owner"
+          }
+        },
+        {
+          "transport": "HTTPS",
+          "attempt": 2,
+          "ok": true,
+          "ms": 1129,
+          "identity": {
+            "database": "neondb",
+            "role": "neondb_owner"
+          }
+        },
+        {
+          "transport": "HTTPS",
+          "attempt": 3,
+          "ok": true,
+          "ms": 221,
+          "identity": {
+            "database": "neondb",
+            "role": "neondb_owner"
+          }
+        },
+        {
+          "transport": "HTTPS",
+          "attempt": 4,
+          "ok": true,
+          "ms": 214,
+          "identity": {
+            "database": "neondb",
+            "role": "neondb_owner"
+          }
+        },
+        {
+          "transport": "WebSocket",
+          "attempt": 0,
+          "ok": true,
+          "ms": 864,
+          "identity": {
+            "database": "neondb",
+            "role": "neondb_owner"
+          }
+        },
+        {
+          "transport": "WebSocket",
+          "attempt": 1,
+          "ok": true,
+          "ms": 867,
+          "identity": {
+            "database": "neondb",
+            "role": "neondb_owner"
+          }
+        },
+        {
+          "transport": "WebSocket",
+          "attempt": 2,
+          "ok": true,
+          "ms": 901,
+          "identity": {
+            "database": "neondb",
+            "role": "neondb_owner"
+          }
+        },
+        {
+          "transport": "WebSocket",
+          "attempt": 3,
+          "ok": true,
+          "ms": 967,
+          "identity": {
+            "database": "neondb",
+            "role": "neondb_owner"
+          }
+        },
+        {
+          "transport": "WebSocket",
+          "attempt": 4,
+          "ok": true,
+          "ms": 1015,
+          "identity": {
+            "database": "neondb",
+            "role": "neondb_owner"
+          }
+        }
+      ]
+    },
+    "longerWindow": {
+      "checkedAt": "2026-11-01T10:09:53.352Z",
+      "mode": "longer",
+      "node": "v22.23.1",
+      "autoSelectFamily": true,
+      "attemptTimeout": 2000,
+      "dnsOrder": "verbatim",
+      "nodeOptionNames": null,
+      "readOnly": true,
+      "checks": [
+        {
+          "transport": "HTTPS",
+          "attempt": 0,
+          "ok": true,
+          "ms": 827,
+          "identity": {
+            "database": "neondb",
+            "role": "neondb_owner"
+          }
+        },
+        {
+          "transport": "HTTPS",
+          "attempt": 1,
+          "ok": true,
+          "ms": 681,
+          "identity": {
+            "database": "neondb",
+            "role": "neondb_owner"
+          }
+        },
+        {
+          "transport": "HTTPS",
+          "attempt": 2,
+          "ok": true,
+          "ms": 1148,
+          "identity": {
+            "database": "neondb",
+            "role": "neondb_owner"
+          }
+        },
+        {
+          "transport": "HTTPS",
+          "attempt": 3,
+          "ok": true,
+          "ms": 213,
+          "identity": {
+            "database": "neondb",
+            "role": "neondb_owner"
+          }
+        },
+        {
+          "transport": "HTTPS",
+          "attempt": 4,
+          "ok": true,
+          "ms": 225,
+          "identity": {
+            "database": "neondb",
+            "role": "neondb_owner"
+          }
+        },
+        {
+          "transport": "WebSocket",
+          "attempt": 0,
+          "ok": true,
+          "ms": 953,
+          "identity": {
+            "database": "neondb",
+            "role": "neondb_owner"
+          }
+        },
+        {
+          "transport": "WebSocket",
+          "attempt": 1,
+          "ok": true,
+          "ms": 904,
+          "identity": {
+            "database": "neondb",
+            "role": "neondb_owner"
+          }
+        },
+        {
+          "transport": "WebSocket",
+          "attempt": 2,
+          "ok": true,
+          "ms": 932,
+          "identity": {
+            "database": "neondb",
+            "role": "neondb_owner"
+          }
+        },
+        {
+          "transport": "WebSocket",
+          "attempt": 3,
+          "ok": true,
+          "ms": 863,
+          "identity": {
+            "database": "neondb",
+            "role": "neondb_owner"
+          }
+        },
+        {
+          "transport": "WebSocket",
+          "attempt": 4,
+          "ok": true,
+          "ms": 945,
+          "identity": {
+            "database": "neondb",
+            "role": "neondb_owner"
+          }
+        }
+      ]
+    },
+    "concurrency": {
+      "checkedAt": "2026-11-01T10:13:01.810Z",
+      "readOnly": true,
+      "concurrency": 6,
+      "checks": [
+        {
+          "attemptTimeout": 250,
+          "outcomes": [
+            {
+              "ok": true,
+              "ms": 1085
+            },
+            {
+              "ok": true,
+              "ms": 1000
+            },
+            {
+              "ok": true,
+              "ms": 1044
+            },
+            {
+              "ok": true,
+              "ms": 1025
+            },
+            {
+              "ok": true,
+              "ms": 1030
+            },
+            {
+              "ok": true,
+              "ms": 989
+            }
+          ]
+        },
+        {
+          "attemptTimeout": 2000,
+          "outcomes": [
+            {
+              "ok": true,
+              "ms": 1003
+            },
+            {
+              "ok": true,
+              "ms": 970
+            },
+            {
+              "ok": true,
+              "ms": 947
+            },
+            {
+              "ok": true,
+              "ms": 925
+            },
+            {
+              "ok": true,
+              "ms": 989
+            },
+            {
+              "ok": true,
+              "ms": 978
+            }
+          ]
+        },
+        {
+          "attemptTimeout": 250,
+          "outcomes": [
+            {
+              "ok": true,
+              "ms": 1332
+            },
+            {
+              "ok": true,
+              "ms": 1293
+            },
+            {
+              "ok": true,
+              "ms": 1077
+            },
+            {
+              "ok": true,
+              "ms": 1085
+            },
+            {
+              "ok": true,
+              "ms": 1121
+            },
+            {
+              "ok": true,
+              "ms": 1137
+            }
+          ]
+        },
+        {
+          "attemptTimeout": 2000,
+          "outcomes": [
+            {
+              "ok": true,
+              "ms": 952
+            },
+            {
+              "ok": true,
+              "ms": 951
+            },
+            {
+              "ok": true,
+              "ms": 951
+            },
+            {
+              "ok": true,
+              "ms": 941
+            },
+            {
+              "ok": true,
+              "ms": 984
+            },
+            {
+              "ok": true,
+              "ms": 1000
+            }
+          ]
+        }
+      ]
+    },
+    "traces": {
+      "checkedAt": "2026-11-01T10:11:59.566Z",
+      "readOnly": true,
+      "checks": [
+        {
+          "attemptTimeout": 250,
+          "sockets": [
+            {
+              "attempts": [
+                {
+                  "event": "attempt",
+                  "family": 4,
+                  "ms": 22
+                }
+              ],
+              "connectedMs": 230
+            }
+          ],
+          "ok": true,
+          "ms": 1075
+        },
+        {
+          "attemptTimeout": 2000,
+          "sockets": [
+            {
+              "attempts": [
+                {
+                  "event": "attempt",
+                  "family": 4,
+                  "ms": 13
+                }
+              ],
+              "connectedMs": 241
+            }
+          ],
+          "ok": true,
+          "ms": 920
+        },
+        {
+          "attemptTimeout": 250,
+          "sockets": [
+            {
+              "attempts": [
+                {
+                  "event": "attempt",
+                  "family": 4,
+                  "ms": 16
+                }
+              ],
+              "connectedMs": 233
+            }
+          ],
+          "ok": true,
+          "ms": 888
+        },
+        {
+          "attemptTimeout": 2000,
+          "sockets": [
+            {
+              "attempts": [
+                {
+                  "event": "attempt",
+                  "family": 4,
+                  "ms": 307
+                }
+              ],
+              "connectedMs": 538
+            }
+          ],
+          "ok": true,
+          "ms": 1250
+        },
+        {
+          "attemptTimeout": 250,
+          "sockets": [
+            {
+              "attempts": [
+                {
+                  "event": "attempt",
+                  "family": 4,
+                  "ms": 26
+                }
+              ],
+              "connectedMs": 256
+            }
+          ],
+          "ok": true,
+          "ms": 959
+        },
+        {
+          "attemptTimeout": 2000,
+          "sockets": [
+            {
+              "attempts": [
+                {
+                  "event": "attempt",
+                  "family": 4,
+                  "ms": 6
+                }
+              ],
+              "connectedMs": 224
+            }
+          ],
+          "ok": true,
+          "ms": 1031
+        },
+        {
+          "attemptTimeout": 250,
+          "sockets": [
+            {
+              "attempts": [
+                {
+                  "event": "attempt",
+                  "family": 4,
+                  "ms": 7
+                }
+              ],
+              "connectedMs": 216
+            }
+          ],
+          "ok": true,
+          "ms": 858
+        },
+        {
+          "attemptTimeout": 2000,
+          "sockets": [
+            {
+              "attempts": [
+                {
+                  "event": "attempt",
+                  "family": 4,
+                  "ms": 5
+                }
+              ],
+              "connectedMs": 229
+            }
+          ],
+          "ok": true,
+          "ms": 899
+        },
+        {
+          "attemptTimeout": 250,
+          "sockets": [
+            {
+              "attempts": [
+                {
+                  "event": "attempt",
+                  "family": 4,
+                  "ms": 8
+                }
+              ],
+              "connectedMs": 229
+            }
+          ],
+          "ok": true,
+          "ms": 904
+        },
+        {
+          "attemptTimeout": 2000,
+          "sockets": [
+            {
+              "attempts": [
+                {
+                  "event": "attempt",
+                  "family": 4,
+                  "ms": 10
+                }
+              ],
+              "connectedMs": 225
+            }
+          ],
+          "ok": true,
+          "ms": 896
+        },
+        {
+          "attemptTimeout": 250,
+          "sockets": [
+            {
+              "attempts": [
+                {
+                  "event": "attempt",
+                  "family": 4,
+                  "ms": 5
+                }
+              ],
+              "connectedMs": 230
+            }
+          ],
+          "ok": true,
+          "ms": 937
+        },
+        {
+          "attemptTimeout": 2000,
+          "sockets": [
+            {
+              "attempts": [
+                {
+                  "event": "attempt",
+                  "family": 4,
+                  "ms": 7
+                }
+              ],
+              "connectedMs": 216
+            }
+          ],
+          "ok": true,
+          "ms": 937
+        },
+        {
+          "attemptTimeout": 250,
+          "sockets": [
+            {
+              "attempts": [
+                {
+                  "event": "attempt",
+                  "family": 4,
+                  "ms": 6
+                }
+              ],
+              "connectedMs": 215
+            }
+          ],
+          "ok": true,
+          "ms": 860
+        },
+        {
+          "attemptTimeout": 2000,
+          "sockets": [
+            {
+              "attempts": [
+                {
+                  "event": "attempt",
+                  "family": 4,
+                  "ms": 5
+                }
+              ],
+              "connectedMs": 239
+            }
+          ],
+          "ok": true,
+          "ms": 937
+        },
+        {
+          "attemptTimeout": 250,
+          "sockets": [
+            {
+              "attempts": [
+                {
+                  "event": "attempt",
+                  "family": 4,
+                  "ms": 452
+                }
+              ],
+              "connectedMs": 673
+            }
+          ],
+          "ok": true,
+          "ms": 1360
+        },
+        {
+          "attemptTimeout": 2000,
+          "sockets": [
+            {
+              "attempts": [
+                {
+                  "event": "attempt",
+                  "family": 4,
+                  "ms": 7
+                }
+              ],
+              "connectedMs": 219
+            }
+          ],
+          "ok": true,
+          "ms": 877
+        }
+      ]
+    }
+  },
+  "localRuntime": {
+    "connectionAttemptMs": 2000,
+    "propagatedToNextChild": true,
+    "cleanRestarts": 2
+  },
+  "ownerBeforeRestart": {
+    "checkedAt": "2026-11-01T10:21:34.312Z",
+    "mode": "before",
+    "financialAuthorization": false,
+    "quoteRequested": false,
+    "signatureRequested": false,
+    "settlementSubmission": false,
+    "checks": [
+      {
+        "name": "owner login",
+        "passed": true
+      },
+      {
+        "name": "auth/session HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "owner session valid",
+        "passed": true
+      },
+      {
+        "name": "snapshot HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "service-payments HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "existing Neon workspace",
+        "passed": true
+      },
+      {
+        "name": "both synthetic experiment invoices present",
+        "passed": true
+      },
+      {
+        "name": "no submitted or pending Experiment 2 payment",
+        "passed": true
+      },
+      {
+        "name": "no settling intent in workspace",
+        "passed": true
+      },
+      {
+        "name": "local quote and preparation available",
+        "passed": true
+      },
+      {
+        "name": "30 owner Walrus records preserved",
+        "passed": true
+      },
+      {
+        "name": "auth/session HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "service-payments HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "service-payments HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "snapshot HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "auth/session HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "service-payments HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "service-payments HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "snapshot HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "auth/session HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "service-payments HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "service-payments HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "snapshot HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "exact Agent Services invoice loaded",
+        "passed": true
+      },
+      {
+        "name": "fresh quote button enabled without requesting it",
+        "passed": true
+      },
+      {
+        "name": "no payment error displayed",
+        "passed": true
+      },
+      {
+        "name": "no fresh quote, approval or wallet event",
+        "passed": true
+      }
+    ],
+    "history": [
+      {
+        "id": "d7b6a9ab-de6d-4921-ab93-09ae7763c1c7",
+        "state": "cancelled",
+        "digest": null,
+        "prepared": false
+      }
+    ],
+    "exposure": {
+      "reservedAtomic": "0",
+      "capAtomic": "3000000"
+    },
+    "rounds": [
+      {
+        "round": 0,
+        "requests": [
+          {
+            "path": "snapshot",
+            "ms": 4187
+          },
+          {
+            "path": "service-payments",
+            "ms": 2540
+          },
+          {
+            "path": "auth/session",
+            "ms": 1749
+          },
+          {
+            "path": "service-payments",
+            "ms": 3501
+          }
+        ]
+      },
+      {
+        "round": 1,
+        "requests": [
+          {
+            "path": "snapshot",
+            "ms": 5184
+          },
+          {
+            "path": "service-payments",
+            "ms": 2286
+          },
+          {
+            "path": "auth/session",
+            "ms": 1268
+          },
+          {
+            "path": "service-payments",
+            "ms": 2194
+          }
+        ]
+      },
+      {
+        "round": 2,
+        "requests": [
+          {
+            "path": "snapshot",
+            "ms": 4887
+          },
+          {
+            "path": "service-payments",
+            "ms": 2015
+          },
+          {
+            "path": "auth/session",
+            "ms": 1072
+          },
+          {
+            "path": "service-payments",
+            "ms": 1948
+          }
+        ]
+      }
+    ],
+    "ok": true
+  },
+  "ownerAfterRestart": {
+    "checkedAt": "2026-11-01T10:33:19.355Z",
+    "mode": "after",
+    "financialAuthorization": false,
+    "quoteRequested": false,
+    "signatureRequested": false,
+    "settlementSubmission": false,
+    "checks": [
+      {
+        "name": "auth/session HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "owner session valid",
+        "passed": true
+      },
+      {
+        "name": "snapshot HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "service-payments HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "existing Neon workspace",
+        "passed": true
+      },
+      {
+        "name": "both synthetic experiment invoices present",
+        "passed": true
+      },
+      {
+        "name": "no submitted or pending Experiment 2 payment",
+        "passed": true
+      },
+      {
+        "name": "no settling intent in workspace",
+        "passed": true
+      },
+      {
+        "name": "local quote and preparation available",
+        "passed": true
+      },
+      {
+        "name": "30 owner Walrus records preserved",
+        "passed": true
+      },
+      {
+        "name": "auth/session HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "service-payments HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "service-payments HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "snapshot HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "auth/session HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "service-payments HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "service-payments HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "snapshot HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "auth/session HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "service-payments HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "service-payments HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "snapshot HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "service-payments/preflight HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "genuine read-only provider preflight",
+        "passed": true
+      },
+      {
+        "name": "saved original receipt HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "saved original receipt HTTP 200",
+        "passed": true
+      },
+      {
+        "name": "Experiment 1 receipt unchanged and no recharge",
+        "passed": true
+      },
+      {
+        "name": "exact Agent Services invoice loaded",
+        "passed": true
+      },
+      {
+        "name": "fresh quote button enabled without requesting it",
+        "passed": true
+      },
+      {
+        "name": "no payment error displayed",
+        "passed": true
+      },
+      {
+        "name": "no fresh quote, approval or wallet event",
+        "passed": true
+      },
+      {
+        "name": "mobile no overflow",
+        "passed": true
+      }
+    ],
+    "history": [
+      {
+        "id": "d7b6a9ab-de6d-4921-ab93-09ae7763c1c7",
+        "state": "cancelled",
+        "digest": null,
+        "prepared": false
+      }
+    ],
+    "exposure": {
+      "reservedAtomic": "0",
+      "capAtomic": "3000000"
+    },
+    "rounds": [
+      {
+        "round": 0,
+        "requests": [
+          {
+            "path": "snapshot",
+            "ms": 3509
+          },
+          {
+            "path": "service-payments",
+            "ms": 2277
+          },
+          {
+            "path": "auth/session",
+            "ms": 1274
+          },
+          {
+            "path": "service-payments",
+            "ms": 2199
+          }
+        ]
+      },
+      {
+        "round": 1,
+        "requests": [
+          {
+            "path": "snapshot",
+            "ms": 3265
+          },
+          {
+            "path": "service-payments",
+            "ms": 1867
+          },
+          {
+            "path": "auth/session",
+            "ms": 967
+          },
+          {
+            "path": "service-payments",
+            "ms": 1928
+          }
+        ]
+      },
+      {
+        "round": 2,
+        "requests": [
+          {
+            "path": "snapshot",
+            "ms": 4046
+          },
+          {
+            "path": "service-payments",
+            "ms": 2441
+          },
+          {
+            "path": "auth/session",
+            "ms": 1358
+          },
+          {
+            "path": "service-payments",
+            "ms": 2201
+          }
+        ]
+      }
+    ],
+    "preflight": {
+      "readyForQuotePreparation": true,
+      "network": "sui:mainnet",
+      "spending": false,
+      "configurationReady": true,
+      "sufficientlyFunded": true
+    },
+    "receipt": {
+      "digest": "68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx",
+      "merchantCreditAtomic": "1000000",
+      "reopenedTwice": true
+    },
+    "ok": true
+  },
+  "records": {
+    "before": {
+      "checkedAt": "2026-11-01T10:23:12.884Z",
+      "confirmedMemories": 32,
+      "memoryIdentityDigest": "daac17cf39d2002594ff243c94d78508aba9eeedcb2ca3bbcc6184aad4e656d8",
+      "receiptCount": 1,
+      "receiptContentDigest": "9bbce9b21151f51b3b39f9950fe5c88750de7b62fe3e3bcc36648ff4649bac22",
+      "receipts": [
+        {
+          "intentId": "51d204df-71fd-44a6-ac4a-c8e0c50b4cf5",
+          "digest": "68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx",
+          "receivedAtomic": "1000000"
+        }
+      ]
+    },
+    "after": {
+      "checkedAt": "2026-11-01T10:34:52.003Z",
+      "confirmedMemories": 32,
+      "memoryIdentityDigest": "daac17cf39d2002594ff243c94d78508aba9eeedcb2ca3bbcc6184aad4e656d8",
+      "receiptCount": 1,
+      "receiptContentDigest": "9bbce9b21151f51b3b39f9950fe5c88750de7b62fe3e3bcc36648ff4649bac22",
+      "receipts": [
+        {
+          "intentId": "51d204df-71fd-44a6-ac4a-c8e0c50b4cf5",
+          "digest": "68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx",
+          "receivedAtomic": "1000000"
+        }
+      ]
+    },
+    "memoryIdentityMatches": true,
+    "completeReceiptContentMatches": true
+  },
+  "limitations": [
+    "Exact source of intermittent network jitter not determined.",
+    "Later default-window tests also passed; longer window alone is not a conclusive causal experiment.",
+    "No forced Neon compute suspension; wake-up failure not proven.",
+    "No physical wallet or financial-signature test in this repair."
+  ],
+  "nativeDriverFaultInjection": {
+    "checkedAt": "2026-11-01T10:38:04.997Z",
+    "readOnly": true,
+    "injectedPreSqlFailure": true,
+    "acquireCalls": 3,
+    "sql": ["SELECT identity", "BEGIN READ ONLY", "SELECT 1", "ROLLBACK"],
+    "identity": {
+      "database": "neondb",
+      "role": "neondb_owner"
+    },
+    "ok": true
+  },
+  "validation": {
+    "unitIntegration": {
+      "passed": 183,
+      "failed": 0,
+      "skipped": 0,
+      "files": 27
+    },
+    "browser": {
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0,
+      "evidence": "neon-connection-browser-tests.json"
+    },
+    "typeScript": "passed",
+    "lint": "passed",
+    "productionBuild": "passed",
+    "credentialScan": {
+      "files": 644,
+      "matches": 0
+    },
+    "initialFullRuns": [
+      {
+        "passed": 158,
+        "setupSkipped": 25,
+        "failedSuites": 1,
+        "reason": "Cold PGlite migration exceeded default 10-second beforeAll limit"
+      },
+      {
+        "passed": 158,
+        "setupSkipped": 25,
+        "failedSuites": 1,
+        "reason": "Same cold setup deadline"
+      }
+    ],
+    "setupCorrection": "Only service-store beforeAll uses the existing 30-second test timeout budget; assertions and financial mocks unchanged."
+  }
+}

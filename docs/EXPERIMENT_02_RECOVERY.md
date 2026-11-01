@@ -1,5 +1,7 @@
 # Experiment 2 recovery — November 1, 2026
 
+**Later November 1 correction:** the owner reproduced database connection errors after this release. Fresh-process probes confirmed intermittent local TCP/WebSocket/HTTPS establishment failures, including unreachable IPv6 and IPv4 attempt timeouts. The request-scoped pool change below was not a complete transport fix. [New focused recovery, evidence and owner controls](NEON_CONNECTION_RECOVERY.md).
+
 The expired, unsigned Experiment 2 quote was cancelled once after checking the exact Neon row and the authenticated localhost resume response. No new quote, approval, wallet signature or payment was requested. Experiment 1 remains the only settled purchase. [Recovery evidence](evidence/experiment-02-recovery.json).
 
 ## Failure and cause

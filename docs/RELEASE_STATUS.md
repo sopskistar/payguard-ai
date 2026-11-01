@@ -1,3 +1,7 @@
+# November 1 local Neon transport recovery
+
+The reported recurrence was reproduced outside the application in fresh Node processes. Database URL/role checks and verified IPv4 TLS passed; failed requests showed IPv4 timeouts and unreachable IPv6. The existing request scope is retained. Connection acquisition now has one bounded retry before application SQL; no statement, transaction callback or financial operation is replayed. The supervised local launcher allows a longer address-attempt window, propagated to the actual Next.js child. [Observed causes, uncertainty, validation and next controls](NEON_CONNECTION_RECOVERY.md). Existing receipt and 32 memories remain preserved.
+
 # November 1 targeted payment recovery
 
 Experiment 2's expired unsigned quote `d7b6a9ab-de6d-4921-ab93-09ae7763c1c7` is safely cancelled and retained for audit. The exact local invoice link restores existing active intents and accurately displays server capabilities. Request-scoped Neon pools and bounded diagnostics address backend connection failures previously hidden as generic errors. No fresh quote, wallet request or payment was generated; counts remain one settled receipt / zero settling / 32 memories. Local owner-authorized signing is enabled; production financial preparation/signing is still restricted by application policy, separately from permitted public wallet login. Physical production provider verdicts remain unverified. [Recovery, restrictions and next steps](EXPERIMENT_02_RECOVERY.md).

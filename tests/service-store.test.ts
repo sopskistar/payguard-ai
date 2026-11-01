@@ -101,7 +101,7 @@ beforeAll(async () => {
       recipient: null,
     },
   });
-});
+}, 30000); // Cold PGlite/WASM migration setup shares the existing 30s test budget.
 afterAll(async () => {
   await ((await db()) as unknown as { $client: PGlite }).$client.close();
   vi.unstubAllEnvs();
