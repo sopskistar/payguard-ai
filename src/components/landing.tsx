@@ -4,6 +4,7 @@ import { useClientReady } from './client-ready';
 import { AnimatePresence, motion, MotionConfig, useReducedMotion } from 'motion/react';
 import { ProductStory } from './product-story';
 import { PaymentEvidence } from './payment-evidence';
+import { DemoVideo } from './demo-video';
 import { Brand } from './brand';
 import tenants from '../../docs/evidence/two-tenant-mainnet-memory.json';
 import chain from '../../docs/evidence/tatum-reconciliation.json';
@@ -121,6 +122,7 @@ export function Landing() {
               <ShieldCheck size={15} /> Human decisions <i /> No supplier transfers
             </span>
           </div>
+          <DemoVideo />
           <section className="site-problem" id="problem">
             <div>
               <span className="site-eyebrow">THE DETAIL THAT CHANGES EVERYTHING</span>

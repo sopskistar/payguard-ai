@@ -4,6 +4,11 @@
 
 [Live application](https://payguard-ai-henna.vercel.app/) · [Memory Courtroom](https://payguard-ai-henna.vercel.app/courtroom) · [Instant demo](https://payguard-ai-henna.vercel.app/try) · [Mainnet proof](https://payguard-ai-henna.vercel.app/proof) · [Published article](https://sopskistar.github.io/payguard-ai/)
 
+<!-- APPROVED_DEMO_VIDEO_START -->
+
+**Recorded demo:** The owner is producing the official video separately. No finished recording is published yet. The interactive demo and Courtroom below are available now. [Video publication instructions](docs/DEMO_SCRIPT.md#publishing-the-approved-video).
+<!-- APPROVED_DEMO_VIDEO_END -->
+
 ## 1. Evaluate without a wallet or payment
 
 Open **[Memory Courtroom](https://payguard-ai-henna.vercel.app/courtroom)**. Select an existing synthetic experiment, compare Memory OFF and ON, expand the exact recalled job/blob sources, and replay the invoice attack. Play, Pause, Reset and Replay are available; reduced-motion users use the step buttons. The same review engine retains the human hold on both sides. This page replays dated genuine provider reads; it does not make live anonymous recalls or create trusted memories.

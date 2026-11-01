@@ -1,0 +1,75 @@
+{
+  "checkedAt": "2026-11-01T16:43:14.935Z",
+  "baseURL": "http://localhost:3005",
+  "storage": "New disposable local PGlite; not Neon",
+  "existingDataChanged": false,
+  "liveCredentials": false,
+  "financialSubmissions": false,
+  "memoryWrites": false,
+  "video": false,
+  "stats": {
+    "startTime": "2026-11-01T16:42:49.958Z",
+    "duration": 24942.849,
+    "expected": 11,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "tests": [
+    {
+      "title": "unfinished video stays absent from the three real public entry points",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "controlled player fixture loads only on keyboard activation, retains captions/fallback and fits mobile",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "judge never presents active walkthrough buttons before client readiness",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "judge completes all seven clear steps, with back navigation, real evidence and no account",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "public users cannot quote, approve or settle service fees",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "public wallet login is accessible independently of hosted financial signing",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "public official review selector connects only by choice, never signs or authenticates, and disconnects",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "wallet refusal remains with the official selector; no signature or fallback login follows",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "wallet sign-in uses a real personal signature; logout, replay and cross-user APIs are enforced",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "Wallet Standard connect UI signs in, switches accounts safely and fits mobile",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "wallet loading provides native recovery when JavaScript cannot load",
+      "status": "expected",
+      "annotations": []
+    }
+  ]
+}

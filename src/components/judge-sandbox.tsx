@@ -1,5 +1,6 @@
 'use client';
 import { Brand } from './brand';
+import { DemoVideo } from './demo-video';
 import { useRef, useState } from 'react';
 import Link from 'next/link';
 import { motion, MotionConfig, useReducedMotion } from 'motion/react';
@@ -185,6 +186,7 @@ export function JudgeSandbox() {
               decision.
             </p>
           </div>
+          <DemoVideo />
           <div className="journey-modes">
             <span>
               <i /> Synthetic supplier & callback

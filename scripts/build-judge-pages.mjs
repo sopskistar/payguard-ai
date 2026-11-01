@@ -2,6 +2,7 @@ import { build } from 'esbuild';
 import { mkdir, copyFile, writeFile, readFile } from 'node:fs/promises';
 await mkdir('docs/try/brand', { recursive: true });
 await copyFile('public/brand/icon.png', 'docs/try/brand/icon.png');
+await copyFile('public/demo-poster.svg', 'docs/try/demo-poster.svg');
 await build({
   entryPoints: ['scripts/judge-pages-entry.tsx'],
   bundle: true,
@@ -23,11 +24,10 @@ await build({
           resolveDir: process.cwd(),
           loader: 'js',
         }));
-        b.onLoad({ filter: /(?:judge-sandbox|brand)\.tsx$/ }, async (args) => ({
-          contents: (await readFile(args.path, 'utf8')).replaceAll(
-            'src="/brand/icon.png"',
-            'src="brand/icon.png"',
-          ),
+        b.onLoad({ filter: /(?:judge-sandbox|brand|demo-video)\.tsx$/ }, async (args) => ({
+          contents: (await readFile(args.path, 'utf8'))
+            .replaceAll('src="/brand/icon.png"', 'src="brand/icon.png"')
+            .replaceAll('src="/demo-poster.svg"', 'src="demo-poster.svg"'),
           loader: 'tsx',
           resolveDir: process.cwd() + '/src/components',
         }));

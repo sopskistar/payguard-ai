@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">PayGuard Verify product walkthrough</title>
+  <desc id="desc">Supplier instructions change. PayGuard retains human verification, recalls approved Walrus context and presents independently verified payment receipts.</desc>
+  <rect width="1600" height="900" rx="24" fill="#071722"/>
+  <path d="M0 700H1600M1150 0V900" stroke="#25434f" stroke-width="2"/>
+  <text x="100" y="130" fill="#3fe3bd" font-family="Arial,sans-serif" font-size="38" font-weight="700">PayGuard Verify</text>
+  <text x="100" y="290" fill="#edf7f7" font-family="Arial,sans-serif" font-size="76" letter-spacing="-3">The supplier changed.</text>
+  <text x="100" y="390" fill="#6de8c7" font-family="Arial,sans-serif" font-size="76" letter-spacing="-3">Verification stays.</text>
+  <text x="100" y="475" fill="#aac0ca" font-family="Arial,sans-serif" font-size="30">A recorded product walkthrough with inspectable Mainnet evidence.</text>
+  <g font-family="Arial,sans-serif" font-size="27" fill="#edf7f7">
+    <rect x="100" y="565" width="350" height="76" rx="14" fill="#102c36" stroke="#3fe3bd"/><text x="130" y="613">Human verification</text>
+    <rect x="480" y="565" width="350" height="76" rx="14" fill="#102c36" stroke="#3fe3bd"/><text x="510" y="613">Approved memory</text>
+    <rect x="860" y="565" width="370" height="76" rx="14" fill="#102c36" stroke="#3fe3bd"/><text x="890" y="613">Verified receipts</text>
+  </g>
+  <text x="100" y="795" fill="#a9c5cf" font-family="Arial,sans-serif" font-size="28">SYNTHETIC SCENARIOS · GENUINE STORAGE AND TRANSACTION EVIDENCE</text>
+</svg>

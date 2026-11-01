@@ -20,3 +20,18 @@ Use saved evidence only. Show the Courtroom's captured timestamp and synthetic l
 ## Final submission handoff
 
 The official Submit Project button at https://recall-tatum-walrus.vercel.app/ opens an embedded form. Deadline: November 10, 2026, 17:00 UTC. The owner supplies contact/account identifiers, repository, article/documentation links and the recorded 2–3 minute video. No form has been submitted by this work.
+
+## Publishing the approved video
+
+The official recording is still supplied by the owner. No video has been created or published by this integration. While `src/content/demo-video.json` has `approved: false`, the homepage, public walkthrough and proof page render no video section, placeholder player or third-party media request.
+
+After the owner supplies the final approved URL:
+
+1. Use an unlisted/public YouTube video with embedding enabled, or an owner-approved Vimeo video. Private, age/region-restricted or embed-disabled videos may not work for anonymous judges. Other hosts need a separate exact-host adapter and CSP review; do not allow arbitrary iframe URLs.
+2. Upload accurate captions on the host and verify its CC control. Optionally supply a public HTTPS transcript URL. The integration requests captions by default; that request does not create captions or prove that the host has a track.
+3. Update only the public `watchUrl`, `title`, `captionLanguage`, optional `transcriptUrl` and `approved: true` in `src/content/demo-video.json`. Never put passwords, signing material or private sharing tokens in this public file. Vimeo unlisted identifiers are intentionally public when published here.
+4. Replace the marked recorded-demo paragraph near HOW TO TEST in README with the approved watch link and, if desired, a linked `public/demo-poster.svg` image. Keep synthetic-scenario, owner-controlled-payment and physical-provider limitations consistent with current evidence. The existing poster illustrates the product; replace it with an approved non-sensitive still if preferred.
+5. Run `npm run judge:publish-build`, focused video tests, lint/TypeScript/formatting and `npm run build`. Commit/push and verify the actual production SHA. Do not add a large MP4 to Git.
+6. In a signed-out browser, check `/`, `/try`, `/proof` and the static judge artifact. Verify the poster, keyboard activation, external watch link, actual playback, CC, optional transcript, fullscreen and mobile widths 360/390/430px. The iframe loads only after the judge deliberately clicks. No video autoplays. CSP allows only YouTube's privacy-enhanced frame host and Vimeo's player host; PayGuard's anti-framing and wallet protections remain intact.
+
+The controlled player tests intercept an invented video identifier and never play real footage. They verify component behavior, not acceptance of the owner's final video. Actual playback/captions verification remains pending until that URL is provided.
