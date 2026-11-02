@@ -39,3 +39,28 @@ test('public wallet login is accessible independently of hosted financial signin
   await page.getByRole('link', { name: /Try without a wallet/ }).click();
   await expect(page).toHaveURL(/\/try$/);
 });
+
+test('wallet registration loads its real controls at 360, 390 and 430px without a recovery screen', async ({
+  page,
+}) => {
+  const failures: string[] = [];
+  page.on('pageerror', (error) => failures.push(error.name));
+  for (const width of [360, 390, 430]) {
+    await page.setViewportSize({ width, height: 844 });
+    await visit(page, '/connect');
+    await expect(
+      page.getByRole('heading', { name: 'Connect Sui Wallet', exact: true }),
+    ).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'We couldn’t open this view.' })).toHaveCount(0);
+    const connect = page.getByRole('button', { name: 'Connect Wallet', exact: true });
+    await expect(connect).toBeEnabled();
+    await connect.click();
+    await expect(
+      page.getByRole('button', { name: 'Use existing Slush web account', exact: true }),
+    ).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(
+      true,
+    );
+  }
+  expect(failures).toEqual([]);
+});

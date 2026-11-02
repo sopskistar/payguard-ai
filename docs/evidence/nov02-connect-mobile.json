@@ -1,0 +1,58 @@
+{
+  "checkedAt": "2026-11-02T10:49:34.933143+00:00",
+  "origin": "https://payguard-ai-henna.vercel.app",
+  "applicationSourceCommit": "5f49f5ea02b6d4e9aaaa1cb6e7c7bcdc06b9ac5d",
+  "deployedCommitAtRetake": "25dc249116ff71b68c3e642414ff08d34ac01eb9",
+  "initialFocusedRun": {
+    "startTime": "2026-11-02T10:45:30.391Z",
+    "duration": 13794.455,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  },
+  "initialFailure": "Read-only navigation interrupted by Chromium chrome-error navigation after ERR_NETWORK_CHANGED; independent new mobile case passed.",
+  "finalFocusedRun": {
+    "startTime": "2026-11-02T10:48:44.907Z",
+    "duration": 13632.091,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "freshIndependentSessions": [
+    {
+      "width": 390,
+      "connectHeading": 1,
+      "recoveryScreen": 0,
+      "errors": [],
+      "consoleErrors": []
+    },
+    {
+      "width": 390,
+      "connectHeading": 1,
+      "recoveryScreen": 0,
+      "errors": [],
+      "consoleErrors": []
+    },
+    {
+      "width": 360,
+      "connectHeading": 1,
+      "recoveryScreen": 0,
+      "errors": [],
+      "consoleErrors": []
+    },
+    {
+      "width": 430,
+      "connectHeading": 1,
+      "recoveryScreen": 0,
+      "errors": [],
+      "consoleErrors": []
+    }
+  ],
+  "applicationCodeChanged": false,
+  "testHarnessChange": "Allow 300ms for Chrome error-page commit before the existing single read-only ERR_NETWORK_CHANGED retry; no application errors, POSTs or wallet/provider actions retried.",
+  "initialScreenshotCause": "Unproven; initial diagnostic log was not captured.",
+  "financialSubmissions": 0,
+  "memoryWrites": 0
+}

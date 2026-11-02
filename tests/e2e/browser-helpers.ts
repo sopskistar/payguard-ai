@@ -100,7 +100,10 @@ export async function visit(page: Page, url: string, options?: Parameters<Page['
       type: 'transport-retry',
       description: 'One read-only navigation retried after browser ERR_NETWORK_CHANGED.',
     });
-    // Retry the read directly. Error-page CDP targets may already have detached.
+    // Chromium may still be committing its own chrome-error navigation after
+    // reporting the transport reset. Let that finish before the single read retry.
+    // This does not retry an application error, signature, POST or provider action.
+    await page.waitForTimeout(300);
     return page.goto(url, options);
   }
 }

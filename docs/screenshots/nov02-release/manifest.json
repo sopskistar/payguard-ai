@@ -190,5 +190,38 @@
     "paymentSigningAllowed": true,
     "review": "Wallet providers decide whether to permit this origin. Stop if a provider warns or refuses. Message login is separate from financial signing."
   },
-  "unapprovedVideoAbsent": true
+  "unapprovedVideoAbsent": true,
+  "connectRetakes": [
+    {
+      "width": 360,
+      "headingVisible": true,
+      "connectControlVisible": true,
+      "browserErrors": [],
+      "commit": "25dc249116ff71b68c3e642414ff08d34ac01eb9",
+      "capturedAt": "2026-11-02T10:48:09.452Z"
+    },
+    {
+      "width": 390,
+      "headingVisible": true,
+      "connectControlVisible": true,
+      "browserErrors": [],
+      "commit": "25dc249116ff71b68c3e642414ff08d34ac01eb9",
+      "capturedAt": "2026-11-02T10:48:15.324Z"
+    },
+    {
+      "width": 430,
+      "headingVisible": true,
+      "connectControlVisible": true,
+      "browserErrors": [],
+      "commit": "25dc249116ff71b68c3e642414ff08d34ac01eb9",
+      "capturedAt": "2026-11-02T10:48:22.481Z"
+    }
+  ],
+  "initialCaptureIssue": {
+    "width": 390,
+    "route": "/connect",
+    "observed": "Global recovery screen; original capture checked only HTTP status and overflow, missing this condition",
+    "cause": "Initial cause unverified because no diagnostic log was captured. Later tests observed browser ERR_NETWORK_CHANGED and a racing chrome-error navigation; four independent sessions and the targeted mobile test passed. These transport observations are separate from provider warnings.",
+    "preservedScreenshot": "docs/screenshots/nov02-release/connect-390-initial-recovery.png"
+  }
 }
