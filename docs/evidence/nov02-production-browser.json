@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-11-02T10:26:11.230598+00:00",
+  "origin": "https://payguard-ai-henna.vercel.app",
+  "commit": "5f49f5ea02b6d4e9aaaa1cb6e7c7bcdc06b9ac5d",
+  "providerMocked": false,
+  "physicalWalletAcceptance": false,
+  "purpose": "Anonymous real Production routes and evidence; no extension connection or private auth",
+  "stats": {
+    "startTime": "2026-11-02T10:17:21.553Z",
+    "duration": 48489.717,
+    "expected": 8,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "financialSubmissions": 0,
+  "memoryWrites": 0
+}

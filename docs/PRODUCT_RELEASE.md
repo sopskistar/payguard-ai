@@ -1,3 +1,15 @@
+# November 2 verified continuation
+
+Checkout source `5f49f5ea02b6d4e9aaaa1cb6e7c7bcdc06b9ac5d` is deployed and Vercel Ready. Ordinary SUI coin funding now has a strictly checked fallback, with successful unsigned Tatum Mainnet simulation and hosted Tentacle verification. Nightly free Production login/private workspace are owner-confirmed; financial signing remains subject to a separate physical approval. Slush’s Production warning was reproduced and respected. [Compatibility](COIN_FUNDING_COMPATIBILITY.md) · [provider evidence](evidence/nightly-physical-acceptance.json).
+
+Validation passed: 208 unit/integration tests, 36 disposable local browser checks (two live skips), eight actual Production browser checks, 16 desktop/mobile screenshots with no overflow, and six saved-receipt reopenings. Complete receipt content and original 32 memory identities remain unchanged. No fourth payment or extra memory was created. [Current ledger](TEST_RESULTS.md).
+
+The official 2:45 review cut is rendered in native-source 4K plus 1080p, with synchronized captions, complete segmented playback checks and technical specifications. [Review package](demo/README.md). MP4s are local ignored artifacts; owner approval and a public host URL remain necessary before embedding. No form was submitted. The following describes the previous release baseline and its historical limitations.
+
+---
+
+## November 1 baseline
+
 # Final hackathon release — PayGuard Verify
 
 [Live app](https://payguard-ai-henna.vercel.app/) · [Memory Courtroom](https://payguard-ai-henna.vercel.app/courtroom) · [Judge demo](https://payguard-ai-henna.vercel.app/try) · [Proof](https://payguard-ai-henna.vercel.app/proof) · [Article](https://sopskistar.github.io/payguard-ai/)

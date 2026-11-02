@@ -31,5 +31,12 @@
   "automatedFixtureCoverage": "36 isolated browser checks passed, 2 live tests skipped; not physical provider certification.",
   "currentQaSetup": "Official package downloaded again with identical verified hash. New isolated unfunded setup stalled before PayGuard connection; no app incompatibility established.",
   "financialSubmissions": 0,
-  "memoryWrites": 0
+  "memoryWrites": 0,
+  "officialPackageStaticInspection": {
+    "extensionVersion": "1.51.49",
+    "sha256": "b8cc0011ccdc88b524785cc6002d3a8ccd639c50c72d5192f0df3554b7996c71",
+    "advertises": ["sui:signPersonalMessage", "sui:signTransaction", "sui:mainnet"],
+    "includesSuiSerializationKinds": ["ValidDuring", "FundsWithdrawal"],
+    "scope": "Official package source inspection; does not prove owner extension version or a physical financial signature."
+  }
 }

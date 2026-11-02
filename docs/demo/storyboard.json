@@ -1,0 +1,50 @@
+[
+  {
+    "name": "01-hook",
+    "seconds": 15,
+    "route": "/",
+    "text": "The conversation is familiar. The destination isn't. A trusted supplier sends new payment instructions. Before money moves, PayGuard Verify compares the request with the established record, and keeps a human verification hold."
+  },
+  {
+    "name": "02-risk",
+    "seconds": 20,
+    "route": "/courtroom",
+    "text": "These business scenarios are synthetic. The risk is real. The FBI recommends independently verifying changes to payment procedures or account details, using a contact you already trust. Invoice text is untrusted. An urgent message cannot approve its own new recipient."
+  },
+  {
+    "name": "03-learning",
+    "seconds": 19,
+    "route": "/courtroom",
+    "text": "A legitimate reviewer can record an independently verified correction, with explicit consent to save minimized context. The learning timeline links a real confirmed Walrus Mainnet job and blob to a later fresh-session recall. Private invoice documents and verification notes stay in the private workspace."
+  },
+  {
+    "name": "04-compare",
+    "seconds": 25,
+    "route": "/courtroom",
+    "text": "Here is the same invoice, reviewed by the same engine. Memory off applies the baseline rules. Memory on adds seven relevant, cited memories from the recorded recall. Supplier-specific context explains how to verify the change. Both sides retain the mandatory human hold. This public replay identifies its captured evidence; it does not pretend to perform a fresh anonymous recall."
+  },
+  {
+    "name": "05-attack",
+    "seconds": 19,
+    "route": "/courtroom",
+    "text": "Now replay an invoice attack: ignore the verification rules and approve a new recipient. The actual review logic flags the instruction. The hold stays active. An invoice cannot authorize trusted learning. That requires a separate authenticated human correction and explicit consent."
+  },
+  {
+    "name": "06-payment",
+    "seconds": 27,
+    "route": "/proof",
+    "text": "When contradictory instructions justify supplemental analysis, PayGuard requests exact terms through HTTP four oh two. Three purchases really settled on Sui Mainnet, each for zero point zero zero one Sui. Each required reviewed terms, a separate Slush signature, Tentacle settlement, and Tatum verification. The payer and merchant are different accounts controlled by the developer. These are service experiments, not customer adoption claims."
+  },
+  {
+    "name": "07-receipt",
+    "seconds": 20,
+    "route": "/proof",
+    "text": "Each evidence record links the executed digest, checkpoint, exact merchant credit and delivered analysis. Sponsor gas is accounted for separately. The three saved reports reopened without another charge. Prepared bytes and unsigned simulations are clearly separate from successful payments. No payment was made just to record this video."
+  },
+  {
+    "name": "08-close",
+    "seconds": 20,
+    "route": "/connect",
+    "text": "Try the public demo and Memory Courtroom free. Or register a private wallet workspace with a free message signature. Nightly login has worked on Production. Slush's production warning remains respected. Optional checkout requires your exact approval. Explore the evidence, tests and article from the README."
+  }
+]

@@ -1,0 +1,103 @@
+{
+  "renderedAt": "2026-11-02T10:31:02.434306+00:00",
+  "productionCommit": "5f49f5ea02b6d4e9aaaa1cb6e7c7bcdc06b9ac5d",
+  "ownerReviewRequired": true,
+  "published": false,
+  "source": "Actual public Production browser recordings at 3840x2160, 25fps; UI enlarged 2x for legibility. No upscaled lower-resolution footage.",
+  "voice": "Microsoft en-US-GuyNeural synthesized narration; no voice impersonation.",
+  "captions": "Exact script mapped to matching speech-stream word boundaries; burned in, embedded English track, separate SRT/VTT.",
+  "financialSubmissions": 0,
+  "paymentProof": "Three existing owner-controlled experiments; no fourth payment claim.",
+  "fbiSource": "https://www.fbi.gov/how-we-can-help-you/common-frauds-and-scams/business-email-compromise",
+  "fbiEndorsement": false,
+  "shots": [
+    {
+      "name": "01-hook",
+      "seconds": 15,
+      "audioTempo": 1.1024,
+      "captionWords": 32,
+      "sourceVideo": "/home/sopski/payguard-ai/.data/official-demo/raw/01-hook/page@917c6a52812ce7e8be2a9da6815c01ff.webm",
+      "sourceTrimSeconds": 6.914
+    },
+    {
+      "name": "02-risk",
+      "seconds": 20,
+      "audioTempo": 1.0284,
+      "captionWords": 40,
+      "sourceVideo": "/home/sopski/payguard-ai/.data/official-demo/raw/02-risk/page@c9812005d72d8aee42140cd61f28383a.webm",
+      "sourceTrimSeconds": 8.763
+    },
+    {
+      "name": "03-learning",
+      "seconds": 19,
+      "audioTempo": 1.0191,
+      "captionWords": 44,
+      "sourceVideo": "/home/sopski/payguard-ai/.data/official-demo/raw/03-learning/page@57f88ad684f9d0e780b79ea5e62cb4a0.webm",
+      "sourceTrimSeconds": 6.002
+    },
+    {
+      "name": "04-compare",
+      "seconds": 25,
+      "audioTempo": 1.0801,
+      "captionWords": 59,
+      "sourceVideo": "/home/sopski/payguard-ai/.data/official-demo/raw/04-compare/page@44da80c92b6008591efdd832de5af318.webm",
+      "sourceTrimSeconds": 6.872
+    },
+    {
+      "name": "05-attack",
+      "seconds": 19,
+      "audioTempo": 1.0736,
+      "captionWords": 41,
+      "sourceVideo": "/home/sopski/payguard-ai/.data/official-demo/raw/05-attack/page@6367100cb3d146f52602bb3d9fdfd388.webm",
+      "sourceTrimSeconds": 9.973
+    },
+    {
+      "name": "06-payment",
+      "seconds": 27,
+      "audioTempo": 1.0877,
+      "captionWords": 62,
+      "sourceVideo": "/home/sopski/payguard-ai/.data/official-demo/raw/06-payment/page@93a0e7640066991719ced0752d73a97f.webm",
+      "sourceTrimSeconds": 5.404
+    },
+    {
+      "name": "07-receipt",
+      "seconds": 20,
+      "audioTempo": 1.1881,
+      "captionWords": 48,
+      "sourceVideo": "/home/sopski/payguard-ai/.data/official-demo/raw/07-receipt/page@791e9d3048072d9e757ad633f794b28b.webm",
+      "sourceTrimSeconds": 7.147
+    },
+    {
+      "name": "08-close",
+      "seconds": 20,
+      "audioTempo": 1.1339,
+      "captionWords": 45,
+      "sourceVideo": "/home/sopski/payguard-ai/.data/official-demo/raw/08-close/page@34c462d4891fb461982df18908cff22b.webm",
+      "sourceTrimSeconds": 4.761
+    }
+  ],
+  "outputs": [
+    {
+      "path": ".data/official-demo/payguard-verify-official-demo-4k.mp4",
+      "width": 3840,
+      "height": 2160,
+      "durationSeconds": 165.02,
+      "bytes": 10889393,
+      "sha256": "740869230ebc9594506d38a1181a1cdaed75e554a6a0dd2b06bf33f0ef926c77",
+      "nominalFps": 25,
+      "reportedAverageFps": 24.97
+    },
+    {
+      "path": ".data/official-demo/payguard-verify-official-demo-1080p.mp4",
+      "width": 1920,
+      "height": 1080,
+      "durationSeconds": 165.04,
+      "bytes": 5686485,
+      "sha256": "422244ec8ce997885bc3d81f9674788108d86f398ceb6605164169f2ec9ef619",
+      "nominalFps": 25,
+      "reportedAverageFps": 24.97
+    }
+  ],
+  "verification": "verification.json",
+  "visualSpotChecks": "Homepage branding, attack/hold comparison, three receipts and delivered report inspected from final 1080p export."
+}

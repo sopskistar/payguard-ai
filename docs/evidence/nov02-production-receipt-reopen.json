@@ -1,0 +1,67 @@
+{
+  "checkedAt": "2026-11-02T10:23:40.790Z",
+  "origin": "https://payguard-ai-henna.vercel.app",
+  "authenticatedRole": "owner",
+  "operation": "Reopen existing settled receipt only; resume route discards any payment payload",
+  "results": [
+    {
+      "intentId": "4a4d6014-5e9e-430d-8bcb-dad596733876",
+      "attempt": 1,
+      "status": 200,
+      "digest": "4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA",
+      "receiptId": "ded5c799-ccc3-4c64-b813-34093325ecb1",
+      "reportPresent": true
+    },
+    {
+      "intentId": "4a4d6014-5e9e-430d-8bcb-dad596733876",
+      "attempt": 2,
+      "status": 200,
+      "digest": "4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA",
+      "receiptId": "ded5c799-ccc3-4c64-b813-34093325ecb1",
+      "reportPresent": true
+    },
+    {
+      "intentId": "d31d1a52-b0b3-4c5c-ba82-5902c5eaef4f",
+      "attempt": 1,
+      "status": 200,
+      "digest": "xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r",
+      "receiptId": "ce6ea6a2-f13f-4c56-af79-3ec5c7a110db",
+      "reportPresent": true
+    },
+    {
+      "intentId": "d31d1a52-b0b3-4c5c-ba82-5902c5eaef4f",
+      "attempt": 2,
+      "status": 200,
+      "digest": "xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r",
+      "receiptId": "ce6ea6a2-f13f-4c56-af79-3ec5c7a110db",
+      "reportPresent": true
+    },
+    {
+      "intentId": "51d204df-71fd-44a6-ac4a-c8e0c50b4cf5",
+      "attempt": 1,
+      "status": 200,
+      "digest": "68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx",
+      "receiptId": "40d3c429-0b19-4c68-aa87-9726f3fb43b8",
+      "reportPresent": true
+    },
+    {
+      "intentId": "51d204df-71fd-44a6-ac4a-c8e0c50b4cf5",
+      "attempt": 2,
+      "status": 200,
+      "digest": "68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx",
+      "receiptId": "40d3c429-0b19-4c68-aa87-9726f3fb43b8",
+      "reportPresent": true
+    }
+  ],
+  "before": {
+    "receipts": 3,
+    "submissions": 3
+  },
+  "after": {
+    "receipts": 3,
+    "submissions": 3
+  },
+  "financialSignatures": 0,
+  "newSettlementRequests": 0,
+  "ok": true
+}

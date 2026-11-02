@@ -1,3 +1,5 @@
+> November 2: the three settled experiments below remain unchanged. One additional 0.001 SUI Nightly customer purchase is requested but **not signed, submitted or settled**. The owner’s address field contained a placeholder; exact payer confirmation and the owner’s separate Nightly approval remain pending. Fresh read found 0.012446622 SUI on the matching candidate account, entirely address balance, with no conversion required. [Read-only evidence](evidence/nightly-funding-read.json) · [next controls](COIN_FUNDING_COMPATIBILITY.md#funded-members-next-controls).
+
 # Three verified Mainnet x402 purchases
 
 Verified 2026-11-01T12:37:34.178Z through authenticated Tatum Sui Mainnet gRPC and persisted Neon records.

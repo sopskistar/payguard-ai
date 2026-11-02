@@ -1,0 +1,17 @@
+{
+  "checkedAt": "2026-11-02T10:26:14.818Z",
+  "source": "Tatum Sui Mainnet gRPC",
+  "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+  "readOnly": true,
+  "candidateWalletFingerprint": "77c3f011f5975458",
+  "candidateAddressSuffix": "c42365fa",
+  "availableTotalAtomic": "12446622",
+  "addressAtomic": "12446622",
+  "coinAtomic": "0",
+  "quotePriceAtomic": "1000000",
+  "conversionRequiredForCandidate": false,
+  "ownerExactAddressConfirmationPending": true,
+  "ownerReportedPhysicalNightlyLogin": true,
+  "financialSignatures": 0,
+  "financialSubmissions": 0
+}

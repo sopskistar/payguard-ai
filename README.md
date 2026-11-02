@@ -6,7 +6,7 @@
 
 <!-- APPROVED_DEMO_VIDEO_START -->
 
-**Recorded demo:** The official recording is being prepared for owner review. No approved recording is published yet. The interactive demo and Courtroom below are available now. [Video publication instructions](docs/DEMO_SCRIPT.md#publishing-the-approved-video).
+**Recorded demo:** The official 2:45 review cut is rendered locally in 4K and 1080p, with captions. Owner approval and a public host URL are still pending; no recording is published yet. [Review package, transcript and captions](docs/demo/README.md). The interactive demo and Courtroom below are available now. [Video publication instructions](docs/DEMO_SCRIPT.md#publishing-the-approved-video).
 <!-- APPROVED_DEMO_VIDEO_END -->
 
 ## 1. Evaluate without a wallet or payment
@@ -86,7 +86,7 @@ The QA runner creates a new disposable PGlite database and disables live payment
 
 [Judge walkthrough](docs/JUDGE_WALKTHROUGH.md) · [2–3 minute recording script and shot plan](docs/DEMO_SCRIPT.md) · [Article source](docs/HACKATHON_ARTICLE_DRAFT.md) · [Current release](docs/PRODUCT_RELEASE.md).
 
-Official [Total Recall event](https://tatum.io/hackathon/total-recall) and [submission page](https://recall-tatum-walrus.vercel.app/) were checked against current requirements. Deadline: **November 10, 2026, 17:00 UTC**. Use Submit Project on the official page; it opens an embedded form. The owner must supply the required contact/account identifiers and the separately recorded 2–3 minute video. No form was submitted and no video was created by this work.
+Official [Total Recall event](https://tatum.io/hackathon/total-recall) and [submission page](https://recall-tatum-walrus.vercel.app/) were checked against current requirements. Deadline: **November 10, 2026, 17:00 UTC**. Use Submit Project on the official page; it opens an embedded form. The owner must supply the required contact/account identifiers, approve the rendered 2:45 video and provide its public host URL. No form or video was published by this work.
 
 ## Architecture and limits
 

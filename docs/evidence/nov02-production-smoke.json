@@ -1,0 +1,194 @@
+{
+  "capturedAt": "2026-11-02T10:18:35.748Z",
+  "commit": "5f49f5ea02b6d4e9aaaa1cb6e7c7bcdc06b9ac5d",
+  "zoom": "100%; deviceScaleFactor 1; no page CSS enlargement",
+  "screenshots": [
+    {
+      "route": "/",
+      "width": 1440,
+      "path": "docs/screenshots/nov02-release/home-1440.png"
+    },
+    {
+      "route": "/courtroom",
+      "width": 1440,
+      "path": "docs/screenshots/nov02-release/courtroom-1440.png"
+    },
+    {
+      "route": "/connect",
+      "width": 1440,
+      "path": "docs/screenshots/nov02-release/connect-1440.png"
+    },
+    {
+      "route": "/proof",
+      "width": 1440,
+      "path": "docs/screenshots/nov02-release/proof-1440.png"
+    },
+    {
+      "route": "/",
+      "width": 360,
+      "path": "docs/screenshots/nov02-release/home-360.png"
+    },
+    {
+      "route": "/courtroom",
+      "width": 360,
+      "path": "docs/screenshots/nov02-release/courtroom-360.png"
+    },
+    {
+      "route": "/connect",
+      "width": 360,
+      "path": "docs/screenshots/nov02-release/connect-360.png"
+    },
+    {
+      "route": "/proof",
+      "width": 360,
+      "path": "docs/screenshots/nov02-release/proof-360.png"
+    },
+    {
+      "route": "/",
+      "width": 390,
+      "path": "docs/screenshots/nov02-release/home-390.png"
+    },
+    {
+      "route": "/courtroom",
+      "width": 390,
+      "path": "docs/screenshots/nov02-release/courtroom-390.png"
+    },
+    {
+      "route": "/connect",
+      "width": 390,
+      "path": "docs/screenshots/nov02-release/connect-390.png"
+    },
+    {
+      "route": "/proof",
+      "width": 390,
+      "path": "docs/screenshots/nov02-release/proof-390.png"
+    },
+    {
+      "route": "/",
+      "width": 430,
+      "path": "docs/screenshots/nov02-release/home-430.png"
+    },
+    {
+      "route": "/courtroom",
+      "width": 430,
+      "path": "docs/screenshots/nov02-release/courtroom-430.png"
+    },
+    {
+      "route": "/connect",
+      "width": 430,
+      "path": "docs/screenshots/nov02-release/connect-430.png"
+    },
+    {
+      "route": "/proof",
+      "width": 430,
+      "path": "docs/screenshots/nov02-release/proof-430.png"
+    }
+  ],
+  "routes": [
+    {
+      "route": "/",
+      "width": 1440,
+      "status": 200,
+      "horizontalOverflow": false
+    },
+    {
+      "route": "/courtroom",
+      "width": 1440,
+      "status": 200,
+      "horizontalOverflow": false
+    },
+    {
+      "route": "/connect",
+      "width": 1440,
+      "status": 200,
+      "horizontalOverflow": false
+    },
+    {
+      "route": "/proof",
+      "width": 1440,
+      "status": 200,
+      "horizontalOverflow": false
+    },
+    {
+      "route": "/",
+      "width": 360,
+      "status": 200,
+      "horizontalOverflow": false
+    },
+    {
+      "route": "/courtroom",
+      "width": 360,
+      "status": 200,
+      "horizontalOverflow": false
+    },
+    {
+      "route": "/connect",
+      "width": 360,
+      "status": 200,
+      "horizontalOverflow": false
+    },
+    {
+      "route": "/proof",
+      "width": 360,
+      "status": 200,
+      "horizontalOverflow": false
+    },
+    {
+      "route": "/",
+      "width": 390,
+      "status": 200,
+      "horizontalOverflow": false
+    },
+    {
+      "route": "/courtroom",
+      "width": 390,
+      "status": 200,
+      "horizontalOverflow": false
+    },
+    {
+      "route": "/connect",
+      "width": 390,
+      "status": 200,
+      "horizontalOverflow": false
+    },
+    {
+      "route": "/proof",
+      "width": 390,
+      "status": 200,
+      "horizontalOverflow": false
+    },
+    {
+      "route": "/",
+      "width": 430,
+      "status": 200,
+      "horizontalOverflow": false
+    },
+    {
+      "route": "/courtroom",
+      "width": 430,
+      "status": 200,
+      "horizontalOverflow": false
+    },
+    {
+      "route": "/connect",
+      "width": 430,
+      "status": 200,
+      "horizontalOverflow": false
+    },
+    {
+      "route": "/proof",
+      "width": 430,
+      "status": 200,
+      "horizontalOverflow": false
+    }
+  ],
+  "financialSubmissions": 0,
+  "memoryWrites": 0,
+  "walletCapabilities": {
+    "allowed": true,
+    "slushBlocked": false,
+    "paymentSigningAllowed": true,
+    "review": "Wallet providers decide whether to permit this origin. Stop if a provider warns or refuses. Message login is separate from financial signing."
+  },
+  "unapprovedVideoAbsent": true
+}

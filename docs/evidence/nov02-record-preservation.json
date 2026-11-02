@@ -24,5 +24,9 @@
   ],
   "originalMemoryTuplesUnchanged": true,
   "allThreePublishedReceiptIdentitiesAndCreditsMatch": true,
-  "fullReceiptContentBaseline": "Current three-receipt fingerprint saved for subsequent comparison. Historical before/after hashes covered only Experiment 1, before the later two purchases."
+  "fullReceiptContentBaseline": "Current three-receipt fingerprint saved for subsequent comparison. Historical before/after hashes covered only Experiment 1, before the later two purchases.",
+  "finalCheckedAt": "2026-11-02T10:30:28.727Z",
+  "releaseBaselineAt": "2026-11-02T10:06:23.220Z",
+  "releaseMemoryContentUnchanged": true,
+  "releaseFullReceiptContentUnchanged": true
 }

@@ -1,0 +1,125 @@
+{
+  "fullDurationCoveredSecondsPerExport": 165,
+  "segmentedDecode": [
+    {
+      "file": "payguard-verify-official-demo-4k.mp4",
+      "fromSeconds": 0,
+      "seconds": 15,
+      "videoAudioDecodeErrors": 0
+    },
+    {
+      "file": "payguard-verify-official-demo-4k.mp4",
+      "fromSeconds": 15,
+      "seconds": 20,
+      "videoAudioDecodeErrors": 0
+    },
+    {
+      "file": "payguard-verify-official-demo-4k.mp4",
+      "fromSeconds": 35,
+      "seconds": 19,
+      "videoAudioDecodeErrors": 0
+    },
+    {
+      "file": "payguard-verify-official-demo-4k.mp4",
+      "fromSeconds": 54,
+      "seconds": 25,
+      "videoAudioDecodeErrors": 0
+    },
+    {
+      "file": "payguard-verify-official-demo-4k.mp4",
+      "fromSeconds": 79,
+      "seconds": 19,
+      "videoAudioDecodeErrors": 0
+    },
+    {
+      "file": "payguard-verify-official-demo-4k.mp4",
+      "fromSeconds": 98,
+      "seconds": 27,
+      "videoAudioDecodeErrors": 0
+    },
+    {
+      "file": "payguard-verify-official-demo-4k.mp4",
+      "fromSeconds": 125,
+      "seconds": 20,
+      "videoAudioDecodeErrors": 0
+    },
+    {
+      "file": "payguard-verify-official-demo-4k.mp4",
+      "fromSeconds": 145,
+      "seconds": 20,
+      "videoAudioDecodeErrors": 0
+    },
+    {
+      "file": "payguard-verify-official-demo-1080p.mp4",
+      "fromSeconds": 0,
+      "seconds": 15,
+      "videoAudioDecodeErrors": 0
+    },
+    {
+      "file": "payguard-verify-official-demo-1080p.mp4",
+      "fromSeconds": 15,
+      "seconds": 20,
+      "videoAudioDecodeErrors": 0
+    },
+    {
+      "file": "payguard-verify-official-demo-1080p.mp4",
+      "fromSeconds": 35,
+      "seconds": 19,
+      "videoAudioDecodeErrors": 0
+    },
+    {
+      "file": "payguard-verify-official-demo-1080p.mp4",
+      "fromSeconds": 54,
+      "seconds": 25,
+      "videoAudioDecodeErrors": 0
+    },
+    {
+      "file": "payguard-verify-official-demo-1080p.mp4",
+      "fromSeconds": 79,
+      "seconds": 19,
+      "videoAudioDecodeErrors": 0
+    },
+    {
+      "file": "payguard-verify-official-demo-1080p.mp4",
+      "fromSeconds": 98,
+      "seconds": 27,
+      "videoAudioDecodeErrors": 0
+    },
+    {
+      "file": "payguard-verify-official-demo-1080p.mp4",
+      "fromSeconds": 125,
+      "seconds": 20,
+      "videoAudioDecodeErrors": 0
+    },
+    {
+      "file": "payguard-verify-official-demo-1080p.mp4",
+      "fromSeconds": 145,
+      "seconds": 20,
+      "videoAudioDecodeErrors": 0
+    }
+  ],
+  "streams": [
+    {
+      "file": "payguard-verify-official-demo-4k.mp4",
+      "probe": [
+        "Duration: 00:02:45.02, start: 0.000000, bitrate: 527 kb/s",
+        "Stream #0:0[0x1](eng): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 3840x2160 [SAR 1:1 DAR 16:9], 376 kb/s, 24.97 fps, 25 tbr, 12800 tbn, start 0.021328 (default)",
+        "Stream #0:1[0x2](und): Audio: aac (LC) (mp4a / 0x6134706D), 48000 Hz, mono, fltp, 145 kb/s (default)",
+        "Stream #0:2[0x3](eng): Subtitle: mov_text (tx3g / 0x67337874), 0 kb/s (default)"
+      ],
+      "audioLevels": ["mean_volume: -17.1 dB", "max_volume: -1.5 dB"]
+    },
+    {
+      "file": "payguard-verify-official-demo-1080p.mp4",
+      "probe": [
+        "Duration: 00:02:45.04, start: 0.000000, bitrate: 275 kb/s",
+        "Stream #0:0[0x1](eng): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 1920x1080 [SAR 1:1 DAR 16:9], 124 kb/s, 24.97 fps, 25 tbr, 12800 tbn, start 0.040000 (default)",
+        "Stream #0:1[0x2](und): Audio: aac (LC) (mp4a / 0x6134706D), 48000 Hz, mono, fltp, 145 kb/s (default)",
+        "Stream #0:2[0x3](eng): Subtitle: mov_text (tx3g / 0x67337874), 0 kb/s (default)"
+      ],
+      "audioLevels": ["mean_volume: -17.1 dB", "max_volume: -1.5 dB"]
+    }
+  ],
+  "earlierUnboundedDecode": "Process terminated with exit 143; replaced by bounded segment checks.",
+  "ownerCreativeReviewPending": true
+}

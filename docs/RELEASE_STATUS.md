@@ -1,3 +1,13 @@
+# November 2 Production and recording handoff
+
+Checkout source `5f49f5ea02b6d4e9aaaa1cb6e7c7bcdc06b9ac5d` is Vercel Ready. Eight actual public Production browser checks passed; 16 100%-zoom desktop/mobile screenshots show no horizontal overflow. All three receipts reopened twice, with receipt and settlement-submission counts unchanged at three. Final full receipt-content and memory-identity hashes match this recovery's three-receipt baseline. [Production checks](evidence/nov02-production-smoke.json) · [receipt recovery](evidence/nov02-production-receipt-reopen.json) · [screenshots](screenshots/nov02-release/manifest.json).
+
+The official 2:45 video review cut is rendered in 3840×2160 and 1920×1080 at 25 fps, from actual native-4K browser footage. Narration, captions and provenance are in the [review package](demo/README.md); MP4s remain ignored local artifacts. Publication requires owner review and an approved public host URL. No fourth payment, additional memory or submission-form write occurred.
+
+Owner-confirmed Nightly login is accepted. The exact payer address remains pending because the owner's address field contained a placeholder; the matching funded account has 12,446,622 MIST, all address balance. No conversion is needed for that account. One exact 0.001 SUI purchase remains subject to the owner's separate financial approval in Nightly.
+
+---
+
 # November 2 continuation
 
 Recovered 427a705 on local main, GitHub and Ready Production before changes. The approved-video integration and all historical evidence survived. The ordinary-SUI coin fallback now passes a genuine unsigned Tatum Mainnet simulation and hosted Tentacle verification, with exact 0.001 SUI merchant credit and separate sponsor gas. [Funding report](COIN_FUNDING_COMPATIBILITY.md) · [current tests](TEST_RESULTS.md).

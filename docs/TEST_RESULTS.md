@@ -8,6 +8,8 @@
 - [Read-only record comparison](evidence/nov02-record-preservation.json): original 32 memory identities unchanged; three published receipt identities/credits match. The old pre-release hash had only one receipt, so it is not used as a three-receipt content comparison baseline.
 - [Physical acceptance](evidence/nightly-physical-acceptance.json): owner confirms Nightly Production connection/free signature/private workspace. Slush warning reproduced and respected. Full returning-login, authoring, correction/recall, two-physical-wallet isolation and financial signing remain unverified physically; automated fixture coverage is separately identified.
 
+Production follow-up: **8/8 public browser tests passed**, zero skips/failures; **16 screenshots** at 100% zoom across 1440/360/390/430px with zero horizontal overflow. Three real receipts reopened twice, retaining exactly three settlement requests and receipts. Both 2:45 video exports passed complete bounded segment decoding with no video/audio errors, and contain an English subtitle stream. [Production evidence](evidence/nov02-production-smoke.json) · [video verification](demo/verification.json). A first unbounded video decode process terminated with exit 143; bounded checks covered the full duration successfully.
+
 Initial focused tests exposed canonical SDK type-tag normalization differences and obsolete address-only expectations; these were corrected before the passing full run. A first read-only probe hit Tatum rate limiting; conservative paced reads then succeeded. No financial operation was retried. The official narration service returned no audio for some clips; only unfinished clips were retried. No finished video is published without owner approval.
 
 ---
