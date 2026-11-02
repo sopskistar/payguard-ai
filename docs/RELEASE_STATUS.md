@@ -1,3 +1,13 @@
+# November 2 continuation
+
+Recovered 427a705 on local main, GitHub and Ready Production before changes. The approved-video integration and all historical evidence survived. The ordinary-SUI coin fallback now passes a genuine unsigned Tatum Mainnet simulation and hosted Tentacle verification, with exact 0.001 SUI merchant credit and separate sponsor gas. [Funding report](COIN_FUNDING_COMPATIBILITY.md) · [current tests](TEST_RESULTS.md).
+
+Nightly Production connection, free authentication and private workspace are owner-confirmed. The owner’s address message contained a placeholder; a matching funded account awaits explicit confirmation before one separately approved purchase. No fourth payment is claimed. All three existing receipt identities and 32 memory references are preserved. Slush’s actual Production warning is documented and respected. The requested official demo is being prepared locally for owner review; its public embed remains unapproved until a final public video URL is supplied.
+
+---
+
+## Earlier deployment records (historical)
+
 # Final deployed verification — November 1
 
 Application source `f51cb76f9813e47de052e3fa2bce88c6ba5946a7` is Vercel Ready and verified on the live origin. Three receipts/reports total 0.003 SUI merchant credit; all original 32 memory references are unchanged. Production checks pass: 13 public browser cases and 67 actual API assertions, including fresh 0/7 recall, free member authentication and saved-receipt reopening. [Complete tests and limits](TEST_RESULTS.md) · [Screenshots](screenshots/hackathon-release/manifest.json) · [Published article](https://sopskistar.github.io/payguard-ai/).

@@ -1,0 +1,78 @@
+{
+  "checkedAt": "2026-11-02T10:06:05.536Z",
+  "origin": "http://localhost:4320",
+  "ownerLogin": true,
+  "mode": "owner",
+  "invoices": 39,
+  "experiment2Present": true,
+  "experiment3Present": true,
+  "paymentsAvailable": true,
+  "intentStates": [
+    {
+      "state": "settled",
+      "digest": "4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA"
+    },
+    {
+      "state": "settled",
+      "digest": "xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r"
+    },
+    {
+      "state": "cancelled",
+      "digest": null
+    },
+    {
+      "state": "settled",
+      "digest": "68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx"
+    },
+    {
+      "state": "approved",
+      "digest": null
+    },
+    {
+      "state": "cancelled",
+      "digest": null
+    },
+    {
+      "state": "cancelled",
+      "digest": null
+    },
+    {
+      "state": "cancelled",
+      "digest": null
+    },
+    {
+      "state": "cancelled",
+      "digest": null
+    },
+    {
+      "state": "quoted",
+      "digest": null
+    },
+    {
+      "state": "cancelled",
+      "digest": null
+    },
+    {
+      "state": "cancelled",
+      "digest": null
+    },
+    {
+      "state": "cancelled",
+      "digest": null
+    },
+    {
+      "state": "cancelled",
+      "digest": null
+    },
+    {
+      "state": "cancelled",
+      "digest": null
+    },
+    {
+      "state": "cancelled",
+      "digest": null
+    }
+  ],
+  "signingAllowed": false,
+  "financialSubmissions": 0
+}

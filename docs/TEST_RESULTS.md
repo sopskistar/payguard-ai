@@ -1,3 +1,19 @@
+# November 2 shutdown recovery and checkout validation
+
+- **208/208 unit/integration tests in 30 files passed**, zero failures/skips.
+- **36 browser checks passed, 2 intentionally skipped**, zero failures/flaky cases, using a disposable PGlite database and no live credentials. Includes ordinary-coin preparation without signing, owner/member flows, account switching/isolation, quote expiry and duplicate-payment prevention. [Current browser ledger](evidence/final-release-local-tests.json). These are fixtures, not physical wallet certification.
+- The optimized Production build, including Next’s actual TypeScript stage, passed outside the sandbox. Sandboxed compiler subprocesses returned empty output; the precise environment cause is unproven. No compiler/dependency files were changed.
+- [Actual unsigned coin payment simulation](evidence/coin-funding-unsigned-mainnet.json): Tatum Mainnet checks enabled, no mocked gas, exact merchant credit, separate sponsor gas; hosted Tentacle verify HTTP 200/isValid. No signatures, `/settle` calls or payment-intent writes.
+- [Actual local recovery](evidence/nov02-local-recovery.json): existing owner login, 39 invoices, both remaining experiment invoices and all three saved digests available after restart. Local settlement remains disabled deliberately.
+- [Read-only record comparison](evidence/nov02-record-preservation.json): original 32 memory identities unchanged; three published receipt identities/credits match. The old pre-release hash had only one receipt, so it is not used as a three-receipt content comparison baseline.
+- [Physical acceptance](evidence/nightly-physical-acceptance.json): owner confirms Nightly Production connection/free signature/private workspace. Slush warning reproduced and respected. Full returning-login, authoring, correction/recall, two-physical-wallet isolation and financial signing remain unverified physically; automated fixture coverage is separately identified.
+
+Initial focused tests exposed canonical SDK type-tag normalization differences and obsolete address-only expectations; these were corrected before the passing full run. A first read-only probe hit Tatum rate limiting; conservative paced reads then succeeded. No financial operation was retried. The official narration service returned no audio for some clips; only unfinished clips were retried. No finished video is published without owner approval.
+
+---
+
+## Previous release validation (historical)
+
 # November 1 final hackathon release validation
 
 - **190/190 unit and integration tests pass in 28 files**, with zero failures/skips in the final complete run. Covers owner/wallet authentication, replay protection, tenant isolation, baseline holds, memory applicability, Neon recovery, exact x402 terms, authenticated customer payer binding, session/wallet caps, atomic global sponsorship limits, one-submission locking and receipt recovery.

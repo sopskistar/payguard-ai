@@ -1,0 +1,48 @@
+{
+  "checkedAt": "2026-11-02T09:52:50.823Z",
+  "readOnly": true,
+  "signaturesCreated": 0,
+  "settlementCalls": 0,
+  "source": "Tatum Sui Mainnet gRPC unsigned simulation",
+  "chainIdentifier": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+  "coinCount": 1,
+  "coinWithdrawal": "0",
+  "status": {
+    "success": true,
+    "error": null
+  },
+  "gasPaymentMocked": false,
+  "balanceChanges": [
+    {
+      "coinType": "0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI",
+      "address": "0x6d8c6e978808e81344b6ddcc741b06d2b2b1106066d218683e0161f696878b61",
+      "amount": "-100099"
+    },
+    {
+      "coinType": "0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI",
+      "address": "0x6e76b52046d1a84ed38a7dc4fa66c8d7753efbe1aef61864a8a9f251385a91ee",
+      "amount": "-1000000"
+    },
+    {
+      "coinType": "0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI",
+      "address": "0x99eac0f7be358adf9f96ce0490392f356332af96376aadf11d829a529c1a189e",
+      "amount": "1000000"
+    }
+  ],
+  "gasUsed": {
+    "computationCost": "100000",
+    "storageCost": "988000",
+    "storageRebate": "987901",
+    "nonRefundableStorageFee": "99"
+  },
+  "payer": "0x6e76b52046d1a84ed38a7dc4fa66c8d7753efbe1aef61864a8a9f251385a91ee",
+  "merchant": "0x99eac0f7be358adf9f96ce0490392f356332af96376aadf11d829a529c1a189e",
+  "sponsor": "0x6d8c6e978808e81344b6ddcc741b06d2b2b1106066d218683e0161f696878b61",
+  "facilitatorVerify": {
+    "http": 200,
+    "result": {
+      "isValid": true,
+      "payer": "0x6e76b52046d1a84ed38a7dc4fa66c8d7753efbe1aef61864a8a9f251385a91ee"
+    }
+  }
+}

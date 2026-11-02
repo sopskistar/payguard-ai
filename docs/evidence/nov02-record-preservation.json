@@ -1,0 +1,28 @@
+{
+  "checkedAt": "2026-11-02T10:06:23.220Z",
+  "readOnly": true,
+  "confirmedMemories": 32,
+  "memoryIdentityDigest": "daac17cf39d2002594ff243c94d78508aba9eeedcb2ca3bbcc6184aad4e656d8",
+  "receiptCount": 3,
+  "receiptContentDigest": "3d9fcb7a9e47f9d96dc53c7d59607f36a607842f4f3e70b56a45c3d4215595b8",
+  "receipts": [
+    {
+      "intentId": "51d204df-71fd-44a6-ac4a-c8e0c50b4cf5",
+      "digest": "68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx",
+      "receivedAtomic": "1000000"
+    },
+    {
+      "intentId": "d31d1a52-b0b3-4c5c-ba82-5902c5eaef4f",
+      "digest": "xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r",
+      "receivedAtomic": "1000000"
+    },
+    {
+      "intentId": "4a4d6014-5e9e-430d-8bcb-dad596733876",
+      "digest": "4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA",
+      "receivedAtomic": "1000000"
+    }
+  ],
+  "originalMemoryTuplesUnchanged": true,
+  "allThreePublishedReceiptIdentitiesAndCreditsMatch": true,
+  "fullReceiptContentBaseline": "Current three-receipt fingerprint saved for subsequent comparison. Historical before/after hashes covered only Experiment 1, before the later two purchases."
+}

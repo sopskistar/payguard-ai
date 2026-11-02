@@ -2,7 +2,7 @@
 
 Three owner-controlled Mainnet service purchases have settled and their saved reports reopen without another charge. [Actual transaction ledger](PAYMENT_EXPERIMENTS.md) · [current product release](PRODUCT_RELEASE.md).
 
-Normal wallet members use /connect and /services without OWNER_PASSWORD. Their verified wallet is the payer; the configured merchant remains the recipient. Public checkout permits configured HTTPS origins, retains provider warnings, requires usable address-balance SUI, and has a 20-purchase global pilot plus 0.003 SUI per-wallet persistent exposure cap. Ordinary coin fallback and physical hosted-provider acceptance remain unverified. Public evaluation is free.
+Normal wallet members use /connect and /services without OWNER_PASSWORD. Their verified wallet is the payer; the configured merchant remains the recipient. Public checkout permits configured HTTPS origins, retains provider warnings, accepts ordinary native-SUI coins or address balance, and has a 20-purchase global pilot plus 0.003 SUI per-wallet persistent exposure cap. The coin fallback passed unsigned Mainnet/Tentacle verification; a physical funded fallback purchase remains unverified. Nightly free hosted login passed; Slush displayed a production warning. [Current evidence](COIN_FUNDING_COMPATIBILITY.md). Public evaluation is free.
 
 The private local launcher remains available for administrator-controlled experiments with the existing dedicated accounts. SERVICE_PAYMENT_SETTLEMENT_ENABLED controls that owner flow; PUBLIC_SERVICE_PAYMENTS_ENABLED=false separately pauses new customer checkout. No additional payment, funding or conversion was made for this release.
 

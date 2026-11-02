@@ -57,13 +57,13 @@ afterEach(() => {
   vi.unstubAllEnvs();
   vi.unstubAllGlobals();
 });
-it('checks both deployed addresses with both flags false; successful reads do not imply usable funds or signing approval', async () => {
+it('checks both deployed addresses with both flags false; ordinary coins are usable but successful reads do not enable financial signing', async () => {
   const result = await serviceSetup(true);
   expect(result.check.state).toBe('passed');
   expect(result.quoteEnabled).toBe(false);
   expect(result.settlementEnabled).toBe(false);
-  expect(result.check.preflight?.sufficientlyFunded).toBe(false);
-  expect(result.check.preflight?.readyForQuotePreparation).toBe(false);
+  expect(result.check.preflight?.sufficientlyFunded).toBe(true);
+  expect(result.check.preflight?.readyForQuotePreparation).toBe(true);
   expect(mock.chain).toHaveBeenCalledWith(
     'sui:mainnet',
     { payer, recipient },

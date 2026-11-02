@@ -47,6 +47,7 @@ test.describe('isolated service UI contracts; all financial and memory responses
     rejectSignature = false,
     expired = false,
     customer = false,
+    coinFunding = false,
   ) {
     const page = await context.newPage();
     let setupRequests = 0;
@@ -274,9 +275,24 @@ test.describe('isolated service UI contracts; all financial and memory responses
               balance: {
                 coinType: '0x2::sui::SUI',
                 balance: 10000000n,
-                coinBalance: 5000000n,
-                addressBalance: 5000000n,
+                coinBalance: coinFunding ? 10000000n : 5000000n,
+                addressBalance: coinFunding ? 0n : 5000000n,
               },
+            }),
+          );
+        else if (method === 'ListOwnedObjects')
+          bytes = GrpcTypes.ListOwnedObjectsResponse.toBinary(
+            GrpcTypes.ListOwnedObjectsResponse.create({
+              objects: [
+                {
+                  objectId: '0x' + '4'.repeat(64),
+                  version: 1n,
+                  digest: '11111111111111111111111111111111',
+                  objectType: '0x2::coin::Coin<0x2::sui::SUI>',
+                  owner: { kind: 1, address: payer },
+                  balance: 10000000n,
+                },
+              ],
             }),
           );
         else throw new Error('Unexpected RPC in fully mocked signing fixture: ' + method);
@@ -485,6 +501,27 @@ test.describe('isolated service UI contracts; all financial and memory responses
     expect(calls.settle).toBe(1);
     expect(calls.remember).toBe(0);
     expect(setupRequests()).toBe(0);
+    await page.close();
+  });
+  test('prepares ordinary coin-object funding without a signature or charge (RPC and wallet fixtures)', async () => {
+    const { page, calls } = await pageFixture(true, true, false, false, true, true);
+    await page.getByRole('button', { name: 'Request payment quote', exact: true }).click();
+    await page.getByRole('checkbox').last().check();
+    await page.getByLabel('Signing wallet').selectOption('payguard-service-fixture');
+    await page
+      .getByRole('button', { name: 'Review 0.001 SUI purchase · prepare', exact: true })
+      .click();
+    await expect(
+      page.getByRole('button', { name: 'Sign and submit in wallet', exact: true }),
+    ).toBeEnabled();
+    expect(calls.approve).toBe(1);
+    expect(calls.settle).toBe(0);
+    expect(
+      await page.evaluate(
+        () =>
+          (window as unknown as { serviceFixtureStats: { sign: number } }).serviceFixtureStats.sign,
+      ),
+    ).toBe(0);
     await page.close();
   });
   test('prepares exact approved bytes with settlement disabled and never opens signing (fully mocked)', async () => {

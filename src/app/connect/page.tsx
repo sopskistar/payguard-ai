@@ -45,6 +45,16 @@ export default async function ConnectPage({
                   wallet, inspect the sign-in message, then sign. Stop if your wallet warns or
                   refuses.
                 </p>
+                <p>
+                  A real Slush test on November 1 displayed a malicious-website warning for this
+                  production domain. Stop at that warning.{' '}
+                  <a
+                    className="inline-link"
+                    href="https://github.com/sopskistar/payguard-ai/blob/main/docs/SLUSH_LOCALHOST_INVESTIGATION.md"
+                  >
+                    Provider evidence and current status ↗
+                  </a>
+                </p>
               </div>
             </>
           ) : (
@@ -106,9 +116,11 @@ export default async function ConnectPage({
             <details>
               <summary>Provider status and optional paid analysis</summary>
               <p>
-                Slush worked for three owner-reported localhost purchases. Physical production
-                Slush, Suiet, Nightly and mobile acceptance remains unverified. Stop if a provider
-                warns or refuses; no warning is dismissed by PayGuard.
+                Slush worked for three owner-reported localhost purchases. The November 1 real
+                extension test on production was blocked by Slush’s own malicious-website warning
+                before connection or authentication. This is separate from free sign-in and
+                financial authorization. Other provider and mobile results are documented in the
+                provider report. No warning is dismissed by PayGuard.
               </p>
               <p>
                 Optional Mainnet analysis costs 0.001 SUI from your own authenticated wallet, with

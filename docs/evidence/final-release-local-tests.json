@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-31T19:03:55.384Z",
+  "checkedAt": "2026-11-02T10:06:27.188Z",
   "baseURL": "http://localhost:3005",
   "storage": "New disposable local PGlite; not Neon",
   "existingDataChanged": false,
@@ -8,9 +8,9 @@
   "memoryWrites": false,
   "video": false,
   "stats": {
-    "startTime": "2026-10-31T19:02:38.163Z",
-    "duration": 79090.62400000001,
-    "expected": 27,
+    "startTime": "2026-11-02T10:04:56.774Z",
+    "duration": 90371.521,
+    "expected": 36,
     "skipped": 2,
     "unexpected": 0,
     "flaky": 0
@@ -28,6 +28,26 @@
     },
     {
       "title": "owner intake persists through a fresh browser context, with no fictional memory",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "public Courtroom compares captured evidence, replays real attack logic, and never calls payment APIs",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "Courtroom remains usable at three mobile widths and with reduced motion",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "unfinished video stays absent from the three real public entry points",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "controlled player fixture loads only on keyboard activation, retains captions/fallback and fits mobile",
       "status": "expected",
       "annotations": []
     },
@@ -173,6 +193,34 @@
       ]
     },
     {
+      "title": "offers customer checkout without administrator configuration or an automatic charge (fully mocked)",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 21,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "prepares ordinary coin-object funding without a signature or charge (RPC and wallet fixtures)",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 21,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
       "title": "prepares exact approved bytes with settlement disabled and never opens signing (fully mocked)",
       "status": "expected",
       "annotations": [
@@ -188,6 +236,48 @@
     },
     {
       "title": "shows the real wallet rejection without submission or an automatic retry (mock wallet)",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 21,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "waits for server capability before showing a financial restriction",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 21,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "automatically restores an expired invoice quote and requires explicit cancellation before fresh terms",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 21,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "shows a sanitized database failure separately and retries only status reads",
       "status": "expected",
       "annotations": [
         {

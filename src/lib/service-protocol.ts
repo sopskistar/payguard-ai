@@ -119,12 +119,21 @@ export function decodeServicePaymentHeader(encoded: string) {
     JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(encoded), (c) => c.charCodeAt(0)))),
   );
 }
+export type ServiceCoinRef = { objectId: string; version: string; digest: string };
+export type ServiceCoinFunding = { coins: ServiceCoinRef[]; addressWithdrawal: string };
+export const MAX_SERVICE_COINS = 16;
 // Complete unsigned transaction shared by the browser and non-spending audits.
 // No wallet, RPC execution or automatic coin-selection intent is involved.
 export function buildServiceTransaction(
   terms: ServiceTerms,
   payer: string,
-  state: { genesis: string; epoch: string | number; gasPrice: string; nonce: number },
+  state: {
+    genesis: string;
+    epoch: string | number;
+    gasPrice: string;
+    nonce: number;
+    funding?: ServiceCoinFunding;
+  },
 ) {
   serviceTermsSchema.parse(terms);
   serviceAddressSchema.parse(payer);
@@ -142,11 +151,46 @@ export function buildServiceTransaction(
     throw new Error('Unverified network, epoch, gas price, nonce or payer');
   const tx = new Transaction();
   tx.setSender(payer);
-  const balance = tx.moveCall({
-    target: '0x2::balance::redeem_funds',
-    typeArguments: [terms.asset],
-    arguments: [tx.withdrawal({ type: terms.asset, amount: BigInt(terms.amount) })],
-  });
+  let balance;
+  if (state.funding) {
+    const { coins, addressWithdrawal } = state.funding;
+    if (
+      !coins.length ||
+      coins.length > MAX_SERVICE_COINS ||
+      new Set(coins.map((c) => normalizeSuiAddress(c.objectId))).size !== coins.length ||
+      !/^\d+$/.test(addressWithdrawal) ||
+      BigInt(addressWithdrawal) >= BigInt(terms.amount)
+    )
+      throw new Error('Invalid coin funding plan');
+    const [primary, ...others] = coins.map((c) => tx.objectRef(c));
+    if (others.length) tx.mergeCoins(primary, others);
+    if (BigInt(addressWithdrawal) > 0n) {
+      const redeemed = tx.moveCall({
+        target: '0x2::balance::redeem_funds',
+        typeArguments: [terms.asset],
+        arguments: [tx.withdrawal({ type: terms.asset, amount: BigInt(addressWithdrawal) })],
+      });
+      const supplement = tx.moveCall({
+        target: '0x2::coin::from_balance',
+        typeArguments: [terms.asset],
+        arguments: [redeemed],
+      });
+      tx.mergeCoins(primary, [supplement]);
+    }
+    const [payment] = tx.splitCoins(primary, [tx.pure.u64(terms.amount)]);
+    balance = tx.moveCall({
+      target: '0x2::coin::into_balance',
+      typeArguments: [terms.asset],
+      arguments: [payment],
+    });
+    // The original coin and its change remain owned by the payer. No self-deposit.
+  } else {
+    balance = tx.moveCall({
+      target: '0x2::balance::redeem_funds',
+      typeArguments: [terms.asset],
+      arguments: [tx.withdrawal({ type: terms.asset, amount: BigInt(terms.amount) })],
+    });
+  }
   tx.moveCall({
     target: '0x2::balance::send_funds',
     typeArguments: [terms.asset],
@@ -204,6 +248,33 @@ export function validateServiceTransaction(bytes: string, terms: ServiceTerms, p
     BigInt(validity.maxEpoch) - BigInt(validity.minEpoch) !== 1n
   )
     throw new Error('Payment must expire within one epoch');
+  if (d.inputs.some((i) => i.$kind === 'Object')) {
+    const funding = serviceCoinFunding(d);
+    const expected = buildServiceTransaction(terms, payer, {
+      genesis: validity.chain,
+      epoch: validity.minEpoch!,
+      gasPrice: String(d.gasData.price!),
+      nonce: validity.nonce,
+      funding,
+    }).getData();
+    // Reconstruct the entire narrow template. Never allow arbitrary objects or calls.
+    const canonical = (value: unknown) =>
+      JSON.stringify(value, (key, v) =>
+        key === '$kind' || key === 'type'
+          ? undefined
+          : key === 'Balance'
+            ? normalizeStructTag(v)
+            : key === 'typeArguments'
+              ? v.map((t: string) => normalizeStructTag(t))
+              : v,
+      );
+    if (
+      canonical(d.inputs) !== canonical(expected.inputs) ||
+      canonical(d.commands) !== canonical(expected.commands)
+    )
+      throw new Error('Unexpected coin payment template');
+    return d;
+  }
   let withdrawals = 0n;
   for (const input of d.inputs) {
     if (input.$kind !== 'Pure' && input.$kind !== 'FundsWithdrawal')
@@ -332,6 +403,27 @@ export function validateServiceTransaction(bytes: string, terms: ServiceTerms, p
   if (BigInt(getAmount(balance)) !== BigInt(terms.amount))
     throw new Error('Amount differs from approved cap');
   return d;
+}
+export function serviceCoinFunding(d: ReturnType<Transaction['getData']>): ServiceCoinFunding {
+  const coins: ServiceCoinRef[] = [];
+  let addressWithdrawal = 0n;
+  for (const input of d.inputs) {
+    if (input.$kind === 'Object') {
+      if (input.Object.$kind !== 'ImmOrOwnedObject')
+        throw new Error('Only owned SUI coins allowed');
+      const ref = input.Object.ImmOrOwnedObject;
+      coins.push({ ...ref, version: String(ref.version) });
+    } else if (input.$kind === 'FundsWithdrawal') {
+      const w = input.FundsWithdrawal;
+      if (
+        w.withdrawFrom.$kind !== 'Sender' ||
+        normalizeStructTag(w.typeArg.Balance) !== normalizeStructTag(SERVICE_ASSET)
+      )
+        throw new Error('Only payer SUI withdrawal allowed');
+      addressWithdrawal += BigInt(w.reservation.MaxAmountU64);
+    } else if (input.$kind !== 'Pure') throw new Error('Unresolved payment input');
+  }
+  return { coins, addressWithdrawal: addressWithdrawal.toString() };
 }
 export function analyzeInstructionConsistency(
   invoice: { recipient: string; memo: string },

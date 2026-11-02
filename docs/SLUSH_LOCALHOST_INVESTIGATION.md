@@ -1,3 +1,17 @@
+# Current physical-provider observations — November 1–2, 2026
+
+**Nightly 1.51.49:** the preceding real headed Chromium session connected to exact Production, displayed and signed the free server challenge, and reached an isolated member workspace. No warning appeared. The temporary profile and in-memory report were lost at shutdown; conversation evidence and the matching Neon profile corroborate steps 1–4. Returning login and financial signing were not durably verified. The owner separately reports successful Nightly login and funding. No funded private profile was read or restored.
+
+**Slush 26.21.6 (e2be7f2):** actual headed official extension on Production displayed a malicious-site warning. Testing stopped with “Return to safety”; no challenge/signature was requested. [Physical evidence](evidence/slush-physical-production.json) · [actual warning screenshot](screenshots/wallet-acceptance/slush-production-warning.png). Application discovery remains available when a provider permits the origin. No warning is suppressed. Why localhost stopped warning remains inconclusive and controlled by Slush's independent classification.
+
+Both packages retained their verified canonical store IDs. Publisher signatures were verified and executable code was unmodified; only the public manifest key was set for unpacked-extension identity. Browser Chromium 151.0.7922.34, headed WSLg. Initial random-ID/headless failures were test setup failures, not normal provider verdicts. OKX/mobile have not been physically accepted. Suiet announces a November 14 sunset on its official site and is not recommended as a verified option.
+
+Ordinary SUI funding is now [independently dry-run verified](COIN_FUNDING_COMPATIBILITY.md). This proves protocol compatibility, not Nightly financial acceptance or a fourth settled purchase.
+
+---
+
+## Historical origin investigation (dated observations below)
+
 ## Final production verification — November 1
 
 Actual HTTPS production API checks pass two free personal-message registrations using unfunded SDK test identities, nonce replay rejection, isolated member workspaces, own-payer checkout metadata and denied administrator/owner-receipt access. The application permits connection, authentication and exact financial signing; the provider verdict remains unobserved. These are cryptographic API/fixture checks, not installed-extension acceptance. [67-check live evidence](evidence/hackathon-production-smoke.json) · [13-case public browser run](evidence/hackathon-production-public-tests.json).

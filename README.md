@@ -6,7 +6,7 @@
 
 <!-- APPROVED_DEMO_VIDEO_START -->
 
-**Recorded demo:** The owner is producing the official video separately. No finished recording is published yet. The interactive demo and Courtroom below are available now. [Video publication instructions](docs/DEMO_SCRIPT.md#publishing-the-approved-video).
+**Recorded demo:** The official recording is being prepared for owner review. No approved recording is published yet. The interactive demo and Courtroom below are available now. [Video publication instructions](docs/DEMO_SCRIPT.md#publishing-the-approved-video).
 <!-- APPROVED_DEMO_VIDEO_END -->
 
 ## 1. Evaluate without a wallet or payment
@@ -21,7 +21,7 @@ Open **[Connect Sui Wallet](https://payguard-ai-henna.vercel.app/connect)**, cho
 
 Create a supplier in **Vendor Trust**, establish its recipient and independent contact, then add a clearly labeled synthetic or user-owned invoice in **Invoice Inbox**. In **Verify Instructions**, compare recipient changes, inspect Memory OFF/ON and record an independently obtained verification result. To remember a correction, inspect the minimized policy and explicitly consent. Only a provider-completed job/blob counts. Logout and account switching revoke the application session. No terminal command or administrator password is needed.
 
-**Physical compatibility:** the owner completed three Slush Mainnet purchases through localhost. Current physical production Slush, Suiet, Nightly and mobile acceptance is unverified unless a dated observation is added to the [provider report](docs/SLUSH_LOCALHOST_INVESTIGATION.md). Integration and simulated-wallet tests do not certify those providers. Stop at any warning or refusal. There is no blanket Vercel financial-signing denial; provider enforcement remains intact.
+**Physical compatibility:** the owner completed three Slush Mainnet purchases through localhost. A real Nightly extension connected, signed the free challenge and opened a member workspace on Production on November 1. The interrupted return-login result was lost. Slush 26.21.6 displayed a malicious-site warning on that same production origin; testing stopped. OKX and mobile remain physically unverified. See the [dated provider report](docs/SLUSH_LOCALHOST_INVESTIGATION.md). Integration and simulated-wallet tests do not certify those providers. Stop at any warning or refusal. There is no blanket Vercel financial-signing denial; provider enforcement remains intact.
 
 ## 3. Inspect three genuine Mainnet purchases
 
@@ -40,12 +40,12 @@ The effects show merchant credit of 0.001 SUI and a separate sponsor charge of 0
 This is optional: judges can inspect all evidence for free. Authenticate your own wallet, create an eligible invoice with instruction anomalies, then open **[Agent Services](https://payguard-ai-henna.vercel.app/services)**. No owner password is required. Select the invoice and **Check Mainnet proposal · no signing** before requesting terms.
 
 - Exact price: **0.001 SUI / 1,000,000 MIST**, Sui Mainnet. The merchant is configured server-side. Your payer is bound to your verified wallet account.
-- The currently verified sponsored template requires **SUI address balance**. Ordinary coin-object SUI is shown separately; the SDK's coinWithBalance fallback is not enabled because this release has not established facilitator compatibility for that alternate template. This is an application-template limitation, not a claim that Sui cannot use coins. No self-deposit, funding or conversion is automatic.
+- **Ordinary SUI coins and address balance are supported.** The exact coin split passed an unsigned Mainnet simulation and hosted Tentacle verification. Coin change stays with the payer; no separate deposit is required. Merge/mixed funding has fixture coverage; funded physical fallback settlement remains unverified. [Compatibility evidence and limits](docs/COIN_FUNDING_COMPATIBILITY.md).
 - Public pilot: **20 reserved/settled purchases total**, **0.003 SUI per wallet across sessions**, including unsettled reservations. Sponsor gas budget is at most 0.002 SUI per attempt. Server quotas and atomic global reservations bound provider/sponsorship exposure. The administrator can pause new customer checkout with PUBLIC_SERVICE_PAYMENTS_ENABLED=false.
 - **Request payment quote** returns genuine HTTP 402 terms. Inspect invoice, service, payer, merchant, amount, gas sponsorship and five-minute expiry. Accept them, choose the wallet and click **Review 0.001 SUI purchase · prepare**. This freezes unsigned bytes.
 - Separately choose **Sign and submit in wallet** and personally approve the exact request. There is one settlement attempt. Pending or unknown results must use **Resume existing payment**, never another signature. Reopen a finalized report using **Verify payment and view analysis report**; it does not charge again.
 
-The three recorded purchases prove the established address-balance path. A hosted customer financial signature was not exercised by automation; no additional payment was made for this release. Physical provider acceptance and ordinary-coin fallback remain explicit limitations. [Payment implementation and controls](docs/AGENT_PAYMENTS.md).
+The three recorded purchases prove the established address-balance path. A hosted customer financial signature was not exercised by automation; no additional payment was made for this release. Nightly financial signing and a funded ordinary-coin settlement remain unverified; free Nightly authentication has physical acceptance evidence. [Payment implementation and controls](docs/AGENT_PAYMENTS.md).
 
 ## 5. Walrus learning and Tatum evidence
 

@@ -12,6 +12,7 @@ const mock = vi.hoisted(() => ({ inspect: vi.fn(), preflight: vi.fn() }));
 vi.mock('@/lib/integrations/service-tatum', () => ({
   inspectServiceSettlement: mock.inspect,
   serviceChainPreflight: mock.preflight,
+  verifyServiceCoinFunding: vi.fn(), // No chain objects are used in these address-balance fixtures.
 }));
 import { db } from '@/db';
 import { seedDemo, listInvoices } from '@/lib/store';
@@ -203,7 +204,7 @@ it('Mainnet quotes and signatures are supported but the separate spend switch fa
     vi.stubEnv('ENABLE_AGENT_PAYMENTS', 'testnet');
   }
 });
-it('refuses Mainnet quotes with a missing payer, reused merchant, insufficient address balance or unavailable provider', async () => {
+it('refuses Mainnet quotes with a missing payer, reused merchant, insufficient combined SUI or unavailable provider', async () => {
   vi.stubEnv('ENABLE_AGENT_PAYMENTS', 'mainnet');
   try {
     vi.stubEnv('SERVICE_PAYMENT_PAYER', '');
@@ -212,7 +213,7 @@ it('refuses Mainnet quotes with a missing payer, reused merchant, insufficient a
     await expect(quote()).rejects.toThrow('quotes require');
     vi.stubEnv('SERVICE_PAYMENT_PAYER', payer.toSuiAddress());
     mock.preflight.mockResolvedValueOnce({
-      balances: { payer: { addressAtomic: '0', coinAtomic: '5000000' } },
+      balances: { payer: { totalAtomic: '999999', addressAtomic: '0', coinAtomic: '999999' } },
     });
     await expect(quote()).rejects.toMatchObject({ code: 'PAYMENT_NOT_READY' });
     mock.preflight.mockRejectedValueOnce(new Error('Synthetic provider outage'));

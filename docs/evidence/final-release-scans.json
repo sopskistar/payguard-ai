@@ -1,6 +1,6 @@
 {
-  "checkedAt": "2026-11-01T14:39:58.206Z",
-  "sourceAndBrowserAssetsScanned": 1074,
+  "checkedAt": "2026-11-02T10:10:57.253Z",
+  "sourceAndBrowserAssetsScanned": 774,
   "credentialMatches": [],
   "committedCredentialMatches": [],
   "approvedPrivateEnvironmentFileExcluded": true,
@@ -30,10 +30,16 @@
           "name": "@eslint/config-array",
           "severity": "moderate",
           "isDirect": false,
-          "via": ["minimatch"],
-          "effects": ["eslint"],
+          "via": [
+            "minimatch"
+          ],
+          "effects": [
+            "eslint"
+          ],
           "range": "*",
-          "nodes": ["node_modules/@eslint/config-array"],
+          "nodes": [
+            "node_modules/@eslint/config-array"
+          ],
           "fixAvailable": {
             "name": "eslint",
             "version": "4.0.0",
@@ -44,10 +50,16 @@
           "name": "@eslint/eslintrc",
           "severity": "moderate",
           "isDirect": false,
-          "via": ["minimatch"],
-          "effects": ["eslint"],
+          "via": [
+            "minimatch"
+          ],
+          "effects": [
+            "eslint"
+          ],
           "range": "0.0.1 || >=0.1.1",
-          "nodes": ["node_modules/@eslint/eslintrc"],
+          "nodes": [
+            "node_modules/@eslint/eslintrc"
+          ],
           "fixAvailable": {
             "name": "eslint",
             "version": "4.0.0",
@@ -58,20 +70,31 @@
           "name": "@typescript-eslint/eslint-plugin",
           "severity": "moderate",
           "isDirect": false,
-          "via": ["@typescript-eslint/type-utils", "@typescript-eslint/utils"],
+          "via": [
+            "@typescript-eslint/type-utils",
+            "@typescript-eslint/utils"
+          ],
           "effects": [],
           "range": ">=6.16.0",
-          "nodes": ["node_modules/@typescript-eslint/eslint-plugin"],
+          "nodes": [
+            "node_modules/@typescript-eslint/eslint-plugin"
+          ],
           "fixAvailable": true
         },
         "@typescript-eslint/parser": {
           "name": "@typescript-eslint/parser",
           "severity": "moderate",
           "isDirect": false,
-          "via": ["@typescript-eslint/typescript-estree"],
-          "effects": ["typescript-eslint"],
+          "via": [
+            "@typescript-eslint/typescript-estree"
+          ],
+          "effects": [
+            "typescript-eslint"
+          ],
           "range": ">=6.16.0",
-          "nodes": ["node_modules/@typescript-eslint/parser"],
+          "nodes": [
+            "node_modules/@typescript-eslint/parser"
+          ],
           "fixAvailable": {
             "name": "eslint-config-next",
             "version": "0.2.4",
@@ -82,17 +105,26 @@
           "name": "@typescript-eslint/type-utils",
           "severity": "moderate",
           "isDirect": false,
-          "via": ["@typescript-eslint/typescript-estree", "@typescript-eslint/utils"],
-          "effects": [],
+          "via": [
+            "@typescript-eslint/typescript-estree",
+            "@typescript-eslint/utils"
+          ],
+          "effects": [
+            "@typescript-eslint/eslint-plugin"
+          ],
           "range": ">=6.16.0",
-          "nodes": ["node_modules/@typescript-eslint/type-utils"],
+          "nodes": [
+            "node_modules/@typescript-eslint/type-utils"
+          ],
           "fixAvailable": true
         },
         "@typescript-eslint/typescript-estree": {
           "name": "@typescript-eslint/typescript-estree",
           "severity": "moderate",
           "isDirect": false,
-          "via": ["minimatch"],
+          "via": [
+            "minimatch"
+          ],
           "effects": [
             "@typescript-eslint/parser",
             "@typescript-eslint/type-utils",
@@ -100,7 +132,9 @@
             "typescript-eslint"
           ],
           "range": ">=6.16.0",
-          "nodes": ["node_modules/@typescript-eslint/typescript-estree"],
+          "nodes": [
+            "node_modules/@typescript-eslint/typescript-estree"
+          ],
           "fixAvailable": {
             "name": "eslint-config-next",
             "version": "0.2.4",
@@ -111,10 +145,16 @@
           "name": "@typescript-eslint/utils",
           "severity": "moderate",
           "isDirect": false,
-          "via": ["@typescript-eslint/typescript-estree"],
-          "effects": ["@typescript-eslint/eslint-plugin", "typescript-eslint"],
+          "via": [
+            "@typescript-eslint/typescript-estree"
+          ],
+          "effects": [
+            "typescript-eslint"
+          ],
           "range": ">=6.16.0",
-          "nodes": ["node_modules/@typescript-eslint/utils"],
+          "nodes": [
+            "node_modules/@typescript-eslint/utils"
+          ],
           "fixAvailable": {
             "name": "eslint-config-next",
             "version": "0.2.4",
@@ -125,10 +165,16 @@
           "name": "eslint",
           "severity": "moderate",
           "isDirect": true,
-          "via": ["@eslint/config-array", "@eslint/eslintrc", "minimatch"],
+          "via": [
+            "@eslint/config-array",
+            "@eslint/eslintrc",
+            "minimatch"
+          ],
           "effects": [],
           "range": "0.7.1 - 2.0.0-rc.1 || >=4.1.0",
-          "nodes": ["node_modules/eslint"],
+          "nodes": [
+            "node_modules/eslint"
+          ],
           "fixAvailable": {
             "name": "eslint",
             "version": "4.0.0",
@@ -147,7 +193,9 @@
           ],
           "effects": [],
           "range": ">=10.2.1-canary.2",
-          "nodes": ["node_modules/eslint-config-next"],
+          "nodes": [
+            "node_modules/eslint-config-next"
+          ],
           "fixAvailable": {
             "name": "eslint-config-next",
             "version": "0.2.4",
@@ -158,20 +206,36 @@
           "name": "eslint-plugin-import",
           "severity": "moderate",
           "isDirect": false,
-          "via": ["minimatch"],
-          "effects": [],
+          "via": [
+            "minimatch"
+          ],
+          "effects": [
+            "eslint-config-next"
+          ],
           "range": ">=1.15.0",
-          "nodes": ["node_modules/eslint-plugin-import"],
-          "fixAvailable": true
+          "nodes": [
+            "node_modules/eslint-plugin-import"
+          ],
+          "fixAvailable": {
+            "name": "eslint-config-next",
+            "version": "0.2.4",
+            "isSemVerMajor": true
+          }
         },
         "eslint-plugin-jsx-a11y": {
           "name": "eslint-plugin-jsx-a11y",
           "severity": "moderate",
           "isDirect": false,
-          "via": ["minimatch"],
-          "effects": ["eslint-config-next"],
+          "via": [
+            "minimatch"
+          ],
+          "effects": [
+            "eslint-config-next"
+          ],
           "range": ">=6.5.0",
-          "nodes": ["node_modules/eslint-plugin-jsx-a11y"],
+          "nodes": [
+            "node_modules/eslint-plugin-jsx-a11y"
+          ],
           "fixAvailable": {
             "name": "eslint-config-next",
             "version": "0.2.4",
@@ -182,15 +246,15 @@
           "name": "eslint-plugin-react",
           "severity": "moderate",
           "isDirect": false,
-          "via": ["minimatch"],
-          "effects": ["eslint-config-next"],
+          "via": [
+            "minimatch"
+          ],
+          "effects": [],
           "range": ">=7.23.0",
-          "nodes": ["node_modules/eslint-plugin-react"],
-          "fixAvailable": {
-            "name": "eslint-config-next",
-            "version": "0.2.4",
-            "isSemVerMajor": true
-          }
+          "nodes": [
+            "node_modules/eslint-plugin-react"
+          ],
+          "fixAvailable": true
         },
         "minimatch": {
           "name": "minimatch",
@@ -204,7 +268,9 @@
               "title": "minimatch has potential denial of service via globparts amplification",
               "url": "https://github.com/advisories/GHSA-g3hv-75wg-m249",
               "severity": "moderate",
-              "cwe": ["CWE-405"],
+              "cwe": [
+                "CWE-405"
+              ],
               "cvss": {
                 "score": 0,
                 "vectorString": null
@@ -242,9 +308,13 @@
             "@typescript-eslint/typescript-estree",
             "@typescript-eslint/utils"
           ],
-          "effects": ["eslint-config-next"],
+          "effects": [
+            "eslint-config-next"
+          ],
           "range": "*",
-          "nodes": ["node_modules/typescript-eslint"],
+          "nodes": [
+            "node_modules/typescript-eslint"
+          ],
           "fixAvailable": {
             "name": "eslint-config-next",
             "version": "0.2.4",

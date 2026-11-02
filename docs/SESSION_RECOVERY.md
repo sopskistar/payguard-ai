@@ -1,3 +1,19 @@
+# Shutdown recovery — November 2, 2026
+
+Before editing: cwd `/home/sopski/payguard-ai`, branch `main`, local HEAD, fetched `origin/main` and Ready Production all matched `427a705b655e26510688a6fb13c0c82a0a090f80`. No reset, checkout, pull or replacement occurred. The owner’s `.gitignore.save` and private `.env.local` were preserved.
+
+Recovered unfinished changes: Slush warning disclosure on `/connect`, actual Slush extension evidence/screenshot, six public Production browser checks, and a read-only record-preservation timestamp. The approved-video adapter, poster, configuration, route integration and tests were already committed in 427a705 and were retained. Video configuration remains unpublished until a completed recording and public host are owner-approved.
+
+Temporary `/tmp` extension profiles and the in-memory Nightly acceptance report were lost. The preceding conversation records real Nightly connection, exact free-message signing and member workspace creation; Neon corroborates the QA profile creation. Returning login and later acceptance steps had no durable result and are not claimed. Existing funded owner profiles were not imported, recreated or inspected for secrets.
+
+Fresh read-only Neon queries confirmed 32 memories, three receipts and zero settling intents. The original Experiment 1/2/3 digests and invoice associations are unchanged. Tatum read found 12,446,622 MIST on the recently registered member wallet ending `c42365fa`, all address balance; the earlier disposable QA wallet remained unfunded. The owner must identify the funded Nightly account before any purchase. No new financial signature, submission or memory write occurred during recovery. The existing localhost:4320 workspace was restarted with settlement disabled.
+
+The remaining work is ordinary-coin compatibility, interrupted physical acceptance, one separately owner-approved Nightly purchase and the now-requested official demo recording. [Coin compatibility and safe next steps](COIN_FUNDING_COMPATIBILITY.md).
+
+---
+
+## Historical recovery record (superseded status, retained for provenance)
+
 # Session recovery — October 30, 2026
 
 Recovery completed before implementation edits. Original local HEAD, fetched `origin/main`, and the live `/api/release` all identify **75314550eeb81aa7a027091234d8b19c0160f788**. Local/remote divergence: 0/0. No staged or modified tracked files. The sole untracked file is the owner's `.gitignore.save`; it is preserved. No lost code, unpushed commit, or pending local implementation was found. Existing `.data` scripts and evidence remain intact.

@@ -1,3 +1,5 @@
+> November 2 update: Nightly free Production login is owner-confirmed; Slush displayed a real Production warning and testing stopped. Ordinary SUI coins now have a strictly validated fallback, proven by unsigned Mainnet/Tentacle verification, with physical funded settlement still pending. The three original settled receipts remain the public proof. [Current compatibility and limits](COIN_FUNDING_COMPATIBILITY.md).
+
 # Judge? Start here — PayGuard Verify
 
 [Live app](https://payguard-ai-henna.vercel.app/) · [Memory Courtroom](https://payguard-ai-henna.vercel.app/courtroom) · [Seven-step demo](https://payguard-ai-henna.vercel.app/try) · [Mainnet proof](https://payguard-ai-henna.vercel.app/proof). No owner credentials or payment are required for evaluation.

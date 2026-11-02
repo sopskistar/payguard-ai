@@ -1,0 +1,80 @@
+{
+  "checkedAt": "2026-11-01T17:10:23.785Z",
+  "origin": "https://payguard-ai-henna.vercel.app",
+  "provider": "Slush",
+  "providerVersion": "26.21.6 (e2be7f2)",
+  "browser": "151.0.7922.34",
+  "headed": true,
+  "officialExtensionId": "opcgpfmipidbgpenhmajoajpbobppdil",
+  "publisherSignatureVerified": true,
+  "executableCodeUnmodified": true,
+  "manifestPublicKeyAddedForCanonicalId": true,
+  "providerMocked": false,
+  "fundedOwnerWalletsUsed": false,
+  "financialSignatures": 0,
+  "financialSubmissions": 0,
+  "steps": [
+    {
+      "step": 1,
+      "name": "Connect wallet",
+      "status": "blocked-by-real-provider",
+      "warning": "Malicious website — This site has been flagged for malicious behavior.",
+      "alertId": "9c8edd71-ee09-4431-8d91-105447ac6522"
+    },
+    {
+      "step": 2,
+      "status": "not-reached; provider refused connection"
+    },
+    {
+      "step": 3,
+      "status": "not-reached; provider refused connection"
+    },
+    {
+      "step": 4,
+      "status": "not-reached; provider refused connection"
+    },
+    {
+      "step": 5,
+      "status": "not-reached; provider refused connection"
+    },
+    {
+      "step": 6,
+      "status": "not-reached; provider refused connection"
+    },
+    {
+      "step": 7,
+      "status": "not-reached; provider refused connection"
+    },
+    {
+      "step": 8,
+      "status": "not-reached; provider refused connection"
+    },
+    {
+      "step": 9,
+      "status": "not-reached; provider refused connection"
+    },
+    {
+      "step": 10,
+      "status": "not-reached; provider refused connection"
+    },
+    {
+      "step": 11,
+      "status": "not-reached; provider refused connection"
+    }
+  ],
+  "requests": [],
+  "balanceDisplay": "$0; fresh unfunded test identity",
+  "releaseAtConnection": "427a705b655e26510688a6fb13c0c82a0a090f80",
+  "warningDisplayed": true,
+  "authenticationChallengesRequested": 0,
+  "packageSource": {
+    "checkedAt": "2026-11-01T15:45:35.640Z",
+    "requestedUrl": "https://clients2.google.com/service/update2/crx?response=redirect&prodversion=145.0.0.0&acceptformat=crx3&x=id%3Dopcgpfmipidbgpenhmajoajpbobppdil%26installsource%3Dondemand%26uc",
+    "downloadUrl": "https://clients2.googleusercontent.com/crx/blobs/ARGaeZI_0-RKiI4ozNfroZsGFE9u0VhtJsiPQ9-MOZn7GQngiHnqkZUCiAs8yLGOePK-JwhGoBHX0Ols8QFNoRwYU48m_5vKKsoRueP_gYqu_56xC-g1T7G3F_268c0VtQmjAMZSmuVZC4jS_lyaQwdGTTT4oadpgiEO3g/OPCGPFMIPIDBGPENHMAJOAJPBOBPPDIL_26_21_6_0.crx",
+    "expectedExtensionId": "opcgpfmipidbgpenhmajoajpbobppdil",
+    "crxVersion": 3,
+    "bytes": 11381271,
+    "sha256": "c2df3d863cfec4a2cbd743bdf3780846fa1bd8b34d8595fbf7ad89d5384abd71",
+    "ownerWalletAccess": false
+  }
+}

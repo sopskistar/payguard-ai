@@ -1,0 +1,46 @@
+{
+  "checkedAt": "2026-11-01T17:14:21.630Z",
+  "release": "427a705b655e26510688a6fb13c0c82a0a090f80",
+  "physicalProviderTests": false,
+  "actualVideoPlayback": false,
+  "stats": {
+    "startTime": "2026-11-01T17:12:28.948Z",
+    "duration": 23920.974000000002,
+    "expected": 6,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "tests": [
+    {
+      "title": "unfinished video stays absent from the three real public entry points",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "controlled player fixture loads only on keyboard activation, retains captions/fallback and fits mobile",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "judge never presents active walkthrough buttons before client readiness",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "judge completes all seven clear steps, with back navigation, real evidence and no account",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "public users cannot quote, approve or settle service fees",
+      "status": "expected",
+      "annotations": []
+    },
+    {
+      "title": "public wallet login is accessible independently of hosted financial signing",
+      "status": "expected",
+      "annotations": []
+    }
+  ]
+}

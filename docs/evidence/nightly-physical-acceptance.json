@@ -1,0 +1,35 @@
+{
+  "checkedAt": "2026-11-02T10:07:49.636295+00:00",
+  "provider": "Nightly",
+  "origin": "https://payguard-ai-henna.vercel.app",
+  "ownerReported": {
+    "connection": true,
+    "freePersonalMessageAuthentication": true,
+    "privateWorkspaceOpened": true,
+    "providerWarning": false,
+    "approximateSuiBalance": "0.012446",
+    "publicAddress": "Owner message still contained placeholder; matching recent member address awaits explicit confirmation."
+  },
+  "recoveredPreviousPhysicalTest": {
+    "providerVersion": "1.51.49",
+    "headed": true,
+    "browser": "151.0.7922.34",
+    "providerMocked": false,
+    "connection": true,
+    "freeChallengeSigned": true,
+    "memberWorkspace": true,
+    "provenance": "Pre-shutdown conversation and matching Neon account creation; in-memory report/profile lost."
+  },
+  "notYetPhysicallyVerified": [
+    "returning login to identical account",
+    "supplier/invoice creation",
+    "review and OFF/ON",
+    "authorized correction persistence and recall",
+    "second physical wallet isolation",
+    "Nightly financial signing and settlement"
+  ],
+  "automatedFixtureCoverage": "36 isolated browser checks passed, 2 live tests skipped; not physical provider certification.",
+  "currentQaSetup": "Official package downloaded again with identical verified hash. New isolated unfunded setup stalled before PayGuard connection; no app incompatibility established.",
+  "financialSubmissions": 0,
+  "memoryWrites": 0
+}

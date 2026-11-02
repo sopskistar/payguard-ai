@@ -12,6 +12,10 @@ import {
   type ServiceNetwork,
 } from '../service-protocol';
 import { AppError } from '../errors';
+import { bcs } from '@mysten/sui/bcs';
+import { serviceCoinFunding } from '../service-protocol';
+import { checkServiceCoinObjects } from '../service-funding';
+import { Transaction } from '@mysten/sui/transactions';
 import {
   PaymentCheckError,
   paymentCheck,
@@ -78,6 +82,46 @@ export type ServiceWalletBalance = ReturnType<typeof parseServiceBalance> & {
   owner: string;
   checkedAt: string;
 };
+export async function verifyServiceCoinFunding(bytes: string, terms: ServiceTerms, payer: string) {
+  const funding = serviceCoinFunding(Transaction.from(bytes).getData());
+  if (!funding.coins.length) return;
+  const network = serviceNetworkInfo(terms.network);
+  const transport = new GrpcTransport({
+    host: network.tatum,
+    channelCredentials: credentials.createSsl(),
+    meta: { 'x-api-key': process.env.TATUM_API_KEY || '' },
+    timeout: 10000,
+  });
+  try {
+    const client = new SuiGrpcClient({ network: network.sdk, transport });
+    const { objects } = await pacedTatumRead(() =>
+      client.core.getObjects({
+        objectIds: funding.coins.map((c) => c.objectId),
+        include: { content: true },
+      }),
+    );
+    const coinBcs = bcs.struct('ServiceSuiCoin', { id: bcs.Address, balance: bcs.u64() });
+    const coins = objects.map((object) => {
+      if (object instanceof Error) throw object;
+      return { ...object, balance: coinBcs.parse(object.content).balance };
+    });
+    const { balance } = await pacedTatumRead(() =>
+      client.core.getBalance({
+        owner: payer,
+        coinType: terms.asset,
+      }),
+    );
+    checkServiceCoinObjects(funding, coins, payer, terms.amount, balance.addressBalance);
+  } catch {
+    throw new AppError(
+      409,
+      'COIN_FUNDING_CHANGED',
+      'The selected SUI coins could not be independently verified. Refresh balances and review a fresh unsigned quote. No payment was submitted.',
+    );
+  } finally {
+    transport.close();
+  }
+}
 export async function serviceChainPreflight(
   networkId: ServiceNetwork,
   parties: { payer?: string | null; recipient?: string | null } = {},

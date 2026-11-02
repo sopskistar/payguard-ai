@@ -23,7 +23,11 @@ import {
   analyzeInstructionConsistency,
   type ServiceChallenge,
 } from './service-protocol';
-import { inspectServiceSettlement, serviceChainPreflight } from './integrations/service-tatum';
+import {
+  inspectServiceSettlement,
+  serviceChainPreflight,
+  verifyServiceCoinFunding,
+} from './integrations/service-tatum';
 import { verifyServiceSignature } from './integrations/service-signature';
 import { recordCorrection } from './integrations/memory';
 import { serviceWalletSigningAllowed, WALLET_REVIEW_MESSAGE } from './wallet-policy';
@@ -237,7 +241,7 @@ export async function servicePreflight(options: { allowPartial?: boolean; payer?
     throw new AppError(503, first.code, `${first.label}: ${first.message} ${first.action}`);
   }
   const sufficientlyFunded =
-    !!chain.balances.payer && BigInt(chain.balances.payer.addressAtomic) >= BigInt(SERVICE_AMOUNT);
+    !!chain.balances.payer && BigInt(chain.balances.payer.totalAtomic) >= BigInt(SERVICE_AMOUNT);
   return {
     checkedAt: new Date().toISOString(),
     spending: false,
@@ -270,11 +274,11 @@ export async function servicePreflight(options: { allowPartial?: boolean; payer?
     maxSponsorGasAtomic: '2000000',
     maxPayerGasAtomic: '0',
     fundingCompatibility: {
-      mode: 'address-balance',
+      mode: 'address-balance-or-owned-coins',
       addressAtomic: chain.balances.payer?.addressAtomic ?? null,
       coinAtomic: chain.balances.payer?.coinAtomic ?? null,
       ordinaryCoinFallback:
-        'Not enabled: coinWithBalance can resolve coins in the SDK, but this release only validates the already-settled address-withdrawal template. Facilitator compatibility with the alternate template is unverified. No conversion is performed.',
+        'Supported: exact SUI split from up to 16 owned coins when address balance is insufficient. Coin change remains with the payer. A mixed balance uses only the necessary address withdrawal. No separate deposit or conversion.',
     },
     purpose:
       'Analyze contradictory invoice recipient mentions, embedded link domains and instruction-bypass language. Human supplier verification remains required.',
@@ -438,7 +442,7 @@ export async function quoteService(tenantId: string, invoiceId: string, operatio
       throw new AppError(
         409,
         'PAYMENT_NOT_READY',
-        'This verified sponsored template needs 0.001 SUI in the authenticated payer’s address balance. Ordinary coin-object SUI is reported separately and is not automatically converted. No quote, signature or payment was created. Inspect compatibility before purchasing; the public demo remains free.',
+        'The authenticated payer needs at least 0.001 SUI across address balance and ordinary SUI coins. No quote, signature or payment was created. Refresh balances; the public demo remains free.',
       );
   }
   const supported = await facilitator('/supported');
@@ -562,6 +566,7 @@ export async function approveService(
     let prepared: PreparedService | undefined;
     if (transaction) {
       validateServiceTransaction(transaction, terms, payer);
+      await verifyServiceCoinFunding(transaction, terms, payer);
       prepared = {
         bytes: transaction,
         digest: await Transaction.from(transaction).getDigest(),

@@ -24,6 +24,7 @@ import { PaymentSetup } from './payment-setup';
 import { Brand } from './brand';
 import { WalletSessionMonitor } from './wallet-entry';
 import { serviceDiagnostic } from '@/lib/service-diagnostics';
+import { selectServiceCoins } from '@/lib/service-funding';
 import { ServicePaymentTimeline } from './service-payment-timeline';
 import type { RequestDiagnostic } from '@/lib/request-diagnostics';
 import type { walletOperationPolicy } from '@/lib/wallet-policy';
@@ -431,14 +432,32 @@ export function ServicePayment() {
       client.core.getBalance({ owner: account.address, coinType: terms.asset }),
     ]);
     if (chainIdentifier !== chain.genesis) throw new Error('Unexpected Sui chain identifier');
-    if (BigInt(balance.addressBalance) < BigInt(terms.amount))
+    if (BigInt(balance.balance) < BigInt(terms.amount))
       throw new Error(
-        'The signing wallet needs sufficient native SUI address balance for the current sponsored transaction template. Coin-object funding has not been validated with this facilitator. No deposit or payment was initiated.',
+        'This wallet needs at least 0.001 SUI in ordinary coins or address balance. No signature or payment was requested.',
       );
+    let funding;
+    if (BigInt(balance.addressBalance) < BigInt(terms.amount)) {
+      const coins = [];
+      let cursor: string | null = null;
+      for (let page = 0; page < 4; page++) {
+        const result = await client.core.listCoins({
+          owner: account.address,
+          coinType: terms.asset,
+          limit: 50,
+          cursor,
+        });
+        coins.push(...result.objects);
+        if (!result.hasNextPage) break;
+        cursor = result.cursor;
+      }
+      funding = selectServiceCoins(coins, account.address, terms.amount, balance.addressBalance);
+    }
     const tx = buildServiceTransaction(terms, account.address, {
       genesis: chainIdentifier,
       epoch: systemState.epoch,
       gasPrice: systemState.referenceGasPrice,
+      funding,
       nonce: crypto.getRandomValues(new Uint32Array(1))[0],
     });
     const bytes = storedBytes?.bytes || toBase64(await tx.build({ client }));
@@ -707,8 +726,8 @@ export function ServicePayment() {
                 <p className="notice">
                   Limited sponsored Mainnet pilot: {publicPilot.purchases} purchases total; 0.003
                   SUI per authenticated wallet across sessions, including unsettled reservations.
-                  Sponsor gas budget is at most 0.002 SUI per attempt. Ordinary coin-object SUI is
-                  not automatically converted.{' '}
+                  Sponsor gas budget is at most 0.002 SUI per attempt. Ordinary SUI coins and
+                  address balances are supported; no separate deposit is needed.{' '}
                   <Link href="/courtroom">Evaluate the free Memory Courtroom</Link>.
                 </p>
               )}
@@ -773,7 +792,7 @@ export function ServicePayment() {
                       [
                         'Ordinary coin-object SUI',
                         funding?.coinAtomic != null
-                          ? `${Number(funding.coinAtomic) / 1e9} SUI · alternate template not enabled`
+                          ? `${Number(funding.coinAtomic) / 1e9} SUI · owned-coin fallback available`
                           : 'Not returned',
                       ],
                       ['Provider', proposal.provider],
@@ -797,7 +816,7 @@ export function ServicePayment() {
                     {proposal.configurationReady
                       ? proposal.sufficientlyFunded
                         ? 'Parties and usable funds are verified. Exact purchase approval and provider permission are still required before signing.'
-                        : 'Parties are configured, but usable address-balance SUI is insufficient. Ordinary coin-object SUI is not automatically converted. Use the free Courtroom or a compatible funded address balance.'
+                        : 'Parties are configured, but combined SUI funds are insufficient. Refresh after funding, or use the free Courtroom.'
                       : `Proposal is incomplete. Configure public address names: ${Array.isArray(proposal.missing) ? proposal.missing.join(', ') : 'review server configuration'}. All parties must differ.`}
                   </p>
                   <details>
@@ -825,9 +844,9 @@ export function ServicePayment() {
                 ))}
               <p>
                 Deterministic supplemental analysis, not an independent identity check or a phone
-                call. No spending key is stored by PayGuard. This release’s verified payment
-                template uses address-balance SUI; ordinary coin-object fallback is not enabled.
-                PayGuard never converts or moves those funds automatically.
+                call. No spending key is stored by PayGuard. Checkout uses address-balance SUI
+                first, then an exact split from your own SUI coins if needed. Coin change stays with
+                you. Every purchase requires your separate wallet signature.
               </p>
               {!configured && (
                 <div role="status" className="notice">
