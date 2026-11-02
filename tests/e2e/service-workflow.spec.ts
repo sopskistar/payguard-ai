@@ -48,6 +48,7 @@ test.describe('isolated service UI contracts; all financial and memory responses
     expired = false,
     customer = false,
     coinFunding = false,
+    wrongAccount = false,
   ) {
     const page = await context.newPage();
     let setupRequests = 0;
@@ -308,11 +309,11 @@ test.describe('isolated service UI contracts; all financial and memory responses
         return { bytes, signature: 'Zml4dHVyZQ==' }; // Deliberately not a real signature.
       });
       await page.addInitScript(
-        ({ payer, rejectSignature }) => {
+        ({ payer, rejectSignature, wrongAccount }) => {
           const stats = { sign: 0, execute: 0 };
           Object.assign(window, { serviceFixtureStats: stats });
           const account = {
-            address: payer,
+            address: wrongAccount ? '0x' + '6'.repeat(64) : payer,
             publicKey: new Uint8Array(32),
             chains: ['sui:mainnet'],
             features: ['sui:signTransaction'],
@@ -370,7 +371,7 @@ test.describe('isolated service UI contracts; all financial and memory responses
             }),
           );
         },
-        { payer, rejectSignature },
+        { payer, rejectSignature, wrongAccount },
       );
     }
     await visit(page, '/services');
@@ -501,6 +502,31 @@ test.describe('isolated service UI contracts; all financial and memory responses
     expect(calls.settle).toBe(1);
     expect(calls.remember).toBe(0);
     expect(setupRequests()).toBe(0);
+    await page.close();
+  });
+  test('identifies an administrator session using a different personal wallet before approval (wallet fixture)', async () => {
+    const { page, calls } = await pageFixture(true, true, false, false, false, false, true);
+    await expect(page.getByRole('region', { name: 'Checkout account' })).toContainText(
+      'Administrator checkout',
+    );
+    await page.getByRole('button', { name: 'Request payment quote', exact: true }).click();
+    await page.getByRole('checkbox').last().check();
+    await page.getByLabel('Signing wallet').selectOption('payguard-service-fixture');
+    await page
+      .getByRole('button', { name: 'Review 0.001 SUI purchase · prepare', exact: true })
+      .click();
+    await expect(page.getByText(/OWNER_PAYER_REQUIRED:/).first()).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Switch to wallet workspace', exact: true }),
+    ).toBeVisible();
+    expect(calls.approve).toBe(0);
+    expect(calls.settle).toBe(0);
+    expect(
+      await page.evaluate(
+        () =>
+          (window as unknown as { serviceFixtureStats: { sign: number } }).serviceFixtureStats.sign,
+      ),
+    ).toBe(0);
     await page.close();
   });
   test('prepares ordinary coin-object funding without a signature or charge (RPC and wallet fixtures)', async () => {

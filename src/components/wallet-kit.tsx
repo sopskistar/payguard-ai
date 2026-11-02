@@ -25,10 +25,12 @@ function Connection({
   monitor = false,
   expectedAddress,
   slushBlocked = false,
+  returnTo = '/app',
 }: {
   monitor?: boolean;
   expectedAddress?: string;
   slushBlocked?: boolean;
+  returnTo?: '/app' | '/services';
 }) {
   const router = useRouter();
   const account = useCurrentAccount({ dAppKit: kit });
@@ -126,7 +128,7 @@ function Connection({
         address: challenge.address,
         signature: signed.signature,
       });
-      router.replace('/app');
+      router.replace(returnTo === '/services' ? '/services' : '/app');
       router.refresh();
     } catch (e) {
       setError((e as Error).message);
@@ -258,14 +260,21 @@ export default function WalletKit({
   monitor = false,
   expectedAddress,
   slushBlocked,
+  returnTo,
 }: {
   monitor?: boolean;
   expectedAddress?: string;
   slushBlocked?: boolean;
+  returnTo?: '/app' | '/services';
 }) {
   return (
     <DAppKitProvider dAppKit={kit}>
-      <Connection monitor={monitor} expectedAddress={expectedAddress} slushBlocked={slushBlocked} />
+      <Connection
+        monitor={monitor}
+        expectedAddress={expectedAddress}
+        slushBlocked={slushBlocked}
+        returnTo={returnTo}
+      />
     </DAppKitProvider>
   );
 }

@@ -1,10 +1,11 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { getWallets } from '@wallet-standard/app';
 import { SuiGrpcClient } from '@mysten/sui/grpc';
 import { Transaction } from '@mysten/sui/transactions';
-import { toBase64 } from '@mysten/sui/utils';
+import { toBase64, normalizeSuiAddress } from '@mysten/sui/utils';
 import {
   serviceTermsSchema,
   parseServiceChallenge,
@@ -25,6 +26,11 @@ import { Brand } from './brand';
 import { WalletSessionMonitor } from './wallet-entry';
 import { serviceDiagnostic } from '@/lib/service-diagnostics';
 import { selectServiceCoins } from '@/lib/service-funding';
+import {
+  selectServiceAccount,
+  ServiceAccountError,
+  type ServiceWalletAccount,
+} from '@/lib/service-wallet';
 import { ServicePaymentTimeline } from './service-payment-timeline';
 import type { RequestDiagnostic } from '@/lib/request-diagnostics';
 import type { walletOperationPolicy } from '@/lib/wallet-policy';
@@ -66,7 +72,7 @@ type PaymentProgress = {
   canCancel?: boolean;
   expired?: boolean;
 };
-type WalletAccount = { address: string; chains: readonly string[]; features: readonly string[] };
+type WalletAccount = ServiceWalletAccount;
 type WalletFeatures = {
   'standard:connect'?: { connect: () => Promise<{ accounts: WalletAccount[] }> };
   'sui:signTransaction'?: {
@@ -132,6 +138,7 @@ async function request(path: string, body: unknown) {
 }
 
 export function ServicePayment() {
+  const router = useRouter();
   const quoteOperation = useRef<{ invoiceId: string; key: string } | undefined>(undefined);
   const [data, setData] = useState<Snapshot>(),
     [capabilityState, setCapabilityState] = useState<'loading' | 'ready' | 'error' | 'anonymous'>(
@@ -276,6 +283,23 @@ export function ServicePayment() {
           return;
         }
         const r = await api<PaymentMetadata>('service-payments');
+        if (r.audience && (r.audience === 'customer') !== (s.mode === 'member'))
+          throw new ServiceAccountError(
+            'CHECKOUT_SESSION_CHANGED',
+            'The session changed while loading checkout.',
+            'Reload your own wallet workspace before requesting terms.',
+          );
+        if (
+          s.mode === 'member' &&
+          (!r.dedicatedPayer ||
+            normalizeSuiAddress(s.identity?.walletAddress || '') !==
+              normalizeSuiAddress(r.dedicatedPayer))
+        )
+          throw new ServiceAccountError(
+            'CHECKOUT_SESSION_CHANGED',
+            'The authenticated wallet does not match checkout.',
+            'Sign in to the intended private wallet workspace again.',
+          );
         applyMetadata(r);
         if (restore && requested && selected) {
           const existing =
@@ -414,14 +438,14 @@ export function ServicePayment() {
         } satisfies RequestDiagnostic,
       });
     }
-    const account = accounts.find(
-      (a) =>
-        a.chains.includes(terms.network) &&
-        a.features.includes('sui:signTransaction') &&
-        (terms.network !== 'sui:mainnet' || a.address === dedicatedPayer),
-    );
-    if (!account)
-      throw new Error('Select the dedicated approved payer on the specified Sui network.');
+    const account = selectServiceAccount(accounts, {
+      network: terms.network,
+      expectedPayer: dedicatedPayer,
+      audience: data?.mode === 'member' ? 'customer' : 'owner',
+      authenticatedWallet: data?.identity?.walletAddress || undefined,
+      quotePayer: terms.extra.authenticatedPayer,
+    });
+    const payer = normalizeSuiAddress(account.address);
     const client = new SuiGrpcClient({
       network: chain.sdk,
       baseUrl: chain.grpc,
@@ -453,7 +477,7 @@ export function ServicePayment() {
       }
       funding = selectServiceCoins(coins, account.address, terms.amount, balance.addressBalance);
     }
-    const tx = buildServiceTransaction(terms, account.address, {
+    const tx = buildServiceTransaction(terms, payer, {
       genesis: chainIdentifier,
       epoch: systemState.epoch,
       gasPrice: systemState.referenceGasPrice,
@@ -461,10 +485,10 @@ export function ServicePayment() {
       nonce: crypto.getRandomValues(new Uint32Array(1))[0],
     });
     const bytes = storedBytes?.bytes || toBase64(await tx.build({ client }));
-    validateServiceTransaction(bytes, terms, account.address);
+    validateServiceTransaction(bytes, terms, payer);
     const approved = await request('/' + quote.id + '/approve', {
       approved: true,
-      payer: account.address,
+      payer,
       transaction: bytes,
     });
     const digest = await Transaction.from(bytes).getDigest();
@@ -503,13 +527,17 @@ export function ServicePayment() {
     if (
       !current?.accounts.some(
         (a) =>
-          a.address === prepared.account.address &&
+          normalizeSuiAddress(a.address) === normalizeSuiAddress(prepared.account.address) &&
           a.chains.includes(terms.network) &&
           a.features.includes('sui:signTransaction'),
       )
     )
       throw new Error('Wallet account changed. Reconnect the exact approved payer before signing.');
-    validateServiceTransaction(prepared.bytes, terms, prepared.account.address);
+    validateServiceTransaction(
+      prepared.bytes,
+      terms,
+      normalizeSuiAddress(prepared.account.address),
+    );
     const attemptKey = 'payguard:service-sign-attempt:' + quote.id;
     if (localStorage.getItem(attemptKey))
       throw new Error(
@@ -618,6 +646,36 @@ export function ServicePayment() {
       </header>
       <main id="main" className="judge-intro">
         <h1>Pay for deeper evidence.</h1>
+        {capabilityState === 'ready' && data?.mode !== 'public-demo' && (
+          <section className="notice" aria-label="Checkout account">
+            <div>
+              <strong>
+                {data?.mode === 'owner' ? 'Administrator checkout' : 'Your private wallet checkout'}
+              </strong>
+              <p>
+                {data?.mode === 'owner'
+                  ? 'This session uses the configured owner payer. A connected personal wallet does not change the administrator session.'
+                  : 'Only the wallet authenticated to this private workspace can pay for its invoices.'}
+              </p>
+              <p>
+                Expected payer: <code>{dedicatedPayer || 'Not configured'}</code>
+              </p>
+              <button
+                className="button outline"
+                disabled={busy}
+                onClick={() =>
+                  void run(async () => {
+                    await api('auth/logout', {});
+                    router.push('/connect?next=%2Fservices');
+                    router.refresh();
+                  })
+                }
+              >
+                {data?.mode === 'owner' ? 'Switch to wallet workspace' : 'Change signed-in wallet'}
+              </button>
+            </div>
+          </section>
+        )}
         <p>
           When instruction anomalies need closer inspection, the agent requests a first-party
           consistency report. It compares conflicting recipient mentions and embedded links, then

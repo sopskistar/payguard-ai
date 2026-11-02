@@ -16,7 +16,7 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import recorded from '../../docs/evidence/judge-recall.json';
-import memories from '../../docs/evidence/walrus-confirmed.json';
+import courtroom from '../../docs/evidence/courtroom.json';
 import chain from '../../docs/evidence/tatum-reconciliation.json';
 import { judgeReview, JUDGE_HASH } from '@/lib/judge';
 import type { HumanVerification, Policy } from '@/lib/types';
@@ -552,7 +552,8 @@ export function JudgeSandbox() {
                       Public controls replay this evidence through the application’s rules; owner
                       reviews query Walrus live.{' '}
                       <Link href="/proof#memory">
-                        {memories.confirmedMemories.length} confirmed records & provenance ↗
+                        {courtroom.confirmedMemories} confirmed records across all scopes &
+                        provenance ↗
                       </Link>
                     </p>
                   </>

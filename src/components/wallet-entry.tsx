@@ -20,8 +20,14 @@ function LoadingWallet() {
 }
 const WalletKit = dynamic(() => import('./wallet-kit'), { ssr: false, loading: LoadingWallet });
 const Monitor = dynamic(() => import('./wallet-kit'), { ssr: false });
-export function WalletEntry({ slushBlocked = false }: { slushBlocked?: boolean }) {
-  return <WalletKit slushBlocked={slushBlocked} />;
+export function WalletEntry({
+  slushBlocked = false,
+  returnTo = '/app',
+}: {
+  slushBlocked?: boolean;
+  returnTo?: '/app' | '/services';
+}) {
+  return <WalletKit slushBlocked={slushBlocked} returnTo={returnTo} />;
 }
 export function WalletSessionMonitor({ expectedAddress }: { expectedAddress: string }) {
   const [allowed, setAllowed] = useState(false);

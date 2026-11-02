@@ -12,7 +12,7 @@ export const metadata = { title: 'Connect Sui Wallet' };
 export default async function ConnectPage({
   searchParams,
 }: {
-  searchParams: Promise<{ mode?: string }>;
+  searchParams: Promise<{ mode?: string; next?: string }>;
 }) {
   const query = await searchParams;
   const signIn = walletOnboardingAllowed() && query.mode !== 'review';
@@ -86,7 +86,10 @@ export default async function ConnectPage({
         <section className="panel">
           <h2>{signIn ? 'Wallet sign-in' : 'Slush review only'}</h2>
           {signIn ? (
-            <WalletEntry slushBlocked={slushBlocked} />
+            <WalletEntry
+              slushBlocked={slushBlocked}
+              returnTo={query.next === '/services' ? '/services' : '/app'}
+            />
           ) : (
             <div className="wallet-security-pause" role="status">
               <h3>Wallet security review in progress</h3>

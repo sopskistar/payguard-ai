@@ -363,3 +363,31 @@ test('wallet loading provides native recovery when JavaScript cannot load', asyn
     await context.close();
   }
 });
+
+test('free wallet sign-in returns to customer checkout with its own bound payer', async ({
+  browser,
+}) => {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  const key = Ed25519Keypair.generate();
+  await injectWallet(page, key);
+  try {
+    await visit(page, '/connect?next=%2Fservices');
+    await page.getByRole('button', { name: 'Connect Wallet', exact: true }).click();
+    await page.getByText('PayGuard Test Wallet', { exact: true }).click();
+    await page.getByRole('button', { name: 'Prepare sign-in message' }).click();
+    await page.getByRole('button', { name: 'Sign message & open workspace' }).click();
+    await expect(page).toHaveURL(/\/services$/);
+    const metadata = await (await context.request.get('/api/service-payments')).json();
+    expect(metadata.audience).toBe('customer');
+    expect(metadata.dedicatedPayer).toBe(key.toSuiAddress());
+    await expect(page.getByRole('region', { name: 'Checkout account' })).toContainText(
+      key.toSuiAddress(),
+    );
+    await expect(
+      page.getByRole('button', { name: 'Switch to wallet workspace', exact: true }),
+    ).toHaveCount(0);
+  } finally {
+    await context.close();
+  }
+});

@@ -163,3 +163,15 @@ playwright-report/
 *.swo
 *~
 .*.swp
+
+# Reproducible demo sources are tracked; media, tools and environments are local.
+/demo-video/.venv/
+/demo-video/.tools/
+/demo-video/.cache/
+/demo-video/recordings/
+/demo-video/render/
+/demo-video/node_modules/
+/demo-video/*.mp4
+/demo-video/*.mp3
+/demo-video/*.wav
+/demo-video/*.log

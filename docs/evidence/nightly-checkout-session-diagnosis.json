@@ -1,0 +1,36 @@
+{
+  "checkedAt": "2026-11-02T21:09:09.339Z",
+  "readOnly": true,
+  "counts": {
+    "memories": 32,
+    "receipts": 3,
+    "settling": 0
+  },
+  "recentAttempts": [
+    {
+      "idPrefix": "b818e44b",
+      "tenantRole": "owner",
+      "state": "quoted",
+      "expiresAt": "2026-11-02T15:05:42.761Z",
+      "prepared": false,
+      "approved": false,
+      "signedPayloadDisclosed": false,
+      "executionDigestPresent": false,
+      "memberQuotePayerPresent": false
+    },
+    {
+      "idPrefix": "07d2c453",
+      "tenantRole": "owner",
+      "state": "cancelled",
+      "expiresAt": "2026-11-02T15:03:07.170Z",
+      "prepared": false,
+      "approved": false,
+      "signedPayloadDisclosed": false,
+      "executionDigestPresent": false,
+      "memberQuotePayerPresent": false
+    }
+  ],
+  "conclusion": "Recent attempts were administrator quotes, not customer-wallet checkout. The generic client selection error obscured the correct owner-payer restriction.",
+  "financialSubmissions": 0,
+  "memoriesWritten": 0
+}

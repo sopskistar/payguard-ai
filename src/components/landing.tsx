@@ -41,7 +41,7 @@ const faqs = [
   ],
   [
     'Can anyone create an account or connect a wallet?',
-    'Create or return to a private wallet account at /connect using a free personal-message signature. No email, password or funds are needed for registration. Optional real analysis costs 0.001 SUI from your authenticated wallet under a limited sponsored pilot; current checkout requires usable address-balance SUI. Stop if the provider warns or refuses. Three owner-controlled purchases have Tatum-confirmed receipts. Physical hosted-provider acceptance is separate from integration tests. The Courtroom and interactive demo are free.',
+    'Create or return to a private wallet account at /connect using a free personal-message signature. No email, password or funds are needed for registration. Nightly Production login is owner-confirmed. Optional analysis costs 0.001 SUI from your authenticated wallet; checkout supports address balance or ordinary SUI coins under a limited sponsored pilot. Financial signing requires a separate approval and provider permission. Stop if the provider warns or refuses. Three owner-controlled purchases have Tatum-confirmed receipts. The Courtroom and interactive demo are free.',
   ],
   [
     'What are the limits?',
