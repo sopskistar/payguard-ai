@@ -1,0 +1,66 @@
+[
+  {
+    "id": "01-hook",
+    "start": 0,
+    "seconds": 12,
+    "title": "THE DESTINATION CHANGED",
+    "label": "Synthetic invoices",
+    "text": "The conversation is familiar. The destination isn't. ‘Please use our updated payment details for this invoice.’"
+  },
+  {
+    "id": "02-problem",
+    "start": 12,
+    "seconds": 22,
+    "title": "VERIFY THE CHANGE",
+    "label": "Synthetic invoices · Independent guidance, no FBI endorsement",
+    "text": "Same supplier. Same retainer. One new recipient. The FBI advises verifying payment-detail changes through an independent channel. PayGuard Verify turns that advice into a review: it detects the change, holds approval, records an authorized correction, and remembers what the next review should know."
+  },
+  {
+    "id": "03-product",
+    "start": 34,
+    "seconds": 24,
+    "title": "THE PRODUCT, IN USE",
+    "label": "Synthetic invoices · Illustrative human confirmation",
+    "text": "In the public demo, a synthetic Northstar invoice arrives. PayGuard compares it with the established recipient, flags the mismatch, and holds approval. A human verifies through a known channel and records the correction. No supplier payment is ever sent."
+  },
+  {
+    "id": "04-memory",
+    "start": 58,
+    "seconds": 26,
+    "title": "MEMORY OFF / ON · BOTH KEEP THE HOLD",
+    "label": "Recorded replay of genuine SDK capture (2026-11-01)",
+    "text": "Now the memory. The approved policy is written to Walrus Mainnet — thirty-two confirmed records. Same later invoice. Memory off: the baseline hold still fires. Memory on: genuine recall brings back the rule we approved, with citations. This is a replay of a real SDK capture, and labeled that way."
+  },
+  {
+    "id": "05-injection",
+    "start": 84,
+    "seconds": 10,
+    "title": "UNTRUSTED TEXT CANNOT AUTHORIZE APPROVAL",
+    "label": "Synthetic invoice attack · Existing review logic",
+    "text": "A hostile instruction hidden in the invoice doesn't skip verification."
+  },
+  {
+    "id": "06-payments",
+    "start": 94,
+    "seconds": 38,
+    "title": "THREE REAL MAINNET PURCHASES",
+    "label": "Real Sui Mainnet receipts · Tatum-verified",
+    "text": "Memory isn't the only proof. PayGuard sells its analysis through x402: the server quotes an HTTP 402, a wallet approves exact bytes, and the report is delivered. Three Mainnet payments of 0.001 SUI, each verified by Tatum over Sui gRPC. Synthetic invoices, and the payer and merchant are two wallets I control. The report: hold, and reconcile the conflicting recipient."
+  },
+  {
+    "id": "07-judges",
+    "start": 132,
+    "seconds": 22,
+    "title": "TRY IT. INSPECT IT. READ THE SOURCE.",
+    "label": "Free public demo · Private wallet workspace · Public evidence",
+    "text": "Anyone can try it free, no wallet needed. Connect a Sui wallet for a private workspace. Everything is open source, with a published write-up."
+  },
+  {
+    "id": "08-close",
+    "start": 154,
+    "seconds": 11,
+    "title": "VERIFY BEFORE YOU PAY",
+    "label": "Decision support · Human accountability · Not a fraud-prevention guarantee",
+    "text": "PayGuard doesn't promise to stop fraud. It makes the check explicit, remembers the correction, and shows receipts you can open."
+  }
+]

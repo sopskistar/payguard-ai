@@ -1,0 +1,10 @@
+{
+  "name": "payguard-official-demo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "record": "node --import tsx scripts/record.ts",
+    "build": "bash scripts/build.sh"
+  },
+  "description": "Uses the repository's locked compatible Playwright/tsx; does not upgrade app dependencies."
+}

@@ -175,3 +175,6 @@ playwright-report/
 /demo-video/*.mp3
 /demo-video/*.wav
 /demo-video/*.log
+/demo-video/scripts/__pycache__/
+/demo-video/preview.jpg
+/demo-video/poster.png

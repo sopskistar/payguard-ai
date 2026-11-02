@@ -1,0 +1,16 @@
+{
+  "checkedAt": "2026-11-02T21:55:12.077Z",
+  "privateApplicationTest": true,
+  "physicalWallet": false,
+  "financialSignatureRequests": 0,
+  "financialSubmissions": 0,
+  "memoryWrites": 0,
+  "ownerIdentityExplicit": true,
+  "audience": "owner",
+  "expectedPayerMatchesConfigured": true,
+  "switchRevokesAdminSession": true,
+  "freeWalletEntryVisible": true,
+  "returnTarget": "/services",
+  "providerConnected": false,
+  "ok": true
+}

@@ -1,0 +1,13 @@
+{
+  "node": "22.23.1",
+  "playwright": "1.64.1",
+  "tsx": "4.23.15",
+  "reuseParentNodeModules": true,
+  "chromiumExecutable": "/home/sopski/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome",
+  "captureViewport": { "width": 1920, "height": 1080, "deviceScaleFactor": 1 },
+  "python": "3.12.3",
+  "ffmpegPreferred": "imageio-ffmpeg 0.8.0 bundled n9.0.2",
+  "ffprobe": "7.0.2-static",
+  "pythonDependencies": "requirements.lock.txt",
+  "previousCut": "../.data/official-demo/ (preserved, not overwritten)"
+}

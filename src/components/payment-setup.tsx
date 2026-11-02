@@ -420,8 +420,9 @@ export function PaymentSetup({ states }: { states: string[] }) {
             </p>
             <p>
               Minimum usable service balance:{' '}
-              <strong>0.001 SUI (1,000,000 MIST) in address balance</strong>. Proposed
-              first-experiment target: that minimum only. Current address-balance shortfall:{' '}
+              <strong>0.001 SUI (1,000,000 MIST) in address balance or ordinary SUI coins</strong>.
+              The three recorded experiments used address balance. Current address-balance shortfall
+              (ordinary coins can also cover the price):{' '}
               {balances?.payer
                 ? `${formatSui((BigInt(SERVICE_AMOUNT) > BigInt(balances.payer.addressAtomic) ? BigInt(SERVICE_AMOUNT) - BigInt(balances.payer.addressAtomic) : 0n).toString())} SUI`
                 : 'unknown until checked'}
@@ -429,10 +430,11 @@ export function PaymentSetup({ states }: { states: string[] }) {
               payments.
             </p>
             <p>
-              A wallet transfer may arrive as coin objects. If so, a separate owner-controlled
-              conversion to address balance is required. Conversion or withdrawal fees depend on
-              that separately reviewed transaction; the zero gas cap applies to the service payment
-              only. PayGuard does not fund or convert assets.
+              A wallet transfer may arrive as coin objects. Checkout can use the validated
+              owned-coin fallback without a separate conversion; it passed unsigned Mainnet
+              simulation and facilitator verification. Physical coin-funded settlement remains
+              unverified. Inspect the frozen transaction and any change returned to the payer before
+              signing. PayGuard does not automatically fund or convert assets.
             </p>
             {payer && setup.partiesValid && (
               <>

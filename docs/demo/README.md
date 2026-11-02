@@ -1,18 +1,34 @@
-# Official demo review package
+# Official demo — new owner-review package
 
-The owner requested this recording on November 2. It uses the existing application and genuine public evidence, with no additional payment for filming. The MP4 files remain in ignored local storage rather than Git history.
+The new cut follows the owner's supplied Claude storyboard and exact base narration. It uses anonymous **public, read-only Production footage**, original branding and genuine saved evidence. No wallet connection/signature, payment, supplier write, memory write or private Neon read occurs in the recording pipeline. Publication is **not approved**.
 
-- 4K review cut: `.data/official-demo/payguard-verify-official-demo-4k.mp4`.
-- 1080p sharing copy: `.data/official-demo/payguard-verify-official-demo-1080p.mp4`.
-- Exact narration: [transcript](transcript.txt).
-- Eight-shot 2:45 plan: [storyboard](storyboard.json).
-- Captions: [WebVTT](captions.vtt) and [SRT](captions.srt), also embedded/burned into the exports.
-- Export/source provenance and checksums: [technical manifest](technical-manifest.json); [complete segmented playback validation](verification.json). MP4s report 25 fps nominal / 24.97 average due to container timestamps. Both timelines decoded with zero video/audio errors; peak audio is −1.5 dB.
+## Local review files
 
-The source is actual 3840×2160 Production browser video, captured at 25 fps on release `5f49f5ea02b6d4e9aaaa1cb6e7c7bcdc06b9ac5d`, with the existing UI enlarged for readability at 1080p. The source is not an upscaled 1080p recording. Chapter labels and captions are editorial overlays, not application controls. Microsoft Guy neural narration is synthesized, not a clone or a claimed human recording.
+- `demo-video/payguard-demo-final.mp4` — clean native-1080p cut, optional English soft subtitles.
+- `demo-video/payguard-demo-captioned.mp4` — same timeline with burned high-contrast captions.
+- [SRT captions](../../demo-video/demo.srt), [exact narration](../../demo-video/narration.txt), [shot plan](../../demo-video/storyboard.md), [public evidence links](../../demo-video/evidence-links.md), [actual validation and limitations](../../demo-video/NOTES.md).
+- `demo-video/preview.jpg` — scene-boundary contact sheet; `poster.png` — closing-frame still. Both remain local until review.
+- `demo-video/recordings/capture-manifest.json` — Production source SHA, original clips, timestamps, crop centers and read-only guard results.
+- `demo-video/render/export-manifest.json` and `validation.json` — checksums, complete ffprobe output, audio levels, black/freeze/silence inspection and decoded segment checks.
 
-The Courtroom explicitly replays dated real recall on synthetic invoices. Three payment experiments are real and owner-controlled, with exact credit and separate sponsor gas. Nightly login is owner-confirmed; Nightly financial acceptance and a fourth purchase are not claimed. The FBI reference paraphrases [independent-verification guidance](https://www.fbi.gov/how-we-can-help-you/common-frauds-and-scams/business-email-compromise), without implying endorsement.
+[Committed final technical summary](final-review-validation.json) includes the actual MP4 checksums and measured audio/video results without publishing the media.
 
-Review the cut, upload the approved file to an embedding-enabled public/unlisted YouTube or owner-approved Vimeo page, and provide the URL. Upload the supplied captions and check actual CC/playback. Then follow [the existing publication instructions](../DEMO_SCRIPT.md#publishing-the-approved-video). `src/content/demo-video.json` deliberately remains `approved: false` until then. No placeholder or unapproved player is published.
+From Ubuntu/WSL in the project folder, run **`explorer.exe demo-video`** to open the files in Windows. The clean and captioned MP4s play offline. Watch both before approving publication; metadata and stills alone cannot establish creative acceptance.
 
-The public submission links are the [application](https://payguard-ai-henna.vercel.app/), [Courtroom](https://payguard-ai-henna.vercel.app/courtroom), [free walkthrough](https://payguard-ai-henna.vercel.app/try), [payment proof](https://payguard-ai-henna.vercel.app/proof), [article](https://sopskistar.github.io/payguard-ai/) and [repository](https://github.com/sopskistar/payguard-ai). The owner must supply the approved hosted video and private form fields to the [official hackathon submission](https://recall-tatum-walrus.vercel.app/) before November 10, 17:00 UTC. No submission form was sent by this work.
+## Reproduce
+
+Run `bash demo-video/scripts/build.sh`. The package reuses the existing compatible Node/Playwright/tsx installation and Chromium; Python dependencies and FFmpeg/ffprobe are isolated and pinned under `demo-video/`. The application lockfile is unchanged. [Capture script](../../demo-video/scripts/record.ts) blocks private routes/APIs and non-read requests. Generated recordings, environments, tools and MP4s are ignored, never committed.
+
+Source is 1920×1080, device scale 1, exported H.264 CRF 17 at constant 30 fps, yuv420p and AAC 192 kbps with faststart. No upscaled-4K claim is made. Microsoft Edge TTS `en-US-GuyNeural` supplies the narration; no ElevenLabs subscription/key is required or claimed. Word-boundary events from the same speech stream drive phrase-level captions and measured pauses.
+
+The Courtroom is a **November 1 recorded replay**, not a fresh anonymous Mainnet recall. OFF and ON both retain the hold. Three genuine owner-controlled payments and synthetic invoices are disclosed. The FBI reference paraphrases [independent-verification guidance](https://www.fbi.gov/how-we-can-help-you/common-frauds-and-scams/business-email-compromise) without endorsement. Public original approval evidence is a labeled document excerpt, not a fabricated signing event.
+
+## Preserved previous cut
+
+The original `.data/official-demo/payguard-verify-official-demo-4k.mp4` and `payguard-verify-official-demo-1080p.mp4` are preserved. Their [old technical manifest](technical-manifest.json), [old verification](verification.json), transcript and captions remain historical artifacts. The [independent November 2 audit](../INDEPENDENT_DEMO_AND_RELEASE_AUDIT_2026-11-02.md) found a black tail in that cut despite its earlier decode checks. Those files are **not the final recommended review package**. The new pipeline explicitly checks every scene, final frames and black intervals.
+
+## Approval and submission
+
+After viewing, the owner can upload the approved cut to an embedding-enabled public/unlisted YouTube or owner-approved Vimeo page, upload captions, check CC/playback and supply the final URL. Follow [the existing publication instructions](../DEMO_SCRIPT.md#publishing-the-approved-video). `src/content/demo-video.json` deliberately remains `approved: false`, with no placeholder player published.
+
+[Live app](https://payguard-ai-henna.vercel.app/) · [Free walkthrough](https://payguard-ai-henna.vercel.app/try) · [Courtroom](https://payguard-ai-henna.vercel.app/courtroom) · [Payment proof](https://payguard-ai-henna.vercel.app/proof) · [Article](https://sopskistar.github.io/payguard-ai/) · [Repository](https://github.com/sopskistar/payguard-ai). [Submission requirements and owner identifiers](../SUBMISSION_HANDOFF.md). Deadline: November 10, 17:00 UTC. No submission form has been sent.

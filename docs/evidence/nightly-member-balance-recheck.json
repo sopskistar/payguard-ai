@@ -1,0 +1,17 @@
+{
+  "checkedAt": "2026-11-02T22:18:12.193Z",
+  "source": "Tatum Sui Mainnet gRPC",
+  "readOnly": true,
+  "fundedExistingMember": [
+    {
+      "walletFingerprint": "77c3f011f5975458",
+      "totalAtomic": "12446622",
+      "coinAtomic": "0",
+      "addressAtomic": "12446622",
+      "profileCreatedAt": "2026-11-01T16:10:46.509Z"
+    }
+  ],
+  "physicalProviderAssociation": "The funded existing member matches the owner-reported approximate balance; the owner did not supply the complete Nightly address in chat. Confirm the full payer in the authenticated UI. No extension access or new signature was available.",
+  "conversionRequested": false,
+  "financialRequests": 0
+}

@@ -1,5 +1,7 @@
 # Final independently verified Mainnet proof
 
+**November 2 recheck:** all three original executed transactions passed fresh Tatum Mainnet reads; every merchant credit remains 1,000,000 MIST and the prepared BCS digest equals the executed digest. Neon receipt content fingerprints remain unchanged. All 32 original Walrus jobs are still completed with their matching blobs and unchanged stored identities. No settlement, renewal or memory write occurred. [Fresh read-only evidence](evidence/final-audit-mainnet-readonly.json). A separate fresh server process recalled seven relevant Experiment 3 citations (OFF zero); all baseline findings and holds remained. [Recall result](evidence/final-audit-fresh-recall.json). The public Courtroom remains explicitly dated November 1 replay evidence.
+
 | Experiment / invoice       | Finalized Mainnet transaction                                                                                              | Checkpoint | Merchant credit | Payer gas / sponsor gas |
 | -------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------- | --------------- | ----------------------- |
 | 1 · X402-OWNER-20261031-01 | [68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx](https://suivision.xyz/txblock/68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx) | 340211024  | 0.001 SUI       | 0 / 0.0001 SUI          |

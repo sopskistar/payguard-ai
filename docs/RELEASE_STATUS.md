@@ -1,4 +1,14 @@
-# November 2 Production and recording handoff
+# November 2 final audit and owner review
+
+Checkout repair **3048806228fa167ad529c3020a7d3626ce232126** is Ready on Production. The dedicated-payer error was an administrator/customer session mismatch confirmed by actual saved owner-tenant quotes. The UI now identifies the role and expected payer, offers deliberate sign-out into wallet checkout, and rejects stale session/quote or account/network mismatches. The server's existing authenticated-payer authorization remains intact. [Recovery and next button](NIGHTLY_CHECKOUT_RECOVERY.md).
+
+All original **three settlements / three reports / 0.003 SUI merchant credit** and **32 Walrus records** passed fresh read-only checks. The fresh Experiment 3 process returned OFF 0 / ON 7 citations with both holds retained. No fourth payment, supplier write, new memory or conversion was performed. [Mainnet audit](evidence/final-audit-mainnet-readonly.json) · [recall](evidence/final-audit-fresh-recall.json).
+
+The new 165-second native-1080p public-only recording package follows the supplied narrative. It replaces the earlier review cut for owner consideration; earlier media and the independent audit remain preserved. MP4s stay local and ignored. Owner viewing/approval and a public host URL are required before embedding. [Review package](demo/README.md). No submission form has been sent.
+
+---
+
+## Earlier November 2 Production and recording handoff (historical)
 
 Checkout source `5f49f5ea02b6d4e9aaaa1cb6e7c7bcdc06b9ac5d` is Vercel Ready. Nine distinct public Production browser cases passed, including the final targeted mobile Connect rerun; 16 100%-zoom desktop/mobile screenshots show no horizontal overflow. All three receipts reopened twice, with receipt and settlement-submission counts unchanged at three. Final full receipt-content and memory-identity hashes match this recovery's three-receipt baseline. [Production checks](evidence/nov02-production-smoke.json) · [receipt recovery](evidence/nov02-production-receipt-reopen.json) · [screenshots](screenshots/nov02-release/manifest.json).
 

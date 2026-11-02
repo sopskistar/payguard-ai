@@ -1,0 +1,15 @@
+The conversation is familiar. The destination isn't. ‘Please use our updated payment details for this invoice.’
+
+Same supplier. Same retainer. One new recipient. The FBI advises verifying payment-detail changes through an independent channel. PayGuard Verify turns that advice into a review: it detects the change, holds approval, records an authorized correction, and remembers what the next review should know.
+
+In the public demo, a synthetic Northstar invoice arrives. PayGuard compares it with the established recipient, flags the mismatch, and holds approval. A human verifies through a known channel and records the correction. No supplier payment is ever sent.
+
+Now the memory. The approved policy is written to Walrus Mainnet — thirty-two confirmed records. Same later invoice. Memory off: the baseline hold still fires. Memory on: genuine recall brings back the rule we approved, with citations. This is a replay of a real SDK capture, and labeled that way.
+
+A hostile instruction hidden in the invoice doesn't skip verification.
+
+Memory isn't the only proof. PayGuard sells its analysis through x402: the server quotes an HTTP 402, a wallet approves exact bytes, and the report is delivered. Three Mainnet payments of 0.001 SUI, each verified by Tatum over Sui gRPC. Synthetic invoices, and the payer and merchant are two wallets I control. The report: hold, and reconcile the conflicting recipient.
+
+Anyone can try it free, no wallet needed. Connect a Sui wallet for a private workspace. Everything is open source, with a published write-up.
+
+PayGuard doesn't promise to stop fraud. It makes the check explicit, remembers the correction, and shows receipts you can open.

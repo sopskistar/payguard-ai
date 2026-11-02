@@ -1,0 +1,10 @@
+{
+  "checkedAt": "2026-11-02T22:30:36.098Z",
+  "privateApplicationTest": true,
+  "physicalWallet": false,
+  "financialSignatureRequests": 0,
+  "financialSubmissions": 0,
+  "memoryWrites": 0,
+  "ok": false,
+  "failure": "page.goto: net::ERR_NETWORK_CHANGED at https://payguard-ai-henna.vercel.app/services\nCall log:\n\u001b[2m  - navigating to \"https://payguard-ai-henna.vercel.app/services\", waiting until \"domcontentloaded\"\u001b[22m\n"
+}

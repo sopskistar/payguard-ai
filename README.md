@@ -6,7 +6,7 @@
 
 <!-- APPROVED_DEMO_VIDEO_START -->
 
-**Recorded demo:** The official 2:45 review cut is rendered locally in 4K and 1080p, with captions. Owner approval and a public host URL are still pending; no recording is published yet. [Review package, transcript and captions](docs/demo/README.md). The interactive demo and Courtroom below are available now. [Video publication instructions](docs/DEMO_SCRIPT.md#publishing-the-approved-video).
+**Recorded demo:** The new 2:45 owner-review cut follows the supplied narrative using native 1080p public browser footage, narration and synchronized captions. Owner approval and a public host URL are still pending; no recording is published. [Review package, exact script and captions](docs/demo/README.md). The earlier cut is preserved for comparison. The interactive demo and Courtroom below are available now. [Video publication instructions](docs/DEMO_SCRIPT.md#publishing-the-approved-video).
 <!-- APPROVED_DEMO_VIDEO_END -->
 
 ## 1. Evaluate without a wallet or payment
@@ -38,6 +38,8 @@ The effects show merchant credit of 0.001 SUI and a separate sponsor charge of 0
 ## 4. Optional real x402 purchase from the live site
 
 This is optional: judges can inspect all evidence for free. Authenticate your own wallet, create an eligible invoice with instruction anomalies, then open **[Agent Services](https://payguard-ai-henna.vercel.app/services)**. No owner password is required. Select the invoice and **Check Mainnet proposal · no signing** before requesting terms.
+
+If checkout says **Administrator checkout**, choose **Switch to wallet workspace** and sign in with your own wallet. The latest Nightly error came from owner-tenant quotes, not a member payer being reassigned. Owner and customer invoices remain isolated. [Diagnosis and exact recovery controls](docs/NIGHTLY_CHECKOUT_RECOVERY.md).
 
 - Exact price: **0.001 SUI / 1,000,000 MIST**, Sui Mainnet. The merchant is configured server-side. Your payer is bound to your verified wallet account.
 - **Ordinary SUI coins and address balance are supported.** The exact coin split passed an unsigned Mainnet simulation and hosted Tentacle verification. Coin change stays with the payer; no separate deposit is required. Merge/mixed funding has fixture coverage; funded physical fallback settlement remains unverified. [Compatibility evidence and limits](docs/COIN_FUNDING_COMPATIBILITY.md).

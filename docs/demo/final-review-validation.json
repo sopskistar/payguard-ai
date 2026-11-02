@@ -1,0 +1,130 @@
+{
+  "checkedAt": "2026-11-02T22:36:51.837283+00:00",
+  "sourceProductionCommit": "3048806228fa167ad529c3020a7d3626ce232126",
+  "sourceViewport": {
+    "width": 1920,
+    "height": 1080,
+    "deviceScaleFactor": 1
+  },
+  "publicOnly": true,
+  "walletConnections": 0,
+  "financialSignatures": 0,
+  "settlements": 0,
+  "memoryWrites": 0,
+  "privateDatabaseAccess": false,
+  "voice": "Microsoft Edge TTS en-US-GuyNeural, -8%; no ElevenLabs key used",
+  "files": [
+    {
+      "file": "payguard-demo-final.mp4",
+      "sha256": "7913189c515c04d9664bc64b835c1d3700ba9ea97f1cbf873a5a4c57792c4260",
+      "bytes": 45238338,
+      "duration": 165.0,
+      "resolution": [1920, 1080],
+      "fps": "30/1",
+      "frames": 4950,
+      "videoBitRate": 2052019,
+      "audioBitRate": 132333,
+      "videoCodec": "h264",
+      "pixelFormat": "yuv420p",
+      "audioCodec": "aac",
+      "audioTargetBitRate": 192000,
+      "subtitleStreams": ["eng"],
+      "faststart": true
+    },
+    {
+      "file": "payguard-demo-captioned.mp4",
+      "sha256": "49bb925a42e434360f450f035a6b17c207d9e48bcead90e5dc1d40d68748067d",
+      "bytes": 43439059,
+      "duration": 165.0,
+      "resolution": [1920, 1080],
+      "fps": "30/1",
+      "frames": 4950,
+      "videoBitRate": 1964782,
+      "audioBitRate": 132333,
+      "videoCodec": "h264",
+      "pixelFormat": "yuv420p",
+      "audioCodec": "aac",
+      "audioTargetBitRate": 192000,
+      "subtitleStreams": ["eng"],
+      "faststart": true
+    }
+  ],
+  "captionChecks": {
+    "cues": 38,
+    "maximumLineLength": 42,
+    "maximumLines": 2,
+    "timing": "Word events from the same synthesized audio plus exact inserted PCM gaps; see timing-manifest.json"
+  },
+  "measuredAudioLUFS": "-16.07",
+  "measuredTruePeakDBTP": "-4.50",
+  "decodedScenes": 8,
+  "blackIntervals": 0,
+  "freezeEvents": 0,
+  "boundaryStills": 26,
+  "browserPlayback": {
+    "checkedAt": "2026-11-02T22:35:02.812Z",
+    "engine": "Real Chromium HTML video playback, complete timeline at 1\u00d7",
+    "network": "Offline loopback media files only; application and provider access blocked",
+    "humanCreativeApproval": false,
+    "results": [
+      {
+        "file": "payguard-demo-final.mp4",
+        "duration": 165,
+        "ended": true,
+        "currentTime": 165,
+        "width": 1920,
+        "height": 1080,
+        "playbackRate": 1,
+        "muted": true,
+        "error": null,
+        "quality": {
+          "totalFrames": 4950,
+          "droppedFrames": 1643,
+          "corruptedFrames": 0
+        }
+      },
+      {
+        "file": "payguard-demo-captioned.mp4",
+        "duration": 165,
+        "ended": true,
+        "currentTime": 165,
+        "width": 1920,
+        "height": 1080,
+        "playbackRate": 1,
+        "muted": true,
+        "error": null,
+        "quality": {
+          "totalFrames": 4950,
+          "droppedFrames": 1636,
+          "corruptedFrames": 0
+        }
+      }
+    ]
+  },
+  "ownerCreativeApproval": false,
+  "publicVideoHost": null,
+  "singleBrowserPlayback": {
+    "checkedAt": "2026-11-02T22:40:14.310Z",
+    "engine": "Real Chromium HTML video playback, complete timeline at 1\u00d7",
+    "network": "Offline loopback media files only; application and provider access blocked",
+    "humanCreativeApproval": false,
+    "results": [
+      {
+        "file": "payguard-demo-final.mp4",
+        "duration": 165,
+        "ended": true,
+        "currentTime": 165,
+        "width": 1920,
+        "height": 1080,
+        "playbackRate": 1,
+        "muted": true,
+        "error": null,
+        "quality": {
+          "totalFrames": 4950,
+          "droppedFrames": 180,
+          "corruptedFrames": 0
+        }
+      }
+    ]
+  }
+}

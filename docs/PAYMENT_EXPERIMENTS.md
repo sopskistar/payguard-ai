@@ -2,6 +2,8 @@
 
 # Three verified Mainnet x402 purchases
 
+November 2 final audit reconfirmed all three transactions through Tatum and matched their executed digests to the stored prepared BCS bytes and unchanged Neon receipt content. There is no fourth purchase. The later failed Nightly attempt belongs to the administrator tenant, expired unsigned and unsubmitted, and remains preserved. [Fresh transaction evidence](evidence/final-audit-mainnet-readonly.json) · [Nightly diagnosis](NIGHTLY_CHECKOUT_RECOVERY.md).
+
 Verified 2026-11-01T12:37:34.178Z through authenticated Tatum Sui Mainnet gRPC and persisted Neon records.
 
 | Experiment / invoice       | Finalized Mainnet transaction                                                                                              | Checkpoint | Merchant credit | Payer gas / sponsor gas |

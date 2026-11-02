@@ -30,11 +30,13 @@ Each has exact 0.001 SUI merchant credit, zero payer gas, 0.0001 sponsor gas, su
 
 Use /connect with a permitted compatible Sui provider. Connect, inspect the server-generated free personal message and sign it. First use creates a private tenant; returning use restores it. No owner password, email, funds or terminal is required. Create a supplier/reference and a synthetic invoice, review changed instructions, compare Memory OFF/ON, and consent explicitly to any minimized memory. A confirmed job/blob is required before a learned rule can apply. Provider quota, indexing and retention limits remain visible.
 
-Slush completed three owner-reported local purchases; current physical hosted Slush/Suiet/Nightly/mobile acceptance remains unverified. Stop at warnings/refusals. Wallet connection, free authentication and financial signing are distinct.
+Nightly connected, signed the free challenge and opened a private Production workspace in the owner's physical test. Returning login, authoring and financial signing are not yet physically certified end to end. Slush completed the three local purchases; its hosted malicious-site warning was reproduced and respected. OKX and mobile remain physically unverified. Stop at warnings/refusals. Wallet connection, free authentication and financial signing are distinct.
 
 ## Optional real paid test
 
-No payment is needed for judging. A wallet-authenticated member can open /services, select an eligible own invoice and Check Mainnet proposal. Current verified checkout needs 0.001 SUI in address balance; ordinary coin-only funds are not automatically converted. Exact price is 0.001 SUI, sponsored gas budget at most 0.002 SUI, wallet pilot exposure at most 0.003 SUI across sessions, global pilot at most 20 reserved/settled purchases.
+No payment is needed for judging. A wallet-authenticated member can open /services, select an eligible own invoice and Check Mainnet proposal. Checkout supports address balance and a strictly validated ordinary-coin fallback; the latter passed unsigned Mainnet/Tentacle verification but has not yet settled with a physical wallet. No automatic conversion occurs. Exact price is 0.001 SUI, sponsored gas budget at most 0.002 SUI, wallet pilot exposure at most 0.003 SUI across sessions, global pilot at most 20 reserved/settled purchases.
+
+Check the **Checkout account** panel first. If it says Administrator checkout, use **Switch to wallet workspace**, then complete free Nightly sign-in; it returns to Agent Services. Member quotes bind to that authenticated wallet, while administrator quotes retain the dedicated owner payer. A prepared digest is never proof of execution.
 
 Request payment quote → review exact five-minute HTTP 402 terms → choose the wallet and accept → Review 0.001 SUI purchase · prepare → separate Sign and submit in wallet. Respect the wallet decision. Pending/unknown results resume the same intent. Reopen the saved receipt/report without another signature. This is real Mainnet spending only when the user deliberately authorizes it. No additional payment was made by automated acceptance tests.
 

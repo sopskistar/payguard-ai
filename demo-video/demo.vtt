@@ -1,0 +1,135 @@
+WEBVTT
+
+00:00:00.284 --> 00:00:02.206
+The conversation is familiar.
+
+00:00:04.251 --> 00:00:09.022
+The destination isn't. ‘Please use our
+updated payment details for
+
+00:00:09.034 --> 00:00:09.909
+this invoice.’
+
+00:00:12.284 --> 00:00:13.526
+Same supplier.
+
+00:00:14.418 --> 00:00:15.620
+Same retainer.
+
+00:00:16.507 --> 00:00:17.994
+One new recipient.
+
+00:00:18.881 --> 00:00:23.136
+The FBI advises verifying payment-detail
+changes through an independent
+
+00:00:23.148 --> 00:00:23.670
+channel.
+
+00:00:24.571 --> 00:00:28.707
+PayGuard Verify turns that advice into a
+review: it detects the change,
+
+00:00:28.851 --> 00:00:32.249
+holds approval, records an authorized
+correction, and remembers
+
+00:00:32.261 --> 00:00:33.788
+what the next review should know.
+
+00:00:34.284 --> 00:00:38.054
+In the public demo, a synthetic Northstar
+invoice arrives.
+
+00:00:40.085 --> 00:00:44.018
+PayGuard compares it with the established
+recipient, flags the mismatch,
+
+00:00:44.162 --> 00:00:45.227
+and holds approval.
+
+00:00:47.268 --> 00:00:50.969
+A human verifies through a known channel
+and records the correction.
+
+00:00:53.024 --> 00:00:55.312
+No supplier payment is ever sent.
+
+00:00:58.284 --> 00:00:59.567
+Now the memory.
+
+00:01:00.727 --> 00:01:04.669
+The approved policy is written to Walrus
+Mainnet — thirty-two confirmed
+
+00:01:04.681 --> 00:01:05.285
+records.
+
+00:01:06.441 --> 00:01:07.941
+Same later invoice.
+
+00:01:09.097 --> 00:01:12.010
+Memory off: the baseline hold still fires.
+
+00:01:13.180 --> 00:01:18.049
+Memory on: genuine recall brings back the
+rule we approved, with citations.
+
+00:01:19.219 --> 00:01:23.097
+This is a replay of a real SDK capture,
+and labeled that way.
+
+00:01:24.284 --> 00:01:28.380
+A hostile instruction hidden in the
+invoice doesn't skip verification.
+
+00:01:34.284 --> 00:01:36.328
+Memory isn't the only proof.
+
+00:01:38.387 --> 00:01:43.103
+PayGuard sells its analysis through x402:
+the server quotes an HTTP
+
+00:01:43.115 --> 00:01:47.238
+402, a wallet approves exact bytes, and
+the report is delivered.
+
+00:01:49.279 --> 00:01:54.742
+Three Mainnet payments of 0.001 SUI, each
+verified by Tatum over Sui
+
+00:01:54.754 --> 00:01:55.766
+gRPC.
+
+00:01:57.820 --> 00:02:01.232
+Synthetic invoices, and the payer and
+merchant are two wallets
+
+00:02:01.244 --> 00:02:02.051
+I control.
+
+00:02:04.079 --> 00:02:07.902
+The report: hold, and reconcile the
+conflicting recipient.
+
+00:02:12.284 --> 00:02:14.912
+Anyone can try it free, no wallet needed.
+
+00:02:20.100 --> 00:02:22.837
+Connect a Sui wallet for a private
+workspace.
+
+00:02:28.400 --> 00:02:31.531
+Everything is open source, with a
+published write-up.
+
+00:02:34.284 --> 00:02:36.722
+PayGuard doesn't promise to stop fraud.
+
+00:02:38.768 --> 00:02:42.967
+It makes the check explicit, remembers the
+correction, and shows receipts
+
+00:02:42.979 --> 00:02:43.760
+you can open.
+

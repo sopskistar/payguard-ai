@@ -1,4 +1,18 @@
-# November 2 verified continuation
+# November 2 final audit and Nightly recovery
+
+Application fix `3048806228fa167ad529c3020a7d3626ce232126` is deployed and Vercel Ready. The saved Nightly failures were **administrator-tenant** quotes without an authenticated member payer. They were never prepared, signed or submitted. Checkout now names the active identity, preserves strict owner/customer payer binding and offers **Switch to wallet workspace** with a direct return after free authentication. Canonical address comparison retains the provider's original signing account and gives distinct network, capability, stale-session and payer errors. [Diagnosis](NIGHTLY_CHECKOUT_RECOVERY.md) · [actual Production sign-out/switch proof](evidence/nightly-checkout-production-switch.json).
+
+Fresh read-only checks reconfirm all three original Tatum Mainnet payments and unchanged receipts, plus all 32 completed Walrus jobs/blobs. A fresh process recalled seven citations for existing Experiment 3, OFF zero, retaining all baseline findings/holds. One query is distinct from the older four-query learning evaluation. [Provider evidence](evidence/final-audit-mainnet-readonly.json) · [recall](evidence/final-audit-fresh-recall.json).
+
+The new 165-second review package follows the supplied Claude narrative with native 1920×1080 anonymous Production footage, genuine recorded proof, exact synthesized narration and word-timed captions. The earlier cut is preserved, including its independently reported black-tail defect; it is superseded for owner review. No financial or memory action is used for filming. [Review package and validation](demo/README.md). Publication and public embedding remain unapproved.
+
+Current validation: 213 unit/integration passes. The comprehensive local browser run passed 38, failed one FAQ copy expectation and intentionally skipped two live-provider specs. After restoring explicit provider-stop wording, all three affected UX checks passed. No payment assertion was weakened. Final checks and limitations are in [TEST_RESULTS](TEST_RESULTS.md). Physical Nightly free authentication is owner-confirmed; a real Nightly financial signature, returned report and fourth merchant credit are **not claimed**.
+
+The following entries are dated historical baselines; current counts, funding support and provider status are above and in the linked evidence.
+
+---
+
+# November 2 earlier continuation
 
 Checkout source `5f49f5ea02b6d4e9aaaa1cb6e7c7bcdc06b9ac5d` is deployed and Vercel Ready. Ordinary SUI coin funding now has a strictly checked fallback, with successful unsigned Tatum Mainnet simulation and hosted Tentacle verification. Nightly free Production login/private workspace are owner-confirmed; financial signing remains subject to a separate physical approval. Slush’s Production warning was reproduced and respected. [Compatibility](COIN_FUNDING_COMPATIBILITY.md) · [provider evidence](evidence/nightly-physical-acceptance.json).
 
