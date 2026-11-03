@@ -134,6 +134,15 @@ test.describe('isolated service UI contracts; all financial and memory responses
             network: 'sui:mainnet',
             dedicatedPayer: payer,
             audience: customer ? 'customer' : 'owner',
+            recoveryHolds:
+              failureMode === 'recovery-hold'
+                ? [
+                    {
+                      id: 'd0000000-0000-4000-8000-000000000099',
+                      digest: 'SYNTHETIC_PREVIOUS_PREPARATION',
+                    },
+                  ]
+                : [],
             ...(customer
               ? {
                   publicPilot: {
@@ -356,19 +365,46 @@ test.describe('isolated service UI contracts; all financial and memory responses
             chains: ['sui:mainnet'],
             features: ['sui:signTransaction'],
           };
+          let activeAccounts = [account];
+          const listeners = new Set<() => void>();
+          Object.assign(window, {
+            changeServiceFixtureAccount: (mode: string) => {
+              activeAccounts =
+                mode === 'disconnect'
+                  ? []
+                  : [
+                      {
+                        ...account,
+                        address: mode === 'switch' ? '0x' + '7'.repeat(64) : account.address,
+                        chains: mode === 'network' ? ['sui:testnet'] : account.chains,
+                      },
+                    ];
+              listeners.forEach((listener) => listener());
+            },
+          });
           const wallet = {
             version: '1.0.0',
             id: 'payguard-service-fixture',
             name: 'PayGuard Service Fixture',
             icon: 'data:image/png;base64,AA==',
             chains: ['sui:mainnet'],
-            accounts: [account],
+            get accounts() {
+              return activeAccounts;
+            },
             features: {
               'standard:connect': {
                 version: '1.0.0',
-                connect: async () => ({ accounts: [account] }),
+                connect: async () => ({ accounts: activeAccounts }),
               },
-              'standard:events': { version: '1.0.0', on: () => () => {} },
+              'standard:events': {
+                version: '1.0.0',
+                on: (_event: string, listener: () => void) => {
+                  listeners.add(listener);
+                  return () => {
+                    listeners.delete(listener);
+                  };
+                },
+              },
               'sui:signTransaction': {
                 version: '2.0.0',
                 signTransaction: async (input: {
@@ -388,6 +424,8 @@ test.describe('isolated service UI contracts; all financial and memory responses
                     return { bytes: 'Y2hhbmdlZA==', signature: 'Zml4dHVyZQ==' };
                   if (input.chain !== 'sui:mainnet' || input.account.address !== payer)
                     throw new Error('Wrong fixture signer');
+                  if (input.account !== activeAccounts[0])
+                    throw new Error('Stale fixture account object');
                   return (
                     window as unknown as {
                       signServiceFixture: (
@@ -406,11 +444,29 @@ test.describe('isolated service UI contracts; all financial and memory responses
               },
             },
           };
+          const register = ({ register }: { register: (w: unknown) => void }) => {
+            // Nightly registers Solana before Sui, with the same provider ID/name.
+            if (failureMode === 'nightly-adapters')
+              register({
+                ...wallet,
+                chains: ['solana:mainnet'],
+                accounts: [],
+                features: {
+                  'standard:connect': {
+                    version: '1.0.0',
+                    connect: async () => {
+                      throw new Error('Checkout must never select the Solana adapter.');
+                    },
+                  },
+                },
+              });
+            register(wallet);
+          };
           window.addEventListener('wallet-standard:app-ready', ((event: CustomEvent) =>
-            event.detail.register(wallet)) as EventListener);
+            register(event.detail)) as EventListener);
           window.dispatchEvent(
             new CustomEvent('wallet-standard:register-wallet', {
-              detail: ({ register }: { register: (w: unknown) => void }) => register(wallet),
+              detail: register,
             }),
           );
         },
@@ -418,9 +474,10 @@ test.describe('isolated service UI contracts; all financial and memory responses
       );
     }
     await visit(page, '/services');
-    await expect(
-      page.getByRole('button', { name: 'Request payment quote', exact: true }),
-    ).toBeEnabled();
+    if (failureMode !== 'recovery-hold')
+      await expect(
+        page.getByRole('button', { name: 'Request payment quote', exact: true }),
+      ).toBeEnabled();
     return {
       page,
       calls,
@@ -545,6 +602,135 @@ test.describe('isolated service UI contracts; all financial and memory responses
     expect(calls.settle).toBe(1);
     expect(calls.remember).toBe(0);
     expect(setupRequests()).toBe(0);
+    await page.close();
+  });
+  test('keeps the selected Sui adapter when Nightly adapters share a provider ID (fully mocked)', async () => {
+    const { page, calls } = await pageFixture(
+      true,
+      true,
+      false,
+      false,
+      true,
+      false,
+      false,
+      'nightly-adapters',
+    );
+    await page.getByRole('button', { name: 'Request payment quote', exact: true }).click();
+    await page.getByRole('checkbox').last().check();
+    await page.getByLabel('Signing wallet').selectOption('payguard-service-fixture');
+    await page
+      .getByRole('button', { name: 'Review 0.001 SUI purchase · prepare', exact: true })
+      .click();
+    await expect(
+      page.getByRole('button', { name: 'Sign and submit in wallet', exact: true }),
+    ).toBeEnabled();
+    expect(calls.approve).toBe(1);
+    await page.getByRole('button', { name: 'Sign and submit in wallet', exact: true }).click();
+    await expect(page.getByText('Tatum-confirmed service receipt', { exact: true })).toBeVisible();
+    expect(calls.settle).toBe(1);
+    expect(
+      await page.evaluate(
+        () =>
+          (window as unknown as { serviceFixtureStats: { sign: number; execute: number } })
+            .serviceFixtureStats,
+      ),
+    ).toEqual({ sign: 1, execute: 0 });
+    await page.close();
+  });
+  test('checks the selected wallet during a recovery hold without preparation, signing or a replacement quote (fully mocked)', async () => {
+    const { page, calls } = await pageFixture(
+      true,
+      true,
+      false,
+      true,
+      true,
+      false,
+      false,
+      'recovery-hold',
+    );
+    await expect(
+      page.getByRole('button', { name: 'Request payment quote', exact: true }),
+    ).toBeDisabled();
+    await expect(page.getByRole('region', { name: 'Checkout account' })).toContainText(
+      'Your private wallet checkout',
+    );
+    await page.getByRole('button', { name: /Resume saved quoted intent/ }).click();
+    await page.getByLabel('Signing wallet').selectOption('payguard-service-fixture');
+    await page
+      .getByRole('button', { name: 'Check selected wallet account · no signing', exact: true })
+      .click();
+    await expect(page.getByRole('region', { name: 'Checkout account' })).toContainText(payer);
+    await expect(
+      page.getByText(/The selected Sui wallet returned the exact workspace payer/),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Review 0.001 SUI purchase · prepare', exact: true }),
+    ).toBeDisabled();
+    expect(calls).toEqual({ quote: 0, remember: 0, approve: 0, settle: 0 });
+    expect(
+      await page.evaluate(
+        () =>
+          (window as unknown as { serviceFixtureStats: { sign: number; execute: number } })
+            .serviceFixtureStats,
+      ),
+    ).toEqual({ sign: 0, execute: 0 });
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await expect(
+      page.getByRole('button', { name: 'Request payment quote', exact: true }),
+    ).toBeDisabled();
+    expect(calls).toEqual({ quote: 0, remember: 0, approve: 0, settle: 0 });
+    await page.close();
+  });
+  test('rejects account switches, network changes and disconnects before marking an attempt, then uses the fresh exact account (fully mocked)', async () => {
+    const { page, calls } = await pageFixture(true, true, false, false, true);
+    await page.getByRole('button', { name: 'Request payment quote', exact: true }).click();
+    await page.getByRole('checkbox').last().check();
+    await page.getByLabel('Signing wallet').selectOption('payguard-service-fixture');
+    await page
+      .getByRole('button', { name: 'Review 0.001 SUI purchase · prepare', exact: true })
+      .click();
+    const sign = page.getByRole('button', { name: 'Sign and submit in wallet', exact: true });
+    await expect(sign).toBeEnabled();
+    const digest = await page.locator('.service-prepared-digest').first().textContent();
+    for (const [mode, code] of [
+      ['switch', 'CUSTOMER_PAYER_REQUIRED'],
+      ['network', 'WALLET_NETWORK_MISMATCH'],
+      ['disconnect', 'WALLET_NO_ACCOUNTS'],
+    ]) {
+      await page.evaluate(
+        (mode) =>
+          (
+            window as unknown as { changeServiceFixtureAccount: (mode: string) => void }
+          ).changeServiceFixtureAccount(mode),
+        mode,
+      );
+      await sign.click();
+      await expect(page.locator('.error-banner')).toContainText(code);
+      expect(
+        await page.evaluate(
+          (id) => localStorage.getItem('payguard:service-sign-attempt:' + id),
+          quotedId,
+        ),
+      ).toBeNull();
+      expect(
+        await page.evaluate(
+          () =>
+            (window as unknown as { serviceFixtureStats: { sign: number } }).serviceFixtureStats
+              .sign,
+        ),
+      ).toBe(0);
+      expect(calls.settle).toBe(0);
+    }
+    await page.evaluate(() =>
+      (
+        window as unknown as { changeServiceFixtureAccount: (mode: string) => void }
+      ).changeServiceFixtureAccount('same-payer-new-object'),
+    );
+    expect(await page.locator('.service-prepared-digest').first().textContent()).toBe(digest);
+    await sign.click();
+    await expect(page.getByText('Tatum-confirmed service receipt', { exact: true })).toBeVisible();
+    expect(calls.approve).toBe(1);
+    expect(calls.settle).toBe(1);
     await page.close();
   });
   test('identifies an administrator session using a different personal wallet before approval (wallet fixture)', async () => {

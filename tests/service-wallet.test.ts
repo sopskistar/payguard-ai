@@ -1,5 +1,9 @@
 import { it, expect } from 'vitest';
-import { selectServiceAccount, frozenServiceTransaction } from '@/lib/service-wallet';
+import {
+  selectServiceAccount,
+  selectPreparedServiceAccount,
+  frozenServiceTransaction,
+} from '@/lib/service-wallet';
 import {
   buildServiceTransaction,
   serviceTermsSchema,
@@ -101,4 +105,61 @@ it('rejects stale session, quote and missing configured payer before any signing
   expect(() => selectServiceAccount([account()], { ...customer, expectedPayer: null })).toThrow(
     'CHECKOUT_PAYER_MISSING',
   );
+});
+
+const provider = (accounts = [account()]) => ({
+  id: 'Nightly',
+  name: 'Nightly',
+  chains: ['sui:mainnet'],
+  accounts,
+  features: {
+    'sui:signTransaction': {
+      version: '2.0.0',
+      signTransaction: () => {
+        throw Error('No signing in account-selection tests');
+      },
+    },
+  },
+});
+it('keeps the prepared Sui adapter when a Solana adapter has the same Nightly ID and name', () => {
+  const sui = provider();
+  const solana = { ...provider([]), chains: ['solana:mainnet'], features: {} };
+  const registry = [solana, sui];
+  expect(registry.find((w) => w.id === sui.id)).toBe(solana); // Original lookup causes the false warning.
+  expect(selectPreparedServiceAccount(registry, sui, sui.accounts[0], customer)).toBe(
+    sui.accounts[0],
+  );
+});
+it('uses the provider current original account object when the same payer object was recreated', () => {
+  const original = account();
+  const current = { ...account('0x' + 'A'.repeat(64)), publicKey: new Uint8Array(32) };
+  const sui = provider([current]);
+  expect(selectPreparedServiceAccount([sui], sui, original, customer)).toBe(current);
+});
+it('does not substitute a re-registered or different provider even with the same account and ID', () => {
+  const sui = provider();
+  expect(() => selectPreparedServiceAccount([provider()], sui, sui.accounts[0], customer)).toThrow(
+    'WALLET_PROVIDER_CHANGED',
+  );
+});
+it('rejects actual account switching, disconnects and changed network or signing capability', () => {
+  const approved = account();
+  for (const [sui, code] of [
+    [provider([account(owner)]), 'CUSTOMER_PAYER_REQUIRED'],
+    [provider([]), 'WALLET_NO_ACCOUNTS'],
+    [{ ...provider(), chains: ['sui:testnet'] }, 'WALLET_NETWORK_MISMATCH'],
+    [{ ...provider(), features: {} }, 'WALLET_SIGNING_UNSUPPORTED'],
+    [
+      provider([{ ...approved, features: ['sui:signPersonalMessage'] }]),
+      'WALLET_SIGNING_UNSUPPORTED',
+    ],
+  ] as const)
+    expect(() => selectPreparedServiceAccount([sui], sui, approved, customer)).toThrow(code);
+  const sui = provider();
+  expect(() => selectPreparedServiceAccount([sui], sui, account(owner), customer)).toThrow(
+    'CUSTOMER_PAYER_REQUIRED',
+  );
+  expect(() =>
+    selectPreparedServiceAccount([sui], sui, approved, { ...customer, quotePayer: owner }),
+  ).toThrow('QUOTE_PAYER_CHANGED');
 });

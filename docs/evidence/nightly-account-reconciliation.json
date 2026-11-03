@@ -1,0 +1,312 @@
+{
+  "checkedAt": "2026-11-03T22:34:13.799Z",
+  "readOnly": true,
+  "recoveredCommit": "f27acd3ecd4d6651dc342962a13533ab960129fc",
+  "chains": {
+    "tatum": {
+      "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+      "chain": "mainnet",
+      "epoch": "1300",
+      "checkpoint": "341351702",
+      "lowestAvailableCheckpoint": "237661232"
+    },
+    "suiFullnode": {
+      "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+      "chain": "mainnet",
+      "epoch": "1300",
+      "checkpoint": "341351701",
+      "lowestAvailableCheckpoint": "336052866"
+    }
+  },
+  "counts": {
+    "memories": 33,
+    "receipts": 3,
+    "submissions": 3,
+    "settling": 0
+  },
+  "historicalReceiptContentUnchanged": true,
+  "receiptContentDigest": "3d9fcb7a9e47f9d96dc53c7d59607f36a607842f4f3e70b56a45c3d4215595b8",
+  "memberBalances": {
+    "tatum": {
+      "totalAtomic": "12446622",
+      "addressAtomic": "12446622",
+      "coinAtomic": "0"
+    },
+    "suiFullnode": {
+      "totalAtomic": "12446622",
+      "addressAtomic": "12446622",
+      "coinAtomic": "0"
+    }
+  },
+  "intents": [
+    {
+      "id": "544d939d-02d5-4d98-b549-69fb9fb501e8",
+      "historical": true,
+      "role": "member",
+      "state": "approved",
+      "authenticatedWallet": {
+        "suffix": "c42365fa",
+        "sha256": "77c3f011f5975458a6862376abd5eb5c90cae267ee59a9273635d292f46dd8f2"
+      },
+      "quotePayer": {
+        "suffix": "c42365fa",
+        "sha256": "77c3f011f5975458a6862376abd5eb5c90cae267ee59a9273635d292f46dd8f2"
+      },
+      "recordedPayer": {
+        "suffix": "c42365fa",
+        "sha256": "77c3f011f5975458a6862376abd5eb5c90cae267ee59a9273635d292f46dd8f2"
+      },
+      "preparedSender": {
+        "suffix": "c42365fa",
+        "sha256": "77c3f011f5975458a6862376abd5eb5c90cae267ee59a9273635d292f46dd8f2"
+      },
+      "memberIdentityMatches": true,
+      "quoteExpired": true,
+      "quoteExpiresAt": "2026-11-03T09:43:09.165Z",
+      "preparedDigest": "EDe8JMezpxR4qpWFiMQni6ETMdYfYXiM8Sdxnkzvse3s",
+      "preparedDigestMatchesBytes": true,
+      "expiration": {
+        "minEpoch": "1300",
+        "maxEpoch": "1301",
+        "chain": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S"
+      },
+      "payloadPersisted": false,
+      "executionDigest": null,
+      "walletEvents": [],
+      "transactionEvidence": {
+        "tatum": {
+          "result": "not-found",
+          "code": "NOT_FOUND"
+        },
+        "suiFullnode": {
+          "result": "not-found",
+          "code": "NOT_FOUND"
+        }
+      },
+      "outsideChainValidity": false,
+      "safeForReplacement": false,
+      "signatureProduced": "Not independently established from application records"
+    },
+    {
+      "id": "b0386342-a7c2-40ba-909e-9edf17501767",
+      "historical": true,
+      "role": "owner",
+      "state": "approved",
+      "authenticatedWallet": null,
+      "quotePayer": null,
+      "recordedPayer": {
+        "suffix": "c96397a8",
+        "sha256": "4d843c0976858a6888635ec75d5b55a50598e5baaaaecafbcc21a11cc77b17ee"
+      },
+      "preparedSender": {
+        "suffix": "c96397a8",
+        "sha256": "4d843c0976858a6888635ec75d5b55a50598e5baaaaecafbcc21a11cc77b17ee"
+      },
+      "memberIdentityMatches": null,
+      "quoteExpired": true,
+      "quoteExpiresAt": "2026-11-03T10:05:04.928Z",
+      "preparedDigest": "7GiPuDNq1vN8pLn2cqJf8kYMrt9zmbdDBbAfdoYtGdRj",
+      "preparedDigestMatchesBytes": true,
+      "expiration": {
+        "minEpoch": "1300",
+        "maxEpoch": "1301",
+        "chain": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S"
+      },
+      "payloadPersisted": false,
+      "executionDigest": null,
+      "walletEvents": [
+        {
+          "type": "service.wallet_requested",
+          "code": null
+        },
+        {
+          "type": "service.wallet_error",
+          "code": "PROVIDER_ERROR"
+        }
+      ],
+      "transactionEvidence": {
+        "tatum": {
+          "result": "not-found",
+          "code": "NOT_FOUND"
+        },
+        "suiFullnode": {
+          "result": "not-found",
+          "code": "NOT_FOUND"
+        }
+      },
+      "outsideChainValidity": false,
+      "safeForReplacement": false,
+      "signatureProduced": "Not independently established from application records"
+    },
+    {
+      "id": "7a025238-06d9-43ca-8b5f-16ef7079f086",
+      "historical": false,
+      "role": "member",
+      "state": "approved",
+      "authenticatedWallet": {
+        "suffix": "c42365fa",
+        "sha256": "77c3f011f5975458a6862376abd5eb5c90cae267ee59a9273635d292f46dd8f2"
+      },
+      "quotePayer": {
+        "suffix": "c42365fa",
+        "sha256": "77c3f011f5975458a6862376abd5eb5c90cae267ee59a9273635d292f46dd8f2"
+      },
+      "recordedPayer": {
+        "suffix": "c42365fa",
+        "sha256": "77c3f011f5975458a6862376abd5eb5c90cae267ee59a9273635d292f46dd8f2"
+      },
+      "preparedSender": {
+        "suffix": "c42365fa",
+        "sha256": "77c3f011f5975458a6862376abd5eb5c90cae267ee59a9273635d292f46dd8f2"
+      },
+      "memberIdentityMatches": true,
+      "quoteExpired": true,
+      "quoteExpiresAt": "2026-11-03T19:44:54.699Z",
+      "preparedDigest": "CcfxLSCtm6Nr6gZvLbif4dFYJTyt3ECCSDR4nMaQzGw6",
+      "preparedDigestMatchesBytes": true,
+      "expiration": {
+        "minEpoch": "1300",
+        "maxEpoch": "1301",
+        "chain": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S"
+      },
+      "payloadPersisted": false,
+      "executionDigest": null,
+      "walletEvents": [],
+      "transactionEvidence": {
+        "tatum": {
+          "result": "not-found",
+          "code": "NOT_FOUND"
+        },
+        "suiFullnode": {
+          "result": "not-found",
+          "code": "NOT_FOUND"
+        }
+      },
+      "outsideChainValidity": false,
+      "safeForReplacement": false,
+      "signatureProduced": "Not independently established from application records"
+    },
+    {
+      "id": "d23937ed-1907-4e40-8156-488f453a921a",
+      "historical": false,
+      "role": "member",
+      "state": "approved",
+      "authenticatedWallet": {
+        "suffix": "c42365fa",
+        "sha256": "77c3f011f5975458a6862376abd5eb5c90cae267ee59a9273635d292f46dd8f2"
+      },
+      "quotePayer": {
+        "suffix": "c42365fa",
+        "sha256": "77c3f011f5975458a6862376abd5eb5c90cae267ee59a9273635d292f46dd8f2"
+      },
+      "recordedPayer": {
+        "suffix": "c42365fa",
+        "sha256": "77c3f011f5975458a6862376abd5eb5c90cae267ee59a9273635d292f46dd8f2"
+      },
+      "preparedSender": {
+        "suffix": "c42365fa",
+        "sha256": "77c3f011f5975458a6862376abd5eb5c90cae267ee59a9273635d292f46dd8f2"
+      },
+      "memberIdentityMatches": true,
+      "quoteExpired": true,
+      "quoteExpiresAt": "2026-11-03T19:47:36.934Z",
+      "preparedDigest": "7dDdwa2iHbGkXsmrk5wKT3TerFoQ46hMtEDaxq8vFiJR",
+      "preparedDigestMatchesBytes": true,
+      "expiration": {
+        "minEpoch": "1300",
+        "maxEpoch": "1301",
+        "chain": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S"
+      },
+      "payloadPersisted": false,
+      "executionDigest": null,
+      "walletEvents": [],
+      "transactionEvidence": {
+        "tatum": {
+          "result": "not-found",
+          "code": "NOT_FOUND"
+        },
+        "suiFullnode": {
+          "result": "not-found",
+          "code": "NOT_FOUND"
+        }
+      },
+      "outsideChainValidity": false,
+      "safeForReplacement": false,
+      "signatureProduced": "Not independently established from application records"
+    }
+  ],
+  "originalSettlements": [
+    {
+      "digest": "68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx",
+      "tatum": {
+        "result": "executed",
+        "digest": "68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx",
+        "checkpoint": "340211024",
+        "success": true,
+        "sender": "0xc0f3fbf8a029fe354571b58d9e079c1aa4e9ca111a2b025dca470d4bc96397a8",
+        "merchantCreditAtomic": "1000000"
+      },
+      "suiFullnode": {
+        "result": "executed",
+        "digest": "68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx",
+        "checkpoint": "340211024",
+        "success": true,
+        "sender": "0xc0f3fbf8a029fe354571b58d9e079c1aa4e9ca111a2b025dca470d4bc96397a8",
+        "merchantCreditAtomic": "1000000"
+      }
+    },
+    {
+      "digest": "xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r",
+      "tatum": {
+        "result": "executed",
+        "digest": "xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r",
+        "checkpoint": "340470114",
+        "success": true,
+        "sender": "0xc0f3fbf8a029fe354571b58d9e079c1aa4e9ca111a2b025dca470d4bc96397a8",
+        "merchantCreditAtomic": "1000000"
+      },
+      "suiFullnode": {
+        "result": "executed",
+        "digest": "xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r",
+        "checkpoint": "340470114",
+        "success": true,
+        "sender": "0xc0f3fbf8a029fe354571b58d9e079c1aa4e9ca111a2b025dca470d4bc96397a8",
+        "merchantCreditAtomic": "1000000"
+      }
+    },
+    {
+      "digest": "4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA",
+      "tatum": {
+        "result": "executed",
+        "digest": "4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA",
+        "checkpoint": "340478705",
+        "success": true,
+        "sender": "0xc0f3fbf8a029fe354571b58d9e079c1aa4e9ca111a2b025dca470d4bc96397a8",
+        "merchantCreditAtomic": "1000000"
+      },
+      "suiFullnode": {
+        "result": "executed",
+        "digest": "4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA",
+        "checkpoint": "340478705",
+        "success": true,
+        "sender": "0xc0f3fbf8a029fe354571b58d9e079c1aa4e9ca111a2b025dca470d4bc96397a8",
+        "merchantCreditAtomic": "1000000"
+      }
+    }
+  ],
+  "financialSignatures": 0,
+  "transactionPreparations": 0,
+  "settlementSubmissions": 0,
+  "recordMutations": 0,
+  "safeForNewPayment": false,
+  "physicalNightlyActiveAccount": "Owner-reported; not independently read from the owner extension",
+  "savedOfficialNightlyPackage": {
+    "version": "1.51.49",
+    "injectRuntimeSha256": "b8474434c1ced7cf7e01b3530e2d50a8fb9d0e1db0e0ebe649fa21cc34b26aaf",
+    "registrationOrder": ["Solana", "Sui", "Aptos"],
+    "sameNameAndIdAcrossAdapters": true,
+    "ownerExtensionVersionIndependentlyRead": false
+  },
+  "rootCause": "Preparation filters Sui adapters; the previous signing lookup used only a shared name/ID and selected the first registered Solana adapter.",
+  "privacy": "No customer invoice, supplier, tenant, session, private key, signature or prepared transaction bytes exported."
+}

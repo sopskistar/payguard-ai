@@ -1,0 +1,34 @@
+{
+  "checkedAt": "2026-11-03T22:26:25.965Z",
+  "baseURL": "http://localhost:3005",
+  "storage": "New disposable local PGlite; not Neon",
+  "existingDataChanged": false,
+  "liveCredentials": false,
+  "financialSubmissions": false,
+  "memoryWrites": false,
+  "video": false,
+  "stats": {
+    "startTime": "2026-11-03T22:26:16.070Z",
+    "duration": 9849.341999999999,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  },
+  "tests": [
+    {
+      "title": "keeps the selected Sui adapter when Nightly adapters share a provider ID (fully mocked)",
+      "status": "unexpected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 21,
+            "column": 6
+          }
+        }
+      ]
+    }
+  ]
+}

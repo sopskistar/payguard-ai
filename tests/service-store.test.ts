@@ -28,6 +28,7 @@ import {
   recordServiceWalletEvent,
   serviceExposure,
   publicServiceExposure,
+  serviceRecoveryHolds,
 } from '@/lib/service-payments';
 import { serviceNetworkInfo, type ServiceChallenge } from '@/lib/service-protocol';
 import { AppError } from '@/lib/errors';
@@ -750,6 +751,94 @@ it('supports HTTPS customer quotes, exact wallet binding and a saved receipt wit
     vi.stubEnv('APP_URL', 'http://localhost:3000');
     vi.stubEnv('ENABLE_AGENT_PAYMENTS', 'testnet');
     vi.stubEnv('SERVICE_PAYMENT_SETTLEMENT_ENABLED', 'true');
+  }
+});
+it('holds expired prepared Mainnet attempts and blocks replacement quotes, preparation and cancellation without changing evidence', async () => {
+  vi.stubEnv('ENABLE_AGENT_PAYMENTS', 'mainnet');
+  try {
+    const member = await memberCheckout(),
+      other = await memberCheckout();
+    const first = await member.fresh(),
+      next = await member.fresh();
+    const proof = await payload(first, member.key);
+    const session = randomUUID();
+    await approveCore(
+      member.id,
+      first.id,
+      member.key.toSuiAddress(),
+      session,
+      proof.payload.transaction,
+    );
+    await (
+      await db()
+    )
+      .update(schema.servicePaymentIntents)
+      .set({ expiresAt: new Date(Date.now() - 1000) })
+      .where(eq(schema.servicePaymentIntents.id, first.id));
+    const before = await ownedService(member.id, first.id),
+      submissions = settles;
+    expect(await serviceRecoveryHolds(member.id)).toEqual([
+      {
+        id: first.id,
+        digest: (before.approval as { prepared: { digest: string } }).prepared.digest,
+      },
+    ]);
+    expect(await serviceRecoveryHolds(other.id)).toEqual([]);
+    expect(await serviceProgress(member.id, first.id, session)).toMatchObject({
+      expired: true,
+      canCancel: false,
+      walletAttempted: false,
+      submitted: false,
+    });
+    await expect(member.fresh()).rejects.toMatchObject({ code: 'PREVIOUS_PAYMENT_UNRESOLVED' });
+    await expect(
+      approveCore(
+        member.id,
+        next.id,
+        member.key.toSuiAddress(),
+        randomUUID(),
+        (await payload(next, member.key)).payload.transaction,
+      ),
+    ).rejects.toMatchObject({ code: 'PREVIOUS_PAYMENT_UNRESOLVED' });
+    await expect(cancelService(member.id, first.id)).rejects.toMatchObject({
+      code: 'SIGNATURE_UNCERTAIN',
+    });
+    expect(await fulfillCore(member.id, first.id, undefined, session)).toMatchObject({
+      state: 'approved',
+      expired: true,
+    });
+    expect(await ownedService(member.id, first.id)).toEqual(before);
+    expect((await serviceExposure(member.id, randomUUID())).reservedAtomic).toBe('1000000');
+    expect(settles).toBe(submissions);
+  } finally {
+    vi.stubEnv('ENABLE_AGENT_PAYMENTS', 'testnet');
+  }
+});
+it('serializes competing Mainnet preparations across sessions for one wallet (no live funds)', async () => {
+  vi.stubEnv('ENABLE_AGENT_PAYMENTS', 'mainnet');
+  try {
+    const member = await memberCheckout();
+    const rows = await Promise.all([member.fresh(), member.fresh()]);
+    const attempts = await Promise.allSettled(
+      rows.map(async (row) =>
+        approveCore(
+          member.id,
+          row.id,
+          member.key.toSuiAddress(),
+          randomUUID(),
+          (await payload(row, member.key)).payload.transaction,
+        ),
+      ),
+    );
+    expect(attempts.filter((r) => r.status === 'fulfilled')).toHaveLength(1);
+    expect(
+      attempts
+        .filter((r) => r.status === 'rejected')
+        .map((r) => (r as PromiseRejectedResult).reason.code),
+    ).toEqual(['PREVIOUS_PAYMENT_UNRESOLVED']);
+    expect((await serviceExposure(member.id, randomUUID())).reservedAtomic).toBe('1000000');
+  } finally {
+    vi.stubEnv('ENABLE_AGENT_PAYMENTS', 'testnet');
   }
 });
 it('counts customer reservations across sessions and releases only explicitly cancelled unsigned terms', async () => {

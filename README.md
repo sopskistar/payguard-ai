@@ -25,6 +25,8 @@ Create a supplier in **Vendor Trust**, establish its recipient and independent c
 
 **November 3 recovery:** all three original receipts and original 32 memory identities are preserved; a newer member correction brings the live confirmed memory count to 33. Real Production API/Neon checks passed supplier/invoice persistence, wallet identity binding and account isolation. Physical Nightly financial acceptance remains unverified. Two expired prepared intents remain unresolved; do not replace or sign them again. [Current investigation, evidence and supervised acceptance checkpoint](docs/ACCOUNT_RECOVERY_2026-11-03.md).
 
+**Nightly account warning continuation:** the false account-change warning is traced to Nightly's shared Solana/Sui adapter identity. The repair keeps the exact selected Sui provider and adds a connection-only account check. Two newer customer preparations were also recovered; all four remain held while their chain-validity window is open. No replacement signature is safe yet. [Adapter diagnosis, reconciliation and safe owner steps](docs/NIGHTLY_ACCOUNT_SELECTION_2026-11-03.md).
+
 ## 3. Inspect three genuine Mainnet purchases
 
 | Experiment / invoice       | Finalized Mainnet transaction                                                                                              | Checkpoint | Merchant credit | Payer gas / sponsor gas |

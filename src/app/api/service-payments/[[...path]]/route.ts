@@ -29,6 +29,7 @@ import {
   serviceExposure,
   publicServiceExposure,
   publicServiceEnabled,
+  serviceRecoveryHolds,
 } from '@/lib/service-payments';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -101,6 +102,7 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
                 ? process.env.SERVICE_PAYMENT_PAYER
                 : null,
           intents: await listServiceIntents(tenantId),
+          recoveryHolds: await serviceRecoveryHolds(tenantId),
         },
         { headers: { 'Cache-Control': 'private, no-store' } },
       );

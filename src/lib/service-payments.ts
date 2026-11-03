@@ -1,6 +1,6 @@
 import 'server-only';
 import { createHash, randomUUID } from 'node:crypto';
-import { and, eq, desc } from 'drizzle-orm';
+import { and, eq, desc, inArray } from 'drizzle-orm';
 import { Transaction } from '@mysten/sui/transactions';
 import { db } from '@/db';
 import { OWNER_ID } from './demo';
@@ -174,6 +174,44 @@ const serverSecrets = () =>
 type PreparedService = { bytes: string; digest: string; preparedAt: string };
 const storedPreparation = (approval: unknown) =>
   (approval as { prepared?: PreparedService } | null)?.prepared;
+type IntentReader = Pick<Awaited<ReturnType<typeof db>>, 'select'>;
+export async function serviceRecoveryHolds(tenantId: string, reader?: IntentReader) {
+  if (serviceMode() !== 'sui:mainnet') return [];
+  const rows = await (reader || (await db()))
+    .select({
+      id: s.servicePaymentIntents.id,
+      state: s.servicePaymentIntents.state,
+      approval: s.servicePaymentIntents.approval,
+      challenge: s.servicePaymentIntents.challenge,
+      digest: s.servicePaymentIntents.digest,
+      payloadHash: s.servicePaymentIntents.payloadHash,
+    })
+    .from(s.servicePaymentIntents)
+    .where(
+      and(
+        eq(s.servicePaymentIntents.tenantId, tenantId),
+        inArray(s.servicePaymentIntents.state, ['approved', 'settling']),
+      ),
+    );
+  return rows
+    .filter(
+      (row) =>
+        (row.challenge as ServiceChallenge).accepts[0].network === 'sui:mainnet' &&
+        (storedPreparation(row.approval) ||
+          row.digest ||
+          row.payloadHash ||
+          row.state === 'settling'),
+    )
+    .map((row) => ({ id: row.id, digest: storedPreparation(row.approval)?.digest || row.digest }));
+}
+async function requireNoOtherServiceAttempt(tenantId: string, id?: string, reader?: IntentReader) {
+  if ((await serviceRecoveryHolds(tenantId, reader)).some((row) => row.id !== id))
+    throw new AppError(
+      409,
+      'PREVIOUS_PAYMENT_UNRESOLVED',
+      'An earlier prepared or submitted Mainnet payment requires reconciliation. Do not request another signature or replacement payment. Quote expiry does not revoke a signed transaction.',
+    );
+}
 export async function servicePreflight(options: { allowPartial?: boolean; payer?: string } = {}) {
   const network = serviceMode();
   const diagnostics: PaymentDiagnostic[] = [];
@@ -404,6 +442,7 @@ export async function quoteService(tenantId: string, invoiceId: string, operatio
   }
   const invoice = await ownedInvoice(tenantId, invoiceId);
   const expectedPayer = await checkoutPayer(tenantId);
+  await requireNoOtherServiceAttempt(tenantId);
   if (tenantId !== OWNER_ID && !publicServiceEnabled())
     throw new AppError(
       503,
@@ -546,6 +585,14 @@ export async function approveService(
     throw new AppError(503, 'PUBLIC_CHECKOUT_PAUSED', 'Public checkout is paused.');
   const d = await db();
   return d.transaction(async (tx) => {
+    // Serialize Mainnet preparations across tabs and browser sessions for this payer.
+    if (serviceMode() === 'sui:mainnet') {
+      await tx
+        .select({ id: s.users.id })
+        .from(s.users)
+        .where(eq(s.users.id, tenantId))
+        .for('update');
+    }
     const [row] = await tx
       .select()
       .from(s.servicePaymentIntents)
@@ -554,6 +601,7 @@ export async function approveService(
       )
       .for('update');
     if (!row) throw new AppError(404, 'NOT_FOUND', 'Service intent not found.');
+    await requireNoOtherServiceAttempt(tenantId, id, tx);
     const challenge = row.challenge as ServiceChallenge;
     const terms = serviceTermsSchema.parse(challenge.accepts[0]);
     configuredTerms(terms, payer, expectedPayer);
@@ -737,11 +785,19 @@ export async function cancelService(tenantId: string, id: string) {
       .select({ type: s.auditEvents.type })
       .from(s.auditEvents)
       .where(and(eq(s.auditEvents.tenantId, tenantId), eq(s.auditEvents.entityId, id)));
-    if (row.payloadHash || row.digest || attempts.some((e) => e.type.startsWith('service.wallet_')))
+    const preparedMainnet =
+      !!storedPreparation(row.approval) &&
+      (row.challenge as ServiceChallenge).accepts[0].network === 'sui:mainnet';
+    if (
+      preparedMainnet ||
+      row.payloadHash ||
+      row.digest ||
+      attempts.some((e) => e.type.startsWith('service.wallet_'))
+    )
       throw new AppError(
         409,
         'SIGNATURE_UNCERTAIN',
-        'A wallet attempt is recorded. Reconcile the original prepared digest before releasing its reservation; do not request a replacement payment.',
+        'Prepared Mainnet bytes or a wallet attempt require reconciliation before releasing the reservation. Quote expiry is not transaction revocation; do not request a replacement payment.',
       );
     if (row.state === 'approved' && row.spendingSessionId) {
       const terms = serviceTermsSchema.parse((row.challenge as ServiceChallenge).accepts[0]);
@@ -838,6 +894,7 @@ export async function fulfillService(
         message: 'Exact terms are approved; no signed payment has been submitted.',
       };
     requireNewSpend(tenantId);
+    await requireNoOtherServiceAttempt(tenantId, id);
     configuredTerms(terms, row.payer!, await checkoutPayer(tenantId));
     if (row.spendingSessionId !== budgetId(tenantId, sessionKey, terms.network) || !row.approval)
       throw new AppError(
@@ -1172,16 +1229,19 @@ export async function serviceProgress(tenantId: string, id: string, sessionKey?:
     walletPhase: walletEvent?.type,
     walletCode: (walletEvent?.detail as { diagnostic?: { code?: string } })?.diagnostic?.code,
   });
+  const recoveryBlocked = (await serviceRecoveryHolds(tenantId)).some((i) => i.id !== id);
   return {
     quoteId: id,
     state: row.state,
     expiresAt: row.expiresAt,
     expired: row.expiresAt <= new Date(),
     signingState,
+    recoveryBlocked,
     // Reconciliation can permit another explicit approval of these SAME bytes after
     // a reported decline. Unknown errors and legacy interrupted attempts stay locked.
     retryAllowed:
       signingState === 'signature-declined' &&
+      !recoveryBlocked &&
       row.state === 'approved' &&
       row.expiresAt > new Date() &&
       !!prepared &&
@@ -1189,6 +1249,7 @@ export async function serviceProgress(tenantId: string, id: string, sessionKey?:
       row.spendingSessionId === budgetId(tenantId, sessionKey, terms.network),
     canCancel:
       ['quoted', 'approved'].includes(row.state) &&
+      !(prepared && terms.network === 'sui:mainnet') &&
       !row.payloadHash &&
       !row.digest &&
       !events.some((e) => e.type.startsWith('service.wallet_')),
@@ -1251,6 +1312,7 @@ export async function listServiceIntents(tenantId: string) {
       invoiceId: s.servicePaymentIntents.invoiceId,
       challenge: s.servicePaymentIntents.challenge,
       state: s.servicePaymentIntents.state,
+      payer: s.servicePaymentIntents.payer,
       digest: s.servicePaymentIntents.digest,
       expiresAt: s.servicePaymentIntents.expiresAt,
       approval: s.servicePaymentIntents.approval,

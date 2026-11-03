@@ -13,6 +13,19 @@ export type ServiceWalletAccount = {
   chains: readonly string[];
   features: readonly string[];
 };
+export type ServiceWalletProvider = {
+  readonly name: string;
+  readonly chains: readonly string[];
+  readonly accounts: readonly ServiceWalletAccount[];
+  readonly features: Readonly<Record<string, unknown>>;
+};
+export type ServiceAccountOptions = {
+  network: ServiceNetwork;
+  expectedPayer: string | null;
+  audience: 'owner' | 'customer';
+  authenticatedWallet?: string;
+  quotePayer?: string;
+};
 export class ServiceAccountError extends Error {
   diagnostic: RequestDiagnostic;
   constructor(code: string, message: string, action: string) {
@@ -31,13 +44,7 @@ const canonical = (value: string) =>
 
 export function selectServiceAccount<T extends ServiceWalletAccount>(
   accounts: readonly T[],
-  options: {
-    network: ServiceNetwork;
-    expectedPayer: string | null;
-    audience: 'owner' | 'customer';
-    authenticatedWallet?: string;
-    quotePayer?: string;
-  },
+  options: ServiceAccountOptions,
 ): T {
   const expected = options.expectedPayer && canonical(options.expectedPayer);
   if (!expected)
@@ -86,4 +93,37 @@ export function selectServiceAccount<T extends ServiceWalletAccount>(
       'Free message authentication does not prove financial-signing support. Use a provider/account supporting sui:signTransaction; no legacy execution fallback is used.',
     );
   return account;
+}
+
+export function selectPreparedServiceAccount(
+  registered: readonly ServiceWalletProvider[],
+  provider: ServiceWalletProvider,
+  approvedAccount: ServiceWalletAccount,
+  options: ServiceAccountOptions,
+) {
+  // A name/ID is not a provider handle. Nightly's Solana and Sui adapters share both.
+  if (!registered.includes(provider))
+    throw new ServiceAccountError(
+      'WALLET_PROVIDER_CHANGED',
+      'The exact wallet used for preparation is no longer registered.',
+      'Reconnect the intended Sui wallet and reconcile this intent. No other adapter is substituted.',
+    );
+  if (!provider.chains.includes(options.network))
+    throw new ServiceAccountError(
+      'WALLET_NETWORK_MISMATCH',
+      'The prepared wallet no longer advertises the approved Sui network.',
+      'Check Mainnet and reconnect the same payer without signing.',
+    );
+  const signing = provider.features['sui:signTransaction'] as
+    { signTransaction?: unknown } | undefined;
+  if (typeof signing?.signTransaction !== 'function')
+    throw new ServiceAccountError(
+      'WALLET_SIGNING_UNSUPPORTED',
+      'The prepared Sui wallet no longer offers transaction signing.',
+      'Reconnect that same provider; no execution or legacy signing fallback is used.',
+    );
+  selectServiceAccount([approvedAccount], options);
+  // Use its current original account object. Recreated objects with the same address
+  // are valid; a different payer, missing account or changed capability still fails closed.
+  return selectServiceAccount(provider.accounts, options);
 }

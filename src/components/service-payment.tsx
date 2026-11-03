@@ -28,9 +28,11 @@ import { serviceDiagnostic } from '@/lib/service-diagnostics';
 import { selectServiceCoins } from '@/lib/service-funding';
 import {
   selectServiceAccount,
+  selectPreparedServiceAccount,
   frozenServiceTransaction,
   ServiceAccountError,
   type ServiceWalletAccount,
+  type ServiceWalletProvider,
 } from '@/lib/service-wallet';
 import { ServicePaymentTimeline } from './service-payment-timeline';
 import type { RequestDiagnostic } from '@/lib/request-diagnostics';
@@ -44,6 +46,7 @@ type SavedIntent = {
   expiresAt: string;
   digest?: string | null;
   prepared?: { bytes: string; digest: string } | null;
+  payer?: string | null;
 };
 type PaymentMetadata = {
   configured: boolean;
@@ -53,6 +56,7 @@ type PaymentMetadata = {
   network: ServiceNetwork;
   dedicatedPayer: string | null;
   intents: SavedIntent[];
+  recoveryHolds?: { id: string; digest: string | null }[];
   exposure?: { reservedAtomic: string; capAtomic: string };
   capabilities?: ReturnType<typeof walletOperationPolicy>;
   audience?: 'owner' | 'customer';
@@ -79,6 +83,7 @@ type PaymentProgress = {
 type WalletAccount = ServiceWalletAccount;
 type WalletFeatures = {
   'standard:connect'?: { connect: () => Promise<{ accounts: WalletAccount[] }> };
+  'standard:events'?: { on: (event: 'change', listener: () => void) => () => void };
   'sui:signTransaction'?: {
     signTransaction: (input: {
       transaction: { toJSON: () => Promise<string> };
@@ -162,6 +167,9 @@ export function ServicePayment() {
     [proposal, setProposal] = useState<Record<string, unknown>>(),
     [walletNames, setWalletNames] = useState<{ id: string; name: string }[]>([]),
     [walletName, setWalletName] = useState(''),
+    [checkedWallet, setCheckedWallet] = useState<ServiceWalletProvider>(),
+    [connectedAccounts, setConnectedAccounts] = useState<readonly WalletAccount[]>([]),
+    [recoveryHolds, setRecoveryHolds] = useState<NonNullable<PaymentMetadata['recoveryHolds']>>([]),
     [dedicatedPayer, setDedicatedPayer] = useState<string | null>(null),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(''),
@@ -178,14 +186,15 @@ export function ServicePayment() {
       bytes: string;
       digest: string;
       account: WalletAccount;
-      features: WalletFeatures;
-      walletName: string;
+      wallet: ServiceWalletProvider;
       quoteId: string;
     }>(),
     [signatureAttempted, setSignatureAttempted] = useState(false),
     [memory, setMemory] = useState(''),
     [saved, setSaved] = useState<SavedIntent[]>([]);
   const quoteExpired = !!quote && Date.parse(quote.expiresAt) <= now;
+  const otherRecoveryHolds = recoveryHolds.filter((i) => i.id !== quote?.id);
+  const recoveryBlocked = otherRecoveryHolds.length > 0;
   const funding = proposal?.fundingCompatibility as
     | { addressAtomic?: string | null; coinAtomic?: string | null; ordinaryCoinFallback?: string }
     | undefined;
@@ -269,6 +278,7 @@ export function ServicePayment() {
     setNetwork(r.network);
     setDedicatedPayer(r.dedicatedPayer);
     setSaved(r.intents);
+    setRecoveryHolds(r.recoveryHolds || []);
     setExposure(r.exposure);
     setCapabilities(r.capabilities);
     setPublicPilot(r.publicPilot);
@@ -366,6 +376,26 @@ export function ServicePayment() {
       offUnregister();
     };
   }, [preparationAllowed, network]);
+  useEffect(() => {
+    if (!checkedWallet) return;
+    const update = () => setConnectedAccounts([...checkedWallet.accounts]);
+    const offChange = (checkedWallet.features as WalletFeatures)['standard:events']?.on(
+      'change',
+      update,
+    );
+    const offUnregister = getWallets().on('unregister', () => {
+      if (
+        !getWallets()
+          .get()
+          .some((wallet) => wallet === checkedWallet)
+      )
+        setConnectedAccounts([]);
+    });
+    return () => {
+      offChange?.();
+      offUnregister();
+    };
+  }, [checkedWallet]);
   async function run(fn: () => Promise<void>) {
     setBusy(true);
     setError('');
@@ -376,8 +406,11 @@ export function ServicePayment() {
       showError(e);
     } finally {
       setBusy(false);
-      void api<{ exposure?: typeof exposure }>('service-payments')
-        .then((r) => setExposure(r.exposure))
+      void api<PaymentMetadata>('service-payments')
+        .then((r) => {
+          setExposure(r.exposure);
+          if (r.recoveryHolds) setRecoveryHolds(r.recoveryHolds);
+        })
         .catch(() => {});
     }
   }
@@ -435,30 +468,21 @@ export function ServicePayment() {
       'Safe to retry the same transaction with fresh approval. Review the terms and prepare again; no signature was requested.',
     );
   }
-  async function prepare() {
-    if (capabilityState !== 'ready') throw new Error('Reload server capabilities before approval.');
-    if (!preparationAllowed) throw new Error(WALLET_REVIEW_MESSAGE);
-    if (!quote || !consent) throw new Error('Review and approve every term first');
-    if (Date.parse(quote.expiresAt) <= Date.now())
-      throw new Error('Quote expired. Review fresh terms before approval.');
-    const terms = serviceTermsSchema.parse(quote.accepts[0]);
-    parseServiceChallenge(
-      { x402Version: quote.x402Version, resource: quote.resource, accepts: quote.accepts },
-      window.location.origin,
-      network,
-    );
-    if (terms.network !== network)
-      throw new Error('Quote network differs from the selected server mode. Request fresh terms.');
-    const chain = serviceNetworkInfo(terms.network);
+  async function connectSigningWallet(approvedNetwork: ServiceNetwork, quotePayer?: string) {
     const wallets = getWallets()
       .get()
-      .filter((w) => w.chains.includes(terms.network) && w.features['sui:signTransaction']);
-    if (!wallets.length)
-      throw new Error(
-        'A compatible wallet must support the approved Sui network and transaction signing. No keys should be entered in PayGuard.',
+      .filter(
+        (w) =>
+          w.chains.includes(approvedNetwork) &&
+          w.features['sui:signTransaction'] &&
+          w.features['standard:connect'],
       );
-    const selectedWallet = wallets.find((w) => (w.id || w.name) === walletName);
-    if (!selectedWallet) throw new Error('Choose the compatible wallet you intend to use.');
+    const matches = wallets.filter((w) => (w.id || w.name) === walletName);
+    if (matches.length !== 1)
+      throw new Error(
+        'Choose one compatible Sui wallet. An unavailable or ambiguous provider cannot sign.',
+      );
+    const selectedWallet = matches[0];
     const features = selectedWallet.features as WalletFeatures;
     let accounts: WalletAccount[];
     try {
@@ -472,17 +496,52 @@ export function ServicePayment() {
           code: detail.code,
           message: detail.message,
           action:
-            'Respect a provider warning or refusal. Connection does not authorize a financial signature.',
+            'Connection does not authorize a financial signature. Respect any provider warning or refusal.',
         } satisfies RequestDiagnostic,
       });
     }
+    setCheckedWallet(selectedWallet);
+    setConnectedAccounts([...selectedWallet.accounts]);
     const account = selectServiceAccount(accounts, {
-      network: terms.network,
+      network: approvedNetwork,
       expectedPayer: dedicatedPayer,
       audience: data?.mode === 'member' ? 'customer' : 'owner',
       authenticatedWallet: data?.identity?.walletAddress || undefined,
-      quotePayer: terms.extra.authenticatedPayer,
+      quotePayer,
     });
+    return { account, wallet: selectedWallet };
+  }
+  async function checkSigningAccount() {
+    if (capabilityState !== 'ready') throw new Error('Reload workspace capabilities first.');
+    await connectSigningWallet(
+      quote?.accepts[0].network || network,
+      quote?.accepts[0].extra.authenticatedPayer,
+    );
+    setStatusMessage(
+      'The selected Sui wallet returned the exact workspace payer. No transaction was prepared, signed or submitted.',
+    );
+  }
+  async function prepare() {
+    if (capabilityState !== 'ready') throw new Error('Reload server capabilities before approval.');
+    if (recoveryBlocked)
+      throw new Error('Reconcile earlier prepared payments before another approval.');
+    if (!preparationAllowed) throw new Error(WALLET_REVIEW_MESSAGE);
+    if (!quote || !consent) throw new Error('Review and approve every term first');
+    if (Date.parse(quote.expiresAt) <= Date.now())
+      throw new Error('Quote expired. Review fresh terms before approval.');
+    const terms = serviceTermsSchema.parse(quote.accepts[0]);
+    parseServiceChallenge(
+      { x402Version: quote.x402Version, resource: quote.resource, accepts: quote.accepts },
+      window.location.origin,
+      network,
+    );
+    if (terms.network !== network)
+      throw new Error('Quote network differs from the selected server mode. Request fresh terms.');
+    const chain = serviceNetworkInfo(terms.network);
+    const { account, wallet } = await connectSigningWallet(
+      terms.network,
+      terms.extra.authenticatedPayer,
+    );
     const payer = normalizeSuiAddress(account.address);
     const client = new SuiGrpcClient({
       network: chain.sdk,
@@ -539,16 +598,18 @@ export function ServicePayment() {
       bytes,
       digest,
       account,
-      features,
-      walletName: selectedWallet.id || selectedWallet.name,
+      wallet,
       quoteId: quote.id,
     });
     setPaymentState('approved');
     trackState(quote.id, 'approved');
+    setSaved((items) => items.map((i) => (i.id === quote.id ? { ...i, payer } : i)));
   }
   async function signPrepared() {
     if (capabilityState !== 'ready') throw new Error('Reload server capabilities before signing.');
     if (!signingAllowed) throw new Error(WALLET_REVIEW_MESSAGE);
+    if (recoveryBlocked)
+      throw new Error('An earlier payment is unresolved. No new wallet signature is allowed.');
     if (
       !quote ||
       !prepared ||
@@ -559,23 +620,19 @@ export function ServicePayment() {
     )
       throw new Error('Fresh approved prepared terms are required.');
     const terms = serviceTermsSchema.parse(quote.accepts[0]);
-    const current = getWallets()
-      .get()
-      .find((w) => (w.id || w.name) === prepared.walletName);
-    if (
-      !current?.accounts.some(
-        (a) =>
-          normalizeSuiAddress(a.address) === normalizeSuiAddress(prepared.account.address) &&
-          a.chains.includes(terms.network) &&
-          a.features.includes('sui:signTransaction'),
-      )
-    )
-      throw new Error('Wallet account changed. Reconnect the exact approved payer before signing.');
-    validateServiceTransaction(
-      prepared.bytes,
-      terms,
-      normalizeSuiAddress(prepared.account.address),
+    const account = selectPreparedServiceAccount(
+      getWallets().get(),
+      prepared.wallet,
+      prepared.account,
+      {
+        network: terms.network,
+        expectedPayer: dedicatedPayer,
+        audience: data?.mode === 'member' ? 'customer' : 'owner',
+        authenticatedWallet: data?.identity?.walletAddress || undefined,
+        quotePayer: terms.extra.authenticatedPayer,
+      },
     );
+    validateServiceTransaction(prepared.bytes, terms, normalizeSuiAddress(account.address));
     const attemptKey = 'payguard:service-sign-attempt:' + quote.id;
     if (localStorage.getItem(attemptKey))
       throw new Error(
@@ -595,10 +652,12 @@ export function ServicePayment() {
     let signed: { bytes: string; signature: string };
     try {
       // Invoke the official wallet before awaiting any server diagnostic, preserving popup activation.
-      const signing = prepared.features['sui:signTransaction']!.signTransaction({
-        // The separate fresh click opens Slush before any network work, including Google-login popups.
+      const signing = (prepared.wallet.features as WalletFeatures)[
+        'sui:signTransaction'
+      ]!.signTransaction({
+        // Preserve the separate user click for the exact selected Sui provider.
         transaction: frozenServiceTransaction(prepared.bytes),
-        account: prepared.account,
+        account,
         chain: terms.network,
       });
       void request('/' + quote.id + '/events', {
@@ -706,20 +765,26 @@ export function ServicePayment() {
         <Link href="/app/review">← Verify Instructions</Link>
         <Link href="/app">Overview</Link>
         <Link href="/courtroom">Courtroom</Link>
-        <Badge tone={capabilityState === 'ready' && signingAllowed ? 'mint' : 'amber'}>
+        <Badge
+          tone={
+            capabilityState === 'ready' && signingAllowed && !recoveryBlocked ? 'mint' : 'amber'
+          }
+        >
           {capabilityState === 'loading'
             ? 'Checking payment capability…'
             : capabilityState === 'error'
               ? 'Payment capability unavailable'
               : capabilityState === 'anonymous'
                 ? 'Workspace sign-in required'
-                : signingAllowed
-                  ? capabilities?.environment === 'production'
-                    ? 'Wallet signing available · exact approval required'
-                    : data?.mode === 'member'
-                      ? 'Local wallet signing available · exact approval required'
-                      : 'Local signing available · owner approval required'
-                  : 'Transaction signing disabled by server configuration'}
+                : recoveryBlocked
+                  ? 'Earlier payment requires reconciliation'
+                  : signingAllowed
+                    ? capabilities?.environment === 'production'
+                      ? 'Wallet signing available · exact approval required'
+                      : data?.mode === 'member'
+                        ? 'Local wallet signing available · exact approval required'
+                        : 'Local signing available · owner approval required'
+                    : 'Transaction signing disabled by server configuration'}
         </Badge>
       </header>
       <main id="main" className="judge-intro">
@@ -757,9 +822,29 @@ export function ServicePayment() {
               <p>
                 Connected signing account:{' '}
                 <code>
-                  {prepared?.account.address || 'Choose and prepare with your wallet to confirm'}
+                  {checkedWallet
+                    ? connectedAccounts.map((a) => a.address).join(', ') ||
+                      'Wallet disconnected; reconnect the same payer'
+                    : 'Choose your Sui wallet and check its account without signing'}
                 </code>
               </p>
+              <p>
+                Signing provider: <strong>{checkedWallet?.name || 'Not connected'}</strong>
+              </p>
+              {quote && (
+                <>
+                  <p>
+                    Approved quote payer:{' '}
+                    <code>{quote.accepts[0].extra.authenticatedPayer || dedicatedPayer}</code>
+                  </p>
+                  <p>
+                    Intent recorded payer:{' '}
+                    <code>
+                      {saved.find((i) => i.id === quote.id)?.payer || 'No payer approval loaded'}
+                    </code>
+                  </p>
+                </>
+              )}
               <button
                 className="button outline"
                 disabled={busy}
@@ -788,6 +873,17 @@ export function ServicePayment() {
             ? 'A saved settled intent exists; inspect its independently verified receipt and delivered report.'
             : 'Inspect the public payment proof for recorded owner-controlled Mainnet results; this session has not loaded a saved receipt.'}
         </div>
+        {recoveryBlocked && (
+          <section className="notice" role="status" aria-label="Earlier payment recovery hold">
+            <strong>Earlier prepared payments require reconciliation.</strong>
+            <p>
+              No replacement quote, new preparation or financial signature is available while an
+              earlier outcome is unresolved. Quote expiry does not revoke a signed transaction.
+              Account connection checks and saved receipts remain available.
+            </p>
+            <p>Existing intent IDs: {otherRecoveryHolds.map((i) => i.id).join(', ')}</p>
+          </section>
+        )}
         {capabilityState === 'loading' && (
           <p role="status">
             Loading workspace and server capabilities. Wallet/provider status is not yet known.
@@ -828,10 +924,12 @@ export function ServicePayment() {
               <div>
                 <dt>Transaction signing</dt>
                 <dd>
-                  {signingAllowed
-                    ? 'Available after exact purchase approval; your wallet separately requests a financial signature'
-                    : capabilities?.financialRestriction ||
-                      'Settlement capability is disabled in server configuration'}
+                  {recoveryBlocked
+                    ? 'Held until earlier prepared payments are reconciled; no new signature is allowed'
+                    : signingAllowed
+                      ? 'Available after exact purchase approval; your wallet separately requests a financial signature'
+                      : capabilities?.financialRestriction ||
+                        'Settlement capability is disabled in server configuration'}
                 </dd>
               </div>
               <div>
@@ -1134,6 +1232,7 @@ export function ServicePayment() {
                   !configured ||
                   !selectedInvoice ||
                   selectedInvoice.status === 'paid' ||
+                  recoveryBlocked ||
                   busy ||
                   !!quote ||
                   saved.some((i) => i.state === 'settling')
@@ -1213,8 +1312,8 @@ export function ServicePayment() {
                   <p>Reason for this quote: {quote.resource.description}</p>
                   {quoteExpired && !receipt && (
                     <p role="status">
-                      This quote has expired. No new signing is available. Resume an existing
-                      submitted digest; request fresh terms only for an unpaid review.
+                      This quote has expired. No new signing is available. Resume the existing
+                      record; fresh terms require reconciliation of earlier prepared payments.
                     </p>
                   )}
                   {!pending && !receipt && (
@@ -1348,11 +1447,21 @@ export function ServicePayment() {
                       </select>
                     </Field>
                   )}
+                  {preparationAllowed && (
+                    <button
+                      className="button outline"
+                      disabled={busy || !walletName}
+                      onClick={() => void run(checkSigningAccount)}
+                    >
+                      Check selected wallet account · no signing
+                    </button>
+                  )}
                   <button
                     className="button primary"
                     disabled={
                       capabilityState !== 'ready' ||
                       !preparationAllowed ||
+                      recoveryBlocked ||
                       busy ||
                       !consent ||
                       pending ||
@@ -1408,6 +1517,7 @@ export function ServicePayment() {
                         disabled={
                           capabilityState !== 'ready' ||
                           !signingAllowed ||
+                          recoveryBlocked ||
                           busy ||
                           !consent ||
                           quoteExpired ||

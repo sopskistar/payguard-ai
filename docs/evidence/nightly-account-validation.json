@@ -1,0 +1,43 @@
+{
+  "sourceBaseCommit": "f27acd3ecd4d6651dc342962a13533ab960129fc",
+  "sourceChanges": [
+    "src/lib/service-wallet.ts",
+    "src/components/service-payment.tsx",
+    "src/lib/service-payments.ts",
+    "src/app/api/service-payments/[[...path]]/route.ts"
+  ],
+  "unitIntegration": { "passed": 224, "files": 32, "failed": 0 },
+  "browser": {
+    "passed": 47,
+    "failed": 0,
+    "flaky": 0,
+    "skippedLiveProviders": 2,
+    "disposableDatabase": true
+  },
+  "typecheck": "passed sequentially after the production build",
+  "productionBuild": "passed outside the restricted sandbox",
+  "lint": {
+    "errors": 0,
+    "warnings": 1,
+    "warningScope": "Pre-existing untracked video script unused mkdir import"
+  },
+  "formatCheck": "passed; new documents separately formatted before final check",
+  "configuredCredentialScan": { "matches": 0, "filesBeforeFinalDocumentation": 916 },
+  "originalWarningReproducedBeforeFix": true,
+  "finalApplicationTestFailures": 0,
+  "initialAttempts": [
+    "Restricted loopback QA server startup failed; repeated successfully outside sandbox",
+    "Restricted Next build could not parse spawned TypeScript configuration; unrestricted build passed",
+    "Concurrent standalone type check saw build-generated files disappearing; sequential check passed",
+    "New regression initially asserted approval before preparation completed; explicit wait added and original warning reproduced"
+  ],
+  "physicalNightlyFinancialAcceptance": "BLOCKED: previous outcomes remain unresolved within epochs 1300-1301",
+  "newMainnetQuotes": 0,
+  "newMainnetPreparations": 0,
+  "newMainnetSignatures": 0,
+  "newMainnetSubmissions": 0,
+  "historicalIntentMutations": 0,
+  "supplierInvoiceMemoryReceiptMutations": 0,
+  "dependencyOrMigrationChanges": false,
+  "previousVideoWorkPreserved": true
+}
