@@ -2,6 +2,8 @@
 
 # Judge? Start here — PayGuard Verify
 
+November 3 recovery preserved all original receipts and 32 memory identities, plus a newer confirmed member correction (33 live records). Production API/Neon customer isolation and invoice persistence were verified independently of wallet fixtures. Physical Nightly financial signing remains unverified; expired ambiguous attempts must be reconciled before another purchase. [Recovery and acceptance limits](ACCOUNT_RECOVERY_2026-11-03.md).
+
 [Live app](https://payguard-ai-henna.vercel.app/) · [Memory Courtroom](https://payguard-ai-henna.vercel.app/courtroom) · [Seven-step demo](https://payguard-ai-henna.vercel.app/try) · [Mainnet proof](https://payguard-ai-henna.vercel.app/proof). No owner credentials or payment are required for evaluation.
 
 ## First minute: Memory Courtroom

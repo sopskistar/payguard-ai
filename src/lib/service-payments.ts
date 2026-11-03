@@ -29,6 +29,7 @@ import {
   verifyServiceCoinFunding,
 } from './integrations/service-tatum';
 import { verifyServiceSignature } from './integrations/service-signature';
+import { serviceSigningState } from './service-recovery';
 import { recordCorrection } from './integrations/memory';
 import { serviceWalletSigningAllowed, WALLET_REVIEW_MESSAGE } from './wallet-policy';
 import { serviceDiagnostic } from './service-diagnostics';
@@ -736,13 +737,7 @@ export async function cancelService(tenantId: string, id: string) {
       .select({ type: s.auditEvents.type })
       .from(s.auditEvents)
       .where(and(eq(s.auditEvents.tenantId, tenantId), eq(s.auditEvents.entityId, id)));
-    if (
-      row.payloadHash ||
-      row.digest ||
-      attempts.some(
-        (e) => e.type === 'service.wallet_requested' || e.type === 'service.wallet_error',
-      )
-    )
+    if (row.payloadHash || row.digest || attempts.some((e) => e.type.startsWith('service.wallet_')))
       throw new AppError(
         409,
         'SIGNATURE_UNCERTAIN',
@@ -1166,25 +1161,42 @@ export async function serviceProgress(tenantId: string, id: string, sessionKey?:
     null;
   const prepared = storedPreparation(row.approval);
   const terms = serviceTermsSchema.parse((row.challenge as ServiceChallenge).accepts[0]);
+  const walletEvent =
+    events.find((e) => e.type === 'service.wallet_signed') ||
+    events.find((e) => e.type.startsWith('service.wallet_'));
+  const signingState = serviceSigningState({
+    state: row.state,
+    expired: row.expiresAt <= new Date(),
+    disclosed: !!row.payloadHash || !!row.digest,
+    submitted: events.some((e) => e.type === 'service.settlement_requested'),
+    walletPhase: walletEvent?.type,
+    walletCode: (walletEvent?.detail as { diagnostic?: { code?: string } })?.diagnostic?.code,
+  });
   return {
     quoteId: id,
     state: row.state,
     expiresAt: row.expiresAt,
     expired: row.expiresAt <= new Date(),
+    signingState,
+    // Reconciliation can permit another explicit approval of these SAME bytes after
+    // a reported decline. Unknown errors and legacy interrupted attempts stay locked.
+    retryAllowed:
+      signingState === 'signature-declined' &&
+      row.state === 'approved' &&
+      row.expiresAt > new Date() &&
+      !!prepared &&
+      !!sessionKey &&
+      row.spendingSessionId === budgetId(tenantId, sessionKey, terms.network),
     canCancel:
       ['quoted', 'approved'].includes(row.state) &&
       !row.payloadHash &&
       !row.digest &&
-      !events.some(
-        (e) => e.type === 'service.wallet_requested' || e.type === 'service.wallet_error',
-      ),
+      !events.some((e) => e.type.startsWith('service.wallet_')),
     prepared: prepared || null,
     executionDigest: row.digest,
     approvalSessionMatches:
       !!sessionKey && row.spendingSessionId === budgetId(tenantId, sessionKey, terms.network),
-    walletAttempted: events.some(
-      (e) => e.type === 'service.wallet_requested' || e.type === 'service.wallet_error',
-    ),
+    walletAttempted: events.some((e) => e.type.startsWith('service.wallet_')),
     submitted: events.some((e) => e.type === 'service.settlement_requested'),
     confirming: events.some((e) => e.type === 'service.confirmation_requested'),
     diagnostic,
@@ -1193,7 +1205,12 @@ export async function serviceProgress(tenantId: string, id: string, sessionKey?:
 export async function recordServiceWalletEvent(
   tenantId: string,
   id: string,
-  event: { phase: 'requested' | 'error'; preparedDigest: string; code?: string; message?: string },
+  event: {
+    phase: 'requested' | 'error' | 'signed';
+    preparedDigest: string;
+    code?: string;
+    message?: string;
+  },
   sessionKey?: string,
 ) {
   const row = await ownedService(tenantId, id),

@@ -173,7 +173,7 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
     if (path[1] === 'events') {
       const input = z
         .object({
-          phase: z.enum(['requested', 'error']),
+          phase: z.enum(['requested', 'error', 'signed']),
           preparedDigest: z.string().min(32).max(64),
           code: z.string().max(60).optional(),
           message: z.string().max(500).optional(),

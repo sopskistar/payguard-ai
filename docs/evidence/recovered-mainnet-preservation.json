@@ -1,0 +1,87 @@
+{
+  "checkedAt": "2026-11-03T18:29:24.572Z",
+  "readOnly": true,
+  "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+  "epoch": "1300",
+  "confirmedMemories": 33,
+  "original32MemoryTuplesUnchanged": true,
+  "receiptCount": 3,
+  "fullHistoricalReceiptContentUnchanged": true,
+  "receiptContentDigest": "3d9fcb7a9e47f9d96dc53c7d59607f36a607842f4f3e70b56a45c3d4215595b8",
+  "memberBalance": {
+    "totalAtomic": "12446622",
+    "addressAtomic": "12446622",
+    "coinAtomic": "0"
+  },
+  "intentReads": [
+    {
+      "id": "544d939d-02d5-4d98-b549-69fb9fb501e8",
+      "state": "approved",
+      "quoteExpired": true,
+      "preparedDigest": "EDe8JMezpxR4qpWFiMQni6ETMdYfYXiM8Sdxnkzvse3s",
+      "expiration": {
+        "ValidDuring": {
+          "minEpoch": "1300",
+          "maxEpoch": "1301",
+          "minTimestamp": null,
+          "maxTimestamp": null,
+          "chain": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+          "nonce": 2113824254
+        },
+        "$kind": "ValidDuring"
+      },
+      "chainRead": {
+        "found": false,
+        "code": "NOT_FOUND"
+      },
+      "signatureProduced": "Not established; no payload persisted in application",
+      "retry": "Do not sign this expired intent or replace an ambiguous attempt automatically"
+    },
+    {
+      "id": "b0386342-a7c2-40ba-909e-9edf17501767",
+      "state": "approved",
+      "quoteExpired": true,
+      "preparedDigest": "7GiPuDNq1vN8pLn2cqJf8kYMrt9zmbdDBbAfdoYtGdRj",
+      "expiration": {
+        "ValidDuring": {
+          "minEpoch": "1300",
+          "maxEpoch": "1301",
+          "minTimestamp": null,
+          "maxTimestamp": null,
+          "chain": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+          "nonce": 2114283878
+        },
+        "$kind": "ValidDuring"
+      },
+      "chainRead": {
+        "found": false,
+        "code": "NOT_FOUND"
+      },
+      "signatureProduced": "Not established; no payload persisted in application",
+      "retry": "Do not sign this expired intent or replace an ambiguous attempt automatically"
+    }
+  ],
+  "paymentReads": [
+    {
+      "digest": "68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx",
+      "checkpoint": "340211024",
+      "success": true,
+      "merchantCreditAtomic": "1000000"
+    },
+    {
+      "digest": "xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r",
+      "checkpoint": "340470114",
+      "success": true,
+      "merchantCreditAtomic": "1000000"
+    },
+    {
+      "digest": "4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA",
+      "checkpoint": "340478705",
+      "success": true,
+      "merchantCreditAtomic": "1000000"
+    }
+  ],
+  "financialSignatures": 0,
+  "settlementSubmissions": 0,
+  "memoryWrites": 0
+}

@@ -1,5 +1,7 @@
 # Nightly checkout diagnosis and recovery — November 2
 
+**November 3 continuation supersedes the payment-entry instructions below:** newer member and administrator preparations exist. One records the reported provider error; both are expired and unsigned submission evidence is absent. Signature production remains unresolved. Do not request a replacement purchase for those attempts. See the [recovered state, signing investigation and owner checkpoint](ACCOUNT_RECOVERY_2026-11-03.md).
+
 The reported error came from a real administrator/customer session mismatch. Fresh read-only Neon inspection found the two recent attempts belonged to the **owner tenant**, with no authenticated member payer in their challenge. The latest was quoted, expired, never prepared, never signed/disclosed and never submitted. It was not a fourth payment. The three settled receipts and 32 confirmed memory identities remain intact.
 
 Administrator checkout correctly requires the configured owner payer (`0xc0f3…397a8`). A connected personal Nightly account does not replace that administrator session. The server's member metadata already returns the authenticated customer's wallet; `checkoutPayer` also checks that member identity independently. The inspection found no evidence that member checkout was silently assigned the owner's payer. Whether the owner switched profiles, tabs or signed into the administrator afterward is not observable from these records.

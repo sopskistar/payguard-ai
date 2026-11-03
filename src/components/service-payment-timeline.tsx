@@ -1,4 +1,5 @@
 type Progress = {
+  signingState?: string;
   prepared?: { digest: string } | null;
   executionDigest?: string | null;
   submitted?: boolean;
@@ -19,6 +20,7 @@ export function ServicePaymentTimeline({
   receipt?: Record<string, unknown>;
 }) {
   const settled = !!receipt;
+  const signing = progress?.signingState || phase;
   const entries = [
     [
       'Prepared',
@@ -27,12 +29,18 @@ export function ServicePaymentTimeline({
     [
       'Awaiting signature',
       phase === 'awaiting-wallet'
-        ? 'Current · inspect Slush'
-        : phase === 'wallet-error'
-          ? 'Stopped · wallet error'
-          : progress?.executionDigest || settled
-            ? 'Complete'
-            : 'Not reached',
+        ? 'Current · inspect your wallet'
+        : signing === 'signature-declined'
+          ? 'Signature declined · reconcile before an explicit retry'
+          : signing === 'signature-failed' || phase === 'wallet-error'
+            ? 'Signature failed · no signature returned to PayGuard; result uncertain'
+            : signing === 'signature-uncertain'
+              ? 'Signature result uncertain · do not sign again'
+              : signing === 'signed-unsubmitted'
+                ? 'Signature returned · submission not recorded; do not sign again'
+                : progress?.executionDigest || settled
+                  ? 'Complete'
+                  : 'Not reached',
     ],
     [
       'Submitted',

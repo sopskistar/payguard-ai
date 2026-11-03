@@ -1,0 +1,34 @@
+{
+  "checkedAt": "2026-11-03T18:35:27.001Z",
+  "scope": "Offline official saved Nightly SDK package only; no wallet profile, extension popup, key, network request or signature",
+  "extensionVersion": "1.51.49",
+  "sdkBundleSha256": "8603de59ded9e0dfe7489a0b7c91501ba5633c84121cbcb66745d7d25fabc7f0",
+  "wrapperMatchesInstalledStandard": true,
+  "rootCause": "Unresolved. Both current JSON and frozen BCS parse/build successfully; wrapper incompatibility not demonstrated.",
+  "results": [
+    {
+      "intentId": "544d939d-02d5-4d98-b549-69fb9fb501e8",
+      "format": "json",
+      "exactBytes": true,
+      "exactDigest": true
+    },
+    {
+      "intentId": "544d939d-02d5-4d98-b549-69fb9fb501e8",
+      "format": "bytes",
+      "exactBytes": true,
+      "exactDigest": true
+    },
+    {
+      "intentId": "b0386342-a7c2-40ba-909e-9edf17501767",
+      "format": "json",
+      "exactBytes": true,
+      "exactDigest": true
+    },
+    {
+      "intentId": "b0386342-a7c2-40ba-909e-9edf17501767",
+      "format": "bytes",
+      "exactBytes": true,
+      "exactDigest": true
+    }
+  ]
+}

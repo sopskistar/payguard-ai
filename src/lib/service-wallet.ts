@@ -2,6 +2,12 @@ import { normalizeSuiAddress } from '@mysten/sui/utils';
 import type { ServiceNetwork } from './service-protocol';
 import type { RequestDiagnostic } from './request-diagnostics';
 
+// Match dApp Kit's Transaction|string signing contract: already approved BCS bytes
+// pass through toJSON unchanged. No rebuild or network resolution inside the wallet call.
+export function frozenServiceTransaction(bytes: string) {
+  return { toJSON: async () => bytes };
+}
+
 export type ServiceWalletAccount = {
   address: string;
   chains: readonly string[];

@@ -23,6 +23,8 @@ Create a supplier in **Vendor Trust**, establish its recipient and independent c
 
 **Physical compatibility:** the owner completed three Slush Mainnet purchases through localhost. A real Nightly extension connected, signed the free challenge and opened a member workspace on Production on November 1. The interrupted return-login result was lost. Slush 26.21.6 displayed a malicious-site warning on that same production origin; testing stopped. OKX and mobile remain physically unverified. See the [dated provider report](docs/SLUSH_LOCALHOST_INVESTIGATION.md). Integration and simulated-wallet tests do not certify those providers. Stop at any warning or refusal. There is no blanket Vercel financial-signing denial; provider enforcement remains intact.
 
+**November 3 recovery:** all three original receipts and original 32 memory identities are preserved; a newer member correction brings the live confirmed memory count to 33. Real Production API/Neon checks passed supplier/invoice persistence, wallet identity binding and account isolation. Physical Nightly financial acceptance remains unverified. Two expired prepared intents remain unresolved; do not replace or sign them again. [Current investigation, evidence and supervised acceptance checkpoint](docs/ACCOUNT_RECOVERY_2026-11-03.md).
+
 ## 3. Inspect three genuine Mainnet purchases
 
 | Experiment / invoice       | Finalized Mainnet transaction                                                                                              | Checkpoint | Merchant credit | Payer gas / sponsor gas |

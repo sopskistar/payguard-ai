@@ -617,6 +617,85 @@ it('keeps a wallet-attempt reservation and rejects cancellation even without a r
   expect(settles).toBe(before);
 });
 
+it('allows only an explicit declined same-byte retry while retaining its reservation', async () => {
+  const row = await quote();
+  await approveService(OWNER_ID, row.id, payer.toSuiAddress());
+  const prepared = (await serviceProgress(OWNER_ID, row.id, spendingSession)).prepared!;
+  await recordServiceWalletEvent(
+    OWNER_ID,
+    row.id,
+    { phase: 'requested', preparedDigest: prepared.digest },
+    spendingSession,
+  );
+  await recordServiceWalletEvent(
+    OWNER_ID,
+    row.id,
+    { phase: 'error', preparedDigest: prepared.digest, code: '4001', message: 'User rejected' },
+    spendingSession,
+  );
+  expect(await serviceProgress(OWNER_ID, row.id, spendingSession)).toMatchObject({
+    signingState: 'signature-declined',
+    retryAllowed: true,
+    canCancel: false,
+    submitted: false,
+  });
+  expect(await serviceProgress(OWNER_ID, row.id, randomUUID())).toMatchObject({
+    retryAllowed: false,
+  });
+  expect((await serviceExposure(OWNER_ID, spendingSession)).reservedAtomic).toBe('1000000');
+  await expect(cancelService(OWNER_ID, row.id)).rejects.toMatchObject({
+    code: 'SIGNATURE_UNCERTAIN',
+  });
+  const again = await approveService(OWNER_ID, row.id, payer.toSuiAddress());
+  expect(again.prepared?.bytes).toBe(prepared.bytes);
+  const changed = Transaction.from(prepared.bytes);
+  changed.setGasPrice(999);
+  await expect(
+    approveCore(
+      OWNER_ID,
+      row.id,
+      payer.toSuiAddress(),
+      spendingSession,
+      Buffer.from(await changed.build()).toString('base64'),
+    ),
+  ).rejects.toThrow();
+  await recordServiceWalletEvent(
+    OWNER_ID,
+    row.id,
+    { phase: 'error', preparedDigest: prepared.digest, code: 'PROVIDER_ERROR' },
+    spendingSession,
+  );
+  expect(await serviceProgress(OWNER_ID, row.id, spendingSession)).toMatchObject({
+    signingState: 'signature-failed',
+    retryAllowed: false,
+  });
+});
+it('never permits another signature or cancellation after a returned signature, even a later decline', async () => {
+  const row = await quote();
+  await approveService(OWNER_ID, row.id, payer.toSuiAddress());
+  const prepared = (await serviceProgress(OWNER_ID, row.id, spendingSession)).prepared!;
+  await recordServiceWalletEvent(
+    OWNER_ID,
+    row.id,
+    { phase: 'signed', preparedDigest: prepared.digest },
+    spendingSession,
+  );
+  await recordServiceWalletEvent(
+    OWNER_ID,
+    row.id,
+    { phase: 'error', preparedDigest: prepared.digest, code: '4001' },
+    spendingSession,
+  );
+  expect(await serviceProgress(OWNER_ID, row.id, spendingSession)).toMatchObject({
+    signingState: 'signed-unsubmitted',
+    retryAllowed: false,
+    canCancel: false,
+  });
+  await expect(cancelService(OWNER_ID, row.id)).rejects.toMatchObject({
+    code: 'SIGNATURE_UNCERTAIN',
+  });
+});
+
 async function memberCheckout() {
   const id = randomUUID(),
     key = Ed25519Keypair.generate();

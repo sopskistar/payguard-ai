@@ -1,0 +1,243 @@
+{
+  "checkedAt": "2026-11-03T18:40:19.639Z",
+  "base": "https://payguard-ai-henna.vercel.app",
+  "physicalExtension": false,
+  "financialSignatures": 0,
+  "settlementSubmissions": 0,
+  "memoryWrites": 0,
+  "checks": [
+    {
+      "name": "GET release",
+      "passed": true
+    },
+    {
+      "name": "exact deployed SHA",
+      "passed": true
+    },
+    {
+      "name": "public route /connect",
+      "passed": true
+    },
+    {
+      "name": "public route /app",
+      "passed": true
+    },
+    {
+      "name": "public route /app/invoices",
+      "passed": true
+    },
+    {
+      "name": "public route /app/review",
+      "passed": true
+    },
+    {
+      "name": "public route /services",
+      "passed": true
+    },
+    {
+      "name": "public route /courtroom",
+      "passed": true
+    },
+    {
+      "name": "public route /proof",
+      "passed": true
+    },
+    {
+      "name": "owner login",
+      "passed": true
+    },
+    {
+      "name": "GET snapshot",
+      "passed": true
+    },
+    {
+      "name": "actual Neon workspace",
+      "passed": true
+    },
+    {
+      "name": "GET service-payments",
+      "passed": true
+    },
+    {
+      "name": "three historical receipts",
+      "passed": true
+    },
+    {
+      "name": "reopen original report 4a4d6014-5e9e-430d-8bcb-dad596733876",
+      "passed": true
+    },
+    {
+      "name": "reopen original report 4a4d6014-5e9e-430d-8bcb-dad596733876",
+      "passed": true
+    },
+    {
+      "name": "reopen original report d31d1a52-b0b3-4c5c-ba82-5902c5eaef4f",
+      "passed": true
+    },
+    {
+      "name": "reopen original report d31d1a52-b0b3-4c5c-ba82-5902c5eaef4f",
+      "passed": true
+    },
+    {
+      "name": "reopen original report 51d204df-71fd-44a6-ac4a-c8e0c50b4cf5",
+      "passed": true
+    },
+    {
+      "name": "reopen original report 51d204df-71fd-44a6-ac4a-c8e0c50b4cf5",
+      "passed": true
+    },
+    {
+      "name": "existing intent returns genuine HTTP 402 without creating a quote",
+      "passed": true
+    },
+    {
+      "name": "exact saved sponsored 0.001 SUI terms",
+      "passed": true
+    },
+    {
+      "name": "real free challenge",
+      "passed": true
+    },
+    {
+      "name": "message origin and no payment authority",
+      "passed": true
+    },
+    {
+      "name": "real signature authentication",
+      "passed": true
+    },
+    {
+      "name": "challenge replay rejected",
+      "passed": true
+    },
+    {
+      "name": "GET snapshot",
+      "passed": true
+    },
+    {
+      "name": "new member private empty workspace",
+      "passed": true
+    },
+    {
+      "name": "supplier persisted",
+      "passed": true
+    },
+    {
+      "name": "expected recipient saved",
+      "passed": true
+    },
+    {
+      "name": "invoice persisted",
+      "passed": true
+    },
+    {
+      "name": "GET snapshot",
+      "passed": true
+    },
+    {
+      "name": "owned invoice and expected recipient restored",
+      "passed": true
+    },
+    {
+      "name": "GET service-payments",
+      "passed": true
+    },
+    {
+      "name": "authenticated customer payer binding",
+      "passed": true
+    },
+    {
+      "name": "real free challenge",
+      "passed": true
+    },
+    {
+      "name": "message origin and no payment authority",
+      "passed": true
+    },
+    {
+      "name": "real signature authentication",
+      "passed": true
+    },
+    {
+      "name": "GET snapshot",
+      "passed": true
+    },
+    {
+      "name": "other wallet cannot see records",
+      "passed": true
+    },
+    {
+      "name": "foreign invoice access denied",
+      "passed": true
+    },
+    {
+      "name": "member cannot access owner intent",
+      "passed": true
+    },
+    {
+      "name": "member cannot read admin setup",
+      "passed": true
+    },
+    {
+      "name": "real saved invoice selectable in Agent Services",
+      "passed": true
+    },
+    {
+      "name": "member identity visible",
+      "passed": true
+    },
+    {
+      "name": "member services geometry 360",
+      "passed": true
+    },
+    {
+      "name": "member services geometry 390",
+      "passed": true
+    },
+    {
+      "name": "member services geometry 430",
+      "passed": true
+    },
+    {
+      "name": "real free challenge",
+      "passed": true
+    },
+    {
+      "name": "message origin and no payment authority",
+      "passed": true
+    },
+    {
+      "name": "real signature authentication",
+      "passed": true
+    },
+    {
+      "name": "GET snapshot",
+      "passed": true
+    },
+    {
+      "name": "returning free login restores identical owned invoice",
+      "passed": true
+    }
+  ],
+  "release": {
+    "application": "PayGuard Verify",
+    "commit": "4dacd7a49d7f1517cf8e88cb6eaf429cc38dbb02",
+    "recordedProofCount": 32,
+    "ownerProofCount": 30,
+    "proofExportedAt": "2026-11-01T12:49:41.554Z",
+    "modes": ["public-demo", "owner-admin", "wallet-member", "recorded-proof"]
+  },
+  "configuration": {
+    "configured": true,
+    "network": "sui:mainnet",
+    "signingAllowed": true,
+    "preparationAllowed": true
+  },
+  "createdSyntheticRecords": {
+    "unfundedTestProfiles": 2,
+    "suppliers": 1,
+    "invoices": 1,
+    "existingRecordsModified": false
+  },
+  "ok": true
+}

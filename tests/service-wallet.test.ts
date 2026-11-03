@@ -1,5 +1,14 @@
 import { it, expect } from 'vitest';
-import { selectServiceAccount } from '@/lib/service-wallet';
+import { selectServiceAccount, frozenServiceTransaction } from '@/lib/service-wallet';
+import {
+  buildServiceTransaction,
+  serviceTermsSchema,
+  serviceNetworkInfo,
+} from '@/lib/service-protocol';
+import { Transaction } from '@mysten/sui/transactions';
+import { toBase64, fromBase64 } from '@mysten/sui/utils';
+import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
+import { verifyTransactionSignature } from '@mysten/sui/verify';
 const owner = '0x' + '1'.repeat(64),
   member = '0x' + 'a'.repeat(64);
 const account = (address = member) => ({
@@ -14,6 +23,42 @@ const customer = {
   authenticatedWallet: member,
   quotePayer: member,
 };
+it('passes frozen BCS through the current Wallet Standard input and verifies its exact signer offline', async () => {
+  const signer = Ed25519Keypair.generate();
+  const terms = serviceTermsSchema.parse({
+    scheme: 'exact',
+    network: 'sui:mainnet',
+    asset: '0x2::sui::SUI',
+    amount: '1000000',
+    payTo: owner,
+    maxTimeoutSeconds: 300,
+    extra: {
+      gasOwner: member,
+      gasBudget: '2000000',
+      quoteId: 'a0000000-0000-4000-8000-000000000001',
+      instructionHash: 'a'.repeat(64),
+    },
+  });
+  const tx = buildServiceTransaction(terms, signer.toSuiAddress(), {
+    genesis: serviceNetworkInfo('sui:mainnet').genesis,
+    epoch: 1300,
+    gasPrice: '100',
+    nonce: 42,
+  });
+  const bytes = toBase64(await tx.build());
+  const input = await frozenServiceTransaction(bytes).toJSON();
+  expect(input).toBe(bytes);
+  const signed = await signer.signTransaction(await Transaction.from(input).build());
+  expect(signed.bytes).toBe(bytes);
+  await expect(
+    verifyTransactionSignature(fromBase64(bytes), signed.signature, {
+      address: signer.toSuiAddress(),
+    }),
+  ).resolves.toBeDefined();
+  await expect(
+    verifyTransactionSignature(fromBase64(bytes), signed.signature, { address: owner }),
+  ).rejects.toThrow();
+});
 it('explains the observed owner-session versus Nightly-member mismatch without relaxing payer binding', () => {
   try {
     selectServiceAccount([account()], {

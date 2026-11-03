@@ -28,12 +28,14 @@ import { serviceDiagnostic } from '@/lib/service-diagnostics';
 import { selectServiceCoins } from '@/lib/service-funding';
 import {
   selectServiceAccount,
+  frozenServiceTransaction,
   ServiceAccountError,
   type ServiceWalletAccount,
 } from '@/lib/service-wallet';
 import { ServicePaymentTimeline } from './service-payment-timeline';
 import type { RequestDiagnostic } from '@/lib/request-diagnostics';
 import type { walletOperationPolicy } from '@/lib/wallet-policy';
+import type { ServiceSigningState } from '@/lib/service-recovery';
 type SavedIntent = {
   id: string;
   state: string;
@@ -62,6 +64,8 @@ type PaymentMetadata = {
   };
 };
 type PaymentProgress = {
+  signingState?: ServiceSigningState;
+  retryAllowed?: boolean;
   prepared?: { bytes: string; digest: string; preparedAt: string } | null;
   executionDigest?: string | null;
   approvalSessionMatches?: boolean;
@@ -218,6 +222,12 @@ export function ServicePayment() {
           : undefined),
     );
   }, []);
+  function reconciledProgress(id: string, progress: PaymentProgress | undefined) {
+    const marker = localStorage.getItem('payguard:service-sign-attempt:' + id);
+    if (marker && !progress?.walletAttempted && !progress?.submitted && !progress?.executionDigest)
+      return { ...progress, signingState: 'signature-uncertain' as const, retryAllowed: false };
+    return progress;
+  }
   const openSavedIntent = useCallback(async (i: SavedIntent) => {
     setQuote({ ...i.challenge, id: i.id, expiresAt: i.expiresAt });
     setPaymentState(i.state);
@@ -233,7 +243,7 @@ export function ServicePayment() {
     setProgress(undefined);
     setStatusMessage('');
     const r = await request('/' + i.id + '/resume', {});
-    setProgress(r.progress);
+    setProgress(reconciledProgress(i.id, r.progress));
     if (r.progress?.prepared) setStoredBytes(r.progress.prepared);
     setSignatureAttempted(
       !!r.progress?.walletAttempted ||
@@ -274,9 +284,9 @@ export function ServicePayment() {
         setData(s);
         const requested = new URLSearchParams(window.location.search).get('invoice');
         const selected =
-          s.invoices.find((i) => i.number === requested) ||
-          s.invoices.find((i) => i.isDemo && i.number === 'NS-1048') ||
-          s.invoices[0];
+          s.invoices.find((i) => i.id === requested || i.number === requested) ||
+          s.invoices.find((i) => i.isDemo && i.number === 'NS-1048' && i.status !== 'paid') ||
+          s.invoices.find((i) => i.status !== 'paid');
         if (restore) setInvoice(selected?.id || '');
         if (s.mode === 'public-demo') {
           setCapabilityState('anonymous');
@@ -383,7 +393,7 @@ export function ServicePayment() {
   async function resumeExistingPayment() {
     if (!quote) return;
     const r = await request('/' + quote.id + '/resume', {});
-    setProgress(r.progress);
+    setProgress(reconciledProgress(quote.id, r.progress));
     setPending(r.state === 'pending');
     setPaymentState(r.state);
     trackState(quote.id, r.state, r.digest);
@@ -396,6 +406,34 @@ export function ServicePayment() {
     if (r.digest) setPendingDigest(r.digest);
     if (r.receipt) setReceipt(r.receipt);
     if (r.progress?.walletAttempted) setSignatureAttempted(true);
+  }
+  async function allowDeclinedRetry() {
+    if (!quote) return;
+    setStatusMessage('Checking previous attempt…');
+    const r = await request('/' + quote.id + '/resume', {});
+    setProgress(r.progress);
+    const key = 'payguard:service-sign-attempt:' + quote.id;
+    const attempt = JSON.parse(localStorage.getItem(key) || 'null');
+    if (
+      !r.progress?.retryAllowed ||
+      !r.progress.prepared ||
+      attempt?.outcome !== 'declined' ||
+      attempt.digest !== r.progress.prepared.digest
+    )
+      throw new Error(
+        'The previous result remains uncertain or expired. Do not request another signature.',
+      );
+    // Only the reported decline is cleared. Reapproval must reuse immutable server bytes.
+    localStorage.removeItem(key);
+    setStoredBytes(r.progress.prepared);
+    setPrepared(undefined);
+    setConsent(false);
+    setSignatureAttempted(false);
+    setPending(false);
+    setPaymentState('approved');
+    setStatusMessage(
+      'Safe to retry the same transaction with fresh approval. Review the terms and prepare again; no signature was requested.',
+    );
   }
   async function prepare() {
     if (capabilityState !== 'ready') throw new Error('Reload server capabilities before approval.');
@@ -545,7 +583,11 @@ export function ServicePayment() {
       );
     localStorage.setItem(
       attemptKey,
-      JSON.stringify({ digest: prepared.digest, at: new Date().toISOString() }),
+      JSON.stringify({
+        digest: prepared.digest,
+        outcome: 'uncertain',
+        at: new Date().toISOString(),
+      }),
     );
     setSignatureAttempted(true);
     setPending(true);
@@ -555,7 +597,7 @@ export function ServicePayment() {
       // Invoke the official wallet before awaiting any server diagnostic, preserving popup activation.
       const signing = prepared.features['sui:signTransaction']!.signTransaction({
         // The separate fresh click opens Slush before any network work, including Google-login popups.
-        transaction: { toJSON: () => Transaction.from(prepared.bytes).toJSON() },
+        transaction: frozenServiceTransaction(prepared.bytes),
         account: prepared.account,
         chain: terms.network,
       });
@@ -566,10 +608,20 @@ export function ServicePayment() {
       signed = await signing;
     } catch (e) {
       const diagnostic = serviceDiagnostic('wallet-signing', e);
-      setPaymentState('wallet-error');
-      setPending(diagnostic.code !== '4001');
-      setProgress((previous) => ({ ...previous, diagnostic }));
-      void request('/' + quote.id + '/events', {
+      const declined = diagnostic.code === '4001';
+      localStorage.setItem(
+        attemptKey,
+        JSON.stringify({ digest: prepared.digest, outcome: declined ? 'declined' : 'uncertain' }),
+      );
+      setPaymentState(declined ? 'signature-declined' : 'signature-failed');
+      setPending(false);
+      setProgress((previous) => ({
+        ...previous,
+        diagnostic,
+        signingState: declined ? 'signature-declined' : 'signature-failed',
+        retryAllowed: false,
+      }));
+      await request('/' + quote.id + '/events', {
         phase: 'error',
         preparedDigest: prepared.digest,
         code: diagnostic.code,
@@ -591,12 +643,38 @@ export function ServicePayment() {
         },
       );
     }
-    if (signed.bytes !== prepared.bytes)
+    if (
+      !signed ||
+      signed.bytes !== prepared.bytes ||
+      typeof signed.signature !== 'string' ||
+      !/^[A-Za-z0-9+/=]{4,12000}$/.test(signed.signature)
+    ) {
+      setPending(false);
+      setPaymentState('signature-uncertain');
+      setProgress((previous) => ({
+        ...previous,
+        signingState: 'signature-uncertain',
+        retryAllowed: false,
+      }));
       throw new Error(
-        'Wallet changed approved transaction bytes; nothing was submitted by PayGuard',
+        'Wallet returned a malformed signature or changed approved transaction bytes. Nothing was submitted by PayGuard. The result is uncertain; do not sign again.',
       );
+    }
+    localStorage.setItem(
+      attemptKey,
+      JSON.stringify({ digest: prepared.digest, outcome: 'signed' }),
+    );
+    setPaymentState('signed-unsubmitted');
+    setProgress((previous) => ({
+      ...previous,
+      signingState: 'signed-unsubmitted',
+      retryAllowed: false,
+    }));
+    setPending(false);
+    await request('/' + quote.id + '/events', { phase: 'signed', preparedDigest: prepared.digest });
     // A lost response is indeterminate. Resume the same intent instead of signing/paying again.
     setPaymentState('submission-uncertain');
+    setPending(true);
     setPendingDigest(prepared.digest);
     const r = await request('/' + quote.id, {
       x402Version: 2,
@@ -658,7 +736,29 @@ export function ServicePayment() {
                   : 'Only the wallet authenticated to this private workspace can pay for its invoices.'}
               </p>
               <p>
+                <Link className="button outline" href="/app/vendors">
+                  Create Supplier
+                </Link>{' '}
+                <Link className="button outline" href="/app/invoices">
+                  Add Invoice
+                </Link>{' '}
+                <Link className="button outline" href="/app/review">
+                  Verify Instructions
+                </Link>
+              </p>
+              <p>
                 Expected payer: <code>{dedicatedPayer || 'Not configured'}</code>
+              </p>
+              {data?.mode === 'member' && (
+                <p>
+                  Authenticated workspace wallet: <code>{data.identity?.walletAddress}</code>
+                </p>
+              )}
+              <p>
+                Connected signing account:{' '}
+                <code>
+                  {prepared?.account.address || 'Choose and prepare with your wallet to confirm'}
+                </code>
               </p>
               <button
                 className="button outline"
@@ -883,23 +983,41 @@ export function ServicePayment() {
                   </details>
                 </section>
               )}
-              {saved
-                .filter((i) =>
-                  ['quoted', 'approved', 'settling', 'settled', 'failed'].includes(i.state),
-                )
-                .map((i) => (
-                  <button
-                    className="button outline"
-                    key={i.id}
-                    disabled={busy}
-                    onClick={() => void run(() => openSavedIntent(i))}
-                  >
-                    Resume saved {i.state} intent ·{' '}
-                    {data.invoices.find((v) => v.id === i.invoiceId)?.number ||
-                      i.invoiceId.slice(0, 8)}{' '}
-                    · {i.id.slice(0, 8)}
-                  </button>
-                ))}
+              {['Unfinished payments', 'Paid report history'].map((group) => (
+                <section key={group} aria-label={group}>
+                  <h3>{group}</h3>
+                  {saved.filter((i) =>
+                    group === 'Paid report history'
+                      ? i.state === 'settled'
+                      : ['quoted', 'approved', 'settling', 'failed'].includes(i.state),
+                  ).length === 0 && (
+                    <p>
+                      {group === 'Paid report history'
+                        ? 'No paid reports in this workspace yet.'
+                        : 'No saved unfinished payments.'}
+                    </p>
+                  )}
+                  {saved
+                    .filter((i) =>
+                      group === 'Paid report history'
+                        ? i.state === 'settled'
+                        : ['quoted', 'approved', 'settling', 'failed'].includes(i.state),
+                    )
+                    .map((i) => (
+                      <button
+                        className="button outline"
+                        key={i.id}
+                        disabled={busy}
+                        onClick={() => void run(() => openSavedIntent(i))}
+                      >
+                        Resume saved {i.state} intent ·{' '}
+                        {data.invoices.find((v) => v.id === i.invoiceId)?.number ||
+                          i.invoiceId.slice(0, 8)}{' '}
+                        · {i.id.slice(0, 8)}
+                      </button>
+                    ))}
+                </section>
+              ))}
               <p>
                 Deterministic supplemental analysis, not an independent identity check or a phone
                 call. No spending key is stored by PayGuard. Checkout uses address-balance SUI
@@ -937,6 +1055,11 @@ export function ServicePayment() {
                   disabled={!!quote}
                   onChange={(e) => setInvoice(e.target.value)}
                 >
+                  <option value="">
+                    {data.invoices.some((i) => i.status !== 'paid')
+                      ? 'Select an unpaid invoice'
+                      : 'No unpaid invoices · add an invoice above'}
+                  </option>
                   {data.invoices
                     .filter(
                       (i: Invoice) =>
@@ -1009,7 +1132,8 @@ export function ServicePayment() {
                 disabled={
                   capabilityState !== 'ready' ||
                   !configured ||
-                  !invoiceId ||
+                  !selectedInvoice ||
+                  selectedInvoice.status === 'paid' ||
                   busy ||
                   !!quote ||
                   saved.some((i) => i.state === 'settling')
@@ -1077,6 +1201,15 @@ export function ServicePayment() {
                       : 'Resume existing payment'}
                   </button>
                   {statusMessage && <p role="status">{statusMessage}</p>}
+                  {progress?.retryAllowed && signatureAttempted && (
+                    <button
+                      className="button outline"
+                      disabled={busy || quoteExpired}
+                      onClick={() => void run(allowDeclinedRetry)}
+                    >
+                      Review declined attempt · allow same-transaction retry
+                    </button>
+                  )}
                   <p>Reason for this quote: {quote.resource.description}</p>
                   {quoteExpired && !receipt && (
                     <p role="status">
