@@ -1,0 +1,253 @@
+{
+  "capturedAt": "2026-11-02T22:46:08.046Z",
+  "base": "https://payguard-ai-henna.vercel.app",
+  "release": {
+    "application": "PayGuard Verify",
+    "commit": "d6f6c6820acbad75c6b189c14a38aac1c72b501a",
+    "recordedProofCount": 32,
+    "ownerProofCount": 30,
+    "proofExportedAt": "2026-11-01T12:49:41.554Z",
+    "modes": ["public-demo", "owner-admin", "wallet-member", "recorded-proof"]
+  },
+  "browser": "Chromium",
+  "zoom": "100%",
+  "deviceScaleFactor": 1,
+  "reducedMotion": true,
+  "publicPagesOnly": true,
+  "video": false,
+  "checks": [
+    {
+      "route": "/",
+      "width": 360,
+      "viewport": 360,
+      "content": 360,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    },
+    {
+      "route": "/",
+      "width": 390,
+      "viewport": 390,
+      "content": 390,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    },
+    {
+      "route": "/",
+      "width": 430,
+      "viewport": 430,
+      "content": 430,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    },
+    {
+      "route": "/courtroom",
+      "width": 360,
+      "viewport": 360,
+      "content": 360,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    },
+    {
+      "route": "/courtroom",
+      "width": 390,
+      "viewport": 390,
+      "content": 390,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    },
+    {
+      "route": "/courtroom",
+      "width": 430,
+      "viewport": 430,
+      "content": 430,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    },
+    {
+      "route": "/proof",
+      "width": 360,
+      "viewport": 360,
+      "content": 360,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    },
+    {
+      "route": "/proof",
+      "width": 390,
+      "viewport": 390,
+      "content": 390,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    },
+    {
+      "route": "/proof",
+      "width": 430,
+      "viewport": 430,
+      "content": 430,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    },
+    {
+      "route": "/connect",
+      "width": 360,
+      "viewport": 360,
+      "content": 360,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    },
+    {
+      "route": "/connect",
+      "width": 390,
+      "viewport": 390,
+      "content": 390,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    },
+    {
+      "route": "/connect",
+      "width": 430,
+      "viewport": 430,
+      "content": 430,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    },
+    {
+      "route": "/try",
+      "width": 360,
+      "viewport": 360,
+      "content": 360,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    },
+    {
+      "route": "/try",
+      "width": 390,
+      "viewport": 390,
+      "content": 390,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    },
+    {
+      "route": "/try",
+      "width": 430,
+      "viewport": 430,
+      "content": 430,
+      "scale": 1,
+      "zoom": "1",
+      "passed": true
+    }
+  ],
+  "screenshots": [
+    {
+      "route": "/",
+      "width": 1440,
+      "height": 1000,
+      "file": "docs/screenshots/final-owner-review/home-desktop-1440.png",
+      "capturedAt": "2026-11-02T22:46:11.742Z"
+    },
+    {
+      "route": "/",
+      "width": 390,
+      "height": 844,
+      "file": "docs/screenshots/final-owner-review/home-mobile-390.png",
+      "capturedAt": "2026-11-02T22:46:12.230Z"
+    },
+    {
+      "route": "/courtroom",
+      "width": 1440,
+      "height": 1000,
+      "file": "docs/screenshots/final-owner-review/courtroom-desktop-1440.png",
+      "capturedAt": "2026-11-02T22:46:14.840Z"
+    },
+    {
+      "route": "/courtroom",
+      "width": 360,
+      "height": 844,
+      "file": "docs/screenshots/final-owner-review/courtroom-mobile-360.png",
+      "capturedAt": "2026-11-02T22:46:15.229Z"
+    },
+    {
+      "route": "/courtroom",
+      "width": 390,
+      "height": 844,
+      "file": "docs/screenshots/final-owner-review/courtroom-mobile-390.png",
+      "capturedAt": "2026-11-02T22:46:15.648Z"
+    },
+    {
+      "route": "/courtroom",
+      "width": 430,
+      "height": 844,
+      "file": "docs/screenshots/final-owner-review/courtroom-mobile-430.png",
+      "capturedAt": "2026-11-02T22:46:16.146Z"
+    },
+    {
+      "route": "/proof",
+      "width": 1440,
+      "height": 1000,
+      "file": "docs/screenshots/final-owner-review/proof-desktop-1440.png",
+      "capturedAt": "2026-11-02T22:46:18.704Z"
+    },
+    {
+      "route": "/proof",
+      "width": 390,
+      "height": 844,
+      "file": "docs/screenshots/final-owner-review/proof-mobile-390.png",
+      "capturedAt": "2026-11-02T22:46:19.080Z"
+    },
+    {
+      "route": "/connect",
+      "width": 1440,
+      "height": 1000,
+      "file": "docs/screenshots/final-owner-review/connect-desktop-1440.png",
+      "capturedAt": "2026-11-02T22:46:21.069Z"
+    },
+    {
+      "route": "/connect",
+      "width": 390,
+      "height": 844,
+      "file": "docs/screenshots/final-owner-review/connect-mobile-390.png",
+      "capturedAt": "2026-11-02T22:46:21.240Z"
+    },
+    {
+      "route": "/try",
+      "width": 1440,
+      "height": 1000,
+      "file": "docs/screenshots/final-owner-review/judge-desktop-1440.png",
+      "capturedAt": "2026-11-02T22:46:23.060Z"
+    },
+    {
+      "route": "/try",
+      "width": 390,
+      "height": 844,
+      "file": "docs/screenshots/final-owner-review/judge-mobile-390.png",
+      "capturedAt": "2026-11-02T22:46:23.219Z"
+    }
+  ],
+  "consoleErrors": [],
+  "article": {
+    "url": "https://sopskistar.github.io/payguard-ai/",
+    "status": 200,
+    "updatedMarker": true,
+    "checkoutAuditCurrent": true,
+    "linksCourtroom": true,
+    "allThreeDigests": true
+  },
+  "staticJudgeStatus": 200,
+  "financialRequests": 0,
+  "ok": true
+}

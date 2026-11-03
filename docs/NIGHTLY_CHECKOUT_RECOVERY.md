@@ -22,6 +22,8 @@ No financial signature or settlement is performed by this repair. Existing expir
 
 At **2026-11-02 22:18 UTC**, fresh Tatum Mainnet reads found the existing funded member at **0.012446622 SUI**, entirely address balance, matching the owner's approximate report. It already covers the 0.001 SUI price; no conversion or funding is requested. The complete Nightly address was a placeholder in the owner's message, so its provider association must still be confirmed against the exact payer displayed after Nightly sign-in. The full address remains in private local diagnostics, with only a fingerprint in the [public balance recheck](evidence/nightly-member-balance-recheck.json).
 
+The **November 3, 08:46 UTC** Tatum handoff read reconfirmed that same **0.012446622 SUI address balance**, with no new service payment. Its current exact wallet association still requires the owner to compare the full payer in Nightly.
+
 ## Evidence and limits
 
 The full unit/integration run passed 213 tests. The first comprehensive local browser run passed 38, failed one FAQ wording expectation, and skipped two deliberate live-provider specs. Restoring the explicit provider-stop guidance fixed that copy regression; the three affected public UX cases then passed. Owner/member preparation, alternate account rejection, direct return from free wallet authentication, replay protection, ordinary-coin preparation and tenant isolation passed with controlled fixtures. These do not certify a physical financial transaction.

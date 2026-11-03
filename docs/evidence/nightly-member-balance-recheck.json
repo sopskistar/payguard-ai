@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-11-02T22:18:12.193Z",
+  "checkedAt": "2026-11-03T08:46:06.146Z",
   "source": "Tatum Sui Mainnet gRPC",
   "readOnly": true,
   "fundedExistingMember": [
@@ -13,5 +13,6 @@
   ],
   "physicalProviderAssociation": "The funded existing member matches the owner-reported approximate balance; the owner did not supply the complete Nightly address in chat. Confirm the full payer in the authenticated UI. No extension access or new signature was available.",
   "conversionRequested": false,
-  "financialRequests": 0
+  "financialRequests": 0,
+  "previousCheckedAt": "2026-11-02T22:18:12.193Z"
 }

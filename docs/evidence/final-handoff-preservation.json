@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-11-03T08:43:08.469Z",
+  "readOnly": true,
+  "counts": {
+    "confirmedmemories": 32,
+    "receipts": 3,
+    "settlementrequests": 3,
+    "settling": 0
+  },
+  "originalReceiptDigestsUnchanged": true,
+  "providerWrites": 0,
+  "financialSignatures": 0,
+  "newSettlementSubmissions": 0
+}

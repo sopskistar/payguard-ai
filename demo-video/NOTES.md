@@ -37,6 +37,8 @@ The first review caught incomplete stylesheet loads in the opening and process s
 
 Review `preview.jpg`, `poster.png`, both MP4s and `demo.srt`. From the project folder in Ubuntu, run **`explorer.exe demo-video`**. Upload/publish/embed only after the owner has watched and approved the cut and supplied an approved public host URL. `src/content/demo-video.json` remains unapproved with no public video URL.
 
+Windows can also open **`\\wsl.localhost\Ubuntu\home\sopski\payguard-ai\demo-video`** directly. The Explorer invocation returned code 1 without output, so its visible window was not independently confirmed; the files and Windows/WSL path are verified present.
+
 ## Reproducible tools
 
 Node 22.23.1, existing Playwright 1.64.1 / tsx 4.23.15 and installed Chromium were reused. Python 3.12.3 uses an isolated `.venv` with pinned Pillow 13.0.0, imageio-ffmpeg 0.8.0 and edge-tts 7.3.1. imageio's FFmpeg n9.0.2 supplies H.264/AAC/ASS/drawtext; isolated ffprobe 7.0.2-static supplies inspection. The GPL-licensed fallback binaries came from the SHA-locked source in `scripts/ffmpeg.lock.json`. No apt/system install, paid subscription, app dependency upgrade or application-lockfile change was needed.
