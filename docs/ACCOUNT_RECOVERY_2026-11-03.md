@@ -151,3 +151,36 @@ Fresh customer HTTP 402/preparation and positive wallet settlement remain covere
 controlled fixtures and the recovered member transaction, not a new physical purchase.
 Production configuration capability booleans were verified through authenticated routes;
 Vercel environment-variable inventory/values were not accessible and were not guessed.
+
+Application commit `37565fd5e35fcfbe9eab512ac8adc7547a4a3f2b` was pushed normally
+and independently verified live through `/api/release`. GitHub reported Vercel
+success for deployment `5FntjUtdqyCRKRqx7yRYyuaFuXM3`. All **14 actual Production
+public browser tests passed**, with zero failures/skips/flakes. All seven requested
+routes returned HTTP 200. [Public browser results](evidence/recovered-production-public-tests.json).
+
+The authenticated deployed [release probe](evidence/recovered-production-release.json)
+passed: old administrator provider error is `signature-failed`, quote expired,
+`retryAllowed: false`, `submitted: false`; all three reports reopen; a fresh existing
+Experiment 3 recall is OFF 0 / ON 7 with owned citations and baseline holds retained.
+Neon remains at 33 confirmed memories, three receipts, three settlement submissions,
+zero settling intents and an identical historical receipt-content fingerprint.
+The first probe had a local Fetch boolean/method mistake and stopped before
+authentication; its corrected run is the evidence above. No application defect or
+financial operation occurred in that failed probe. [Validation ledger](evidence/recovered-validation.json).
+
+| Customer acceptance item                    | Classification and scope                                                                                                                                                        |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Wallet login                                | REAL VERIFIED: Production cryptographic free-message API login/replay/returning login with unfunded generated test identities. Current physical Nightly login was not repeated. |
+| Private workspace                           | REAL VERIFIED: actual authenticated Production/Neon isolation.                                                                                                                  |
+| Supplier/invoice creation                   | REAL VERIFIED: one new synthetic supplier/reference/invoice through authenticated routes.                                                                                       |
+| Invoice selection                           | REAL VERIFIED: browser selected that actual saved customer invoice in Agent Services.                                                                                           |
+| HTTP 402 quote                              | REAL VERIFIED for an existing saved owner intent without creating a quote; fresh customer quote response TEST VERIFIED ONLY.                                                    |
+| Sponsored preparation                       | REAL VERIFIED for recovered exact member/owner unsigned transactions; new physical preparation NOT TESTED.                                                                      |
+| Signing compatibility/integrity             | TEST VERIFIED ONLY: offline official Nightly SDK, current Wallet Standard fixture, real disposable cryptographic signature and negative cases.                                  |
+| Real Nightly extension financial acceptance | BLOCKED: requires supervised owner/provider evidence; root cause unresolved.                                                                                                    |
+| Requested new blockchain settlement         | BLOCKED: no fourth payment was authorized or attempted. Original three payments REAL VERIFIED independently.                                                                    |
+| Receipt reopening                           | REAL VERIFIED: original reports reopened through Production without another charge.                                                                                             |
+
+Subsequent evidence-only commits preserve the validated application source. The local
+working tree's original eight demo/video modifications and untracked video sources
+remain deliberately uncommitted. No video process was run.

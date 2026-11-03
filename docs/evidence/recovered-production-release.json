@@ -1,0 +1,117 @@
+{
+  "checkedAt": "2026-11-03T18:52:48.163Z",
+  "financialSignatures": 0,
+  "settlementSubmissions": 0,
+  "memoryWrites": 0,
+  "checks": [
+    {
+      "name": "GET release",
+      "passed": true
+    },
+    {
+      "name": "exact production SHA",
+      "passed": true
+    },
+    {
+      "name": "public /connect",
+      "passed": true
+    },
+    {
+      "name": "public /app",
+      "passed": true
+    },
+    {
+      "name": "public /app/invoices",
+      "passed": true
+    },
+    {
+      "name": "public /app/review",
+      "passed": true
+    },
+    {
+      "name": "public /services",
+      "passed": true
+    },
+    {
+      "name": "public /courtroom",
+      "passed": true
+    },
+    {
+      "name": "public /proof",
+      "passed": true
+    },
+    {
+      "name": "authorized owner login",
+      "passed": true
+    },
+    {
+      "name": "GET snapshot",
+      "passed": true
+    },
+    {
+      "name": "GET service-payments",
+      "passed": true
+    },
+    {
+      "name": "Neon private owner workspace",
+      "passed": true
+    },
+    {
+      "name": "existing receipt/report 4a4d6014-5e9e-430d-8bcb-dad596733876",
+      "passed": true
+    },
+    {
+      "name": "existing receipt/report d31d1a52-b0b3-4c5c-ba82-5902c5eaef4f",
+      "passed": true
+    },
+    {
+      "name": "existing receipt/report 51d204df-71fd-44a6-ac4a-c8e0c50b4cf5",
+      "passed": true
+    },
+    {
+      "name": "old provider error accurately remains failed/uncertain and locked",
+      "passed": true
+    },
+    {
+      "name": "original memory comparison invoice preserved",
+      "passed": true
+    },
+    {
+      "name": "fresh existing-memory recall preserves findings",
+      "passed": true
+    },
+    {
+      "name": "all financial/memory counters and receipt contents preserved",
+      "passed": true
+    }
+  ],
+  "release": {
+    "application": "PayGuard Verify",
+    "commit": "37565fd5e35fcfbe9eab512ac8adc7547a4a3f2b",
+    "recordedProofCount": 32,
+    "ownerProofCount": 30,
+    "proofExportedAt": "2026-11-01T12:49:41.554Z",
+    "modes": ["public-demo", "owner-admin", "wallet-member", "recorded-proof"]
+  },
+  "previousIntentProgress": {
+    "state": "approved",
+    "expired": true,
+    "signingState": "signature-failed",
+    "retryAllowed": false,
+    "submitted": false
+  },
+  "recall": {
+    "off": 0,
+    "on": 7,
+    "baselinePreserved": true,
+    "ownedCitations": true
+  },
+  "counts": {
+    "memories": 33,
+    "receipts": 3,
+    "submissions": 3,
+    "settling": 0
+  },
+  "receiptContentUnchanged": true,
+  "ok": true
+}

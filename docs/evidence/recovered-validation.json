@@ -1,0 +1,36 @@
+{
+  "checkedAt": "2026-11-03T18:50:01.589Z",
+  "sourceCommit": "37565fd5e35fcfbe9eab512ac8adc7547a4a3f2b",
+  "unitIntegration": {
+    "files": 32,
+    "passed": 218,
+    "failed": 0,
+    "command": "npm test"
+  },
+  "browser": {
+    "passed": 44,
+    "failed": 0,
+    "skipped": 2,
+    "flaky": 0,
+    "command": "PAYGUARD_QA_EVIDENCE=.data/recovered-local-browser-final.json npm run test:e2e:qa",
+    "database": "New disposable PostgreSQL (PGlite); all live write credentials disabled"
+  },
+  "checks": {
+    "typecheck": true,
+    "lint": true,
+    "formatCheck": true,
+    "productionBuild": true,
+    "diffCheck": true,
+    "credentialScan": {
+      "files": 885,
+      "matches": 0
+    }
+  },
+  "environmentFailures": {
+    "initialSandboxBuild": "Could not parse TypeScript --showConfig; passed with required sandbox escalation",
+    "initialSandboxBrowser": "Loopback server unreachable; passed with required sandbox escalation",
+    "initialSandboxProduction": "DNS EAI_AGAIN; passed outside sandbox"
+  },
+  "physicalNightlyFinancialAcceptance": false,
+  "financialSubmissions": 0
+}
