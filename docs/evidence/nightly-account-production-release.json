@@ -1,0 +1,105 @@
+{
+  "checkedAt": "2026-11-03T23:37:51.628Z",
+  "expectedCommit": "909d8b873989fc2234476f97448038b8aedf0878",
+  "checks": [
+    {
+      "name": "GET release",
+      "passed": true
+    },
+    {
+      "name": "Exact deployed application SHA",
+      "passed": true
+    },
+    {
+      "name": "Public route /connect",
+      "passed": true
+    },
+    {
+      "name": "Public route /app",
+      "passed": true
+    },
+    {
+      "name": "Public route /app/invoices",
+      "passed": true
+    },
+    {
+      "name": "Public route /app/review",
+      "passed": true
+    },
+    {
+      "name": "Public route /services",
+      "passed": true
+    },
+    {
+      "name": "Public route /courtroom",
+      "passed": true
+    },
+    {
+      "name": "Public route /proof",
+      "passed": true
+    },
+    {
+      "name": "Public route /try",
+      "passed": true
+    },
+    {
+      "name": "Authorized operator login",
+      "passed": true
+    },
+    {
+      "name": "GET service-payments",
+      "passed": true
+    },
+    {
+      "name": "Administrator payer remains distinct",
+      "passed": true
+    },
+    {
+      "name": "New recovery metadata holds the historical administrator preparation",
+      "passed": true
+    },
+    {
+      "name": "Historical prepared bytes remain locked after quote expiry",
+      "passed": true
+    },
+    {
+      "name": "Three existing delivered receipts remain",
+      "passed": true
+    },
+    {
+      "name": "Owned receipt reopens without a charge 4a4d6014-5e9e-430d-8bcb-dad596733876",
+      "passed": true
+    },
+    {
+      "name": "Owned receipt reopens without a charge d31d1a52-b0b3-4c5c-ba82-5902c5eaef4f",
+      "passed": true
+    },
+    {
+      "name": "Owned receipt reopens without a charge 51d204df-71fd-44a6-ac4a-c8e0c50b4cf5",
+      "passed": true
+    }
+  ],
+  "mainnetQuotes": 0,
+  "financialPreparations": 0,
+  "financialSignatures": 0,
+  "settlementSubmissions": 0,
+  "memoryWrites": 0,
+  "customerImpersonation": false,
+  "release": {
+    "application": "PayGuard Verify",
+    "commit": "909d8b873989fc2234476f97448038b8aedf0878",
+    "recordedProofCount": 32,
+    "ownerProofCount": 30,
+    "proofExportedAt": "2026-11-01T12:49:41.554Z",
+    "modes": ["public-demo", "owner-admin", "wallet-member", "recorded-proof"]
+  },
+  "previousOwnerIntent": {
+    "state": "approved",
+    "expired": true,
+    "canCancel": false,
+    "retryAllowed": false,
+    "submitted": false,
+    "preparedDigest": "7GiPuDNq1vN8pLn2cqJf8kYMrt9zmbdDBbAfdoYtGdRj"
+  },
+  "ok": true
+}

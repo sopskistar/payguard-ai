@@ -1,21 +1,22 @@
 {
-  "checkedAt": "2026-11-03T22:34:13.799Z",
+  "checkedAt": "2026-11-03T23:38:03.625Z",
   "readOnly": true,
-  "recoveredCommit": "f27acd3ecd4d6651dc342962a13533ab960129fc",
+  "sourceBaseCommit": "f27acd3ecd4d6651dc342962a13533ab960129fc",
+  "verifiedDeployedCommit": "909d8b873989fc2234476f97448038b8aedf0878",
   "chains": {
     "tatum": {
       "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
       "chain": "mainnet",
       "epoch": "1300",
-      "checkpoint": "341351702",
+      "checkpoint": "341367382",
       "lowestAvailableCheckpoint": "237661232"
     },
     "suiFullnode": {
       "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
       "chain": "mainnet",
       "epoch": "1300",
-      "checkpoint": "341351701",
-      "lowestAvailableCheckpoint": "336052866"
+      "checkpoint": "341367382",
+      "lowestAvailableCheckpoint": "336061144"
     }
   },
   "counts": {

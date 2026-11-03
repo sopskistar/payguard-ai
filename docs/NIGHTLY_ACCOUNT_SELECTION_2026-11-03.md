@@ -1,6 +1,6 @@
 # Nightly account-selection repair — November 3, 2026
 
-**A replacement payment or new financial signature is not safe yet.** The latest dual-provider read is epoch **1300**. The two earlier intents and two more recent customer preparations have `ValidDuring` bounds 1300–1301. Their expired application quotes do not revoke a possible signature. All four records and their reservations remain intact.
+**A replacement payment or new financial signature is not safe yet.** At **2026-11-03 23:38 UTC**, both providers report epoch **1300**, checkpoint **341367382**. The two earlier intents and two more recent customer preparations have `ValidDuring` bounds 1300–1301. Their expired application quotes do not revoke a possible signature. All four records and their reservations remain intact.
 
 ## Recovered state and confirmed cause
 
@@ -26,6 +26,8 @@ The [sanitized read-only evidence](evidence/nightly-account-reconciliation.json)
 The administrator intent retains its original provider error. It cannot be attributed conclusively to a particular installed wallet from its saved fields. The two recent customer warnings match the reproduced failure before signing, and have no saved wallet-attempt event. Absence of server payloads is not proof that an unknown older attempt never produced a signature. No record was cancelled, marked failed or given a fabricated receipt.
 
 Both providers confirm the customer's **12,446,622 MIST / 0.012446622 SUI**, entirely address balance. Both independently reconfirm all three original successful settlements, each with **1,000,000 MIST** merchant credit. Neon still has **33 confirmed memories, three receipts, three settlement submissions and zero settling intents**. The complete original receipt-content fingerprint is unchanged.
+
+[Before/after record fingerprints](evidence/nightly-account-preservation.json) also match for every memory tuple, all three receipts, all four complete intent records and the customer's invoice/supplier/trust-profile/instruction content. All 32 original memory identities remain unchanged.
 
 ## Source changes and invariants
 
@@ -55,3 +57,5 @@ All **224 unit/integration tests** passed. The complete disposable-database brow
 TypeScript, formatting and the production build passed. Lint has zero errors and one pre-existing unused-import warning in an untracked video script. The initial restricted build/loopback startup failed on sandbox permissions; the standalone type check also raced build-generated types, so build and type checking were completed sequentially. The first new regression needed an explicit preparation wait; after that correction it reproduced the original exact warning against the old bundle. No application failure remains in the final regression results. [Validation ledger](evidence/nightly-account-validation.json).
 
 Deployment is independently established by the Production `/api/release` SHA and GitHub's Vercel status, not by these local tests. Physical Nightly financial acceptance remains blocked by the unresolved earlier attempts. No additional financial signature or settlement was performed.
+
+Application commit **`909d8b873989fc2234476f97448038b8aedf0878`** was pushed normally and independently verified live. GitHub reported Vercel success for deployment `3ccChZe4NDfSxNwj7mr3Ju65h8Se`. The [actual Production API probe](evidence/nightly-account-production-release.json) passed all 19 checks: exact SHA, eight public routes, preserved administrator payer, new recovery metadata, locked expired prepared intent, and reopening each original receipt/report twice without charging. Later evidence-only commits retain this validated application source; `/api/release` identifies the current deployment SHA. The physical customer-extension account was not remotely inspected or impersonated.

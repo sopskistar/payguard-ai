@@ -6,7 +6,11 @@
     "src/lib/service-payments.ts",
     "src/app/api/service-payments/[[...path]]/route.ts"
   ],
-  "unitIntegration": { "passed": 224, "files": 32, "failed": 0 },
+  "unitIntegration": {
+    "passed": 224,
+    "files": 32,
+    "failed": 0
+  },
   "browser": {
     "passed": 47,
     "failed": 0,
@@ -21,8 +25,12 @@
     "warnings": 1,
     "warningScope": "Pre-existing untracked video script unused mkdir import"
   },
-  "formatCheck": "passed; new documents separately formatted before final check",
-  "configuredCredentialScan": { "matches": 0, "filesBeforeFinalDocumentation": 916 },
+  "formatCheck": "Complete repository formatting check passed",
+  "configuredCredentialScan": {
+    "matches": 0,
+    "filesBeforeFinalDocumentation": 916,
+    "filesAfterDocumentation": 920
+  },
   "originalWarningReproducedBeforeFix": true,
   "finalApplicationTestFailures": 0,
   "initialAttempts": [
@@ -39,5 +47,24 @@
   "historicalIntentMutations": 0,
   "supplierInvoiceMemoryReceiptMutations": 0,
   "dependencyOrMigrationChanges": false,
-  "previousVideoWorkPreserved": true
+  "previousVideoWorkPreserved": true,
+  "productionApplicationCommit": "909d8b873989fc2234476f97448038b8aedf0878",
+  "productionVercelStatus": "success",
+  "productionDeployment": "3ccChZe4NDfSxNwj7mr3Ju65h8Se",
+  "productionReleaseProbePassed": true,
+  "publicRoutesPassed": 8,
+  "existingReceiptsReopenedTwiceEach": 3,
+  "currentReconciliation": {
+    "checkedAt": "2026-11-03T23:38:03.625Z",
+    "epoch": "1300",
+    "checkpoint": "341367382",
+    "preparedDigestsNotFoundByBothProviders": 4,
+    "safeForNewPayment": false
+  },
+  "existingDataFingerprintsUnchanged": {
+    "memories": true,
+    "receipts": true,
+    "intents": true,
+    "business": true
+  }
 }
