@@ -1,45 +1,25 @@
-# PayGuard Verify — final 165-second recording plan
+# PayGuard Verify — Official Demo
 
-The new owner-review cut follows the supplied Claude narrative using actual **public, read-only Production footage at 1920×1080 / device scale 1**. It never opens owner login, connects a wallet, signs a message, executes a payment, writes a memory or reads private Neon. The original `.data/official-demo` cut and the independent audit are preserved; the new cut supersedes that cut for review. This is native 1080p, with no 4K claim.
+**[Watch the approved 2:46 demo](https://youtu.be/i2ZsEPIegy4)**
 
-[Review package and actual export checks](demo/README.md) · [Detailed shots and editorial boundaries](../demo-video/storyboard.md) · [Exact narration](../demo-video/narration.txt).
+The owner-approved 4K film is the published demonstration. Its narration and footage are final. The homepage offers a click-to-load player; the public demo and proof pages link to the same video.
 
-| Time      | Scene                                    | Exact base narration                                                                                                                                                                                                                                                                                                                                                              |
-| --------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0:00–0:12 | THE DESTINATION CHANGED                  | The conversation is familiar. The destination isn't. ‘Please use our updated payment details for this invoice.’                                                                                                                                                                                                                                                                   |
-| 0:12–0:34 | VERIFY THE CHANGE                        | Same supplier. Same retainer. One new recipient. The FBI advises verifying payment-detail changes through an independent channel. PayGuard Verify turns that advice into a review: it detects the change, holds approval, records an authorized correction, and remembers what the next review should know.                                                                       |
-| 0:34–0:58 | THE PRODUCT, IN USE                      | In the public demo, a synthetic Northstar invoice arrives. PayGuard compares it with the established recipient, flags the mismatch, and holds approval. A human verifies through a known channel and records the correction. No supplier payment is ever sent.                                                                                                                    |
-| 0:58–1:24 | MEMORY OFF / ON · BOTH KEEP THE HOLD     | Now the memory. The approved policy is written to Walrus Mainnet — thirty-two confirmed records. Same later invoice. Memory off: the baseline hold still fires. Memory on: genuine recall brings back the rule we approved, with citations. This is a replay of a real SDK capture, and labeled that way.                                                                         |
-| 1:24–1:34 | UNTRUSTED TEXT CANNOT AUTHORIZE APPROVAL | A hostile instruction hidden in the invoice doesn't skip verification.                                                                                                                                                                                                                                                                                                            |
-| 1:34–2:12 | THREE REAL MAINNET PURCHASES             | Memory isn't the only proof. PayGuard sells its analysis through x402: the server quotes an HTTP 402, a wallet approves exact bytes, and the report is delivered. Three Mainnet payments of 0.001 SUI, each verified by Tatum over Sui gRPC. Synthetic invoices, and the payer and merchant are two wallets I control. The report: hold, and reconcile the conflicting recipient. |
-| 2:12–2:34 | TRY IT. INSPECT IT. READ THE SOURCE.     | Anyone can try it free, no wallet needed. Connect a Sui wallet for a private workspace. Everything is open source, with a published write-up.                                                                                                                                                                                                                                     |
-| 2:34–2:45 | VERIFY BEFORE YOU PAY                    | PayGuard doesn't promise to stop fraud. It makes the check explicit, remembers the correction, and shows receipts you can open.                                                                                                                                                                                                                                                   |
+## Published sequence
 
-## Evidence and truthful presentation
+| Time      | Demonstration                                                                   |
+| --------- | ------------------------------------------------------------------------------- |
+| 0:00–0:10 | Same supplier, same invoice, different destination.                             |
+| 0:10–0:24 | Why familiar business details do not authenticate changed payment instructions. |
+| 0:24–0:36 | PayGuard's review and human verification workflow.                              |
+| 0:36–1:00 | Synthetic invoice, recipient mismatch and verification hold.                    |
+| 1:00–1:32 | Memory OFF/ON, recalled Walrus context and citations.                           |
+| 1:32–1:46 | Suspicious invoice instructions leave safeguards intact.                        |
+| 1:46–2:16 | x402 analysis, three real Sui Mainnet settlements and Tatum evidence.           |
+| 2:16–2:33 | Free public demo, Memory Courtroom and Mainnet Proof.                           |
+| 2:33–2:46 | PayGuard brand, tagline and project links.                                      |
 
-Use the same synthetic Northstar invoice and existing review engine. Both Memory OFF and ON retain the hold; ON adds actual sourced policy context. The Courtroom is labeled **Recorded replay of genuine SDK capture (2026-11-01)**. The original total is 32 confirmed records; seven citations in this comparison are not seven separate queries. The previous learning report's four recall queries are a different measure.
+The recorded memory scenes retain their original evidence snapshot. The November 3 recovery confirmed 33 records; the earlier public comparison captured 32. The three payments are developer-controlled experiments on synthetic invoices. They do not establish independently accepted Nightly customer financial signing.
 
-Show the real payment trail and the three original digests. Each credited the merchant 0.001 SUI, total 0.003 SUI, with separate sponsor gas. Payer and merchant were developer-controlled, and the invoices synthetic. Original approval/byte evidence is shown as a labeled public-record excerpt, never as a fabricated wallet signature panel. No payment or memory action is performed for recording. The FBI reference is independent public guidance, not an endorsement.
+[Judge walkthrough](JUDGE_WALKTHROUGH.md) · [video publication notes](demo/README.md) · [Mainnet evidence](MAINNET_PROOF.md).
 
-The capture script blocks private routes, private APIs and all non-read requests. Public practice checkbox interactions are illustrative local state only. If a public source fails, use an honestly labeled permitted public source or document the omission; never invent a result. The end card retains the original brand, public links and decision-support limitation through the final frame.
-
-## Production and owner handoff
-
-Run `bash demo-video/scripts/build.sh`. Review `demo-video/preview.jpg`, `demo-video/payguard-demo-final.mp4`, `demo-video/payguard-demo-captioned.mp4`, `demo-video/demo.srt` and `demo-video/NOTES.md`. From Ubuntu/WSL, `explorer.exe demo-video` opens the local folder in Windows. Generated media and tools are ignored, never added to Git history. No competing video is published.
-
-The official [hackathon page](https://thewalrussessions.wal.app/tatum-total-recall) and [submission form](https://recall-tatum-walrus.vercel.app/) specify November 10, 2026, 17:00 UTC. The owner supplies approved video hosting, contact/account identifiers and the final submission. [Requirements and private identifier handoff](SUBMISSION_HANDOFF.md). No form has been submitted.
-
-## Publishing the approved video
-
-The new 2:45 owner-review cut uses authentic public Production footage, synthesized narration and word-timed captions. [Review package and technical specifications](demo/README.md). No public recording is approved or published yet. While `src/content/demo-video.json` has `approved: false`, the homepage, public walkthrough and proof page render no video section, placeholder player or third-party media request.
-
-After the owner supplies the final approved URL:
-
-1. Use an unlisted/public YouTube video with embedding enabled, or an owner-approved Vimeo video. Private, age/region-restricted or embed-disabled videos may not work for anonymous judges. Other hosts need a separate exact-host adapter and CSP review; do not allow arbitrary iframe URLs.
-2. Upload accurate captions on the host and verify its CC control. Optionally supply a public HTTPS transcript URL. The integration requests captions by default; that request does not create captions or prove that the host has a track.
-3. Update only the public `watchUrl`, `title`, `captionLanguage`, optional `transcriptUrl` and `approved: true` in `src/content/demo-video.json`. Never put passwords, signing material or private sharing tokens in this public file. Vimeo unlisted identifiers are intentionally public when published here.
-4. Replace the marked recorded-demo paragraph near HOW TO TEST in README with the approved watch link and, if desired, a linked `public/demo-poster.svg` image. Keep synthetic-scenario, owner-controlled-payment and physical-provider limitations consistent with current evidence. The existing poster illustrates the product; replace it with an approved non-sensitive still if preferred.
-5. Run `npm run judge:publish-build`, focused video tests, lint/TypeScript/formatting and `npm run build`. Commit/push and verify the actual production SHA. Do not add a large MP4 to Git.
-6. In a signed-out browser, check `/`, `/try`, `/proof` and the static judge artifact. Verify the poster, keyboard activation, external watch link, actual playback, CC, optional transcript, fullscreen and mobile widths 360/390/430px. The iframe loads only after the judge deliberately clicks. No video autoplays. CSP allows only YouTube's privacy-enhanced frame host and Vimeo's player host; PayGuard's anti-framing and wallet protections remain intact.
-
-The controlled player tests intercept an invented video identifier and never play real footage. They verify component behavior, not acceptance of the owner's final video. Actual playback/captions verification remains pending until that URL is provided.
+Earlier local cuts and recording sources are preserved as historical production material. They are superseded by this published film.

@@ -2,11 +2,11 @@
 
 ## 1. Database and owner access
 
-Create a Neon Postgres project and database. Privately put its connection string in `DATABASE_URL`. Use a migration-capable role to apply `npm run db:migrate`, then `npm run db:seed-demo` for synthetic fixtures. Deploy all migrations in order; `0001` adds Verify tables without dropping previous records.
+The public `/try` demo needs no database setup. For your own private development environment, create a new Neon Postgres project and database. Never migrate, seed or reset the existing production database as part of local setup or judging. Privately put its connection string in `DATABASE_URL`. Use a migration-capable role to apply `npm run db:migrate`, then `npm run db:seed-demo` for synthetic fixtures. Deploy all migrations in order; `0001` adds Verify tables without dropping previous records.
 
 Set `AUTH_SECRET` to at least 32 cryptographically random characters (`openssl rand -hex 32`). Set `OWNER_PASSWORD` to a unique password of at least 16 characters. Set `APP_URL` to the exact browser origin. Do not include a trailing path. Configure these privately; never send their values in chat. The public workspace stays read-only and never exposes the owner's invoices.
 
-Sessions expire in eight hours and are stored by hash. Rotating `AUTH_SECRET` invalidates them. Login is rate-limited per owner account; live actions have separate database-backed quotas. Obtain owner demo access privately. For public deployment, use a dedicated synthetic-data workspace for judges and rotate the password afterward.
+Sessions expire in eight hours and are stored by hash. Rotating `AUTH_SECRET` invalidates them. Login is rate-limited per owner account; live actions have separate database-backed quotas. Obtain owner demo access privately. Judges should use the anonymous `/try`, `/courtroom` and `/proof` routes; no administrator password is required.
 
 ## 2. Walrus Mainnet
 
@@ -53,7 +53,7 @@ For Vercel, import the repository as a Next.js project or authenticate the Verce
 
 Recommended deployment checks: landing/public replay; owner login; DB import/reload; live integration health; memory write completion; actual new-session recall; real digest inspection; unauthorized and cross-origin denial. No hosted URL should be announced until the deployment succeeds and these endpoints are checked.
 
-`OPENAI_API_KEY` and `GUEST_LIVE_WRITES` remain unused/reserved. This build uses no LLM or anonymous writes. Supplier payments remain unavailable; the separate owner-approved Testnet service-fee feature is described below.
+`OPENAI_API_KEY` and `GUEST_LIVE_WRITES` remain unused/reserved. This build uses no LLM or anonymous writes. Supplier payments remain unavailable; the separate explicitly approved service-fee feature is described below.
 
 ## Verified recovery notes
 
@@ -69,7 +69,7 @@ Production is public at https://payguard-ai-henna.vercel.app. Framework Preset m
 
 `npm run judge:evidence` captures a fresh real recall of synthetic owner policies; it preserves the previous artifact if no applicable citations return. `npm run judge:publish-build` bundles the same judge component and reviewed evidence for the existing `/docs` GitHub Pages deployment. No `.env` value or provider SDK credential is included. The Next.js route remains `/try`.
 
-Service-payment configuration and signing are described in [AGENT_PAYMENTS.md](AGENT_PAYMENTS.md). `ENABLE_AGENT_PAYMENTS` defaults off; literal `mainnet` enables the demonstrated Mainnet quote implementation, with `testnet` retained for development. Configure distinct existing public payer and merchant addresses and Tatum access for the selected network. No spending key is requested. Production settlement remains false and its financial security gate remains intact. The [owner-local application](LOCAL_OWNER_PAYMENT.md) supports an explicitly enabled supervised purchase with separate exact approval and wallet signing. Actual finalized settlement and delivered analysis must exist before claiming the bonus.
+Service-payment configuration and signing are described in [AGENT_PAYMENTS.md](AGENT_PAYMENTS.md). `ENABLE_AGENT_PAYMENTS` defaults off; literal `mainnet` enables the demonstrated Mainnet quote implementation, with `testnet` retained for development. Configure distinct existing public payer and merchant addresses and Tatum access for the selected network. No spending key is requested. Settlement is separately gated by server configuration and exact financial approval; current historical evidence contains three developer-controlled Mainnet purchases. Physical Nightly production financial signing remains independently unverified, and unresolved intents retain reconciliation safeguards. The [owner-local application](LOCAL_OWNER_PAYMENT.md) supports an explicitly enabled supervised purchase with separate exact approval and wallet signing. Actual finalized settlement and delivered analysis must exist before claiming the bonus.
 
 ## Wallet accounts
 
@@ -85,4 +85,4 @@ Apply forward migration `0005` before deploying the password-rotation guard. The
 
 ## Mainnet service-payment quote mode
 
-[Mainnet x402 design and gates](AGENT_PAYMENTS.md) now supports `sui:mainnet` as primary, with native SUI and full genesis verification. Additional names are `ENABLE_AGENT_PAYMENTS`, `SERVICE_PAYMENT_PAYER`, `SERVICE_PAYMENT_RECIPIENT`, `SERVICE_PAYMENT_SETTLEMENT_ENABLED`. Keep settlement disabled until security clearance and separate exact financial authorization. Migration `0006` adds session spending reservations without changing existing records. The native sponsored path requires address-balance SUI, not just coin-object holdings. No service settlement is claimed.
+[Mainnet x402 design and gates](AGENT_PAYMENTS.md) now supports `sui:mainnet` as primary, with native SUI and full genesis verification. Additional names are `ENABLE_AGENT_PAYMENTS`, `SERVICE_PAYMENT_PAYER`, `SERVICE_PAYMENT_RECIPIENT`, `SERVICE_PAYMENT_SETTLEMENT_ENABLED`. Keep settlement disabled until security clearance and separate exact financial authorization. Migration `0006` adds session spending reservations without changing existing records. The native sponsored path supports the validated address-balance template and a strictly checked owned-coin fallback. See [funding compatibility](COIN_FUNDING_COMPATIBILITY.md) and [current physical acceptance limits](NIGHTLY_ACCOUNT_SELECTION_2026-11-03.md). Historical Mainnet settlements do not establish Nightly customer acceptance.

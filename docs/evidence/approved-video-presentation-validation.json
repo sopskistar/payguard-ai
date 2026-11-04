@@ -1,0 +1,181 @@
+{
+  "checkedAt": "2026-11-04T00:27:36.431058+00:00",
+  "sourceBaseCommit": "06a0d91dcfb43443ffb77a3413807ab239c80b00",
+  "scope": "Approved video publication and public presentation only",
+  "approvedVideo": {
+    "watchUrl": "https://youtu.be/i2ZsEPIegy4",
+    "id": "i2ZsEPIegy4",
+    "title": "PayGuard Verify — Official Demo",
+    "captionLanguage": "en",
+    "transcriptUrl": null,
+    "newVideoUploadedOrEdited": false,
+    "poster": "Unchanged closing frame from the owner-approved film"
+  },
+  "unitTests": {
+    "command": "npm test -- tests/demo-video.test.ts tests/judge.test.ts tests/courtroom.test.ts",
+    "passed": 18,
+    "failed": 0,
+    "files": 3
+  },
+  "localBrowser": {
+    "checkedAt": "2026-11-04T00:24:28.575Z",
+    "base": "http://localhost:3108",
+    "databaseConfigured": false,
+    "migrationsOrSeeding": false,
+    "liveCredentials": false,
+    "physicalWallet": false,
+    "specs": [
+      {
+        "spec": "demo-video",
+        "exitCode": 0,
+        "stats": {
+          "startTime": "2026-11-04T00:24:35.976Z",
+          "duration": 32263.550999999996,
+          "expected": 3,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      },
+      {
+        "spec": "judge",
+        "exitCode": 0,
+        "stats": {
+          "startTime": "2026-11-04T00:25:09.059Z",
+          "duration": 8408.759,
+          "expected": 3,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      },
+      {
+        "spec": "courtroom",
+        "exitCode": 0,
+        "stats": {
+          "startTime": "2026-11-04T00:25:19.213Z",
+          "duration": 13012.73,
+          "expected": 2,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      },
+      {
+        "spec": "product-story",
+        "exitCode": 0,
+        "stats": {
+          "startTime": "2026-11-04T00:25:36.056Z",
+          "duration": 10259.983,
+          "expected": 2,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      },
+      {
+        "spec": "product-ux",
+        "exitCode": 0,
+        "stats": {
+          "startTime": "2026-11-04T00:25:47.400Z",
+          "duration": 9748.838,
+          "expected": 3,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      },
+      {
+        "spec": "wallet-pause",
+        "exitCode": 0,
+        "stats": {
+          "startTime": "2026-11-04T00:25:58.355Z",
+          "duration": 4366.698,
+          "expected": 2,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      }
+    ],
+    "passed": 15,
+    "failed": 0,
+    "skipped": 0,
+    "flaky": 0,
+    "finishedAt": "2026-11-04T00:26:02.742Z"
+  },
+  "staticJudgeArtifact": "npm run judge:publish-build passed; same component, compact watch link",
+  "typecheck": "passed after production build",
+  "lint": {
+    "errors": 0,
+    "warnings": 1,
+    "warning": "Pre-existing unused mkdir import in untracked video capture script"
+  },
+  "format": "passed",
+  "build": "passed outside sandbox; sandbox attempt could not parse spawned TypeScript --showConfig",
+  "links": {
+    "localTargetsChecked": 307,
+    "missing": []
+  },
+  "secretScan": {
+    "files": 923,
+    "configuredCredentialMatches": 0
+  },
+  "visualReview": {
+    "desktopWidth": 1440,
+    "mobileWidth": 390,
+    "overflow": false,
+    "regionScreenshotsInspected": true
+  },
+  "playerChecks": [
+    "One full homepage player; compact links on /try and /proof",
+    "No provider requests before click",
+    "Keyboard Enter activation",
+    "English caption preference; controls and keyboard enabled; no autoplay",
+    "16:9 desktop frame and mobile minimum control viewport",
+    "Visible loading status",
+    "Blocked embed retains external fallback"
+  ],
+  "externalPlayback": {
+    "independentlyVerified": false,
+    "checks": [
+      {
+        "requested": "https://youtu.be/i2ZsEPIegy4",
+        "status": 429,
+        "title": "https://www.youtube.com/watch?v=i2ZsEPIegy4&feature=youtu.be",
+        "botChallenge": true,
+        "noPlaybackClaim": true
+      },
+      {
+        "requested": "https://www.youtube-nocookie.com/embed/i2ZsEPIegy4?controls=1&disablekb=0&cc_load_policy=1&cc_lang_pref=en&playsinline=1&rel=0",
+        "status": 200,
+        "title": "YouTube",
+        "error": "Video player configuration error",
+        "mediaReady": 0,
+        "botChallenge": false,
+        "noPlaybackClaim": true
+      }
+    ],
+    "limitation": "This environment encountered a YouTube bot challenge; direct embed navigation reported a configuration error without an application referrer. Neither result certifies playback or global availability."
+  },
+  "evidenceSnapshot": {
+    "date": "2026-11-03",
+    "confirmedMemories": 33,
+    "originalMemoriesPreserved": 32,
+    "settlements": 3,
+    "deliveredReports": 3,
+    "merchantCreditSui": "0.003",
+    "freshDatabaseOrProviderReadForThisRelease": false
+  },
+  "physicalNightlyFinancialAcceptance": "Not independently verified; historical ambiguous intents retain reconciliation safeguards",
+  "financialOrMemoryOperations": {
+    "newQuotes": 0,
+    "newPreparations": 0,
+    "newSignatures": 0,
+    "submissions": 0,
+    "memoryWrites": 0,
+    "databaseMigrationsOrSeeding": 0
+  },
+  "dependenciesMigrationsPaymentLogicChanged": false,
+  "priorVideoSourcesPreserved": true
+}

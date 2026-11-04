@@ -16,12 +16,14 @@ describe('owner-approved demo configuration', () => {
     'canonicalizes a single YouTube URL without carrying tracking or playlist values: %s',
     (watchUrl) => {
       const result = resolveDemoVideo({ ...approved, watchUrl })!;
-      expect(result.watchUrl).toBe('https://www.youtube.com/watch?v=TESTVIDEO01');
+      expect(result.watchUrl).toBe('https://youtu.be/TESTVIDEO01');
       const embed = new URL(result.embedUrl);
       expect(embed.origin).toBe('https://www.youtube-nocookie.com');
       expect(embed.pathname).toBe('/embed/TESTVIDEO01');
       expect(embed.searchParams.get('cc_load_policy')).toBe('1');
       expect(embed.searchParams.get('cc_lang_pref')).toBe('en');
+      expect(embed.searchParams.get('controls')).toBe('1');
+      expect(embed.searchParams.get('disablekb')).toBe('0');
       expect(embed.searchParams.has('autoplay')).toBe(false);
       expect(embed.searchParams.has('list')).toBe(false);
     },

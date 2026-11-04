@@ -1,47 +1,52 @@
-> November 2 update: Nightly free Production login is owner-confirmed; Slush displayed a real Production warning and testing stopped. Ordinary SUI coins now have a strictly validated fallback, proven by unsigned Mainnet/Tentacle verification, with physical funded settlement still pending. The three original settled receipts remain the public proof. [Current compatibility and limits](COIN_FUNDING_COMPATIBILITY.md).
+# Judge? Start Here
 
-# Judge? Start here — PayGuard Verify
+**[Watch the 2:46 Demo](https://youtu.be/i2ZsEPIegy4)**
 
-November 3 recovery preserved all original receipts and 32 memory identities, plus a newer confirmed member correction (33 live records). Production API/Neon customer isolation and invoice persistence were verified independently of wallet fixtures. Physical Nightly financial signing remains unverified; expired ambiguous attempts must be reconciled before another purchase. [Recovery and acceptance limits](ACCOUNT_RECOVERY_2026-11-03.md).
+**[Try PayGuard without a wallet](https://payguard-ai-henna.vercel.app/try)**
 
-[Live app](https://payguard-ai-henna.vercel.app/) · [Memory Courtroom](https://payguard-ai-henna.vercel.app/courtroom) · [Seven-step demo](https://payguard-ai-henna.vercel.app/try) · [Mainnet proof](https://payguard-ai-henna.vercel.app/proof). No owner credentials or payment are required for evaluation.
+**[Compare Walrus Memory OFF/ON](https://payguard-ai-henna.vercel.app/courtroom)**
 
-## First minute: Memory Courtroom
+**[Inspect verified Sui Mainnet payments](https://payguard-ai-henna.vercel.app/proof)**
 
-1. Open /courtroom and choose X402-EXPERIMENT-03. Use Compare OFF / ON to jump to the reviews.
-2. OFF retains the changed-recipient/invoice-directive holds with no retrieved citations. ON shows seven actual captured citations and their supplier-specific context. Both retain the human hold.
-3. Expand rule provenance: inspect exact job, blob, namespace and confirmation time. The timeline traces an earlier NS-1048 human correction into a later fresh-session recall; it does not claim that the later invoice was the earlier source.
-4. Select Replay invoice attack. The existing review engine detects the instruction to ignore safety rules; invoice content cannot authorize a trusted memory or supplier payment.
-5. Use Play/Pause/Reset/Replay or step controls. Reduced motion leaves evidence and manual controls available. Public replay is a dated capture, not live anonymous recall.
+Watch the film for the complete story, or use the three-minute walkthrough below. Every public step is free: no wallet connection, account, administrator access or payment is needed.
 
-## Next two minutes: seven-step practice
+## Three minutes with the product
 
-Open /try. Next Step moves through: synthetic invoice → trusted/proposed recipient comparison → mandatory hold → clearly synthetic human attestation/edit invalidation → Memory OFF/ON with recorded Walrus sources → Tatum's real unrelated-transaction mismatch → local practice review decision. Back revisits a stage. No private record or provider write is created.
+### 0:00–1:15 · Detect the changed destination
 
-## Inspect all three actual purchases
+Open the **Public Demo**. The supplier and invoice are synthetic. Compare the established recipient with the proposed destination, inspect the risk findings and see why approval stays on hold. The practice human-verification step illustrates an independent check; it does not prove that a real supplier was contacted.
 
-| Experiment / invoice       | Finalized Mainnet transaction                                                                                              | Checkpoint | Merchant credit | Payer gas / sponsor gas |
-| -------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------- | --------------- | ----------------------- |
-| 1 · X402-OWNER-20261031-01 | [68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx](https://suivision.xyz/txblock/68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx) | 340211024  | 0.001 SUI       | 0 / 0.0001 SUI          |
-| 2 · X402-EXPERIMENT-02     | [xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r](https://suivision.xyz/txblock/xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r)   | 340470114  | 0.001 SUI       | 0 / 0.0001 SUI          |
-| 3 · X402-EXPERIMENT-03     | [4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA](https://suivision.xyz/txblock/4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA) | 340478705  | 0.001 SUI       | 0 / 0.0001 SUI          |
+The suspicious text replay shows why an invoice cannot instruct the system to ignore its safeguards. Changing invoice text does not remove the human verification requirement. PayGuard reviews instructions; it does not send supplier payments.
 
-Each has exact 0.001 SUI merchant credit, zero payer gas, 0.0001 sponsor gas, successful Mainnet execution, its own challenge/quote and persisted report. Expand the Courtroom payment cards or proof page. Both accounts are developer-controlled; this is not independent adoption. The 0.0009 explorer summary is not the merchant's actual balance change. All receipts reopened twice without charge. [Raw reconciliation](evidence/mainnet-service-reconciliation.json).
+### 1:15–2:15 · See what memory contributes
 
-## Optional genuine member workspace
+Open **Memory Courtroom**, select Experiment 3, and compare Memory OFF with ON. Expand the citations to inspect actual confirmed Walrus job/blob references. OFF returned zero citations; ON returned seven in the captured comparison. Both retain the baseline findings and human hold.
 
-Use /connect with a permitted compatible Sui provider. Connect, inspect the server-generated free personal message and sign it. First use creates a private tenant; returning use restores it. No owner password, email, funds or terminal is required. Create a supplier/reference and a synthetic invoice, review changed instructions, compare Memory OFF/ON, and consent explicitly to any minimized memory. A confirmed job/blob is required before a learned rule can apply. Provider quota, indexing and retention limits remain visible.
+This is a **November 1 recorded application replay**, not a new live recall from your anonymous browser. It demonstrates how relevant past decisions add context without authorizing a payment. Separate fresh-session provider checks are linked below.
 
-Nightly connected, signed the free challenge and opened a private Production workspace in the owner's physical test. Returning login, authoring and financial signing are not yet physically certified end to end. Slush completed the three local purchases; its hosted malicious-site warning was reproduced and respected. OKX and mobile remain physically unverified. Stop at warnings/refusals. Wallet connection, free authentication and financial signing are distinct.
+### 2:15–3:00 · Inspect the payment evidence
 
-## Optional real paid test
+Open **Mainnet Proof**. Inspect the three Sui transactions, exact **0.001 SUI merchant credit per settlement**, and the delivered analysis/receipt evidence. Tatum's native Sui gRPC integration independently checks network, successful execution, recipient, amount and transaction effects. It does not certify supplier identity or the truth of an invoice.
 
-No payment is needed for judging. A wallet-authenticated member can open /services, select an eligible own invoice and Check Mainnet proposal. Checkout supports address balance and a strictly validated ordinary-coin fallback; the latter passed unsigned Mainnet/Tentacle verification but has not yet settled with a physical wallet. No automatic conversion occurs. Exact price is 0.001 SUI, sponsored gas budget at most 0.002 SUI, wallet pilot exposure at most 0.003 SUI across sessions, global pilot at most 20 reserved/settled purchases.
+The payments are real **developer-controlled service experiments** using synthetic invoices. They pay for PayGuard analysis, not supplier invoices, and do not establish customer adoption. Reopening the saved reports did not charge again. An unrelated transaction shown during the invoice-review demo is deliberately not proof of that invoice's payment; the settled service transactions are on `/proof`.
 
-Check the **Checkout account** panel first. If it says Administrator checkout, use **Switch to wallet workspace**, then complete free Nightly sign-in; it returns to Agent Services. Member quotes bind to that authenticated wallet, while administrator quotes retain the dedicated owner payer. A prepared digest is never proof of execution.
+## Evidence at a glance
 
-Request payment quote → review exact five-minute HTTP 402 terms → choose the wallet and accept → Review 0.001 SUI purchase · prepare → separate Sign and submit in wallet. Respect the wallet decision. Pending/unknown results resume the same intent. Reopen the saved receipt/report without another signature. This is real Mainnet spending only when the user deliberately authorizes it. No additional payment was made by automated acceptance tests.
+| Evidence                   | Verified scope                                                                                                                                                                                    |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Walrus records             | **33 confirmed as of November 3, 2026**: original 32 plus one member correction; completed jobs and matching blobs rechecked. The public Courtroom's 32-record snapshot remains dated November 1. |
+| Cross-session context      | Real SDK recalls with owned blob/text provenance; tenant-scoped application checks and unchanged mandatory holds.                                                                                 |
+| Learning evaluation        | **18/18 authored synthetic contracts**, November 1; four actual recall queries. Not a real-world detection accuracy estimate.                                                                     |
+| Mainnet service payments   | **3 settlements / 0.003 SUI total merchant credit / 3 persisted reports**, independently rechecked November 3.                                                                                    |
+| Customer wallet acceptance | Free Nightly sign-in and private authoring are owner-confirmed. Physical production financial signing is **not independently verified**.                                                          |
 
-## Troubleshooting and limitations
+## Supporting documentation
 
-If JavaScript fails, reload or inspect /proof and the README directly. A database/provider error is not a wallet rejection; retry read-only status before any further action. Never retry an uncertain signature or settlement. An expired unsigned quote can be explicitly cancelled; signed/uncertain intents retain their reservations. The owner password is for administrator operations only. [Current release](PRODUCT_RELEASE.md) · [test ledger](TEST_RESULTS.md) · [provider report](SLUSH_LOCALHOST_INVESTIGATION.md).
+- [Walrus comparison and learning methodology](MEMORY_EVALUATION.md) · [completed provider references](evidence/recovered-walrus-provider-check.json).
+- [Mainnet transaction links and receipts](MAINNET_PROOF.md) · [November 3 independent reconciliation](evidence/nightly-account-reconciliation.json).
+- [Architecture](ARCHITECTURE.md) · [x402 protocol](AGENT_PAYMENTS.md) · [test ledger](TEST_RESULTS.md).
+- [Security boundaries](WALLET_SECURITY.md) · [Nightly acceptance and unresolved-intent safeguards](NIGHTLY_ACCOUNT_SELECTION_2026-11-03.md).
+
+## Optional private workspace
+
+A supported wallet can authenticate through a free personal-message signature, then create an isolated synthetic supplier and invoice. This is separate from financial authorization. Judges need no funds, and the public evaluation is complete without checkout. Historical ambiguous payment attempts remain governed by reconciliation safeguards; do not request a replacement signature simply because a quote expired.

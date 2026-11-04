@@ -1,3 +1,17 @@
+# Presentation release — approved official demo
+
+[Watch the owner-approved 2:46 demo](https://youtu.be/i2ZsEPIegy4) · [Live app](https://payguard-ai-henna.vercel.app/) · [Judge walkthrough](JUDGE_WALKTHROUGH.md).
+
+The official video is published. The homepage uses the existing click-to-load player; `/try` and `/proof` provide compact watch links. The README and judge guide distinguish synthetic reviews, recorded memory comparisons and real Mainnet settlement evidence. This release changes presentation only.
+
+The latest preserved November 3 recovery evidence confirms **33 Walrus records, three settled service receipts and three delivered reports**, with 0.003 SUI aggregate merchant credit. Original records are preserved. Physical Nightly production financial signing remains independently unverified; historical ambiguous intents retain their reconciliation protections. [Recovery evidence](ACCOUNT_RECOVERY_2026-11-03.md) · [current wallet limitation](NIGHTLY_ACCOUNT_SELECTION_2026-11-03.md) · [validation](TEST_RESULTS.md).
+
+## Historical release notes
+
+The dated entries below preserve earlier release records. Their video-approval status, smaller counts and checkout limitations describe those checkpoints; the current presentation and November 3 evidence above supersede them.
+
+---
+
 # November 2 final audit and Nightly recovery
 
 Final application release **d6f6c6820acbad75c6b189c14a38aac1c72b501a** is Ready. Production acceptance passed **14/14**, all 15 mobile geometry checks passed, and 12 public screenshots have zero console errors. Six receipt reopenings left the three original payments unchanged. The live article includes the checkout audit and all original digests. [Final ledger](TEST_RESULTS.md) · [screenshots](screenshots/final-owner-review/manifest.json). Later evidence-only commits retain this tested application source.

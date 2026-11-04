@@ -1,3 +1,25 @@
+# Approved video presentation validation
+
+The presentation release installs **https://youtu.be/i2ZsEPIegy4** without changing the film or financial, memory or database logic. Validation completed November 3 local time / November 4 UTC:
+
+- **18 focused unit tests passed** across video configuration, the judge engine and Courtroom logic.
+- **15 browser tests passed**, zero failures/skips/flakes, against the actual optimized application with database/provider credentials disabled and no migrations or seeding. Coverage includes optional video loading, keyboard activation, desktop/mobile sizing, blocked-player fallback, the seven-step public journey, Courtroom/attack replay and wallet-entry presentation. Provider-player fixtures do not establish actual YouTube playback.
+- Production build and sequential TypeScript passed. Formatting passed; lint has zero errors and one existing warning in untracked video capture tooling. Static judge publication build passed.
+- Local documentation targets were checked; desktop and mobile player screenshots were visually inspected. The source/browser bundle scan found zero configured-secret matches in 923 files.
+- YouTube returned a bot challenge to anonymous watch-page checks here. Direct embed navigation returned a configuration error; actual external playback is not independently certified by these tests. The approved URL and persistent external fallback are retained.
+
+[Presentation validation record](evidence/approved-video-presentation-validation.json). No new payment quote, signature, settlement, memory write or production data mutation was performed.
+
+---
+
+# Latest recovery validation — November 3, 2026
+
+The latest pre-presentation recovery recorded **224 unit/integration passes across 32 files**, **47 disposable local browser passes with two deliberate live-provider skips**, TypeScript, formatting and production build passes. ESLint had zero errors and one existing warning in local video capture tooling. Production verification recorded **19 API checks across eight public routes**; the earlier **14 production browser passes** are a separate dated run, not 19 browser tests. [Validation ledger](evidence/nightly-account-validation.json) · [earlier production browser run](evidence/recovered-production-public-tests.json).
+
+These checks do not establish physical Nightly financial-signing acceptance. Counts and test runs below retain their original dates. Presentation-release results are recorded separately above.
+
+## Historical test records
+
 # November 2 final audit and Nightly checkout repair
 
 The November 3 handoff recheck confirms the unchanged original receipt set, **32 confirmed memories / three receipts / three settlement submissions / zero settling intents** using SELECT queries only. [Preservation check](evidence/final-handoff-preservation.json). The November 2 screenshots and browser runs retain their actual timestamps; no video or financial test was restarted for this recheck.

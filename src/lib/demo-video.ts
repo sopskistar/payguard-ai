@@ -41,11 +41,13 @@ export function resolveDemoVideo(input: unknown): DemoVideoDefinition | null {
       cc_load_policy: '1',
       cc_lang_pref: config.captionLanguage,
       playsinline: '1',
+      controls: '1',
+      disablekb: '0',
       rel: '0',
     }).toString();
     video = {
       provider: 'YouTube',
-      watchUrl: 'https://www.youtube.com/watch?v=' + id,
+      watchUrl: 'https://youtu.be/' + id,
       embedUrl: embed.href,
     };
   } else if (['vimeo.com', 'www.vimeo.com', 'player.vimeo.com'].includes(url.hostname)) {

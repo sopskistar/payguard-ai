@@ -1,3 +1,15 @@
+# Current presentation release
+
+The owner-approved **[2:46 official demo](https://youtu.be/i2ZsEPIegy4)** is published. The homepage provides the full optional player; the public demo and proof pages link to the same video. [Judge walkthrough](JUDGE_WALKTHROUGH.md) · [publication notes](demo/README.md).
+
+The latest preserved November 3 evidence confirms **33 memories, three service settlements and three delivered reports**. Physical Nightly financial acceptance remains independently unverified, and historical ambiguous intents retain reconciliation safeguards. [Current recovery status](NIGHTLY_ACCOUNT_SELECTION_2026-11-03.md) · [test ledger](TEST_RESULTS.md).
+
+## Historical release checkpoints
+
+The entries below retain their original observations. Their pending-video statements, earlier counts and previous wallet gates are historical and superseded by the current presentation and November 3 evidence above.
+
+---
+
 # November 2 final audit and owner review
 
 **November 3 handoff preservation check, 08:43 UTC:** GitHub and Production still served the verified application release below. Neon still has **32 confirmed memories, three original receipt digests, three settlement submissions and zero settling intents**. This was SELECT-only; no new provider or financial operation occurred. [Handoff evidence](evidence/final-handoff-preservation.json).

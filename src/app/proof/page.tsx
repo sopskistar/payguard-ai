@@ -11,7 +11,7 @@ import recheck from '../../../docs/evidence/provider-recheck.json';
 import tenants from '../../../docs/evidence/two-tenant-mainnet-memory.json';
 import tenantRecheck from '../../../docs/evidence/two-tenant-provider-recheck.json';
 import { PaymentEvidence } from '@/components/payment-evidence';
-import { DemoVideo } from '@/components/demo-video';
+import { DemoVideoLink } from '@/components/demo-video';
 import courtroom from '../../../docs/evidence/courtroom.json';
 export const metadata: Metadata = { title: 'Read-only Mainnet evidence' };
 const repo = 'https://github.com/sopskistar/payguard-ai/blob/main/docs/';
@@ -49,7 +49,7 @@ export default function ProofPage() {
             </span>
           </div>
         </div>
-        <DemoVideo />
+        <DemoVideoLink />
         <section id="payments">
           <PaymentEvidence />
         </section>

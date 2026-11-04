@@ -1,3 +1,15 @@
+# November 3 recovery checkpoint
+
+Read-only recovery confirmed **33 completed Walrus Mainnet records**, comprising the original 32 plus one member correction. Matching job/blob/namespace references were rechecked; original memory identities and all three settled receipt contents remained unchanged. [Provider check](evidence/recovered-walrus-provider-check.json) · [preservation check](evidence/nightly-account-preservation.json).
+
+The three service transactions below were independently rechecked through **Tatum Sui gRPC and a Sui fullnode** on November 3. Each successful settlement credited the merchant 1,000,000 MIST (0.001 SUI): three reports and 0.003 SUI aggregate credit. These remain developer-controlled experiments using synthetic invoices. [Reconciliation](evidence/nightly-account-reconciliation.json).
+
+Physical Nightly customer financial-signing acceptance is not independently verified. Prepared digests are not settlements, and quote expiry alone does not resolve an ambiguous signature. [Current acceptance boundaries](NIGHTLY_ACCOUNT_SELECTION_2026-11-03.md).
+
+The following dated proof entries preserve the historical evidence, including the November 1 public Courtroom's 32-record snapshot.
+
+---
+
 # Final independently verified Mainnet proof
 
 **November 2 recheck:** all three original executed transactions passed fresh Tatum Mainnet reads; every merchant credit remains 1,000,000 MIST and the prepared BCS digest equals the executed digest. Neon receipt content fingerprints remain unchanged. All 32 original Walrus jobs are still completed with their matching blobs and unchanged stored identities. No settlement, renewal or memory write occurred. [Fresh read-only evidence](evidence/final-audit-mainnet-readonly.json). A separate fresh server process recalled seven relevant Experiment 3 citations (OFF zero); all baseline findings and holds remained. [Recall result](evidence/final-audit-fresh-recall.json). The public Courtroom remains explicitly dated November 1 replay evidence.

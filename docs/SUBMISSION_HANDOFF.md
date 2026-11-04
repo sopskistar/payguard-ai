@@ -2,14 +2,14 @@
 
 Deadline: **November 10, 2026, 17:00 UTC**, verified against the [official Walrus session](https://thewalrussessions.wal.app/tatum-total-recall) and linked [Total Recall submission page](https://recall-tatum-walrus.vercel.app/). The owner submits the form; no form has been sent by this work.
 
-| Requirement                                                 | Project evidence                                                                                                                                              |
-| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| At least ten Mainnet memories and actual Walrus integration | 32 preserved, freshly confirmed job/blob records; [Mainnet proof](MAINNET_PROOF.md), [fresh audit](evidence/final-audit-mainnet-readonly.json).               |
-| Relevant Tatum RPC/API integration                          | Native Sui Mainnet gRPC verification, exact merchant effects/gas and all three original receipts. [Public proof](https://payguard-ai-henna.vercel.app/proof). |
-| Working application and public source                       | [Production](https://payguard-ai-henna.vercel.app/) and [GitHub](https://github.com/sopskistar/payguard-ai). Anonymous demo and Courtroom need no funds.      |
-| Published explanatory article                               | [Article](https://sopskistar.github.io/payguard-ai/).                                                                                                         |
-| 2–3 minute video                                            | New 165-second owner-review package under `demo-video/`; review and approved public hosting remain required. [Recording package](demo/README.md).             |
-| Contact/account identifiers                                 | Owner supplies the submission form fields described below. No credentials belong in the form's public project description.                                    |
+| Requirement                                                 | Project evidence                                                                                                                                                                |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| At least ten Mainnet memories and actual Walrus integration | 33 confirmed records in the November 3 recovery, including all original 32; [Mainnet proof](MAINNET_PROOF.md), [provider check](evidence/recovered-walrus-provider-check.json). |
+| Relevant Tatum RPC/API integration                          | Native Sui Mainnet gRPC verification, exact merchant effects/gas and all three original receipts. [Public proof](https://payguard-ai-henna.vercel.app/proof).                   |
+| Working application and public source                       | [Production](https://payguard-ai-henna.vercel.app/) and [GitHub](https://github.com/sopskistar/payguard-ai). Anonymous demo and Courtroom need no funds.                        |
+| Published explanatory article                               | [Article](https://sopskistar.github.io/payguard-ai/).                                                                                                                           |
+| 2–3 minute video                                            | [Approved, published 2:46 official demo](https://youtu.be/i2ZsEPIegy4). [Publication notes](demo/README.md).                                                                    |
+| Contact/account identifiers                                 | Owner supplies the submission form fields described below. No credentials belong in the form's public project description.                                                      |
 
 ## Owner-accessible identifiers
 
@@ -26,6 +26,6 @@ No claim is made for **Tatum AI Builder** usage. The application uses Tatum's AP
 
 ## Essential final owner actions
 
-1. Watch the clean/captioned local cut and approve the video. Upload only the approved cut to an embed-enabled public/unlisted host and provide its URL; the website remains unapproved until then.
+1. Use the approved public video URL: https://youtu.be/i2ZsEPIegy4. No further upload or video edit is required.
 2. Supply/review the form's public account identifiers, contact details, article/repository/live URLs and approved video URL, then submit before the deadline.
-3. Optional physical Nightly financial acceptance: if Agent Services shows Administrator checkout, click **Switch to wallet workspace**. Complete free Nightly sign-in, choose an unpaid own synthetic invoice, inspect an exact 0.001 SUI quote and frozen transaction, and independently approve only the intended wallet request. This is separate from video recording and unnecessary for inspecting the original three-payment evidence. An uncertain submission must resume its original intent.
+3. Financial checkout is unnecessary for judging. Physical Nightly financial acceptance remains separate and unverified; follow the [current unresolved-intent safeguards](NIGHTLY_ACCOUNT_SELECTION_2026-11-03.md) before considering any supervised financial test. Quote expiry alone does not authorize a replacement signature.

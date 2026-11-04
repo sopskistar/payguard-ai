@@ -5,13 +5,15 @@ import { resolveDemoVideo, type DemoVideoDefinition } from '@/lib/demo-video';
 
 export function DemoVideoPlayer({ video }: { video: DemoVideoDefinition | null }) {
   const [loaded, setLoaded] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [unavailable, setUnavailable] = useState(false);
   if (!video) return null;
   return (
     <section className="demo-video" id="demo-video" aria-label="Official demo video">
-      <span className="site-eyebrow">OWNER-APPROVED PRODUCT WALKTHROUGH</span>
+      <span className="site-eyebrow">PRODUCT WALKTHROUGH · 2:46</span>
       <h2>{video.title}</h2>
       <p>Watch the recorded walkthrough, or explore the free interactive demo at your own pace.</p>
-      <div className="demo-video-frame">
+      <div className="demo-video-frame" aria-busy={loading}>
         {loaded ? (
           <iframe
             src={video.embedUrl}
@@ -21,19 +23,29 @@ export function DemoVideoPlayer({ video }: { video: DemoVideoDefinition | null }
             allowFullScreen
             referrerPolicy="strict-origin-when-cross-origin"
             sandbox="allow-scripts allow-same-origin allow-presentation"
+            onLoad={() => setLoading(false)}
+            onError={() => {
+              setLoading(false);
+              setUnavailable(true);
+            }}
           />
         ) : (
           <button
             type="button"
             className="demo-video-poster"
-            onClick={() => setLoaded(true)}
+            onClick={() => {
+              setLoading(true);
+              setLoaded(true);
+            }}
             aria-label={`Load ${video.title} on ${video.provider}`}
           >
             <img
-              src="/demo-poster.svg"
-              alt="Changed supplier instructions, a human verification hold, approved Walrus memory and independently verified receipts."
-              width={1600}
-              height={900}
+              src="/demo-approved-poster.png"
+              alt="PayGuard Verify. Verify before you pay. Remember what nearly went wrong."
+              width={3840}
+              height={2160}
+              loading="lazy"
+              decoding="async"
             />
             <span>
               Load video on {video.provider} <span aria-hidden="true">↗</span>
@@ -41,6 +53,13 @@ export function DemoVideoPlayer({ video }: { video: DemoVideoDefinition | null }
           </button>
         )}
       </div>
+      <p role="status" className="small-text muted">
+        {loading
+          ? `Opening the ${video.provider} player…`
+          : unavailable
+            ? `The embedded player could not load. Watch on ${video.provider} using the link below.`
+            : `If the embedded player is blocked, watch on ${video.provider} using the link below.`}
+      </p>
       <p className="demo-video-links">
         <a className="inline-link" href={video.watchUrl} target="_blank" rel="noreferrer">
           Watch on {video.provider} ↗
@@ -61,4 +80,16 @@ export function DemoVideoPlayer({ video }: { video: DemoVideoDefinition | null }
 }
 export function DemoVideo() {
   return <DemoVideoPlayer video={resolveDemoVideo(config)} />;
+}
+
+export function DemoVideoLink() {
+  const video = resolveDemoVideo(config);
+  if (!video) return null;
+  return (
+    <p className="demo-video-links">
+      <a className="inline-link" href={video.watchUrl} target="_blank" rel="noreferrer">
+        Watch the 2:46 demo on {video.provider} ↗
+      </a>
+    </p>
+  );
 }
