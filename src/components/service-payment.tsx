@@ -169,6 +169,7 @@ export function ServicePayment() {
     [walletName, setWalletName] = useState(''),
     [checkedWallet, setCheckedWallet] = useState<ServiceWalletProvider>(),
     [connectedAccounts, setConnectedAccounts] = useState<readonly WalletAccount[]>([]),
+    [walletCheckError, setWalletCheckError] = useState(''),
     [recoveryHolds, setRecoveryHolds] = useState<NonNullable<PaymentMetadata['recoveryHolds']>>([]),
     [dedicatedPayer, setDedicatedPayer] = useState<string | null>(null),
     [busy, setBusy] = useState(false),
@@ -195,6 +196,41 @@ export function ServicePayment() {
   const quoteExpired = !!quote && Date.parse(quote.expiresAt) <= now;
   const otherRecoveryHolds = recoveryHolds.filter((i) => i.id !== quote?.id);
   const recoveryBlocked = otherRecoveryHolds.length > 0;
+  let walletCheck = {
+    status: walletCheckError ? 'UNAVAILABLE' : 'Not checked',
+    message: walletCheckError || 'Choose your Sui wallet and check its account without signing.',
+  };
+  if (checkedWallet) {
+    try {
+      const options = {
+        network,
+        expectedPayer: dedicatedPayer,
+        audience: data?.mode === 'member' ? ('customer' as const) : ('owner' as const),
+        authenticatedWallet: data?.identity?.walletAddress || undefined,
+        quotePayer: quote?.accepts[0].extra.authenticatedPayer,
+      };
+      const account = selectServiceAccount(connectedAccounts, options);
+      selectPreparedServiceAccount(getWallets().get(), checkedWallet, account, options);
+      walletCheck = {
+        status: 'MATCH',
+        message:
+          'The connected account matches the authenticated payer and advertises the required Sui network. Confirm the selected network in Nightly.',
+      };
+    } catch (e) {
+      const failure = e as ServiceAccountError;
+      walletCheck = {
+        status:
+          failure.diagnostic?.code === 'WALLET_NO_ACCOUNTS'
+            ? 'DISCONNECTED'
+            : ['WALLET_PROVIDER_CHANGED', 'WALLET_SIGNING_UNSUPPORTED'].includes(
+                  failure.diagnostic?.code,
+                )
+              ? 'UNAVAILABLE'
+              : 'MISMATCH',
+        message: failure.message,
+      };
+    }
+  }
   const funding = proposal?.fundingCompatibility as
     | { addressAtomic?: string | null; coinAtomic?: string | null; ordinaryCoinFallback?: string }
     | undefined;
@@ -351,7 +387,7 @@ export function ServicePayment() {
     return () => clearTimeout(timer);
   }, [loadWorkspace]);
   useEffect(() => {
-    if (!preparationAllowed) return;
+    if (capabilityState !== 'ready' || data?.mode === 'public-demo') return;
     const registry = getWallets();
     const update = () =>
       setWalletNames(
@@ -375,7 +411,7 @@ export function ServicePayment() {
       offRegister();
       offUnregister();
     };
-  }, [preparationAllowed, network]);
+  }, [capabilityState, data?.mode, network]);
   useEffect(() => {
     if (!checkedWallet) return;
     const update = () => setConnectedAccounts([...checkedWallet.accounts]);
@@ -513,13 +549,15 @@ export function ServicePayment() {
   }
   async function checkSigningAccount() {
     if (capabilityState !== 'ready') throw new Error('Reload workspace capabilities first.');
-    await connectSigningWallet(
-      quote?.accepts[0].network || network,
-      quote?.accepts[0].extra.authenticatedPayer,
-    );
-    setStatusMessage(
-      'The selected Sui wallet returned the exact workspace payer. No transaction was prepared, signed or submitted.',
-    );
+    setCheckedWallet(undefined);
+    setConnectedAccounts([]);
+    setWalletCheckError('');
+    try {
+      await connectSigningWallet(network, quote?.accepts[0].extra.authenticatedPayer);
+    } catch (e) {
+      setWalletCheckError((e as Error).message || 'Wallet connection unavailable.');
+      throw e;
+    }
   }
   async function prepare() {
     if (capabilityState !== 'ready') throw new Error('Reload server capabilities before approval.');
@@ -830,6 +868,45 @@ export function ServicePayment() {
               </p>
               <p>
                 Signing provider: <strong>{checkedWallet?.name || 'Not connected'}</strong>
+              </p>
+              <Field label="Signing wallet">
+                <select
+                  disabled={busy || !!prepared}
+                  value={walletName}
+                  onChange={(e) => {
+                    setWalletName(e.target.value);
+                    setCheckedWallet(undefined);
+                    setConnectedAccounts([]);
+                    setWalletCheckError('');
+                  }}
+                >
+                  <option value="">Choose a compatible wallet</option>
+                  {walletNames.map((wallet) => (
+                    <option key={wallet.id} value={wallet.id}>
+                      {wallet.name}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+              {!walletNames.length && (
+                <p>
+                  No compatible Sui wallet is available. Unlock Nightly, enable Sui Mainnet and
+                  allow this site to connect, then check again. No other wallet is selected for you.
+                </p>
+              )}
+              <button
+                className="button outline"
+                disabled={busy || !walletName}
+                onClick={() => void run(checkSigningAccount)}
+              >
+                Check selected wallet account · no signing
+              </button>
+              <p role="status" aria-label="Wallet account check">
+                <strong>{walletCheck.status}</strong>: {walletCheck.message}
+              </p>
+              <p>
+                This check connects your selected wallet only. It does not request a payment quote,
+                prepare a transaction, sign, submit or change payment reservations.
               </p>
               {quote && (
                 <>
@@ -1431,31 +1508,6 @@ export function ServicePayment() {
                     terms for this first-party report. The wallet will separately request my
                     signature.
                   </label>
-                  {preparationAllowed && (
-                    <Field label="Signing wallet">
-                      <select
-                        disabled={busy || !!prepared}
-                        value={walletName}
-                        onChange={(e) => setWalletName(e.target.value)}
-                      >
-                        <option value="">Choose a compatible wallet</option>
-                        {walletNames.map((wallet) => (
-                          <option key={wallet.id} value={wallet.id}>
-                            {wallet.name}
-                          </option>
-                        ))}
-                      </select>
-                    </Field>
-                  )}
-                  {preparationAllowed && (
-                    <button
-                      className="button outline"
-                      disabled={busy || !walletName}
-                      onClick={() => void run(checkSigningAccount)}
-                    >
-                      Check selected wallet account · no signing
-                    </button>
-                  )}
                   <button
                     className="button primary"
                     disabled={

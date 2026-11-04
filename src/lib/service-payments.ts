@@ -1,6 +1,6 @@
 import 'server-only';
 import { createHash, randomUUID } from 'node:crypto';
-import { and, eq, desc, inArray } from 'drizzle-orm';
+import { and, eq, desc, inArray, or } from 'drizzle-orm';
 import { Transaction } from '@mysten/sui/transactions';
 import { db } from '@/db';
 import { OWNER_ID } from './demo';
@@ -30,6 +30,8 @@ import {
 } from './integrations/service-tatum';
 import { verifyServiceSignature } from './integrations/service-signature';
 import { serviceSigningState } from './service-recovery';
+import { assessServiceExpiry, EXPIRY_RULES, type ServiceExpiryWindow } from './service-expiry';
+import { readServiceExpiryEvidence } from './integrations/service-expiry';
 import { recordCorrection } from './integrations/memory';
 import { serviceWalletSigningAllowed, WALLET_REVIEW_MESSAGE } from './wallet-policy';
 import { serviceDiagnostic } from './service-diagnostics';
@@ -101,9 +103,9 @@ async function checkoutPayer(tenantId: string) {
     );
   return serviceAddressSchema.parse(user.wallet);
 }
-const pilotBudgetId = () =>
+const pilotBudgetId = (network = serviceMode()) =>
   createHash('sha256')
-    .update('payguard:public-sponsored-pilot:v1:' + serviceMode())
+    .update('payguard:public-sponsored-pilot:v1:' + network)
     .digest('hex');
 export async function publicServiceExposure() {
   const [row] = await (
@@ -840,6 +842,226 @@ export async function cancelService(tenantId: string, id: string) {
     return { state: 'cancelled' };
   });
 }
+// Explicitly enabled operator procedure, never called by quote/resume/cancel or a timer.
+// The HTTP caller must also be authenticated, origin-checked and own this intent.
+export async function recoverExpiredService(
+  tenantId: string,
+  id: string,
+): Promise<{
+  state: string;
+  recovered: boolean;
+  reason?: string;
+  releasedAtomic: string;
+  alreadyRecovered?: boolean;
+  preparedDigest?: string;
+}> {
+  if (process.env.SERVICE_EXPIRED_RECOVERY_ENABLED !== 'true')
+    throw new AppError(
+      403,
+      'RECOVERY_DISABLED',
+      'Expired-payment recovery is disabled. Existing holds remain intact.',
+    );
+  return (await db()).transaction(async (tx) => {
+    // Same order as Mainnet approval: authenticated user, intent, public budget, wallet budget.
+    const [actor] = await tx.select().from(s.users).where(eq(s.users.id, tenantId)).for('update');
+    if (!actor || !['owner', 'member'].includes(actor.role))
+      throw new AppError(403, 'WORKSPACE_REQUIRED', 'An authorized private workspace is required.');
+    const [row] = await tx
+      .select()
+      .from(s.servicePaymentIntents)
+      .where(
+        and(eq(s.servicePaymentIntents.id, id), eq(s.servicePaymentIntents.tenantId, tenantId)),
+      )
+      .for('update');
+    if (!row) throw new AppError(404, 'NOT_FOUND', 'Service intent not found.');
+    const events = await tx
+      .select()
+      .from(s.auditEvents)
+      .where(and(eq(s.auditEvents.tenantId, tenantId), eq(s.auditEvents.entityId, id)));
+    const prepared = storedPreparation(row.approval);
+    const receipts = await tx
+      .select({ id: s.servicePaymentReceipts.id })
+      .from(s.servicePaymentReceipts)
+      .where(
+        or(
+          eq(s.servicePaymentReceipts.intentId, id),
+          eq(s.servicePaymentReceipts.digest, prepared?.digest || ''),
+        ),
+      );
+    const held = async (reason: string, evidence?: unknown) => {
+      await tx.insert(s.auditEvents).values({
+        tenantId,
+        type: 'service.expiry_recovery_held',
+        entityId: id,
+        detail: {
+          reason,
+          preparedDigest: prepared?.digest || null,
+          evidence: evidence || null,
+          releasedAtomic: '0',
+        },
+      });
+      return { state: row.state, recovered: false, reason, releasedAtomic: '0' };
+    };
+    if (row.state === 'expired-unexecuted') {
+      const recovered = events.find((e) => e.type === 'service.expiry_recovered');
+      if (!recovered || receipts.length) return held('RECOVERY_RECORD_CONFLICT');
+      return { state: row.state, recovered: true, alreadyRecovered: true, releasedAtomic: '0' };
+    }
+    if (
+      receipts.length ||
+      row.state !== 'approved' ||
+      !prepared ||
+      !row.payer ||
+      !row.spendingSessionId
+    )
+      return held('INTENT_NOT_RECOVERABLE');
+    if (
+      row.digest ||
+      row.payloadHash ||
+      events.some(
+        (e) =>
+          e.type.startsWith('service.settlement_') || e.type.startsWith('service.confirmation_'),
+      )
+    )
+      return held('SUBMISSION_REQUIRES_RECONCILIATION');
+    const challenge = row.challenge as ServiceChallenge;
+    const terms = serviceTermsSchema.parse(challenge.accepts[0]);
+    if (
+      terms.network !== 'sui:mainnet' ||
+      terms.extra.quoteId !== id ||
+      (tenantId !== OWNER_ID &&
+        (actor.role !== 'member' ||
+          actor.walletAddress !== row.payer ||
+          (terms.extra.authenticatedPayer && terms.extra.authenticatedPayer !== row.payer) ||
+          row.spendingSessionId !== walletBudgetId(tenantId, terms.network)))
+    )
+      return held('PAYER_OR_NETWORK_MISMATCH');
+    let window: ServiceExpiryWindow;
+    try {
+      validateServiceTransaction(prepared.bytes, terms, row.payer);
+      const transaction = Transaction.from(prepared.bytes);
+      if ((await transaction.getDigest()) !== prepared.digest)
+        return held('PREPARED_DIGEST_MISMATCH');
+      const expiration = transaction.getData().expiration;
+      if (
+        expiration?.$kind !== 'ValidDuring' ||
+        expiration.ValidDuring.minEpoch === null ||
+        expiration.ValidDuring.maxEpoch === null ||
+        expiration.ValidDuring.minTimestamp !== null ||
+        expiration.ValidDuring.maxTimestamp !== null
+      )
+        return held('UNSUPPORTED_VALIDITY');
+      window = {
+        digest: prepared.digest,
+        minEpoch: String(expiration.ValidDuring.minEpoch),
+        maxEpoch: String(expiration.ValidDuring.maxEpoch),
+      };
+    } catch {
+      return held('PREPARATION_INVALID');
+    }
+    const evidence = await readServiceExpiryEvidence(window);
+    const decision = assessServiceExpiry(window, evidence);
+    if (!decision.eligible) return held(decision.reason, evidence);
+
+    const budgets = [];
+    if (tenantId !== OWNER_ID) {
+      const [pilot] = await tx
+        .select()
+        .from(s.serviceSpendingSessions)
+        .where(eq(s.serviceSpendingSessions.id, pilotBudgetId(terms.network)))
+        .for('update');
+      if (!pilot || pilot.tenantId !== OWNER_ID || pilot.payer !== 'public-sponsored-pilot-ledger')
+        return held('PUBLIC_BUDGET_CONFLICT', evidence);
+      budgets.push({ row: pilot, public: true });
+    }
+    const [budget] = await tx
+      .select()
+      .from(s.serviceSpendingSessions)
+      .where(eq(s.serviceSpendingSessions.id, row.spendingSessionId))
+      .for('update');
+    if (!budget || budget.tenantId !== tenantId || budget.payer !== row.payer)
+      return held('WALLET_BUDGET_CONFLICT', evidence);
+    budgets.push({ row: budget, public: false });
+    // Verify the entire liability ledger before subtracting this one reservation.
+    // Settled and failed attempts remain counted; only auditable releases are excluded.
+    const ledger = await tx.select().from(s.servicePaymentIntents);
+    for (const b of budgets) {
+      let liability = 0n;
+      try {
+        for (const item of ledger) {
+          if (
+            !item.spendingSessionId ||
+            item.state === 'cancelled' ||
+            item.state === 'expired-unexecuted'
+          )
+            continue;
+          if (b.public ? item.tenantId === OWNER_ID : item.spendingSessionId !== b.row.id) continue;
+          const t = serviceTermsSchema.parse((item.challenge as ServiceChallenge).accepts[0]);
+          if (t.network !== terms.network) continue;
+          if (
+            !item.approvedAt ||
+            !['approved', 'settling', 'settled', 'failed'].includes(item.state)
+          )
+            return held('BUDGET_LIABILITY_UNCERTAIN', evidence);
+          liability += BigInt(t.amount);
+        }
+        if (
+          b.row.network !== terms.network ||
+          b.row.asset !== terms.asset ||
+          BigInt(b.row.reservedAtomic) !== liability ||
+          liability < BigInt(terms.amount) ||
+          liability > BigInt(b.row.capAtomic)
+        )
+          return held('BUDGET_LIABILITY_CONFLICT', evidence);
+      } catch {
+        return held('BUDGET_LIABILITY_UNCERTAIN', evidence);
+      }
+    }
+    for (const b of budgets)
+      await tx
+        .update(s.serviceSpendingSessions)
+        .set({ reservedAtomic: (BigInt(b.row.reservedAtomic) - BigInt(terms.amount)).toString() })
+        .where(eq(s.serviceSpendingSessions.id, b.row.id));
+    await tx
+      .update(s.servicePaymentIntents)
+      .set({ state: 'expired-unexecuted' })
+      .where(
+        and(eq(s.servicePaymentIntents.id, id), eq(s.servicePaymentIntents.state, 'approved')),
+      );
+    await tx.insert(s.auditEvents).values({
+      tenantId,
+      type: 'service.expiry_recovered',
+      entityId: id,
+      detail: {
+        reason: decision.reason,
+        previousState: row.state,
+        state: 'expired-unexecuted',
+        preparedDigest: prepared.digest,
+        window,
+        evidence,
+        rules: EXPIRY_RULES,
+        signaturesMayHaveExisted: true,
+        paymentFailureAsserted: false,
+        releasedAtomic: terms.amount,
+        publicReservationReleased: tenantId !== OWNER_ID,
+        walletEvents: events
+          .filter((e) => e.type.startsWith('service.wallet_'))
+          .map((e) => ({
+            type: e.type,
+            at: e.createdAt.toISOString(),
+            code: (e.detail as { diagnostic?: { code?: string } })?.diagnostic?.code || null,
+          })),
+      },
+    });
+    return {
+      state: 'expired-unexecuted',
+      recovered: true,
+      alreadyRecovered: false,
+      preparedDigest: prepared.digest,
+      releasedAtomic: terms.amount,
+    };
+  });
+}
 export async function fulfillService(
   tenantId: string,
   id: string,
@@ -864,6 +1086,12 @@ export async function fulfillService(
       'RECEIPT_MISSING',
       'The owned settlement receipt requires reconciliation. No payment success is assumed.',
     );
+  if (row.state === 'expired-unexecuted')
+    return {
+      state: row.state,
+      message:
+        'This historical transaction was closed after audited expiry reconciliation. Its bytes cannot be submitted again.',
+    };
   const challenge = row.challenge as ServiceChallenge;
   const terms = serviceTermsSchema.parse(challenge.accepts[0]);
 

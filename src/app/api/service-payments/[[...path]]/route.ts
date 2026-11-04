@@ -30,6 +30,7 @@ import {
   publicServiceExposure,
   publicServiceEnabled,
   serviceRecoveryHolds,
+  recoverExpiredService,
 } from '@/lib/service-payments';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -154,6 +155,15 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
               : path[1] === 'remember'
                 ? 'memory-consent'
                 : 'settlement-request';
+    if (path[1] === 'recover-expired') {
+      stage = 'expired-payment-recovery';
+      z.object({ confirmRecovery: z.literal(true) })
+        .strict()
+        .parse(data);
+      return NextResponse.json(await recoverExpiredService(tenantId, id), {
+        headers: { 'Cache-Control': 'private, no-store' },
+      });
+    }
     if (path[1] === 'cancel') return NextResponse.json(await cancelService(tenantId, id));
     if (path[1] === 'approve') {
       const input = z

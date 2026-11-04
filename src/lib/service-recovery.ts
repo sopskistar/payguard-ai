@@ -21,6 +21,7 @@ export function serviceSigningState(input: {
 }): ServiceSigningState {
   if (input.state === 'settled') return 'settled';
   if (input.state === 'failed') return 'failed';
+  if (input.state === 'expired-unexecuted') return 'expired';
   if (input.submitted || input.disclosed || input.state === 'settling') return 'submitted';
   if (input.walletPhase === 'service.wallet_signed') return 'signed-unsubmitted';
   if (input.walletPhase === 'service.wallet_error')

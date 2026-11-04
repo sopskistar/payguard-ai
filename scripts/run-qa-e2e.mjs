@@ -5,9 +5,12 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { randomBytes } from 'node:crypto';
 const directory = await mkdtemp(join(tmpdir(), 'payguard-release-qa-'));
-const output = resolve('.data/final-mainnet-qa');
+const output = resolve(process.env.PAYGUARD_QA_OUTPUT_DIR || '.data/final-mainnet-qa');
 await mkdir(output, { recursive: true });
-const base = 'http://localhost:3005';
+const port = Number(process.env.PAYGUARD_QA_PORT || '3005');
+if (!Number.isInteger(port) || port < 1024 || port > 65535)
+  throw Error('Expected an unprivileged local QA port');
+const base = `http://localhost:${port}`;
 const password = randomBytes(32).toString('hex');
 const env = {
   ...process.env,
@@ -25,6 +28,7 @@ const env = {
   SERVICE_PAYMENT_RECIPIENT: '',
   ENABLE_AGENT_PAYMENTS: 'false',
   SERVICE_PAYMENT_SETTLEMENT_ENABLED: 'false',
+  SERVICE_EXPIRED_RECOVERY_ENABLED: 'false',
   LIVE_MEMORY_TEST: '0',
   LIVE_CHAIN_TEST: '0',
   LIVE_MEMORY_REUSE: '1',
@@ -59,7 +63,7 @@ await run(
 );
 const server = spawn(
   process.execPath,
-  ['node_modules/next/dist/bin/next', 'start', '-H', '127.0.0.1', '-p', '3005'],
+  ['node_modules/next/dist/bin/next', 'start', '-H', '127.0.0.1', '-p', String(port)],
   { env, stdio: 'ignore' },
 );
 try {

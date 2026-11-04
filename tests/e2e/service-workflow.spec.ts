@@ -41,6 +41,31 @@ test.describe('isolated service UI contracts; all financial and memory responses
       await context.close();
     }
   });
+  test('protects expired recovery with authentication, origin checks, explicit confirmation and its disabled default', async ({
+    browser,
+  }) => {
+    const path = '/api/service-payments/' + quotedId + '/recover-expired';
+    const anonymous = await browser.newContext();
+    const unauthenticated = await anonymous.request.post(path, {
+      headers: { origin },
+      data: { confirmRecovery: true },
+    });
+    expect(unauthenticated.status()).toBe(401);
+    await anonymous.close();
+    const wrongOrigin = await context.request.post(path, {
+      headers: { origin: 'https://untrusted.invalid' },
+      data: { confirmRecovery: true },
+    });
+    expect(wrongOrigin.status()).toBe(403);
+    const missingConsent = await context.request.post(path, { headers: { origin }, data: {} });
+    expect(missingConsent.status()).toBe(400);
+    const disabled = await context.request.post(path, {
+      headers: { origin },
+      data: { confirmRecovery: true },
+    });
+    expect(disabled.status()).toBe(403);
+    expect((await disabled.json()).code).toBe('RECOVERY_DISABLED');
+  });
   async function pageFixture(
     signing = false,
     preparation = signing,
@@ -135,7 +160,7 @@ test.describe('isolated service UI contracts; all financial and memory responses
             dedicatedPayer: payer,
             audience: customer ? 'customer' : 'owner',
             recoveryHolds:
-              failureMode === 'recovery-hold'
+              failureMode === 'recovery-hold' || failureMode === 'diagnostic-only'
                 ? [
                     {
                       id: 'd0000000-0000-4000-8000-000000000099',
@@ -278,7 +303,7 @@ test.describe('isolated service UI contracts; all financial and memory responses
       }
       return route.fallback();
     });
-    if (preparation) {
+    if (preparation || failureMode === 'diagnostic-only') {
       const frame = (bytes: Uint8Array) => {
         const message = Buffer.alloc(5 + bytes.length);
         message.writeUInt32BE(bytes.length, 1);
@@ -369,6 +394,8 @@ test.describe('isolated service UI contracts; all financial and memory responses
           const listeners = new Set<() => void>();
           Object.assign(window, {
             changeServiceFixtureAccount: (mode: string) => {
+              if (mode === 'unsupported')
+                Reflect.deleteProperty(wallet.features, 'sui:signTransaction');
               activeAccounts =
                 mode === 'disconnect'
                   ? []
@@ -446,7 +473,7 @@ test.describe('isolated service UI contracts; all financial and memory responses
           };
           const register = ({ register }: { register: (w: unknown) => void }) => {
             // Nightly registers Solana before Sui, with the same provider ID/name.
-            if (failureMode === 'nightly-adapters')
+            if (failureMode === 'nightly-adapters' || failureMode === 'diagnostic-only')
               register({
                 ...wallet,
                 chains: ['solana:mainnet'],
@@ -474,7 +501,7 @@ test.describe('isolated service UI contracts; all financial and memory responses
       );
     }
     await visit(page, '/services');
-    if (failureMode !== 'recovery-hold')
+    if (!['recovery-hold', 'diagnostic-only'].includes(failureMode))
       await expect(
         page.getByRole('button', { name: 'Request payment quote', exact: true }),
       ).toBeEnabled();
@@ -654,15 +681,18 @@ test.describe('isolated service UI contracts; all financial and memory responses
     await expect(page.getByRole('region', { name: 'Checkout account' })).toContainText(
       'Your private wallet checkout',
     );
+    await page.getByLabel('Signing wallet').selectOption('payguard-service-fixture');
+    await page
+      .getByRole('button', { name: 'Check selected wallet account · no signing', exact: true })
+      .click();
+    await expect(page.getByRole('status', { name: 'Wallet account check' })).toContainText('MATCH');
     await page.getByRole('button', { name: /Resume saved quoted intent/ }).click();
     await page.getByLabel('Signing wallet').selectOption('payguard-service-fixture');
     await page
       .getByRole('button', { name: 'Check selected wallet account · no signing', exact: true })
       .click();
     await expect(page.getByRole('region', { name: 'Checkout account' })).toContainText(payer);
-    await expect(
-      page.getByText(/The selected Sui wallet returned the exact workspace payer/),
-    ).toBeVisible();
+    await expect(page.getByRole('status', { name: 'Wallet account check' })).toContainText('MATCH');
     await expect(
       page.getByRole('button', { name: 'Review 0.001 SUI purchase · prepare', exact: true }),
     ).toBeDisabled();
@@ -679,6 +709,78 @@ test.describe('isolated service UI contracts; all financial and memory responses
       page.getByRole('button', { name: 'Request payment quote', exact: true }),
     ).toBeDisabled();
     expect(calls).toEqual({ quote: 0, remember: 0, approve: 0, settle: 0 });
+    await page.close();
+  });
+  test('checks the exact Sui adapter without a quote while financial permissions and recovery holds block payment (fully mocked)', async () => {
+    const { page, calls } = await pageFixture(
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      'diagnostic-only',
+    );
+    await expect(
+      page.getByRole('button', { name: 'Request payment quote', exact: true }),
+    ).toBeDisabled();
+    await page.getByLabel('Signing wallet').selectOption('payguard-service-fixture');
+    const check = page.getByRole('button', {
+      name: 'Check selected wallet account · no signing',
+      exact: true,
+    });
+    await check.click();
+    const status = page.getByRole('status', { name: 'Wallet account check' });
+    await expect(status).toContainText('MATCH');
+    for (const [mode, outcome, code] of [
+      ['switch', 'MISMATCH', 'CUSTOMER_PAYER_REQUIRED'],
+      ['network', 'MISMATCH', 'WALLET_NETWORK_MISMATCH'],
+      ['disconnect', 'DISCONNECTED', 'WALLET_NO_ACCOUNTS'],
+    ]) {
+      await page.evaluate(
+        (mode) =>
+          (
+            window as unknown as {
+              changeServiceFixtureAccount: (mode: string) => void;
+            }
+          ).changeServiceFixtureAccount(mode),
+        mode,
+      );
+      await expect(status).toContainText(outcome);
+      await expect(status).toContainText(code);
+      await check.click();
+      await expect(status).toContainText(outcome);
+    }
+    await page.evaluate(() =>
+      (
+        window as unknown as {
+          changeServiceFixtureAccount: (mode: string) => void;
+        }
+      ).changeServiceFixtureAccount('same-payer-new-object'),
+    );
+    await check.click();
+    await expect(status).toContainText('MATCH');
+    await page.evaluate(() =>
+      (
+        window as unknown as {
+          changeServiceFixtureAccount: (mode: string) => void;
+        }
+      ).changeServiceFixtureAccount('unsupported'),
+    );
+    await expect(status).toContainText('UNAVAILABLE');
+    await expect(status).toContainText('WALLET_SIGNING_UNSUPPORTED');
+    expect(calls).toEqual({ quote: 0, remember: 0, approve: 0, settle: 0 });
+    expect(
+      await page.evaluate(
+        () =>
+          (
+            window as unknown as {
+              serviceFixtureStats: { sign: number; execute: number };
+            }
+          ).serviceFixtureStats,
+      ),
+    ).toEqual({ sign: 0, execute: 0 });
     await page.close();
   });
   test('rejects account switches, network changes and disconnects before marking an attempt, then uses the fresh exact account (fully mocked)', async () => {
