@@ -118,7 +118,7 @@
     "missing": []
   },
   "secretScan": {
-    "files": 923,
+    "files": 924,
     "configuredCredentialMatches": 0
   },
   "visualReview": {
@@ -137,26 +137,18 @@
     "Blocked embed retains external fallback"
   ],
   "externalPlayback": {
-    "independentlyVerified": false,
-    "checks": [
-      {
-        "requested": "https://youtu.be/i2ZsEPIegy4",
-        "status": 429,
-        "title": "https://www.youtube.com/watch?v=i2ZsEPIegy4&feature=youtu.be",
-        "botChallenge": true,
-        "noPlaybackClaim": true
-      },
-      {
-        "requested": "https://www.youtube-nocookie.com/embed/i2ZsEPIegy4?controls=1&disablekb=0&cc_load_policy=1&cc_lang_pref=en&playsinline=1&rel=0",
-        "status": 200,
-        "title": "YouTube",
-        "error": "Video player configuration error",
-        "mediaReady": 0,
-        "botChallenge": false,
-        "noPlaybackClaim": true
-      }
-    ],
-    "limitation": "This environment encountered a YouTube bot challenge; direct embed navigation reported a configuration error without an application referrer. Neither result certifies playback or global availability."
+    "independentlyVerified": true,
+    "checkedAt": "2026-11-04T00:41:19.728Z",
+    "context": "Fresh signed-out browser, real YouTube player inside the live PayGuard homepage; not a provider fixture",
+    "durationSeconds": 166.041,
+    "observedPlaybackSeconds": 1.826282,
+    "mediaReadyState": 4,
+    "observedResolution": "1280x720",
+    "adShowing": false,
+    "entireFilmReReviewed": false,
+    "ownerApprovedFilmUnchanged": true,
+    "visibilityAndEmbedding": "Owner enabled public visibility and embedding; successful playback independently observed afterward",
+    "initialDiagnostics": "Earlier checks encountered a bot challenge, private-video and embedding restrictions. These are superseded by the successful live embedded playback check."
   },
   "evidenceSnapshot": {
     "date": "2026-11-03",
@@ -177,5 +169,71 @@
     "databaseMigrationsOrSeeding": 0
   },
   "dependenciesMigrationsPaymentLogicChanged": false,
-  "priorVideoSourcesPreserved": true
+  "priorVideoSourcesPreserved": true,
+  "production": {
+    "testedApplicationCommit": "9418844ac7b60445e7859d1b882b75b8e2abd432",
+    "vercelStatus": "success",
+    "vercelDeployment": "J2rDLn7fUKdyGxzu1kXozq63Bybc",
+    "releaseShaIndependentlyMatched": true,
+    "publicBrowser": {
+      "initialPassed": 14,
+      "initialFailed": 1,
+      "skipped": 0,
+      "flaky": 0,
+      "failure": "Chromium ERR_NETWORK_CHANGED on five static CSS/JS requests caused the public layout case to time out",
+      "isolatedRerunPassed": 1,
+      "isolatedRerunFailed": 0,
+      "fullSuiteRerunClaimed": false,
+      "physicalWallet": false,
+      "providerPlayerFixtureCases": 2
+    },
+    "publishedDocs": [
+      {
+        "name": "GitHub rendered README",
+        "passed": true,
+        "status": 200,
+        "posterLoaded": true,
+        "approvedVideoLink": true
+      },
+      {
+        "name": "GitHub rendered judge walkthrough",
+        "passed": true,
+        "status": 200,
+        "routesVerified": 3
+      },
+      {
+        "name": "Published article",
+        "passed": true,
+        "status": 200,
+        "approvedVideoLink": true
+      },
+      {
+        "name": "Published static judge demo",
+        "passed": true,
+        "status": 200,
+        "compactVideoLink": true,
+        "walkthroughFunctional": true
+      }
+    ],
+    "liveScreenshots": [
+      {
+        "width": 1440,
+        "fits": true
+      },
+      {
+        "width": 390,
+        "fits": true
+      }
+    ],
+    "liveVideo": {
+      "checkedAt": "2026-11-04T00:41:19.728Z",
+      "applicationPlayerVerified": true,
+      "approvedVideoId": "i2ZsEPIegy4",
+      "embedUrl": "https://www.youtube-nocookie.com/embed/i2ZsEPIegy4?cc_load_policy=1&cc_lang_pref=en&playsinline=1&controls=1&disablekb=0&rel=0",
+      "providerRequestsBeforeClick": 0,
+      "fallbackCorrect": true,
+      "fallbackKeyboardAccessible": true,
+      "pageErrors": []
+    }
+  }
 }

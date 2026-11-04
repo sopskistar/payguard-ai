@@ -4,9 +4,10 @@ The presentation release installs **https://youtu.be/i2ZsEPIegy4** without chang
 
 - **18 focused unit tests passed** across video configuration, the judge engine and Courtroom logic.
 - **15 browser tests passed**, zero failures/skips/flakes, against the actual optimized application with database/provider credentials disabled and no migrations or seeding. Coverage includes optional video loading, keyboard activation, desktop/mobile sizing, blocked-player fallback, the seven-step public journey, Courtroom/attack replay and wallet-entry presentation. Provider-player fixtures do not establish actual YouTube playback.
+- **Production: 14 browser cases passed initially; one layout case timed out after Chromium reported `ERR_NETWORK_CHANGED` on five static assets. Its isolated rerun passed (1/1).** Both runs are preserved; this is not an all-green full-suite rerun. Two player-provider cases use explicit fixtures. Rendered GitHub README/judge guide, published article and static judge demo passed actual browser checks.
 - Production build and sequential TypeScript passed. Formatting passed; lint has zero errors and one existing warning in untracked video capture tooling. Static judge publication build passed.
-- Local documentation targets were checked; desktop and mobile player screenshots were visually inspected. The source/browser bundle scan found zero configured-secret matches in 923 files.
-- YouTube returned a bot challenge to anonymous watch-page checks here. Direct embed navigation returned a configuration error; actual external playback is not independently certified by these tests. The approved URL and persistent external fallback are retained.
+- Local documentation targets were checked; desktop and mobile player screenshots were visually inspected. The source/browser bundle scan found zero configured-secret matches in 924 files.
+- **Real signed-out YouTube playback passed on the live homepage** after the owner enabled public visibility and embedding: the approved video decoded successfully, duration **166.041 seconds**, with playback time advancing. There were zero provider requests before keyboard activation, and the external fallback remained keyboard-accessible. This is actual playback evidence, separate from the provider fixtures; it is not a second full editorial review of the owner-approved film.
 
 [Presentation validation record](evidence/approved-video-presentation-validation.json). No new payment quote, signature, settlement, memory write or production data mutation was performed.
 
