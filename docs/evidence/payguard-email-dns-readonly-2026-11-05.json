@@ -1,0 +1,28 @@
+{
+  "checkedAt": "2026-11-05T21:34:37.074Z",
+  "readOnly": true,
+  "domains": [
+    {
+      "domain": "flownix.xyz",
+      "mx": [
+        {
+          "exchange": "mx2.zoho.com",
+          "priority": 20
+        },
+        {
+          "exchange": "mx.zoho.com",
+          "priority": 10
+        }
+      ],
+      "nameservers": ["ns2.dyna-ns.net", "ns1.dyna-ns.net"]
+    },
+    {
+      "domain": "mail.flownix.xyz",
+      "mxStatus": "ENODATA"
+    },
+    {
+      "domain": "invoices.flownix.xyz",
+      "mxStatus": "ENODATA"
+    }
+  ]
+}

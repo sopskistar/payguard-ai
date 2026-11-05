@@ -39,6 +39,8 @@ A repeated message reuses its persisted state. Partially completed deliveries re
 | `INVOICE_INBOUND_DOMAIN` | A verified receiving domain or the owner’s assigned Resend receiving subdomain |
 | `BLOB_READ_WRITE_TOKEN`  | Token linked to a private Vercel Blob store                                    |
 
+For the owner’s existing flownix.xyz/ShadowBid account, follow the [consolidated receiving checklist](PAYGUARD_EMAIL_OWNER_SETUP.md). No live delivery is claimed.
+
 Use a dedicated receiving subdomain. Add the exact MX/DNS records supplied by Resend for the selected region; do not replace an existing company mailbox’s MX records blindly. Configure the Production webhook URL, event type and signing secret in the provider dashboard, then redeploy. A business administrator can create the workspace intake address after configuration. Members are never asked to supply API keys.
 
 Resend receiving/retention quotas and Blob storage/egress charges depend on the owner’s plan. Review current provider pricing before enabling them. No real inbound email or private-store acceptance is claimed until an actual message completes the deployed flow. Local tests exercise signed events, private-storage flags, idempotency, sender warnings and negative cases with controlled provider responses.
@@ -77,7 +79,7 @@ Vendor Trust and the selected Team Verification invoice show actual audit and ro
 
 A confirmed memory entry exposes its retained job, blob and namespace only to authorized members. Applicability distinguishes current, inactive, expired and explicitly superseded policies. Retrieval timestamps come from recall records; influence is asserted only where `review.evaluated` records the memory as actually used. The timeline does not silently perform a fresh provider availability check.
 
-An approved change can produce a minimized learning candidate for owner review. This action is explicitly **database-only** and does not create a confirmed memory. Actual Walrus writes require separate content/cost consent through the existing integration. The proposed 16-record synthetic batch is independently bounded in [its reviewed manifest](BUSINESS_MEMORY_BATCH.md).
+An approved change can produce a minimized learning candidate for owner review. This action is explicitly **database-only** and does not create a confirmed memory. Actual Walrus writes require separate content/cost consent through the existing integration. The owner-approved 16-record synthetic batch has completed and was independently verified in [its exact manifest and evidence](BUSINESS_MEMORY_BATCH.md).
 
 ## Release and incident boundaries
 

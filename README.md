@@ -52,11 +52,9 @@ An approved supplier change **does not authorize a blockchain payment**. A human
 
 ## Walrus Memory
 
-The November 5 read-only audit reverified **33 application-confirmed records** and one older pending database job whose additional Mainnet blob is already provider-completed, currently listed and retrievable with matching decrypted text: **34 distinct provider-verified blobs**. The pending customer-owned row remains unchanged and is excluded from application policy until legitimate reconciliation. Existing evidence is preserved.
+The November 5 verification confirms **50 distinct Walrus Mainnet blobs and 50 confirmed application memory records**, with no pending or failed jobs. The exact owner-approved 16-record synthetic batch completed through the existing sponsored integration; the older provider-completed customer row was reconciled through its legitimate owning workspace without another write. All original 33 confirmed references remain preserved. [Per-record job/blob and retrieval evidence](docs/evidence/approved-business-memory-verified-1793916025290.json).
 
-A reviewed proposal adds **16 distinct synthetic learning records** toward a target of 50. These writes remain subject to the owner’s exact manifest and cost approval; database candidates are not counted as confirmed Mainnet memories. [Batch manifest](docs/BUSINESS_MEMORY_BATCH.md).
-
-The existing live-recall evaluation passed **18/18 authored synthetic contracts**, with baseline holds preserved and no stale or wrong-scope policy applied. New scenario tests cover supersession, expired guidance, tenant/supplier isolation, OCR corrections and prompt injection. These are contract evaluations, not real-world fraud-detection accuracy scores. [Memory evidence](docs/MEMORY_EVALUATION.md).
+Every new record was retrieved with matching decrypted text in a fresh verification process. All **16 expanded policy contracts** and the existing **18/18 live-recall contracts** passed, retaining baseline holds and excluding stale or wrong-scope guidance. These are authored contract evaluations, not real-world fraud-detection accuracy scores. Retained history includes superseded and expired guidance; 50 memories does not mean 50 simultaneously applicable rules. [Approved batch](docs/BUSINESS_MEMORY_BATCH.md) · [methodology](docs/MEMORY_EVALUATION.md).
 
 The public Courtroom continues to show its dated, captured comparison. Current private recall and recorded public evidence remain distinct.
 
@@ -66,7 +64,7 @@ Three developer-controlled Sui Mainnet service purchases each credited the merch
 
 [Transaction 1](https://suivision.xyz/txblock/68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx) · [Transaction 2](https://suivision.xyz/txblock/xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r) · [Transaction 3](https://suivision.xyz/txblock/4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA)
 
-These are controlled experiments using synthetic invoices. **Physical Nightly customer financial-signing acceptance remains unverified.** A connection-only account match is not a finalized payment. Supplier invoice verification and the optional first-party analysis purchase have separate authorization and accounting. [Payment boundaries](docs/AGENT_PAYMENTS.md).
+These are controlled experiments using synthetic invoices. **Physical Nightly customer financial-signing acceptance remains unverified.** A separate local test-wallet acceptance runner requires two typed terminal approvals and never treats an SDK signature as Nightly extension acceptance. A connection-only account match is not a finalized payment. Supplier invoice verification and the optional first-party analysis purchase have separate authorization and accounting. [Payment boundaries](docs/AGENT_PAYMENTS.md).
 
 ## Try the product
 
@@ -124,7 +122,7 @@ npm run test:e2e:qa
 
 The QA runner creates a disposable local database and disables live payment, memory, storage and email credentials. Tests cover document extraction, tenant isolation, maker-checker identity and concurrency, provenance, wallet adapter/payer binding and settlement integrity. Physical wallet acceptance and real provider configuration are reported separately. [Current results](docs/TEST_RESULTS.md).
 
-Release validation: **316 unit/integration passes**, **62 browser passes with two deliberate live-provider skips**, isolated serverless PDF/OCR acceptance, and the deployed synthetic maker-checker workflow. [Verified release and remaining owner actions](docs/BUSINESS_RELEASE_2026-11-05.md).
+Release validation: **320 unit/integration passes**, **62 browser passes with two deliberate live-provider skips**, isolated serverless PDF/OCR acceptance, and the deployed synthetic maker-checker workflow. [Verified release and remaining owner actions](docs/AUTHORIZED_ACCEPTANCE_2026-11-05.md).
 
 OCR can misread payment details; human source review remains mandatory. No antivirus service is claimed. Private attachment retention and live email require owner setup. Increasing the memory count does not establish better fraud detection.
 

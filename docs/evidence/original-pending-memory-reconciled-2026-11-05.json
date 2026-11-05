@@ -1,0 +1,10 @@
+{
+  "checkedAt": "2026-11-05T21:55:52.148Z",
+  "owningCustomerAuthenticated": true,
+  "normalOwningWorkspaceEndpoint": "/api/memory/resume",
+  "originalJobAndOperationPreserved": true,
+  "confirmed": true,
+  "newRememberRequests": 0,
+  "newMainnetWrites": 0,
+  "administratorSessionUsed": false
+}

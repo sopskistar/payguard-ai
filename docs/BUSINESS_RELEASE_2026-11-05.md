@@ -1,5 +1,7 @@
 # Business workflow release — November 5, 2026
 
+**Later owner-authorized checkpoint:** the exact 16-record batch is now completed and verified, bringing both provider and confirmed application counts to 50. The earlier pending customer row is reconciled without another write. The expired unsigned acceptance quote was safely cancelled through its owning customer session. A local terminal runner now waits for two actual owner confirmations; no new financial acceptance is claimed. Current tests are 320 unit/integration passes and 62 browser passes with two deliberate skips. [Current checkpoint](AUTHORIZED_ACCEPTANCE_2026-11-05.md) · [current test evidence](TEST_RESULTS.md). The sections below describe the initial feature release and its earlier approval boundaries.
+
 Invoice intake, supplier history and two-person verification are integrated with the existing application and verified through the deployed APIs. This is a post-submission expansion; the approved video and earlier captured evidence remain unchanged.
 
 ## Implemented and exercised

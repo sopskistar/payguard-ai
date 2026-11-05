@@ -1,6 +1,6 @@
-# Proposed Walrus business learning batch
+# Approved Walrus business learning batch
 
-**Awaiting owner approval. No writes have been executed.**
+**Owner approved and executed. All 16 new jobs and blobs are confirmed; fresh-session exact retrieval and policy contracts pass.**
 
 Batch digest: `d6117ac6e40d2d59125454dfdb2bd29594ebf7ac8271785965e2da5c0eb9bc15`
 
@@ -10,11 +10,11 @@ Onchain account owner: `0x9c9f7a5f3562be063f8cdac9eb34b51e888c3267eac952282ed4ab
 
 Namespace: `payguard-v1-6ccb21624a510029c350b89da522cf9c`
 
-34 distinct provider-verified Mainnet blobs → target 50. This batch contains exactly 16 distinct synthetic records, 8,193 UTF-8 bytes in total.
+The execution baseline was 34 distinct provider-verified Mainnet blobs; the verified result is 50. This batch contains exactly 16 distinct synthetic records, 8,193 UTF-8 bytes in total.
 
-The application retains 33 confirmed rows and one older pending row. A read-only audit independently established that the pending job is already completed, currently listed and retrievable with its exact decrypted text. Its customer-owned database status was not changed through an administrator session. It is included in the provider count, and remains unavailable to application policy until legitimately reconciled. No new write produced this additional existing blob.
+Before execution, the application retained 33 confirmed rows and one older pending row. A read-only audit independently established that the pending job was already completed, currently listed and retrievable with its exact decrypted text. Its customer-owned database status has now been reconciled through its genuine authenticated customer workspace and original job/operation key. No administrator session accessed that private endpoint and no duplicate write occurred.
 
-This revised proposal supersedes the earlier 17-record digest beginning `55c3168e`. The new digest above requires its own exact approval. BUS-04 remains a local invoice-exception test but is omitted from this write batch; that behavior already has existing evaluation coverage.
+This revised proposal supersedes the earlier 17-record digest beginning `55c3168e`. The new digest above was explicitly approved by the owner. BUS-04 remains a local invoice-exception test but is omitted from this write batch; that behavior already has existing evaluation coverage.
 
 Estimated direct owner-wallet cost: **0 SUI / 0 WAL**, using the existing managed sponsored relayer. Maximum paid operations: **0**. No funding, renewal, paid fallback or financial transaction is authorized. Stop on unavailable sponsorship, exhausted quota, unexpected charges, ownership changes or ambiguous accepted jobs. Sponsored storage retention follows the provider epochs; no automatic renewal is authorized.
 
@@ -44,3 +44,9 @@ The exact text, policy IDs, synthetic fixture fields, namespace, per-record hash
 Execution uses the existing idempotent memory-job integration. It preserves the original 34 database rows, verifies the current Mainnet account owner, collects accepted job/blob/namespace evidence, and stops on the first uncertainty. A pending job is reconciled by its original operation key, never replaced with another write. Later-session recall and exact-provenance tests follow confirmed completion.
 
 Local tests cover the scenario contracts, manifest tampering, duplicate records, foreign namespaces, wrong ownership, non-synthetic/hard rules and nonzero paid-operation limits.
+
+## Verified completion
+
+All 16 approved records completed, with 16 distinct new blob IDs and exact namespace/account/content matches. Metadata timeouts were reconciled using the already accepted jobs, never replacement writes. Final counts are **50 distinct provider-verified blobs / 50 confirmed application rows / zero pending / zero failed**. Original 33 confirmed references remain unchanged. The older customer job was completed through its owning workspace with no new remember request.
+
+A separate fresh process retrieved each new exact text and checked all 16 policy contracts. Existing 18-case live recall also passes. No funding, renewal, new delegate credentials or paid operation occurred. [Complete new job/blob/content evidence](evidence/approved-business-memory-verified-1793916025290.json) · [owning-workspace reconciliation](evidence/original-pending-memory-reconciled-2026-11-05.json) · [existing recall evaluation](evidence/approved-memory-existing-18-case-evaluation.json).

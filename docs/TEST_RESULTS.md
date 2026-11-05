@@ -1,3 +1,17 @@
+# Authorized acceptance checkpoint — November 5, 2026
+
+**320 unit/integration tests pass.** The fresh complete optimized-app browser suite passes **62 cases, zero failures/flakes and two deliberate live-provider skips**, with all live credentials disabled and a disposable local database. TypeScript, optimized build and formatting pass. ESLint has zero errors and one existing warning in unrelated owner video tooling. Packaged PDF text extraction, raster preview and local image OCR pass using only traced dependencies. Exact configured-secret and local-key comparisons found zero matches across 908 source, browser and private terminal-log files. [Validation ledger](evidence/authorized-acceptance-local-validation.json) · [fresh browser evidence](evidence/approved-final-browser.json).
+
+The approved 16-record Walrus batch is complete: **50 distinct provider-verified Mainnet blobs, 50 confirmed application rows, zero pending/failed jobs**. All 16 new records pass exact later-session retrieval and policy-applicability contracts; the existing live 18-case evaluation also passes. Original 33 confirmed references remain intact. The older provider-completed customer row was reconciled through its own genuine authenticated workspace without another write. [Per-record verification](evidence/approved-business-memory-verified-1793916025290.json) · [18-case evaluation](evidence/approved-memory-existing-18-case-evaluation.json).
+
+Four new terminal acceptance guard tests exercise fixed synthetic SDK signing and reject mismatched payer/merchant/sponsor, expired terms, invalid transaction digests/epochs and missing exact owner confirmations. They do not use the actual test key or spend funds. The owner-operated live runner is separately waiting for terminal confirmation; no new quote or financial signature has been created at this checkpoint. Nightly extension financial acceptance remains unverified. The earlier expired unsigned quote was cancelled once through its owning customer session, with no reservation release.
+
+Resend receiving remains disabled: no authorized provider/DNS management connection or required Production receiving/storage configuration is available. Signed webhook, attachment, routing and extraction tests use controlled responses; no live email delivery is claimed. [Exact owner setup](PAYGUARD_EMAIL_OWNER_SETUP.md) · [acceptance scope](LOCAL_TEST_PAYMENT_ACCEPTANCE.md).
+
+The dated records below retain their original counts and scope.
+
+---
+
 # Business workflow expansion — November 5, 2026
 
 **316 unit/integration tests pass**. The complete optimized-app browser suite passes **62 cases, zero failures/flakes, two deliberate live-provider skips**, using a new disposable local PGlite database with all live payment, memory, storage and email credentials disabled. A separate focused workflow/recovery run passes 12/12. TypeScript, formatting and the optimized build pass. ESLint has zero errors and one existing warning in unrelated owner video tooling. The current dependency audit reports zero advisories.

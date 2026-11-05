@@ -1,0 +1,83 @@
+{
+  "checkedAt": "2026-11-05T22:12:53.076Z",
+  "readOnly": true,
+  "verified": true,
+  "issues": [],
+  "originals": [
+    {
+      "id": "544d939d-02d5-4d98-b549-69fb9fb501e8",
+      "state": "expired-unexecuted",
+      "originalImmutableRecordPreserved": true,
+      "recoveryAudits": 1,
+      "releasedMist": "1000000"
+    },
+    {
+      "id": "7a025238-06d9-43ca-8b5f-16ef7079f086",
+      "state": "expired-unexecuted",
+      "originalImmutableRecordPreserved": true,
+      "recoveryAudits": 1,
+      "releasedMist": "1000000"
+    },
+    {
+      "id": "d23937ed-1907-4e40-8156-488f453a921a",
+      "state": "expired-unexecuted",
+      "originalImmutableRecordPreserved": true,
+      "recoveryAudits": 1,
+      "releasedMist": "1000000"
+    },
+    {
+      "id": "b0386342-a7c2-40ba-909e-9edf17501767",
+      "state": "approved",
+      "originalImmutableRecordPreserved": true,
+      "recoveryAudits": 0,
+      "releasedMist": "0"
+    }
+  ],
+  "expiredUnsignedQuote": {
+    "id": "85e9fc3e-8871-4c15-ae3c-73de9f6421ca",
+    "state": "cancelled",
+    "cancellationAudits": 1,
+    "reservationReleasedMist": "0"
+  },
+  "originalReceiptsAndReportsPreserved": true,
+  "harborlinePreserved": true,
+  "original33ConfirmedMemoryReferencesPreserved": true,
+  "applicationMemoryRows": 50,
+  "applicationConfirmedMemories": 50,
+  "ledgers": [
+    {
+      "label": "other-preserved-session",
+      "reservedMist": "2000000",
+      "liabilityMist": "2000000",
+      "matches": true
+    },
+    {
+      "label": "public-sponsor",
+      "reservedMist": "0",
+      "liabilityMist": "0",
+      "matches": true
+    },
+    {
+      "label": "customer-wallet",
+      "reservedMist": "0",
+      "liabilityMist": "0",
+      "matches": true
+    },
+    {
+      "label": "other-preserved-session",
+      "reservedMist": "2000000",
+      "liabilityMist": "2000000",
+      "matches": true
+    },
+    {
+      "label": "administrator-original",
+      "reservedMist": "1000000",
+      "liabilityMist": "1000000",
+      "matches": true
+    }
+  ],
+  "terminalStage": "awaiting-begin-confirmation",
+  "newPaymentIntent": null,
+  "settlementRequestsForNewIntent": 0,
+  "financialRowEditsByAuditor": 0
+}

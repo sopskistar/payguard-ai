@@ -1,0 +1,59 @@
+{
+  "checkedAt": "2026-11-05T22:13:24.350Z",
+  "applicationSourceCommit": "3686fcbfb35d99c765cc41839346fac841cadb67",
+  "unit": {
+    "passed": 320,
+    "failed": 0,
+    "success": true
+  },
+  "browser": {
+    "startTime": "2026-11-05T22:08:35.229Z",
+    "duration": 144666.027,
+    "expected": 62,
+    "skipped": 2,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "isolatedBrowserDatabase": true,
+  "liveBrowserCredentials": false,
+  "typecheck": "passed",
+  "build": "passed",
+  "format": "passed",
+  "lint": {
+    "errors": 0,
+    "warnings": 1,
+    "existingWarning": "Unrelated owner video tooling unused import"
+  },
+  "packagedPdfAndOcr": "passed",
+  "secrets": {
+    "checkedAt": "2026-11-05T22:12:34.928Z",
+    "filesScanned": 908,
+    "sourceAndBrowserAssets": true,
+    "privateTerminalLogsIncluded": true,
+    "actualLocalKeyIncludedInComparison": true,
+    "valuesNeverPrinted": true,
+    "matches": []
+  },
+  "walrus": {
+    "newConfirmed": 16,
+    "providerVerifiedDistinct": 50,
+    "applicationConfirmed": 50,
+    "pending": 0,
+    "failed": 0,
+    "newRetrievals": 16,
+    "newPolicyContracts": 16,
+    "existingRecallContracts": 18,
+    "paidOperations": 0
+  },
+  "financialAcceptance": {
+    "stage": "awaiting-begin-confirmation",
+    "newQuote": false,
+    "financialSignature": false,
+    "nightlyExtension": "Unverified"
+  },
+  "email": {
+    "configured": false,
+    "liveEndToEndPassed": false
+  },
+  "videoChangedByThisRelease": false
+}

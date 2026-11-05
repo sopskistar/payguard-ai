@@ -1,0 +1,749 @@
+{
+  "checkedAt": "2026-11-05T21:58:15.488Z",
+  "method": "Four live SDK recalls reused across 18 synthetic cases to limit quota; no writes. Correct measures specified gate/signal/provenance contracts, not fraud detection accuracy. Exception and supersession inputs are explicitly synthetic.",
+  "metrics": {
+    "cases": 18,
+    "correct": 18,
+    "failed": 0,
+    "baselinePreserved": 18,
+    "recallQueries": 4,
+    "successfulRecalls": 4,
+    "scenariosWithAppliedMemory": 14,
+    "controls": 4,
+    "controlsWithAddedCritical": 0,
+    "staleOrWrongScopeApplied": 0,
+    "applicableCitationFraction": 0.0962962962962963,
+    "expectedHolds": 11,
+    "expectedAllowed": 7,
+    "falseApprovalHolds": 0,
+    "missedApprovalHolds": 0,
+    "appliedCandidateCasePairs": 52,
+    "unappliedCandidateCasePairs": 488
+  },
+  "retrievals": [
+    {
+      "supplier": "Northstar Studio",
+      "status": "Recalled 30 confirmed Mainnet memories",
+      "returned": 30,
+      "blobIds": [
+        "3WogKM2IAtehjpvTCgIWpi3S7-Ciy5rJw4usKe-bf2g",
+        "56SOSxSVJVwSkZGFmCN7Sx2DUMBLlovypLYfSFrMoW4",
+        "v8OD2R59cXEjANkoV5UY9HSIInE-SY1tOBzZY7uerYQ",
+        "Bp73ib3naV1TrRpE8qKYi6cZwYep_G3dt6JaNuHosWA",
+        "9Z2VE-rj2-XE8s_KdqfUEenuJgLwGNz5-DCAyRM8Eks",
+        "5npUHB8Qigc92ZM6y_3ija9BGrLVrXviFgGaEY3MnQo",
+        "gDt16mmOG810QixENGVgyaEB_2ospWC19Fpild32BhI",
+        "XlBuCNiCJsPVn4iSW07zzvIoumMieGUyxPMaJxNWg5k",
+        "8PhJP7PFwXG-NmJ_Tvd36RaGKZs10uVffA7XBWtE_5A",
+        "k_VAehYdw7pjBjGTW4X4gOjCS4xDIheFZoItuHWMHyQ",
+        "mZhyDccArc3_pebvrCGZ1f5kYXV8j0R5OUH4Pjt-IDE",
+        "UQpmPhtm_BN7bvLvpNoW8LYvYpsv2TlCC7hxpAlPISo",
+        "sbJPgBU54G1KDIX3Kw4qoGDbKKLn3SCyaW8zgG2LR_c",
+        "7LxVCj03Q9JztRjE7Jir_7M4YERHG9KlrM0SaPsa6vY",
+        "T5Zlt_7PXvQaySFPOIY0VqmTxz4n8WZYZV2MAgb5p1U",
+        "4OkVDojIGY0q4WzmANQUuuKkYaFeyPdIhjDb48GVyOM",
+        "UiD9Xz9cWHpZHDiVHrgavvKM2lRwnfPJd0bP_kokJiA",
+        "mLNTvTJEDoZx11lGldhBb3ngfNCO1Qj5-doyCGgR8mc",
+        "pPYsV-RKCESYlutuJDdc9lj9pxV2ixSA_zMHRDr2CM4",
+        "lBa7czw0MVB1oZeclRzmMtD7e8u2hvzySnyiY4vne4E",
+        "acZYuNNYFh6bY5vsZ_i1gCcSqC84wnhLtpIZpyhHpdY",
+        "9DkeMtB6hOAZwDsUd4UCUkF4YQwKlouPXAEMV8q-K10",
+        "qLaF2a1YAi44wFRsC4NLKjs64nBaLS-tP5_NoRYyggg",
+        "8aTh-RfDq59DZJKaBrDIrFDWWQCV9p3WLOYOwyM2jMU",
+        "t8xATUp5_3_L79mG2DCTTq1jN0N3zQNcef15kYZOvdw",
+        "i3nSnl9ix5Es129QXaW1gUggnN6t0NaNAZubOMyb-G4",
+        "-8Zr3bN7mKSTnqW9hF1gfH3mKOb6qm2uLPOCXMpbP9k",
+        "PyiSfvA2yS_8Xa3PZGVDDVhRMVNJKT6n5lDGjsm9a50",
+        "72CT72CPgBJhbMPVbn6cheUCaEn-E34pz1y9fvIQTwA",
+        "4onsZFqkOQDSXWWmFz4ZYZoAVngjikJS0LuV-7_LcWo"
+      ]
+    },
+    {
+      "supplier": "Orbit Hosting",
+      "status": "Recalled 30 confirmed Mainnet memories",
+      "returned": 30,
+      "blobIds": [
+        "3WogKM2IAtehjpvTCgIWpi3S7-Ciy5rJw4usKe-bf2g",
+        "Bp73ib3naV1TrRpE8qKYi6cZwYep_G3dt6JaNuHosWA",
+        "9Z2VE-rj2-XE8s_KdqfUEenuJgLwGNz5-DCAyRM8Eks",
+        "56SOSxSVJVwSkZGFmCN7Sx2DUMBLlovypLYfSFrMoW4",
+        "8PhJP7PFwXG-NmJ_Tvd36RaGKZs10uVffA7XBWtE_5A",
+        "v8OD2R59cXEjANkoV5UY9HSIInE-SY1tOBzZY7uerYQ",
+        "XlBuCNiCJsPVn4iSW07zzvIoumMieGUyxPMaJxNWg5k",
+        "gDt16mmOG810QixENGVgyaEB_2ospWC19Fpild32BhI",
+        "k_VAehYdw7pjBjGTW4X4gOjCS4xDIheFZoItuHWMHyQ",
+        "mZhyDccArc3_pebvrCGZ1f5kYXV8j0R5OUH4Pjt-IDE",
+        "UQpmPhtm_BN7bvLvpNoW8LYvYpsv2TlCC7hxpAlPISo",
+        "5npUHB8Qigc92ZM6y_3ija9BGrLVrXviFgGaEY3MnQo",
+        "sbJPgBU54G1KDIX3Kw4qoGDbKKLn3SCyaW8zgG2LR_c",
+        "4OkVDojIGY0q4WzmANQUuuKkYaFeyPdIhjDb48GVyOM",
+        "mLNTvTJEDoZx11lGldhBb3ngfNCO1Qj5-doyCGgR8mc",
+        "T5Zlt_7PXvQaySFPOIY0VqmTxz4n8WZYZV2MAgb5p1U",
+        "7LxVCj03Q9JztRjE7Jir_7M4YERHG9KlrM0SaPsa6vY",
+        "pPYsV-RKCESYlutuJDdc9lj9pxV2ixSA_zMHRDr2CM4",
+        "UiD9Xz9cWHpZHDiVHrgavvKM2lRwnfPJd0bP_kokJiA",
+        "t8xATUp5_3_L79mG2DCTTq1jN0N3zQNcef15kYZOvdw",
+        "lBa7czw0MVB1oZeclRzmMtD7e8u2hvzySnyiY4vne4E",
+        "qLaF2a1YAi44wFRsC4NLKjs64nBaLS-tP5_NoRYyggg",
+        "9DkeMtB6hOAZwDsUd4UCUkF4YQwKlouPXAEMV8q-K10",
+        "acZYuNNYFh6bY5vsZ_i1gCcSqC84wnhLtpIZpyhHpdY",
+        "-8Zr3bN7mKSTnqW9hF1gfH3mKOb6qm2uLPOCXMpbP9k",
+        "PyiSfvA2yS_8Xa3PZGVDDVhRMVNJKT6n5lDGjsm9a50",
+        "8aTh-RfDq59DZJKaBrDIrFDWWQCV9p3WLOYOwyM2jMU",
+        "i3nSnl9ix5Es129QXaW1gUggnN6t0NaNAZubOMyb-G4",
+        "yk1vnCv-fnHh3S0Oxc61RnXMWshJdqAJ0f5VlD1hosI",
+        "UCC-HI_jXuKOaaWSlVYszeqCYiStPtneV-wgn_t9hbk"
+      ]
+    },
+    {
+      "supplier": "Forma Legal",
+      "status": "Recalled 30 confirmed Mainnet memories",
+      "returned": 30,
+      "blobIds": [
+        "3WogKM2IAtehjpvTCgIWpi3S7-Ciy5rJw4usKe-bf2g",
+        "56SOSxSVJVwSkZGFmCN7Sx2DUMBLlovypLYfSFrMoW4",
+        "Bp73ib3naV1TrRpE8qKYi6cZwYep_G3dt6JaNuHosWA",
+        "v8OD2R59cXEjANkoV5UY9HSIInE-SY1tOBzZY7uerYQ",
+        "9Z2VE-rj2-XE8s_KdqfUEenuJgLwGNz5-DCAyRM8Eks",
+        "XlBuCNiCJsPVn4iSW07zzvIoumMieGUyxPMaJxNWg5k",
+        "gDt16mmOG810QixENGVgyaEB_2ospWC19Fpild32BhI",
+        "5npUHB8Qigc92ZM6y_3ija9BGrLVrXviFgGaEY3MnQo",
+        "UQpmPhtm_BN7bvLvpNoW8LYvYpsv2TlCC7hxpAlPISo",
+        "8PhJP7PFwXG-NmJ_Tvd36RaGKZs10uVffA7XBWtE_5A",
+        "4OkVDojIGY0q4WzmANQUuuKkYaFeyPdIhjDb48GVyOM",
+        "UiD9Xz9cWHpZHDiVHrgavvKM2lRwnfPJd0bP_kokJiA",
+        "sbJPgBU54G1KDIX3Kw4qoGDbKKLn3SCyaW8zgG2LR_c",
+        "mZhyDccArc3_pebvrCGZ1f5kYXV8j0R5OUH4Pjt-IDE",
+        "k_VAehYdw7pjBjGTW4X4gOjCS4xDIheFZoItuHWMHyQ",
+        "mLNTvTJEDoZx11lGldhBb3ngfNCO1Qj5-doyCGgR8mc",
+        "T5Zlt_7PXvQaySFPOIY0VqmTxz4n8WZYZV2MAgb5p1U",
+        "9DkeMtB6hOAZwDsUd4UCUkF4YQwKlouPXAEMV8q-K10",
+        "qLaF2a1YAi44wFRsC4NLKjs64nBaLS-tP5_NoRYyggg",
+        "pPYsV-RKCESYlutuJDdc9lj9pxV2ixSA_zMHRDr2CM4",
+        "7LxVCj03Q9JztRjE7Jir_7M4YERHG9KlrM0SaPsa6vY",
+        "-8Zr3bN7mKSTnqW9hF1gfH3mKOb6qm2uLPOCXMpbP9k",
+        "lBa7czw0MVB1oZeclRzmMtD7e8u2hvzySnyiY4vne4E",
+        "PyiSfvA2yS_8Xa3PZGVDDVhRMVNJKT6n5lDGjsm9a50",
+        "t8xATUp5_3_L79mG2DCTTq1jN0N3zQNcef15kYZOvdw",
+        "acZYuNNYFh6bY5vsZ_i1gCcSqC84wnhLtpIZpyhHpdY",
+        "8aTh-RfDq59DZJKaBrDIrFDWWQCV9p3WLOYOwyM2jMU",
+        "yk1vnCv-fnHh3S0Oxc61RnXMWshJdqAJ0f5VlD1hosI",
+        "i3nSnl9ix5Es129QXaW1gUggnN6t0NaNAZubOMyb-G4",
+        "fl3CNTOoMLT-kOGYjl1fNe0Q9dvdae8Bt2_74Kywwm0"
+      ]
+    },
+    {
+      "supplier": "Lumen Research",
+      "status": "Recalled 30 confirmed Mainnet memories",
+      "returned": 30,
+      "blobIds": [
+        "Bp73ib3naV1TrRpE8qKYi6cZwYep_G3dt6JaNuHosWA",
+        "3WogKM2IAtehjpvTCgIWpi3S7-Ciy5rJw4usKe-bf2g",
+        "9Z2VE-rj2-XE8s_KdqfUEenuJgLwGNz5-DCAyRM8Eks",
+        "56SOSxSVJVwSkZGFmCN7Sx2DUMBLlovypLYfSFrMoW4",
+        "8PhJP7PFwXG-NmJ_Tvd36RaGKZs10uVffA7XBWtE_5A",
+        "v8OD2R59cXEjANkoV5UY9HSIInE-SY1tOBzZY7uerYQ",
+        "k_VAehYdw7pjBjGTW4X4gOjCS4xDIheFZoItuHWMHyQ",
+        "XlBuCNiCJsPVn4iSW07zzvIoumMieGUyxPMaJxNWg5k",
+        "gDt16mmOG810QixENGVgyaEB_2ospWC19Fpild32BhI",
+        "mZhyDccArc3_pebvrCGZ1f5kYXV8j0R5OUH4Pjt-IDE",
+        "5npUHB8Qigc92ZM6y_3ija9BGrLVrXviFgGaEY3MnQo",
+        "UiD9Xz9cWHpZHDiVHrgavvKM2lRwnfPJd0bP_kokJiA",
+        "UQpmPhtm_BN7bvLvpNoW8LYvYpsv2TlCC7hxpAlPISo",
+        "sbJPgBU54G1KDIX3Kw4qoGDbKKLn3SCyaW8zgG2LR_c",
+        "9DkeMtB6hOAZwDsUd4UCUkF4YQwKlouPXAEMV8q-K10",
+        "qLaF2a1YAi44wFRsC4NLKjs64nBaLS-tP5_NoRYyggg",
+        "-8Zr3bN7mKSTnqW9hF1gfH3mKOb6qm2uLPOCXMpbP9k",
+        "T5Zlt_7PXvQaySFPOIY0VqmTxz4n8WZYZV2MAgb5p1U",
+        "lBa7czw0MVB1oZeclRzmMtD7e8u2hvzySnyiY4vne4E",
+        "7LxVCj03Q9JztRjE7Jir_7M4YERHG9KlrM0SaPsa6vY",
+        "4OkVDojIGY0q4WzmANQUuuKkYaFeyPdIhjDb48GVyOM",
+        "mLNTvTJEDoZx11lGldhBb3ngfNCO1Qj5-doyCGgR8mc",
+        "yk1vnCv-fnHh3S0Oxc61RnXMWshJdqAJ0f5VlD1hosI",
+        "pPYsV-RKCESYlutuJDdc9lj9pxV2ixSA_zMHRDr2CM4",
+        "acZYuNNYFh6bY5vsZ_i1gCcSqC84wnhLtpIZpyhHpdY",
+        "PyiSfvA2yS_8Xa3PZGVDDVhRMVNJKT6n5lDGjsm9a50",
+        "w28JApooSQIQAff5T1HaV8YRwCZ7bG59oQIK-Wum88A",
+        "72CT72CPgBJhbMPVbn6cheUCaEn-E34pz1y9fvIQTwA",
+        "8aTh-RfDq59DZJKaBrDIrFDWWQCV9p3WLOYOwyM2jMU",
+        "4onsZFqkOQDSXWWmFz4ZYZoAVngjikJS0LuV-7_LcWo"
+      ]
+    }
+  ],
+  "results": [
+    {
+      "supplier": "Northstar Studio",
+      "scenario": "Changed recipient",
+      "synthetic": true,
+      "providerRecall": "Recalled 30 confirmed Mainnet memories",
+      "returned": 30,
+      "baseline": "Needs review",
+      "learned": "High risk / verification required",
+      "expectedApprovalAllowed": false,
+      "actualApprovalAllowed": false,
+      "correct": true,
+      "baselinePreserved": true,
+      "staleApplied": 0,
+      "wrongScopeApplied": 0,
+      "control": false,
+      "addedCritical": 6,
+      "applied": 7,
+      "citations": [
+        {
+          "blobId": "3WogKM2IAtehjpvTCgIWpi3S7-Ciy5rJw4usKe-bf2g",
+          "policyId": "1e5dd96a-90e6-47a9-a840-6036ebcfdb19"
+        },
+        {
+          "blobId": "56SOSxSVJVwSkZGFmCN7Sx2DUMBLlovypLYfSFrMoW4",
+          "policyId": "6181df21-1d8d-4fe4-900e-9d32e5dece60"
+        },
+        {
+          "blobId": "v8OD2R59cXEjANkoV5UY9HSIInE-SY1tOBzZY7uerYQ",
+          "policyId": "1e13b709-fc08-4943-b139-7c270c19d913"
+        },
+        {
+          "blobId": "k_VAehYdw7pjBjGTW4X4gOjCS4xDIheFZoItuHWMHyQ",
+          "policyId": "48f13c23-23d5-4424-aa1f-c70bc35e5b20"
+        },
+        {
+          "blobId": "T5Zlt_7PXvQaySFPOIY0VqmTxz4n8WZYZV2MAgb5p1U",
+          "policyId": "0528915d-7056-4634-9bde-3ba5742fe25b"
+        },
+        {
+          "blobId": "pPYsV-RKCESYlutuJDdc9lj9pxV2ixSA_zMHRDr2CM4",
+          "policyId": "6651bfb1-0b09-4ac4-b126-a55555ed3dd1"
+        },
+        {
+          "blobId": "i3nSnl9ix5Es129QXaW1gUggnN6t0NaNAZubOMyb-G4",
+          "policyId": "272da366-0028-456b-9af0-2959eb001433"
+        }
+      ]
+    },
+    {
+      "supplier": "Northstar Studio",
+      "scenario": "Routine unchanged control",
+      "synthetic": true,
+      "providerRecall": "Recalled 30 confirmed Mainnet memories",
+      "returned": 30,
+      "baseline": "Low",
+      "learned": "Low",
+      "expectedApprovalAllowed": true,
+      "actualApprovalAllowed": true,
+      "correct": true,
+      "baselinePreserved": true,
+      "staleApplied": 0,
+      "wrongScopeApplied": 0,
+      "control": true,
+      "addedCritical": 0,
+      "applied": 1,
+      "citations": [
+        {
+          "blobId": "i3nSnl9ix5Es129QXaW1gUggnN6t0NaNAZubOMyb-G4",
+          "policyId": "272da366-0028-456b-9af0-2959eb001433"
+        }
+      ]
+    },
+    {
+      "supplier": "Northstar Studio",
+      "scenario": "Invoice directive and bypass request",
+      "synthetic": true,
+      "providerRecall": "Recalled 30 confirmed Mainnet memories",
+      "returned": 30,
+      "baseline": "High risk / verification required",
+      "learned": "High risk / verification required",
+      "expectedApprovalAllowed": false,
+      "actualApprovalAllowed": false,
+      "correct": true,
+      "baselinePreserved": true,
+      "staleApplied": 0,
+      "wrongScopeApplied": 0,
+      "control": false,
+      "addedCritical": 6,
+      "applied": 7,
+      "citations": [
+        {
+          "blobId": "3WogKM2IAtehjpvTCgIWpi3S7-Ciy5rJw4usKe-bf2g",
+          "policyId": "1e5dd96a-90e6-47a9-a840-6036ebcfdb19"
+        },
+        {
+          "blobId": "56SOSxSVJVwSkZGFmCN7Sx2DUMBLlovypLYfSFrMoW4",
+          "policyId": "6181df21-1d8d-4fe4-900e-9d32e5dece60"
+        },
+        {
+          "blobId": "v8OD2R59cXEjANkoV5UY9HSIInE-SY1tOBzZY7uerYQ",
+          "policyId": "1e13b709-fc08-4943-b139-7c270c19d913"
+        },
+        {
+          "blobId": "k_VAehYdw7pjBjGTW4X4gOjCS4xDIheFZoItuHWMHyQ",
+          "policyId": "48f13c23-23d5-4424-aa1f-c70bc35e5b20"
+        },
+        {
+          "blobId": "T5Zlt_7PXvQaySFPOIY0VqmTxz4n8WZYZV2MAgb5p1U",
+          "policyId": "0528915d-7056-4634-9bde-3ba5742fe25b"
+        },
+        {
+          "blobId": "pPYsV-RKCESYlutuJDdc9lj9pxV2ixSA_zMHRDr2CM4",
+          "policyId": "6651bfb1-0b09-4ac4-b126-a55555ed3dd1"
+        },
+        {
+          "blobId": "i3nSnl9ix5Es129QXaW1gUggnN6t0NaNAZubOMyb-G4",
+          "policyId": "272da366-0028-456b-9af0-2959eb001433"
+        }
+      ]
+    },
+    {
+      "supplier": "Northstar Studio",
+      "scenario": "Exact independently verified exception",
+      "synthetic": true,
+      "providerRecall": "Recalled 30 confirmed Mainnet memories",
+      "returned": 30,
+      "baseline": "Needs review",
+      "learned": "High risk / verification required",
+      "expectedApprovalAllowed": true,
+      "actualApprovalAllowed": true,
+      "correct": true,
+      "baselinePreserved": true,
+      "staleApplied": 0,
+      "wrongScopeApplied": 0,
+      "control": false,
+      "addedCritical": 6,
+      "applied": 7,
+      "citations": [
+        {
+          "blobId": "3WogKM2IAtehjpvTCgIWpi3S7-Ciy5rJw4usKe-bf2g",
+          "policyId": "1e5dd96a-90e6-47a9-a840-6036ebcfdb19"
+        },
+        {
+          "blobId": "56SOSxSVJVwSkZGFmCN7Sx2DUMBLlovypLYfSFrMoW4",
+          "policyId": "6181df21-1d8d-4fe4-900e-9d32e5dece60"
+        },
+        {
+          "blobId": "v8OD2R59cXEjANkoV5UY9HSIInE-SY1tOBzZY7uerYQ",
+          "policyId": "1e13b709-fc08-4943-b139-7c270c19d913"
+        },
+        {
+          "blobId": "k_VAehYdw7pjBjGTW4X4gOjCS4xDIheFZoItuHWMHyQ",
+          "policyId": "48f13c23-23d5-4424-aa1f-c70bc35e5b20"
+        },
+        {
+          "blobId": "T5Zlt_7PXvQaySFPOIY0VqmTxz4n8WZYZV2MAgb5p1U",
+          "policyId": "0528915d-7056-4634-9bde-3ba5742fe25b"
+        },
+        {
+          "blobId": "pPYsV-RKCESYlutuJDdc9lj9pxV2ixSA_zMHRDr2CM4",
+          "policyId": "6651bfb1-0b09-4ac4-b126-a55555ed3dd1"
+        },
+        {
+          "blobId": "i3nSnl9ix5Es129QXaW1gUggnN6t0NaNAZubOMyb-G4",
+          "policyId": "272da366-0028-456b-9af0-2959eb001433"
+        }
+      ],
+      "note": "Synthetic human attestation; real recalled policies."
+    },
+    {
+      "supplier": "Northstar Studio",
+      "scenario": "Expired human exception",
+      "synthetic": true,
+      "providerRecall": "Recalled 30 confirmed Mainnet memories",
+      "returned": 30,
+      "baseline": "Needs review",
+      "learned": "High risk / verification required",
+      "expectedApprovalAllowed": false,
+      "actualApprovalAllowed": false,
+      "correct": true,
+      "baselinePreserved": true,
+      "staleApplied": 0,
+      "wrongScopeApplied": 0,
+      "control": false,
+      "addedCritical": 6,
+      "applied": 7,
+      "citations": [
+        {
+          "blobId": "3WogKM2IAtehjpvTCgIWpi3S7-Ciy5rJw4usKe-bf2g",
+          "policyId": "1e5dd96a-90e6-47a9-a840-6036ebcfdb19"
+        },
+        {
+          "blobId": "56SOSxSVJVwSkZGFmCN7Sx2DUMBLlovypLYfSFrMoW4",
+          "policyId": "6181df21-1d8d-4fe4-900e-9d32e5dece60"
+        },
+        {
+          "blobId": "v8OD2R59cXEjANkoV5UY9HSIInE-SY1tOBzZY7uerYQ",
+          "policyId": "1e13b709-fc08-4943-b139-7c270c19d913"
+        },
+        {
+          "blobId": "k_VAehYdw7pjBjGTW4X4gOjCS4xDIheFZoItuHWMHyQ",
+          "policyId": "48f13c23-23d5-4424-aa1f-c70bc35e5b20"
+        },
+        {
+          "blobId": "T5Zlt_7PXvQaySFPOIY0VqmTxz4n8WZYZV2MAgb5p1U",
+          "policyId": "0528915d-7056-4634-9bde-3ba5742fe25b"
+        },
+        {
+          "blobId": "pPYsV-RKCESYlutuJDdc9lj9pxV2ixSA_zMHRDr2CM4",
+          "policyId": "6651bfb1-0b09-4ac4-b126-a55555ed3dd1"
+        },
+        {
+          "blobId": "i3nSnl9ix5Es129QXaW1gUggnN6t0NaNAZubOMyb-G4",
+          "policyId": "272da366-0028-456b-9af0-2959eb001433"
+        }
+      ],
+      "note": "Synthetic human attestation; real recalled policies."
+    },
+    {
+      "supplier": "Northstar Studio",
+      "scenario": "Edited instructions invalidate exception",
+      "synthetic": true,
+      "providerRecall": "Recalled 30 confirmed Mainnet memories",
+      "returned": 30,
+      "baseline": "Needs review",
+      "learned": "High risk / verification required",
+      "expectedApprovalAllowed": false,
+      "actualApprovalAllowed": false,
+      "correct": true,
+      "baselinePreserved": true,
+      "staleApplied": 0,
+      "wrongScopeApplied": 0,
+      "control": false,
+      "addedCritical": 6,
+      "applied": 7,
+      "citations": [
+        {
+          "blobId": "3WogKM2IAtehjpvTCgIWpi3S7-Ciy5rJw4usKe-bf2g",
+          "policyId": "1e5dd96a-90e6-47a9-a840-6036ebcfdb19"
+        },
+        {
+          "blobId": "56SOSxSVJVwSkZGFmCN7Sx2DUMBLlovypLYfSFrMoW4",
+          "policyId": "6181df21-1d8d-4fe4-900e-9d32e5dece60"
+        },
+        {
+          "blobId": "v8OD2R59cXEjANkoV5UY9HSIInE-SY1tOBzZY7uerYQ",
+          "policyId": "1e13b709-fc08-4943-b139-7c270c19d913"
+        },
+        {
+          "blobId": "k_VAehYdw7pjBjGTW4X4gOjCS4xDIheFZoItuHWMHyQ",
+          "policyId": "48f13c23-23d5-4424-aa1f-c70bc35e5b20"
+        },
+        {
+          "blobId": "T5Zlt_7PXvQaySFPOIY0VqmTxz4n8WZYZV2MAgb5p1U",
+          "policyId": "0528915d-7056-4634-9bde-3ba5742fe25b"
+        },
+        {
+          "blobId": "pPYsV-RKCESYlutuJDdc9lj9pxV2ixSA_zMHRDr2CM4",
+          "policyId": "6651bfb1-0b09-4ac4-b126-a55555ed3dd1"
+        },
+        {
+          "blobId": "i3nSnl9ix5Es129QXaW1gUggnN6t0NaNAZubOMyb-G4",
+          "policyId": "272da366-0028-456b-9af0-2959eb001433"
+        }
+      ],
+      "note": "Synthetic human attestation; real recalled policies."
+    },
+    {
+      "supplier": "Northstar Studio",
+      "scenario": "Duplicate invoice pattern",
+      "synthetic": true,
+      "providerRecall": "Recalled 30 confirmed Mainnet memories",
+      "returned": 30,
+      "baseline": "High risk / verification required",
+      "learned": "High risk / verification required",
+      "expectedApprovalAllowed": true,
+      "actualApprovalAllowed": true,
+      "correct": true,
+      "baselinePreserved": true,
+      "staleApplied": 0,
+      "wrongScopeApplied": 0,
+      "control": false,
+      "addedCritical": 2,
+      "applied": 3,
+      "citations": [
+        {
+          "blobId": "3WogKM2IAtehjpvTCgIWpi3S7-Ciy5rJw4usKe-bf2g",
+          "policyId": "1e5dd96a-90e6-47a9-a840-6036ebcfdb19"
+        },
+        {
+          "blobId": "k_VAehYdw7pjBjGTW4X4gOjCS4xDIheFZoItuHWMHyQ",
+          "policyId": "48f13c23-23d5-4424-aa1f-c70bc35e5b20"
+        },
+        {
+          "blobId": "i3nSnl9ix5Es129QXaW1gUggnN6t0NaNAZubOMyb-G4",
+          "policyId": "272da366-0028-456b-9af0-2959eb001433"
+        }
+      ]
+    },
+    {
+      "supplier": "Northstar Studio",
+      "scenario": "Remembered threshold",
+      "synthetic": true,
+      "providerRecall": "Recalled 30 confirmed Mainnet memories",
+      "returned": 30,
+      "baseline": "Needs review",
+      "learned": "Needs review",
+      "expectedApprovalAllowed": true,
+      "actualApprovalAllowed": true,
+      "correct": true,
+      "baselinePreserved": true,
+      "staleApplied": 0,
+      "wrongScopeApplied": 0,
+      "control": false,
+      "addedCritical": 0,
+      "applied": 1,
+      "citations": [
+        {
+          "blobId": "i3nSnl9ix5Es129QXaW1gUggnN6t0NaNAZubOMyb-G4",
+          "policyId": "272da366-0028-456b-9af0-2959eb001433"
+        }
+      ]
+    },
+    {
+      "supplier": "Northstar Studio",
+      "scenario": "Superseded policy must not apply",
+      "synthetic": true,
+      "providerRecall": "Recalled 30 confirmed Mainnet memories",
+      "returned": 30,
+      "baseline": "Needs review",
+      "learned": "Needs review",
+      "expectedApprovalAllowed": false,
+      "actualApprovalAllowed": false,
+      "correct": true,
+      "baselinePreserved": true,
+      "staleApplied": 0,
+      "wrongScopeApplied": 0,
+      "control": false,
+      "addedCritical": 0,
+      "applied": 0,
+      "citations": [],
+      "note": "Actual retrieved citations; local synthetic policy supersession. No provider memory altered."
+    },
+    {
+      "supplier": "Orbit Hosting",
+      "scenario": "Changed recipient",
+      "synthetic": true,
+      "providerRecall": "Recalled 30 confirmed Mainnet memories",
+      "returned": 30,
+      "baseline": "Needs review",
+      "learned": "High risk / verification required",
+      "expectedApprovalAllowed": false,
+      "actualApprovalAllowed": false,
+      "correct": true,
+      "baselinePreserved": true,
+      "staleApplied": 0,
+      "wrongScopeApplied": 0,
+      "control": false,
+      "addedCritical": 2,
+      "applied": 2,
+      "citations": [
+        {
+          "blobId": "9Z2VE-rj2-XE8s_KdqfUEenuJgLwGNz5-DCAyRM8Eks",
+          "policyId": "8aaacf81-7974-4a5c-905b-6ba3397a6e28"
+        },
+        {
+          "blobId": "sbJPgBU54G1KDIX3Kw4qoGDbKKLn3SCyaW8zgG2LR_c",
+          "policyId": "d08ab559-3cb5-4c43-b5e4-0fe21fb09630"
+        }
+      ]
+    },
+    {
+      "supplier": "Orbit Hosting",
+      "scenario": "Routine unchanged control",
+      "synthetic": true,
+      "providerRecall": "Recalled 30 confirmed Mainnet memories",
+      "returned": 30,
+      "baseline": "Insufficient evidence",
+      "learned": "Insufficient evidence",
+      "expectedApprovalAllowed": true,
+      "actualApprovalAllowed": true,
+      "correct": true,
+      "baselinePreserved": true,
+      "staleApplied": 0,
+      "wrongScopeApplied": 0,
+      "control": true,
+      "addedCritical": 0,
+      "applied": 0,
+      "citations": []
+    },
+    {
+      "supplier": "Orbit Hosting",
+      "scenario": "Invoice directive and bypass request",
+      "synthetic": true,
+      "providerRecall": "Recalled 30 confirmed Mainnet memories",
+      "returned": 30,
+      "baseline": "High risk / verification required",
+      "learned": "High risk / verification required",
+      "expectedApprovalAllowed": false,
+      "actualApprovalAllowed": false,
+      "correct": true,
+      "baselinePreserved": true,
+      "staleApplied": 0,
+      "wrongScopeApplied": 0,
+      "control": false,
+      "addedCritical": 2,
+      "applied": 2,
+      "citations": [
+        {
+          "blobId": "9Z2VE-rj2-XE8s_KdqfUEenuJgLwGNz5-DCAyRM8Eks",
+          "policyId": "8aaacf81-7974-4a5c-905b-6ba3397a6e28"
+        },
+        {
+          "blobId": "sbJPgBU54G1KDIX3Kw4qoGDbKKLn3SCyaW8zgG2LR_c",
+          "policyId": "d08ab559-3cb5-4c43-b5e4-0fe21fb09630"
+        }
+      ]
+    },
+    {
+      "supplier": "Forma Legal",
+      "scenario": "Changed recipient",
+      "synthetic": true,
+      "providerRecall": "Recalled 30 confirmed Mainnet memories",
+      "returned": 30,
+      "baseline": "Needs review",
+      "learned": "High risk / verification required",
+      "expectedApprovalAllowed": false,
+      "actualApprovalAllowed": false,
+      "correct": true,
+      "baselinePreserved": true,
+      "staleApplied": 0,
+      "wrongScopeApplied": 0,
+      "control": false,
+      "addedCritical": 1,
+      "applied": 1,
+      "citations": [
+        {
+          "blobId": "XlBuCNiCJsPVn4iSW07zzvIoumMieGUyxPMaJxNWg5k",
+          "policyId": "a5d3ba15-fac8-408e-bf0f-df628704e33a"
+        }
+      ]
+    },
+    {
+      "supplier": "Forma Legal",
+      "scenario": "Routine unchanged control",
+      "synthetic": true,
+      "providerRecall": "Recalled 30 confirmed Mainnet memories",
+      "returned": 30,
+      "baseline": "Insufficient evidence",
+      "learned": "Insufficient evidence",
+      "expectedApprovalAllowed": true,
+      "actualApprovalAllowed": true,
+      "correct": true,
+      "baselinePreserved": true,
+      "staleApplied": 0,
+      "wrongScopeApplied": 0,
+      "control": true,
+      "addedCritical": 0,
+      "applied": 0,
+      "citations": []
+    },
+    {
+      "supplier": "Forma Legal",
+      "scenario": "Invoice directive and bypass request",
+      "synthetic": true,
+      "providerRecall": "Recalled 30 confirmed Mainnet memories",
+      "returned": 30,
+      "baseline": "High risk / verification required",
+      "learned": "High risk / verification required",
+      "expectedApprovalAllowed": false,
+      "actualApprovalAllowed": false,
+      "correct": true,
+      "baselinePreserved": true,
+      "staleApplied": 0,
+      "wrongScopeApplied": 0,
+      "control": false,
+      "addedCritical": 1,
+      "applied": 1,
+      "citations": [
+        {
+          "blobId": "XlBuCNiCJsPVn4iSW07zzvIoumMieGUyxPMaJxNWg5k",
+          "policyId": "a5d3ba15-fac8-408e-bf0f-df628704e33a"
+        }
+      ]
+    },
+    {
+      "supplier": "Lumen Research",
+      "scenario": "Changed recipient",
+      "synthetic": true,
+      "providerRecall": "Recalled 30 confirmed Mainnet memories",
+      "returned": 30,
+      "baseline": "Needs review",
+      "learned": "High risk / verification required",
+      "expectedApprovalAllowed": false,
+      "actualApprovalAllowed": false,
+      "correct": true,
+      "baselinePreserved": true,
+      "staleApplied": 0,
+      "wrongScopeApplied": 0,
+      "control": false,
+      "addedCritical": 3,
+      "applied": 3,
+      "citations": [
+        {
+          "blobId": "Bp73ib3naV1TrRpE8qKYi6cZwYep_G3dt6JaNuHosWA",
+          "policyId": "53330484-cb1c-43db-8803-552a8da7261d"
+        },
+        {
+          "blobId": "qLaF2a1YAi44wFRsC4NLKjs64nBaLS-tP5_NoRYyggg",
+          "policyId": "8274a5de-a091-406f-a504-a60547d6a175"
+        },
+        {
+          "blobId": "yk1vnCv-fnHh3S0Oxc61RnXMWshJdqAJ0f5VlD1hosI",
+          "policyId": "97772fb2-7c8f-4ca9-b2b3-3e1ef839282e"
+        }
+      ]
+    },
+    {
+      "supplier": "Lumen Research",
+      "scenario": "Routine unchanged control",
+      "synthetic": true,
+      "providerRecall": "Recalled 30 confirmed Mainnet memories",
+      "returned": 30,
+      "baseline": "Insufficient evidence",
+      "learned": "Insufficient evidence",
+      "expectedApprovalAllowed": true,
+      "actualApprovalAllowed": true,
+      "correct": true,
+      "baselinePreserved": true,
+      "staleApplied": 0,
+      "wrongScopeApplied": 0,
+      "control": true,
+      "addedCritical": 0,
+      "applied": 0,
+      "citations": []
+    },
+    {
+      "supplier": "Lumen Research",
+      "scenario": "Invoice directive and bypass request",
+      "synthetic": true,
+      "providerRecall": "Recalled 30 confirmed Mainnet memories",
+      "returned": 30,
+      "baseline": "High risk / verification required",
+      "learned": "High risk / verification required",
+      "expectedApprovalAllowed": false,
+      "actualApprovalAllowed": false,
+      "correct": true,
+      "baselinePreserved": true,
+      "staleApplied": 0,
+      "wrongScopeApplied": 0,
+      "control": false,
+      "addedCritical": 3,
+      "applied": 3,
+      "citations": [
+        {
+          "blobId": "Bp73ib3naV1TrRpE8qKYi6cZwYep_G3dt6JaNuHosWA",
+          "policyId": "53330484-cb1c-43db-8803-552a8da7261d"
+        },
+        {
+          "blobId": "qLaF2a1YAi44wFRsC4NLKjs64nBaLS-tP5_NoRYyggg",
+          "policyId": "8274a5de-a091-406f-a504-a60547d6a175"
+        },
+        {
+          "blobId": "yk1vnCv-fnHh3S0Oxc61RnXMWshJdqAJ0f5VlD1hosI",
+          "policyId": "97772fb2-7c8f-4ca9-b2b3-3e1ef839282e"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Small authored synthetic dataset, not labeled real-world fraud.",
+    "Server recall returns up to 30 candidates: applicable citation fraction describes policy scope/use, not measured semantic ranking precision.",
+    "Hard approval holds are separate from remembered review priority; valid human verification can release a hold while contextual findings remain.",
+    "Independent contract unit tests cover contradictory text and invoice-scoped rules. No reduced fraud rate or population accuracy is claimed."
+  ]
+}

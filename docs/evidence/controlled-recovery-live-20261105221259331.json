@@ -1,0 +1,73 @@
+{
+  "checkedAt": "2026-11-05T22:12:51.387Z",
+  "readOnly": true,
+  "expectedCommit": "3686fcbfb35d99c765cc41839346fac841cadb67",
+  "recoveryRequests": 0,
+  "financialRequests": 0,
+  "customerSessionAccess": 0,
+  "liveCommit": "3686fcbfb35d99c765cc41839346fac841cadb67",
+  "releaseHealthy": true,
+  "publicRoutes": [
+    {
+      "path": "/",
+      "status": 200
+    },
+    {
+      "path": "/services",
+      "status": 200
+    },
+    {
+      "path": "/courtroom",
+      "status": 200
+    },
+    {
+      "path": "/proof",
+      "status": 200
+    },
+    {
+      "path": "/try",
+      "status": 200
+    },
+    {
+      "path": "/connect",
+      "status": 200
+    },
+    {
+      "path": "/app",
+      "status": 200
+    }
+  ],
+  "statusHttp": 200,
+  "recoveryStatus": {
+    "enabled": false,
+    "checkedAt": "2026-11-05T22:12:59.250Z",
+    "scope": "owner:0xc0f3fbf8a029fe354571b58d9e079c1aa4e9ca111a2b025dca470d4bc96397a8",
+    "verified": true,
+    "allOriginalsClosed": false,
+    "issues": [],
+    "nextId": "b0386342-a7c2-40ba-909e-9edf17501767",
+    "records": [
+      {
+        "id": "b0386342-a7c2-40ba-909e-9edf17501767",
+        "payer": "0xc0f3fbf8a029fe354571b58d9e079c1aa4e9ca111a2b025dca470d4bc96397a8",
+        "digest": "7GiPuDNq1vN8pLn2cqJf8kYMrt9zmbdDBbAfdoYtGdRj",
+        "amountAtomic": "1000000",
+        "state": "approved",
+        "recoveredVerified": false,
+        "auditId": null,
+        "releasedAtomic": "0",
+        "issues": []
+      }
+    ],
+    "wallet": {
+      "reservedAtomic": "1000000",
+      "liabilityAtomic": "1000000"
+    },
+    "sponsor": {
+      "reservedAtomic": "0",
+      "liabilityAtomic": "0"
+    }
+  },
+  "actualRuntimeRecoveryEnabled": false,
+  "verified": true
+}
