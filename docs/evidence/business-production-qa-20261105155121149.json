@@ -1,0 +1,165 @@
+{
+  "checkedAt": "2026-11-05T15:50:58.864Z",
+  "expectedCommit": "f8ddebc2246b4b4d2fe4b79de8707f0f55ab909a",
+  "scope": "New synthetic business workspace; no original private workspace access",
+  "checks": [
+    {
+      "code": "EXACT_PRODUCTION_RELEASE",
+      "passed": true
+    },
+    {
+      "code": "QA_ORGANIZATION_BOUND",
+      "passed": true
+    },
+    {
+      "code": "EXISTING_SYNTHETIC_SESSION_AUTHENTICATED",
+      "passed": true
+    },
+    {
+      "code": "EXISTING_SYNTHETIC_SESSION_AUTHENTICATED",
+      "passed": true
+    },
+    {
+      "code": "EXISTING_SYNTHETIC_SESSION_AUTHENTICATED",
+      "passed": true
+    },
+    {
+      "code": "THREE_ORIGINAL_QA_SESSIONS_RETAINED",
+      "passed": true
+    },
+    {
+      "code": "FAILED_UPLOAD_PERSISTED_STATE_RECONCILED",
+      "passed": true
+    },
+    {
+      "code": "EXISTING_DISTINCT_VERIFIER_MEMBERSHIP",
+      "passed": true
+    },
+    {
+      "code": "FOREIGN_WORKSPACE_REFUSED",
+      "passed": true
+    },
+    {
+      "code": "REAL_PRODUCTION_PDF_EXTRACTION",
+      "passed": true
+    },
+    {
+      "code": "ORIGINAL_PDF_FINGERPRINT",
+      "passed": true
+    },
+    {
+      "code": "PIXEL_SOURCE_PREVIEW",
+      "passed": true
+    },
+    {
+      "code": "CONFIRMED_EXTRACTION_SAVED",
+      "passed": true
+    },
+    {
+      "code": "UPLOAD_DOES_NOT_ESTABLISH_TRUST",
+      "passed": true
+    },
+    {
+      "code": "DUPLICATE_FILE_REFUSED",
+      "passed": true
+    },
+    {
+      "code": "IMMUTABLE_PROPOSAL_CREATED",
+      "passed": true
+    },
+    {
+      "code": "SERVER_REFUSES_SELF_APPROVAL",
+      "passed": true
+    },
+    {
+      "code": "DISTINCT_IDENTITY_DECISION",
+      "passed": true
+    },
+    {
+      "code": "PERSISTED_DISTINCT_VERIFIER_REFERENCE",
+      "passed": true
+    },
+    {
+      "code": "PERSISTED_TIMELINE_AUDIT",
+      "passed": true
+    },
+    {
+      "code": "LAYOUT_1440",
+      "passed": true
+    },
+    {
+      "code": "LAYOUT_390",
+      "passed": true
+    },
+    {
+      "code": "NO_BROWSER_ERRORS_OR_FINANCIAL_WRITES",
+      "passed": true
+    },
+    {
+      "code": "MATERIAL_EDIT_ACCEPTED",
+      "passed": true
+    },
+    {
+      "code": "APPROVAL_INVALIDATED",
+      "passed": true
+    },
+    {
+      "code": "REVOKED_SESSION_REFUSED",
+      "passed": true
+    },
+    {
+      "code": "TENANT_ISOLATED_SOURCE",
+      "passed": true
+    },
+    {
+      "code": "REAL_PRODUCTION_IMAGE_OCR",
+      "passed": true
+    },
+    {
+      "code": "OCR_FIELDS_REQUIRE_REVIEW",
+      "passed": true
+    },
+    {
+      "code": "UNCONFIGURED_FORWARDING_HONESTLY_DISABLED",
+      "passed": true
+    }
+  ],
+  "financialQuotes": 0,
+  "preparations": 0,
+  "financialSignatures": 0,
+  "recoveryRequests": 0,
+  "memoryWrites": 0,
+  "organizationId": "b5e99afe-9eb1-4ef2-8722-211a090e1065",
+  "pdfResponse": {
+    "status": 200,
+    "body": "parsed"
+  },
+  "documentId": "3397f11c-babd-4932-9b5f-8ddee16d0ea3",
+  "invoiceId": "e8d423f3-cb58-4317-aee3-c67d9d45f065",
+  "proposalId": "d1826d08-49e8-4088-ace8-491134d029e5",
+  "timelineEvents": 6,
+  "layouts": [
+    {
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "overflow": false
+    }
+  ],
+  "forwarding": {
+    "configured": false,
+    "provider": "Resend",
+    "missing": [
+      "Resend receiving API",
+      "Verified webhook",
+      "Receiving domain",
+      "Private document storage"
+    ],
+    "liveEndToEndVerified": false,
+    "senderTrust": "A verified webhook authenticates delivery by Resend, not the sender or supplier.",
+    "automaticSupplierApproval": false
+  },
+  "verified": true
+}

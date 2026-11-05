@@ -124,6 +124,8 @@ npm run test:e2e:qa
 
 The QA runner creates a disposable local database and disables live payment, memory, storage and email credentials. Tests cover document extraction, tenant isolation, maker-checker identity and concurrency, provenance, wallet adapter/payer binding and settlement integrity. Physical wallet acceptance and real provider configuration are reported separately. [Current results](docs/TEST_RESULTS.md).
 
+Release validation: **316 unit/integration passes**, **62 browser passes with two deliberate live-provider skips**, isolated serverless PDF/OCR acceptance, and the deployed synthetic maker-checker workflow. [Verified release and remaining owner actions](docs/BUSINESS_RELEASE_2026-11-05.md).
+
 OCR can misread payment details; human source review remains mandatory. No antivirus service is claimed. Private attachment retention and live email require owner setup. Increasing the memory count does not establish better fraud detection.
 
 ## Documentation

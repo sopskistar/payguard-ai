@@ -15,7 +15,7 @@ const makerKey = Ed25519Keypair.generate(),
   checkerKey = Ed25519Keypair.generate(),
   outsiderKey = Ed25519Keypair.generate();
 const recipient = '0x' + 'a'.repeat(64),
-  invoiceNumber = 'BUSINESS-E2E-01';
+  invoiceNumber = 'BUSINESS-E2E-20261105-SYNTHETIC-01';
 async function authenticate(context: BrowserContext, key: Ed25519Keypair) {
   const r = await context.request.post(origin + '/api/auth/wallet/challenge', {
     headers: { origin },
@@ -201,10 +201,26 @@ test.describe('integrated business workflow; real local APIs with disposable ide
     expect(change.checkedBy).not.toBe(change.proposedBy);
     expect(snapshot.profiles[0].trustedRecipient).toBe(recipient);
     await page.setViewportSize({ width: 390, height: 844 });
+    const nameSpace = await page.locator('.business-invoice.selected').evaluate((el) => ({
+      nameHeight: el.querySelector('strong')!.getBoundingClientRect().height,
+      lineHeight: parseFloat(getComputedStyle(el.querySelector('strong')!).lineHeight),
+      nameBottom: el.querySelector('strong')!.getBoundingClientRect().bottom,
+      numberTop: el.querySelector('strong + span')!.getBoundingClientRect().top,
+    }));
+    expect(nameSpace.nameHeight).toBeLessThanOrEqual(nameSpace.lineHeight * 2.1);
+    expect(nameSpace.numberTop).toBeGreaterThanOrEqual(nameSpace.nameBottom);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(
       true,
     );
-    await page.screenshot({ path: '.data/business-workflow-mobile.png', fullPage: true });
+    await page.evaluate(() => {
+      (document.activeElement as HTMLElement)?.blur();
+      window.scrollTo(0, 0);
+    });
+    await page.screenshot({
+      path: '.data/business-workflow-mobile.png',
+      fullPage: true,
+      animations: 'disabled',
+    });
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.screenshot({ path: '.data/business-workflow-desktop.png', fullPage: true });
     await page.close();

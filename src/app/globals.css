@@ -4774,6 +4774,17 @@ tr:hover td {
   word-break: break-word;
 }
 @media (max-width: 600px) {
+  .business-invoice {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: start;
+    gap: 0.5rem;
+  }
+  .business-invoice > strong,
+  .business-invoice > span {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
   .business-workspace .comparison-grid {
     grid-template-columns: 1fr;
   }

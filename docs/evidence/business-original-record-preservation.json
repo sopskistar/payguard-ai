@@ -1,0 +1,40 @@
+{
+  "checkedAt": "2026-11-05T16:12:10.812Z",
+  "readOnly": true,
+  "liveCommitAtWorkflowVerification": "f8ddebc2246b4b4d2fe4b79de8707f0f55ab909a",
+  "recoveryEnabled": false,
+  "customerRecoveredOriginals": 3,
+  "administratorOriginalState": "approved",
+  "customerReservedMist": "0",
+  "administratorNamedReservedMist": "1000000",
+  "publicSponsorReservedMist": "0",
+  "otherPreservedLiabilitiesMist": "4000000",
+  "issues": [],
+  "counts": {
+    "receiptsAndReports": 3,
+    "confirmedMemories": 33,
+    "memoryRows": 34,
+    "harborlineRecords": 1,
+    "submissions": 3,
+    "settling": 0
+  },
+  "protectedHashesUnchanged": {
+    "receipts": true,
+    "memories": true,
+    "harborline": true,
+    "otherIntents": true,
+    "intentSet": true,
+    "workspaceBindings": true,
+    "submissionsAndSettling": true
+  },
+  "recoveryRequests": 0,
+  "financialQuotes": 0,
+  "preparations": 0,
+  "financialSignatures": 0,
+  "submissions": 0,
+  "newWalrusWrites": 0,
+  "physicalNightlyMatch": "owner-confirmed",
+  "physicalNightlyFinancialAcceptance": "not yet performed",
+  "customerCheckoutAccountingEligible": true,
+  "administratorHoldBlocksCustomer": false
+}

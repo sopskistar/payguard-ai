@@ -1,0 +1,29 @@
+{
+  "checkedAt": "2026-11-05T16:07:11.039Z",
+  "readOnly": true,
+  "financialRequests": 0,
+  "providerWrites": 0,
+  "checks": [
+    {
+      "label": "Invoice intake and forwarding",
+      "passed": true
+    },
+    {
+      "label": "Supplier Change Timeline",
+      "passed": true
+    },
+    {
+      "label": "Two-Person Verification",
+      "passed": true
+    },
+    {
+      "label": "16 distinct synthetic learning records",
+      "passed": true
+    },
+    {
+      "label": "Published article distinguishes post-submission functionality",
+      "passed": true
+    }
+  ],
+  "verified": true
+}
