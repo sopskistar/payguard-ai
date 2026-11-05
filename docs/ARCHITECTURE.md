@@ -1,6 +1,6 @@
 # Architecture
 
-PayGuard Verify is a Next.js application with individual wallet-authenticated accounts and separate owner administration. Public routes return explicitly synthetic fixtures. Server routes validate the session, origin, tenant ownership, input schema and quotas before touching owner records or providers. Supplier payments have no transaction-signing path. The separate first-party x402 service-payment pilot supports configured Mainnet and Testnet flows, with explicit financial approval and strict owner/member payer binding. Three developer-controlled Mainnet purchases are recorded; physical Nightly production financial acceptance remains independently unverified.
+PayGuard Verify is a Next.js application with personal wallet-authenticated accounts, explicitly shared business organizations and separate platform-owner administration. Public routes return explicitly synthetic fixtures. Server routes validate the session, origin, tenant ownership, input schema and quotas before touching owner records or providers. Supplier payments have no transaction-signing path. The separate first-party x402 service-payment pilot supports configured Mainnet and Testnet flows, with explicit financial approval and strict owner/member payer binding. Three developer-controlled Mainnet purchases are recorded; physical Nightly production financial acceptance remains independently unverified.
 
 ```mermaid
 flowchart TD
@@ -59,3 +59,15 @@ Two additive service tables preserve explicitly approved x402 intents and unique
 ## Wallet identity and isolation
 
 See [the security design and tests](WALLET_SECURITY.md). A browser-bound, single-use, five-minute personal-message challenge is verified by Mysten's SDK before a member profile and opaque session are created. Session ownership is authoritative; client tenant IDs are never accepted. Role checks separately protect administrator operations; member checkout binds the payer to the authenticated wallet profile. All invoice, vendor, rule, audit, wallet, correction and memory operations use server-derived ownership. Operator-managed Walrus credentials stay server-side, and exact owned blob/text/policy checks protect recall even when a provider returns foreign results. Namespaces alone are not authorization.
+
+## Post-submission business workflows
+
+Migration `0007` adds six tables (29 total): organizations, identity-bound memberships, supplier-change proposals, intake documents, inbound routes and idempotent inbound-message claims. Existing personal tenants and financial tables are unchanged. Organization membership grants access to explicitly shared invoice/supplier/review data; it never substitutes an organization payer or exposes another member’s private service-payment records.
+
+New `/api/business/[[...path]]` routes derive the business tenant from an active membership. Request and decision writes lock the workspace identity, organization and invoice/vendor in a consistent order. Roles are read from Neon each time. Proposer and verifier IDs remain distinct even after role changes; stale sessions lose revoked membership immediately. The instruction hash, supplier revision and current independent attestation bind each approval. Legacy mutation paths enforce the same business gate.
+
+`/api/intake/[[...path]]` separates signed provider webhooks from ordinary same-origin session actions. Received messages claim durable provider IDs and attachment keys. Uploads use content validation, bounded PDF/image parsing, local English OCR, source review and tenant-owned SHA-256 drafts. Raw originals are ephemeral by default; optional retained sources and normalized previews use private Blob storage. Expiry denies source access; authenticated deletion and the configured retention task handle physical removal without deleting invoices or audit evidence.
+
+Supplier timelines merge authentic audit/row timestamps with retained memory-job and policy references. Retrieval and application remain distinct. Learning candidates are database review events, not confirmed Walrus records. No new Mainnet write is authorized by enabling the business UI.
+
+[Workflow, security and external setup](BUSINESS_WORKFLOWS.md) · [exact proposed memory batch](BUSINESS_MEMORY_BATCH.md).

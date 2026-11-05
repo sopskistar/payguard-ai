@@ -1,0 +1,61 @@
+{
+  "checkedAt": "2026-11-05T13:37:11.400227+00:00",
+  "unitIntegration": {
+    "passed": 316,
+    "failed": 0,
+    "success": true
+  },
+  "browser": {
+    "startTime": "2026-11-05T13:31:45.075Z",
+    "duration": 123637.224,
+    "expected": 62,
+    "skipped": 2,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "typescript": "passed",
+  "lint": {
+    "errors": 0,
+    "existingUnrelatedWarnings": 1
+  },
+  "format": "passed",
+  "optimizedBuild": "passed",
+  "dependencyAdvisories": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0,
+    "total": 0
+  },
+  "environment": "Disposable local PGlite, live credentials disabled",
+  "physicalNightlyFinancialTest": "not performed",
+  "liveInboundEmail": "not configured or claimed",
+  "privateBlobAcceptance": "not configured or claimed",
+  "newWalrusWrites": 0,
+  "memoryEvaluation": {
+    "existingLiveRecallContractsPassed": 18,
+    "total": 18,
+    "readOnlyProviderJobBlobNamespaceChecks": 33
+  },
+  "coverage": [
+    "real PDF and scanned PDF extraction",
+    "actual local English PNG/JPEG/WebP OCR",
+    "source fingerprint preservation",
+    "source review and duplicate protection",
+    "malformed documents and untrusted instructions",
+    "requester/verifier identity and role escalation refusal",
+    "concurrent decisions and stale approval invalidation",
+    "revoked and foreign session refusal",
+    "timeline authentic ordering and memory provenance",
+    "signed webhook replay/idempotency and attachment SSRF boundaries",
+    "workspace upload rate quota and false supplier matches",
+    "historical recovery and independent customer checkout gate",
+    "existing wallet and settlement regressions"
+  ],
+  "initialBrowserRuns": "Preserved focused runs expose selector issues, PDF buffer transfer and optimized OCR module-path failures. The final focused 12-case and full 62-case runs pass.",
+  "credentialScan": {
+    "sourceAndBrowserFiles": 189,
+    "configuredSecretMatches": 0
+  }
+}

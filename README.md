@@ -2,87 +2,103 @@
 
 **Verify before you pay. Remember what nearly went wrong.**
 
-PayGuard Verify helps teams identify suspicious supplier payment-instruction changes, preserve mandatory human verification, and recall trusted decisions through Walrus Memory. It makes changed payment destinations visible before someone approves an invoice.
+PayGuard Verify helps a business compare supplier payment instructions with its established records, keep changed destinations on hold, and record an independent human check. Approved, minimized policies can be recalled through Walrus Memory during later reviews.
 
-[Live App](https://payguard-ai-henna.vercel.app/) · [Watch Demo](https://youtu.be/i2ZsEPIegy4) · [Try Interactive Demo](https://payguard-ai-henna.vercel.app/try) · [Memory Courtroom](https://payguard-ai-henna.vercel.app/courtroom) · [Mainnet Proof](https://payguard-ai-henna.vercel.app/proof) · [Technical Write-up](https://sopskistar.github.io/payguard-ai/)
+[Live app](https://payguard-ai-henna.vercel.app/) · [Approved demo](https://youtu.be/i2ZsEPIegy4) · [Interactive walkthrough](https://payguard-ai-henna.vercel.app/try) · [Memory Courtroom](https://payguard-ai-henna.vercel.app/courtroom) · [Mainnet proof](https://payguard-ai-henna.vercel.app/proof) · [Technical article](https://sopskistar.github.io/payguard-ai/)
 
-[![Watch the 2:46 PayGuard Verify official demo on YouTube](public/demo-approved-poster.png)](https://youtu.be/i2ZsEPIegy4)
+[![Watch the approved 2:46 PayGuard Verify demonstration](public/demo-approved-poster.png)](https://youtu.be/i2ZsEPIegy4)
+
+The approved video shows the earlier submitted version. The business intake, timeline and maker-checker features described below are subsequent additions.
 
 ## The problem
 
-A familiar supplier sends an invoice with updated payment details. The amount and business name may be unchanged, but the destination is different.
+An invoice looks familiar, but the bank account or payment address has changed. A convincing email, a valid address and a familiar supplier name do not establish who controls the destination.
 
-PayGuard compares that destination with the established record and keeps approval on hold until the change is independently verified. It supports a careful review; it does not guarantee fraud prevention.
+PayGuard makes the difference visible and retains the human verification requirement. It supports a careful review; it does not guarantee fraud prevention or authenticate a supplier automatically.
 
 ## How it works
 
-1. Capture an invoice through a form or supported file import.
-2. Compare proposed and established payment instructions.
-3. Flag suspicious changes and instructions embedded in invoice text.
-4. Keep human verification mandatory for a changed recipient.
-5. Record an authorized decision and its audit evidence.
-6. With consent, preserve minimized policy context in Walrus and recall relevant trusted decisions later.
-7. Review findings, citations and decision history together.
+1. Upload an invoice or enter its details. Review extracted fields against the source.
+2. Compare the proposed destination with the supplier’s established reference.
+3. Inspect changed recipients, conflicting instructions, payment links and embedded bypass requests.
+4. In a business workspace, submit a verification request to a different authorized identity.
+5. Record the independently obtained evidence and decision in the supplier timeline.
+6. Propose a minimized policy for separate, consent-based Walrus learning.
+7. On a later review, distinguish retrieved memory from context that actually influenced the result.
 
-## Features
+## Invoice intake and forwarding
 
-- Supplier recipient comparison, suspicious-instruction detection and human verification holds.
-- Invoice ingestion, review and audit history in isolated private wallet workspaces.
-- Walrus-backed persistent memory with provenance and tenant ownership checks.
-- Memory OFF/ON comparisons and an interactive Memory Courtroom.
-- Tatum Sui transaction inspection against explicit recipient and payment terms.
-- x402 payment-backed analysis with onchain receipts and reopenable delivered reports.
+Invoice Inbox accepts **PDF, PNG, JPEG, WebP, UTF-8 text and single-row CSV**. Text PDFs use deterministic extraction. Images and scanned PDFs use a bundled English OCR engine; the document is not sent to an external OCR or LLM service.
 
-## Verified evidence
+Extracted fields remain suggestions. Missing and conflicting values require review, supplier-name matches do not establish trust, and a document never creates a trusted destination automatically. Source previews are rendered pixels, and embedded links are displayed without being opened.
 
-### Walrus Memory
+Uploads are limited to **3 MB**, with at most **15 PDF pages** or **3 scanned pages**. Raw originals are processed ephemerally by default. Optional retained attachments use private Vercel Blob storage behind tenant-authorized routes.
 
-The **November 3, 2026** read-only recovery confirmed **33 Mainnet records**: the original 32 plus one member correction. Completed job, blob and namespace references were rechecked; all original records were preserved. Recall checks bind memory to the authenticated tenant and exact stored evidence. [Provider check](docs/evidence/recovered-walrus-provider-check.json) · [preservation check](docs/evidence/nightly-account-preservation.json).
+The Resend inbound integration verifies raw webhook signatures, binds an unpredictable intake address to one workspace, deduplicates messages and handles attachments through the same review flow. **Live forwarding requires owner configuration and a real inbound acceptance test.** It is disabled when the receiving domain, provider credentials, webhook secret or private storage is absent. [Intake and setup boundaries](docs/BUSINESS_WORKFLOWS.md).
 
-The public Courtroom presents a **November 1 recorded comparison**, not a fresh anonymous recall. Historical Experiment 3 returned **OFF: 0 / ON: 7 citations**, with mandatory safety holds retained. A separate evaluation passed **18/18 authored synthetic learning contracts**; this is not a real-world fraud-detection accuracy score. [Memory evidence](docs/MEMORY_EVALUATION.md) · [evaluation results](docs/evidence/learning-report.json).
+## Supplier Change Timeline
 
-### Tatum and Sui
+Vendor Trust and Team Verification show a chronological supplier history: invoice arrivals and edits, recipient changes, proposals, decisions, invalidations and learning events.
 
-Three real Sui Mainnet x402 settlements each credited the merchant **0.001 SUI**: **0.003 SUI total**, with three persisted analysis reports. November 3 reads independently reconfirmed execution through Tatum Sui gRPC and a Sui fullnode. Saved reports reopened without another charge. [Full evidence and receipts](docs/MAINNET_PROOF.md).
+Database audit records and Walrus confirmation evidence are labeled separately. Memory entries include retained job/blob/namespace references, applicability and actual retrieval/application timestamps where recorded. Missing historical actors or evidence are shown as unknown rather than reconstructed.
+
+## Two-Person Verification
+
+A business administrator explicitly adds existing, wallet-authenticated identities as **requester**, **verifier** or **organization administrator**. Members share authorized business records; personal service-payment workspaces and payer permissions remain separate.
+
+A requester cannot approve the same proposal, even after changing roles. The server checks current membership, serializes approval and revocation, binds the decision to the exact invoice instructions and supplier revision, and invalidates it after material changes. Legacy mutation routes retain these business safeguards.
+
+An approved supplier change **does not authorize a blockchain payment**. A human attestation records what the verifier asserts; PayGuard does not observe a callback or guarantee that two wallets represent two different people. [Workflow and security design](docs/BUSINESS_WORKFLOWS.md).
+
+## Walrus Memory
+
+The November 5 read-only audit reverified **33 distinct confirmed Mainnet blobs** across 34 database memory rows, including matching completed jobs, namespaces and current provider listings. Existing evidence is preserved.
+
+A reviewed proposal adds **17 distinct synthetic learning records** toward a target of 50. These writes remain subject to the owner’s exact manifest and cost approval; database candidates are not counted as confirmed Mainnet memories. [Batch manifest](docs/BUSINESS_MEMORY_BATCH.md).
+
+The existing live-recall evaluation passed **18/18 authored synthetic contracts**, with baseline holds preserved and no stale or wrong-scope policy applied. New scenario tests cover supersession, expired guidance, tenant/supplier isolation, OCR corrections and prompt injection. These are contract evaluations, not real-world fraud-detection accuracy scores. [Memory evidence](docs/MEMORY_EVALUATION.md).
+
+The public Courtroom continues to show its dated, captured comparison. Current private recall and recorded public evidence remain distinct.
+
+## Tatum and x402 evidence
+
+Three developer-controlled Sui Mainnet service purchases each credited the merchant **0.001 SUI**, with **three persisted reports and receipts**. Tatum provides independent native Sui gRPC verification; saved reports can be reopened without another charge. [Settlement evidence](docs/MAINNET_PROOF.md).
 
 [Transaction 1](https://suivision.xyz/txblock/68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx) · [Transaction 2](https://suivision.xyz/txblock/xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r) · [Transaction 3](https://suivision.xyz/txblock/4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA)
 
-These are **developer-controlled Mainnet experiments using synthetic invoices**, not independent customer adoption or payments to suppliers.
+These are controlled experiments using synthetic invoices. **Physical Nightly customer financial-signing acceptance remains unverified.** A connection-only account match is not a finalized payment. Supplier invoice verification and the optional first-party analysis purchase have separate authorization and accounting. [Payment boundaries](docs/AGENT_PAYMENTS.md).
 
-**Customer checkout limitation:** physical Nightly production financial-signing acceptance is not independently verified. Historical ambiguous intents remain subject to reconciliation safeguards; an expired quote alone does not establish that another signature is safe. [Current status and recovery boundaries](docs/NIGHTLY_ACCOUNT_SELECTION_2026-11-03.md).
+## Try the product
 
-## Technology
+No wallet, payment or account is needed for the [public walkthrough](https://payguard-ai-henna.vercel.app/try), [Memory Courtroom](https://payguard-ai-henna.vercel.app/courtroom) or [recorded proof](https://payguard-ai-henna.vercel.app/proof).
 
-| Technology             | Role                                                                            |
-| ---------------------- | ------------------------------------------------------------------------------- |
-| Walrus Memory          | Persistent approved policy context, memory jobs, recall and provenance.         |
-| Tatum                  | Native Sui gRPC transaction inspection and independent settlement verification. |
-| Sui                    | Mainnet transaction execution and service-payment settlement.                   |
-| x402                   | Payment-required quotes and paid analysis delivery after verified settlement.   |
-| Neon PostgreSQL        | Durable invoices, tenant-scoped records, decisions and audit history.           |
-| Next.js and TypeScript | Application interface, server routes and deterministic review engine.           |
-| Wallet Standard        | Wallet authentication and explicitly authorized financial signatures.           |
-
-The review engine and paid report are **deterministic**. The application does not call an LLM at runtime.
-
-## Try PayGuard in under one minute
-
-**No wallet, payment or account required:**
-
-1. Open the [public demo](https://payguard-ai-henna.vercel.app/try) and review the synthetic suspicious invoice.
-2. Compare established and proposed recipients, then inspect the human verification hold.
-3. Open the [Memory Courtroom](https://payguard-ai-henna.vercel.app/courtroom), compare OFF/ON and expand the recorded citations.
-4. Inspect the [Mainnet proof](https://payguard-ai-henna.vercel.app/proof) and transaction receipts.
-
-For a private workspace, [sign in with a supported wallet](https://payguard-ai-henna.vercel.app/connect) using a free personal-message signature, create your own synthetic supplier and invoice, and review its instructions. Connection and authentication do not authorize a financial payment. Judges do not need to fund a wallet or buy analysis.
+For private records, [sign in](https://payguard-ai-henna.vercel.app/connect) with a supported wallet’s free personal-message signature. Use **Invoice Inbox** for intake, **Vendor Trust** for established references and history, and **Team Verification** for shared maker-checker review. Every teammate signs in independently. No financial purchase is required to test business verification.
 
 ## Architecture
 
-**Review:** Invoice → Verification engine → Human decision → Consented Walrus memory → Later scoped recall.
+```mermaid
+flowchart LR
+  Source[Upload or verified email intake] --> Review[Human extraction review]
+  Review --> Inbox[Existing invoice and supplier records]
+  Inbox --> Request[Identity-bound proposal]
+  Request --> Check[Different authorized verifier]
+  Check --> History[Decision and supplier timeline]
+  History --> Consent[Separate minimized-memory approval]
+  Consent --> Walrus[Walrus job and blob confirmation]
+  Walrus --> Recall[Later scoped recall]
+  Recall --> Inbox
+```
 
-**Paid analysis:** x402 quote → Explicit wallet approval → Sui settlement → Tatum verification → Delivered analysis.
+| Technology                                       | Role                                                                               |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| Next.js, TypeScript, Neon and Drizzle            | Application, tenant-scoped records, transactions and audit history                 |
+| PDF.js through pdf-parse, Sharp and Tesseract.js | Bounded document parsing, safe pixel previews and local English OCR                |
+| Private Vercel Blob and Resend                   | Optional retained originals and signed inbound-email intake                        |
+| Wallet Standard and Sui                          | Personal-message authentication and separately approved service-payment signatures |
+| Walrus Memory                                    | Consented policy persistence, confirmed provenance and scoped recall               |
+| Tatum and x402                                   | Independent transaction verification and optional paid analysis                    |
 
-The paid path has three historical Mainnet validations; physical Nightly customer financial acceptance remains limited as disclosed above. Supplier payments are outside this application's signing flow. [Architecture](docs/ARCHITECTURE.md) · [payment protocol](docs/AGENT_PAYMENTS.md).
+The review engine is deterministic. The application does not call an LLM at runtime. [Architecture](docs/ARCHITECTURE.md) · [integration guide](docs/INTEGRATION_GUIDE.md).
 
 ## Run locally
 
@@ -95,22 +111,30 @@ npm ci
 npm run dev
 ```
 
-Open `http://localhost:3000/try` for the public synthetic demo. It needs no provider credentials. Private persistence and live integrations require your own environment configuration; see the [setup guide](docs/INTEGRATION_GUIDE.md). Do not seed, reset or reuse the production database for local setup.
+Open `http://localhost:3000/try` for the public synthetic demo. For private development, configure a new database and local environment using the [setup guide](docs/INTEGRATION_GUIDE.md). Never seed or reset Production for testing.
 
-## Testing and evidence
+```bash
+npm test
+npm run typecheck
+npm run lint
+npm run build
+npm run test:e2e:qa
+```
 
-The **November 3 recovery** recorded **224 unit/integration passes**, **47 local browser passes** and two deliberate live-provider skips. Production checks covered **19 API assertions across eight public routes**; an earlier November 3 run recorded **14 public browser passes**. TypeScript, lint (one existing video-tool warning), formatting and production build passed. These are dated results, separate from physical wallet acceptance. [Validation record](docs/evidence/nightly-account-validation.json) · [test ledger and presentation-release checks](docs/TEST_RESULTS.md).
+The QA runner creates a disposable local database and disables live payment, memory, storage and email credentials. Tests cover document extraction, tenant isolation, maker-checker identity and concurrency, provenance, wallet adapter/payer binding and settlement integrity. Physical wallet acceptance and real provider configuration are reported separately. [Current results](docs/TEST_RESULTS.md).
+
+OCR can misread payment details; human source review remains mandatory. No antivirus service is claimed. Private attachment retention and live email require owner setup. Increasing the memory count does not establish better fraud detection.
 
 ## Documentation
 
-- [Judge Walkthrough](docs/JUDGE_WALKTHROUGH.md)
+- [Business workflow and security](docs/BUSINESS_WORKFLOWS.md)
+- [Judge walkthrough](docs/JUDGE_WALKTHROUGH.md)
 - [Architecture](docs/ARCHITECTURE.md)
-- [Walrus Memory Evidence](docs/MEMORY_EVALUATION.md)
-- [Tatum and Mainnet Proof](docs/MAINNET_PROOF.md)
-- [Payment Protocol](docs/AGENT_PAYMENTS.md)
+- [Integration guide](docs/INTEGRATION_GUIDE.md)
+- [Memory evaluation](docs/MEMORY_EVALUATION.md)
+- [Mainnet proof](docs/MAINNET_PROOF.md)
 - [Testing](docs/TEST_RESULTS.md)
-- [Security and Limitations](docs/WALLET_SECURITY.md)
-- [Published Write-up](https://sopskistar.github.io/payguard-ai/)
+- [Wallet security](docs/WALLET_SECURITY.md)
 
 ## License
 

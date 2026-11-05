@@ -65,7 +65,9 @@ import {
   walletAddressInput,
   walletProofInput,
 } from '@/lib/wallet-auth';
-import { extractInvoice, MAX_UPLOAD } from '@/lib/intake';
+import { supplierTimeline } from '@/lib/supplier-timeline';
+import { createDocument } from '@/lib/documents';
+import { uploadedFile } from '@/lib/business-http';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
@@ -146,6 +148,9 @@ async function handle(req: NextRequest, context: { params: Promise<{ path: strin
     if (['memory/seed', 'demo/seed', 'demo/reset', 'integrations/health'].includes(route))
       await requireOwner();
     if (method !== 'GET') await rateLimit(`${tenantId}:requests`, 250);
+    const timelineRoute = /^suppliers\/([0-9a-f-]{36})\/timeline$/.exec(route);
+    if (timelineRoute && method === 'GET')
+      return json(await supplierTimeline(tenantId, z.string().uuid().parse(timelineRoute[1])));
     if (route === 'vendors' && method === 'POST') {
       const input = z
         .object({ name: z.string().trim().min(2).max(120) })
@@ -212,33 +217,16 @@ async function handle(req: NextRequest, context: { params: Promise<{ path: strin
       return json({ ok: true });
     }
     if (route === 'invoices/extract' && method === 'POST') {
-      if (Number(req.headers.get('content-length') || 0) > MAX_UPLOAD + 16384)
-        throw new AppError(413, 'UPLOAD_SIZE', 'Maximum upload size is 5 MB.');
-      // Count the stream before multipart parsing, including chunked uploads.
-      const reader = req.body?.getReader();
-      if (!reader) throw new AppError(400, 'UPLOAD', 'Select an invoice file.');
-      const chunks: Uint8Array[] = [];
-      let size = 0;
-      while (true) {
-        const p = await reader.read();
-        if (p.done) break;
-        size += p.value.byteLength;
-        if (size > MAX_UPLOAD + 16384) {
-          await reader.cancel();
-          throw new AppError(413, 'UPLOAD_SIZE', 'Maximum upload size is 5 MB.');
-        }
-        chunks.push(p.value);
-      }
-      const bytes = Buffer.concat(chunks);
-      const parsed = await new Request(req.url, {
-        method: 'POST',
-        headers: { 'content-type': req.headers.get('content-type') || '' },
-        body: bytes,
-      }).formData();
-      const file = parsed.get('file');
-      if (!(file instanceof File)) throw new AppError(400, 'UPLOAD', 'Select an invoice file.');
-      await rateLimit(`${tenantId}:uploads`, 30);
-      return json(await extractInvoice(new Uint8Array(await file.arrayBuffer()), file.name));
+      await rateLimit(`${tenantId}:uploads`, 20);
+      const file = await uploadedFile(req);
+      return json(
+        await createDocument(
+          tenantId,
+          tenantId,
+          new Uint8Array(await file.arrayBuffer()),
+          file.name,
+        ),
+      );
     }
     if (route === 'review' && method === 'POST') {
       const input = z
@@ -353,6 +341,12 @@ async function handle(req: NextRequest, context: { params: Promise<{ path: strin
         .object({ invoiceId: z.string().uuid(), digest: digestSchema })
         .parse(await body(req));
       const invoice = await ownedInvoice(tenantId, input.invoiceId);
+      if (!address.safeParse(invoice.recipient).success)
+        throw new AppError(
+          400,
+          'SUI_RECIPIENT_REQUIRED',
+          'Onchain matching requires a full Sui recipient. Bank references use independent business verification.',
+        );
       const d = await db();
       const [existing] = await d
         .select()

@@ -70,3 +70,11 @@ npm run judge:publish-build
 ```
 
 Results are written only after real responses succeed. SDK unavailability must be reported as a failed/unavailable evaluation, never replaced with fixtures. Unit tests use explicitly synthetic mocks and are counted separately.
+
+## November 5 business expansion audit
+
+A fresh operator audit reverified 33 distinct confirmed Mainnet blobs across 34 database rows. Completed job/blob/namespace evidence was checked alongside current owned provider listings; all 33 were listed and none had passed its reported retention expiry. Audit evidence is retained in `docs/evidence/business-memory-baseline-1793881152282.json`.
+
+A separate live-recall rerun passed 18/18 authored contracts, with four successful queries, all baseline holds preserved and zero stale/wrong-scope applications. Its report is `docs/evidence/business-existing-learning-2026-11-05.json`; the earlier public captured report remains unchanged. The applicable-citation fraction describes scope/use among returned candidates, not fraud-detection accuracy.
+
+Seventeen distinct new synthetic scenarios and their exact minimized contents are prepared in [the bounded batch manifest](BUSINESS_MEMORY_BATCH.md). Superseded and expired scenarios deliberately test exclusion. Local tests also check source-review corrections, injection resistance, wrong supplier/tenant context, immutable manifest approval and a zero-paid-operation ceiling. No proposed database row is counted as confirmed Mainnet memory. New writes and later-session recall evidence require owner approval and actual provider confirmation.

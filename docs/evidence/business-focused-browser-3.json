@@ -1,0 +1,188 @@
+{
+  "checkedAt": "2026-11-05T13:15:21.486Z",
+  "baseURL": "http://localhost:3087",
+  "storage": "New disposable local PGlite; not Neon",
+  "existingDataChanged": false,
+  "liveCredentials": false,
+  "financialSubmissions": false,
+  "memoryWrites": false,
+  "video": false,
+  "stats": {
+    "startTime": "2026-11-05T13:14:32.670Z",
+    "duration": 43125.252,
+    "expected": 5,
+    "skipped": 6,
+    "unexpected": 1,
+    "flaky": 0
+  },
+  "tests": [
+    {
+      "title": "creates an explicitly shared business and assigns a different authenticated verifier",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/business-workflow.spec.ts",
+            "line": 36,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "uploads a real PDF, previews extracted source and requires correction review before saving",
+      "status": "unexpected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/business-workflow.spec.ts",
+            "line": 36,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "requires a proposal and blocks self-approval through the real authenticated API",
+      "status": "skipped",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/business-workflow.spec.ts",
+            "line": 36,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "a separately signed-in verifier records evidence and the timeline shows the actual decision",
+      "status": "skipped",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/business-workflow.spec.ts",
+            "line": 36,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "material edits invalidate the prior approval and a revoked session cannot read or decide",
+      "status": "skipped",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/business-workflow.spec.ts",
+            "line": 36,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "cross-tenant documents, content validation and unconfigured forwarding fail safely",
+      "status": "skipped",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/business-workflow.spec.ts",
+            "line": 36,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "the built application performs real local image OCR and leaves extraction unapproved",
+      "status": "skipped",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/business-workflow.spec.ts",
+            "line": 36,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "failed source processing is visible inside the review form and requires an explicit manual fallback",
+      "status": "skipped",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/business-workflow.spec.ts",
+            "line": 36,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "protects actual read-only status with workspace authentication and exposes the disabled runtime flag",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/controlled-recovery.spec.ts",
+            "line": 10,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "requires each confirmation and independently reads audit/accounting before the next original; keeps checkout blocked until flag shutdown but does not inherit an administrator hold",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/controlled-recovery.spec.ts",
+            "line": 10,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "an uncertain committed response never repeats or advances, including after reload, until the window is closed and status reconciled",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/controlled-recovery.spec.ts",
+            "line": 10,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "successful HTTP cannot advance when independent persisted accounting disagrees",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/controlled-recovery.spec.ts",
+            "line": 10,
+            "column": 6
+          }
+        }
+      ]
+    }
+  ]
+}

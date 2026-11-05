@@ -252,7 +252,10 @@ async function main() {
       'Independent contract unit tests cover contradictory text and invoice-scoped rules. No reduced fraud rate or population accuracy is claimed.',
     ],
   };
-  await writeFile('docs/evidence/learning-report.json', JSON.stringify(output, null, 2) + '\n');
+  await writeFile(
+    process.env.PAYGUARD_LEARNING_REPORT || 'docs/evidence/learning-report.json',
+    JSON.stringify(output, null, 2) + '\n',
+  );
   console.log(
     JSON.stringify(
       {

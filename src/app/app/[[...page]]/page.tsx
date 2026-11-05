@@ -13,6 +13,7 @@ export default async function Page({
     ![
       'overview',
       'invoices',
+      'business',
       'review',
       'vendors',
       'replay',

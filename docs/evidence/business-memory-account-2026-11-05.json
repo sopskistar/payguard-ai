@@ -1,0 +1,11 @@
+{
+  "checkedAt": "2026-11-05T12:04:50.967Z",
+  "readOnly": true,
+  "chainIdentifier": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+  "accountId": "0x7cf55b418a403dc667fcd98296fb05d894faef3b3a96657e06ef8108e45ff301",
+  "type": "0xe7c16fbea0560e7057e2bf7422feaa4fb313749fc69c9e9092fac7a33b81d7f5::account::MemWalAccount",
+  "accountOwner": "0x9c9f7a5f3562be063f8cdac9eb34b51e888c3267eac952282ed4ab52cc4ad377",
+  "active": true,
+  "adminQuarantined": false,
+  "providerWrites": 0
+}

@@ -319,7 +319,12 @@ export async function recallMemories(
     dropped: result.dropped_count || 0,
   };
 }
-export async function assess(tenantId: string, invoiceId: string, memoryOn: boolean) {
+export async function assess(
+  tenantId: string,
+  invoiceId: string,
+  memoryOn: boolean,
+  actorId = tenantId,
+) {
   const invoice = await ownedInvoice(tenantId, invoiceId);
   const [history, prefs, rules] = await Promise.all([
     listInvoices(tenantId),
@@ -403,6 +408,7 @@ export async function assess(tenantId: string, invoiceId: string, memoryOn: bool
     .insert(s.riskFindings)
     .values({ tenantId, invoiceId, memoryOn, assessment, findings: assessment.findings });
   await audit(tenantId, 'review.evaluated', invoiceId, {
+    actorId,
     level: assessment.level,
     memoryOn,
     usedMemoryIds: assessment.citations.map((c) => c.id),

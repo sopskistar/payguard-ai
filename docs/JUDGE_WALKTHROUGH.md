@@ -50,3 +50,19 @@ The payments are real **developer-controlled service experiments** using synthet
 ## Optional private workspace
 
 A supported wallet can authenticate through a free personal-message signature, then create an isolated synthetic supplier and invoice. This is separate from financial authorization. Judges need no funds, and the public evaluation is complete without checkout. Historical ambiguous payment attempts remain governed by reconciliation safeguards; do not request a replacement signature simply because a quote expired.
+
+## Post-submission business workflow
+
+The approved YouTube demonstration and anonymous seven-step walkthrough show the earlier submitted version. They have not been regenerated or relabeled as evidence for later features.
+
+To inspect the added workflow, use a private disposable or explicitly synthetic workspace:
+
+1. In **Invoice Inbox**, upload a PDF/image. Compare the rendered source with editable fields, missing values, contacts and payment references; confirm review before saving.
+2. Open **Vendor Trust** to inspect authentic supplier history and labeled database/Walrus evidence.
+3. In **Team Verification**, explicitly create a shared business workspace. A second person signs in independently with its own wallet; the administrator adds that existing identity as verifier.
+4. Submit an open invoice’s proposed destination. The requester cannot approve it, including after a role change.
+5. The different verifier uses the established independent channel and records the outcome, evidence reference and note. Inspect the proposal and supplier timeline.
+6. Edit material instructions and confirm that the old approval is invalidated. Revoke a test member and confirm that its existing session cannot read or decide.
+7. Compare Memory OFF/ON. A learning candidate is database-only until separately approved for minimized Walrus persistence; never count it as a Mainnet memory.
+
+Live email requires owner-configured receiving DNS, signed webhooks and private storage. An unconfigured deployment shows that boundary explicitly. No wallet financial signature, service purchase or additional Walrus write is needed for this walkthrough. [Full setup and security details](BUSINESS_WORKFLOWS.md).

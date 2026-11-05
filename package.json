@@ -45,6 +45,8 @@
     "@mysten/sui": "2.38.0",
     "@neondatabase/serverless": "^1.0.2",
     "@protobuf-ts/grpc-transport": "^2.11.1",
+    "@tesseract.js-data/eng": "^1.0.0",
+    "@vercel/blob": "2.4.0",
     "@wallet-standard/app": "^1.1.1",
     "csv-parse": "^7.0.3",
     "dotenv": "^17.2.3",
@@ -57,6 +59,9 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "server-only": "^0.0.1",
+    "sharp": "^0.35.5",
+    "svix": "^2.9.1",
+    "tesseract.js": "^7.0.0",
     "zod": "^4.1.12"
   },
   "devDependencies": {
@@ -78,7 +83,13 @@
     "vitest": "^4.0.3"
   },
   "overrides": {
-    "esbuild": "^0.28.2"
+    "esbuild": "^0.28.2",
+    "@vercel/cli-config": {
+      "zod": "^4.6.6"
+    },
+    "@typescript-eslint/typescript-estree": {
+      "minimatch": "^11.0.1"
+    }
   },
   "type": "module"
 }

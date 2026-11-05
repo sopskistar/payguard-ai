@@ -10,7 +10,9 @@ import {
   uniqueIndex,
   index,
   primaryKey,
+  check,
 } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
 import type { Preferences, Finding, Policy } from '@/lib/types';
 const time = () => timestamp('created_at', { withTimezone: true }).defaultNow().notNull();
 export const users = pgTable('users', {
@@ -223,6 +225,130 @@ export const rateLimits = pgTable('rate_limits', {
   key: text('key').primaryKey(),
   count: integer('count').notNull(),
   expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+});
+// Business memberships do not replace personal wallet identities or payment tenants.
+export const organizations = pgTable('organizations', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  tenantId: tenant().unique(),
+  name: text('name').notNull(),
+  createdAt: time(),
+});
+export const organizationMembers = pgTable(
+  'organization_members',
+  {
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id),
+    role: text('role').notNull(),
+    revision: integer('revision').notNull().default(1),
+    revokedAt: timestamp('revoked_at', { withTimezone: true }),
+    createdAt: time(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.organizationId, t.userId] }),
+    check('business_member_role', sql`${t.role} in ('admin','requester','verifier')`),
+  ],
+);
+export const supplierChanges = pgTable(
+  'supplier_changes',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    tenantId: tenant(),
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id),
+    invoiceId: uuid('invoice_id')
+      .notNull()
+      .references(() => invoices.id),
+    vendorId: uuid('vendor_id')
+      .notNull()
+      .references(() => vendors.id),
+    operationKey: uuid('operation_key').notNull(),
+    proposedBy: uuid('proposed_by')
+      .notNull()
+      .references(() => users.id),
+    checkedBy: uuid('checked_by').references(() => users.id),
+    previousRecipient: text('previous_recipient').notNull(),
+    proposedRecipient: text('proposed_recipient').notNull(),
+    instructionHash: text('instruction_hash').notNull(),
+    profileRevision: integer('profile_revision').notNull(),
+    proposedProfile: jsonb('proposed_profile').$type<Record<string, unknown>>(),
+    note: text('note').notNull(),
+    state: text('state').notNull().default('pending'),
+    decision: jsonb('decision').$type<Record<string, unknown>>(),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    checkedAt: timestamp('checked_at', { withTimezone: true }),
+    createdAt: time(),
+  },
+  (t) => [
+    check(
+      'distinct_business_verifier',
+      sql`${t.checkedBy} is null or ${t.checkedBy} <> ${t.proposedBy}`,
+    ),
+    check(
+      'business_change_state',
+      sql`${t.state} in ('pending','clarification','approved','rejected','invalidated')`,
+    ),
+    check(
+      'business_approval_evidence',
+      sql`${t.state} <> 'approved' or (${t.checkedBy} is not null and ${t.checkedAt} is not null and ${t.decision} is not null)`,
+    ),
+    uniqueIndex('supplier_change_operation').on(t.organizationId, t.operationKey),
+    index('supplier_change_invoice').on(t.tenantId, t.invoiceId),
+  ],
+);
+export const intakeDocuments = pgTable(
+  'intake_documents',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    tenantId: tenant(),
+    organizationId: uuid('organization_id').references(() => organizations.id),
+    createdBy: uuid('created_by')
+      .notNull()
+      .references(() => users.id),
+    invoiceId: uuid('invoice_id').references(() => invoices.id, { onDelete: 'set null' }),
+    filename: text('filename').notNull(),
+    sha256: text('sha256').notNull(),
+    mime: text('mime').notNull(),
+    size: integer('size').notNull(),
+    source: text('source').notNull(),
+    extraction: jsonb('extraction').$type<Record<string, unknown>>().notNull(),
+    objectPath: text('object_path'),
+    messageId: text('message_id'),
+    status: text('status').notNull().default('review'),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    deletedAt: timestamp('deleted_at', { withTimezone: true }),
+    createdAt: time(),
+  },
+  (t) => [
+    check('document_size_bound', sql`${t.size} > 0 and ${t.size} <= 3145728`),
+    check('document_review_state', sql`${t.status} in ('review','saved','deleted')`),
+    uniqueIndex('intake_tenant_document').on(t.tenantId, t.sha256),
+  ],
+);
+export const inboundRoutes = pgTable(
+  'inbound_routes',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    tenantId: tenant(),
+    organizationId: uuid('organization_id').references(() => organizations.id),
+    alias: text('alias').notNull().unique(),
+    enabled: boolean('enabled').notNull().default(true),
+    createdAt: time(),
+  },
+  (t) => [uniqueIndex('inbound_tenant_route').on(t.tenantId)],
+);
+export const inboundMessages = pgTable('inbound_messages', {
+  id: text('id').primaryKey(),
+  tenantId: tenant(),
+  state: text('state').notNull(),
+  leaseUntil: timestamp('lease_until', { withTimezone: true }),
+  errorCode: text('error_code'),
+  createdAt: time(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 // Additive Verify migration: canonical trust anchors and human attestations remain in Neon.
 export const vendorTrustProfiles = pgTable('vendor_trust_profiles', {

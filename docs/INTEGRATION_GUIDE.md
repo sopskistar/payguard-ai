@@ -86,3 +86,17 @@ Apply forward migration `0005` before deploying the password-rotation guard. The
 ## Mainnet service-payment quote mode
 
 [Mainnet x402 design and gates](AGENT_PAYMENTS.md) now supports `sui:mainnet` as primary, with native SUI and full genesis verification. Additional names are `ENABLE_AGENT_PAYMENTS`, `SERVICE_PAYMENT_PAYER`, `SERVICE_PAYMENT_RECIPIENT`, `SERVICE_PAYMENT_SETTLEMENT_ENABLED`. Keep settlement disabled until security clearance and separate exact financial authorization. Migration `0006` adds session spending reservations without changing existing records. The native sponsored path supports the validated address-balance template and a strictly checked owned-coin fallback. See [funding compatibility](COIN_FUNDING_COMPATIBILITY.md) and [current physical acceptance limits](NIGHTLY_ACCOUNT_SELECTION_2026-11-03.md). Historical Mainnet settlements do not establish Nightly customer acceptance.
+
+## Business intake, shared roles and retention
+
+Apply additive migration `0007` before deploying the business-workflow release. It creates six tables and does not modify financial records. The application’s existing `AUTH_SECRET`, wallet login and individual payment payer bindings remain authoritative; no new signing or spending key is needed.
+
+Local PDF/image intake works without external OCR credentials. English Tesseract language data and its worker/core assets are bundled. Formats, privacy limits, ownership enforcement and exact forwarding setup are documented in [Business Workflows](BUSINESS_WORKFLOWS.md).
+
+Optional retained attachments require a **private** Vercel Blob store and server-side `BLOB_READ_WRITE_TOKEN`. Without it, raw upload processing is ephemeral. Live Resend forwarding additionally requires `RESEND_API_KEY`, `RESEND_WEBHOOK_SECRET` and `INVOICE_INBOUND_DOMAIN`. Register `https://<your-origin>/api/intake/inbound` for `email.received`, copy the provider’s region-specific receiving DNS records, and perform a real synthetic inbound test before claiming live acceptance. No provider keys are requested from business members.
+
+Source review access expires after seven days. For physical timed deletion, configure a scheduler for `/api/intake-cleanup` with the owner’s `CRON_SECRET` Bearer authentication, or use the legitimate same-origin administrator POST. This release does not silently create a scheduler or change environment secrets. No antivirus service is represented as configured.
+
+Create a shared organization only through the explicit sharing confirmation in Team Verification. A teammate must complete its own wallet sign-in before the administrator grants a wallet-bound role. Existing valid sessions do not cache organization roles. No invitation email is sent by membership creation.
+
+Keep `SERVICE_EXPIRED_RECOVERY_ENABLED=false` in Production. The administrator’s old reservation belongs to its separate payer/session and is excluded from the public sponsor ledger; customer checkout uses its own verified recoveries and complete liabilities. All financial signing remains a separate explicit operation.

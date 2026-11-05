@@ -57,10 +57,13 @@ import {
   short,
   Submit,
 } from './ui';
+import { BusinessWorkspace } from './business-workspace';
+import { IntakeInbox } from './intake-inbox';
 import { InvoiceForm, CorrectionForm } from './forms';
 const nav = [
   { id: 'overview', label: 'Overview', icon: LayoutDashboard },
   { id: 'invoices', label: 'Invoice Inbox', icon: FileText },
+  { id: 'business', label: 'Team Verification', icon: ShieldCheck },
   { id: 'review', label: 'Verify Instructions', icon: ShieldCheck },
   { id: 'vendors', label: 'Vendor Trust', icon: Fingerprint },
   { id: 'replay', label: 'Attack Replay Lab', icon: FlaskConical },
@@ -74,6 +77,7 @@ const subtitles: Record<string, string> = {
   replay: 'Replay documented instruction attacks with transparent evidence.',
   overview: 'Verify the instruction before trusting the payment.',
   invoices: 'Your invoices, organized and ready for review.',
+  business: 'Separate identities. Independent decisions. A shared supplier history.',
   review: 'Follow the evidence. Make the final call.',
   wallets: 'Watch-only wallets. Real Sui Mainnet evidence.',
   memory: 'Every correction makes the next review more informed.',
@@ -592,34 +596,45 @@ export function Workspace({
                   <VendorProfiles data={data} notify={notify} onChanged={() => void refresh()} />
                 )}
                 {view === 'replay' && <AttackReplayLab />}
-                {view === 'invoices' && (
-                  <Inbox
-                    data={data}
-                    busy={busy}
-                    onEdit={openInvoice}
-                    onDelete={async (i) => {
-                      if (!owner) {
-                        setModal('login');
-                        return;
-                      }
-                      if (
-                        !confirm(
-                          `Delete ${i.number}? Audit and Walrus memory records will be retained.`,
-                        )
-                      )
-                        return;
-                      setBusy(true);
-                      try {
-                        await api(`invoices/${i.id}`, {}, 'DELETE');
-                        await refresh();
-                        notify('Invoice deleted. Audit history retained.');
-                      } catch (e) {
-                        notify((e as Error).message, true);
-                      } finally {
-                        setBusy(false);
-                      }
-                    }}
+                {view === 'business' && (
+                  <BusinessWorkspace
+                    key={data.identity?.walletAddress || data.mode}
+                    authenticated={data.mode !== 'public-demo'}
                   />
+                )}
+                {view === 'invoices' && (
+                  <>
+                    {data.mode !== 'public-demo' && (
+                      <IntakeInbox onChanged={() => void refresh()} />
+                    )}
+                    <Inbox
+                      data={data}
+                      busy={busy}
+                      onEdit={openInvoice}
+                      onDelete={async (i) => {
+                        if (!owner) {
+                          setModal('login');
+                          return;
+                        }
+                        if (
+                          !confirm(
+                            `Delete ${i.number}? Audit and Walrus memory records will be retained.`,
+                          )
+                        )
+                          return;
+                        setBusy(true);
+                        try {
+                          await api(`invoices/${i.id}`, {}, 'DELETE');
+                          await refresh();
+                          notify('Invoice deleted. Audit history retained.');
+                        } catch (e) {
+                          notify((e as Error).message, true);
+                        } finally {
+                          setBusy(false);
+                        }
+                      }}
+                    />
+                  </>
                 )}
                 {view === 'review' && (
                   <>

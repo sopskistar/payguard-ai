@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { fromBase58 } from '@mysten/sui/utils';
+import { recipientReference } from './recipient-reference';
 export const address = z
   .string()
   .regex(/^0x[a-fA-F0-9]{64}$/, 'Use a full 0x-prefixed 32-byte Sui address')
@@ -45,13 +46,15 @@ export const invoiceInput = z
       .toUpperCase()
       .regex(/^[A-Z]{3,8}$/),
     memo: z.string().max(1000).default(''),
-    recipient: z.union([address, z.literal('')]).default(''),
+    recipient: z.union([recipientReference, z.literal('')]).default(''),
     wallet: z.union([address, z.literal('')]).default(''),
     coinType: z.union([coinType, z.literal('')]).default(''),
     tokenAmount: z.union([decimal, z.literal('')]).default(''),
     isDemo: z.boolean().default(false),
-    source: z.enum(['manual', 'pdf', 'txt', 'csv']).default('manual'),
+    source: z.enum(['manual', 'pdf', 'txt', 'csv', 'image', 'email']).default('manual'),
     importKey: z.string().uuid(),
+    documentId: z.string().uuid().optional(),
+    confirmExtraction: z.boolean().optional(),
     extraction: z
       .object({
         filename: z.string().max(150),

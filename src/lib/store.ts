@@ -1,5 +1,5 @@
 import 'server-only';
-import { and, desc, eq, inArray } from 'drizzle-orm';
+import { and, desc, eq, inArray, sql } from 'drizzle-orm';
 import { randomUUID } from 'node:crypto';
 import { db, storageKind, databaseConfigured, type Database } from '@/db';
 import * as s from '@/db/schema';
@@ -11,6 +11,12 @@ import { invoiceInput } from './validation';
 import { z } from 'zod';
 import { listTrust, trustContext, listApprovalGates } from './verify-store';
 import { instructionSignals } from './verify';
+import {
+  businessWriteGuard,
+  invalidateBusinessApprovals,
+  workspaceOrganization,
+} from './organization-access';
+import { bindDocument } from './documents';
 export async function audit(
   tenantId: string,
   type: string,
@@ -56,6 +62,7 @@ export async function saveInvoice(
   tenantId: string,
   input: z.infer<typeof invoiceInput>,
   id?: string,
+  actorId = tenantId,
 ) {
   const d = await db();
   if (id) {
@@ -68,6 +75,7 @@ export async function saveInvoice(
       );
   }
   return d.transaction(async (tx) => {
+    await businessWriteGuard(tenantId, tx as unknown as Database, actorId);
     if (id) {
       const [locked] = await tx
         .select()
@@ -96,6 +104,30 @@ export async function saveInvoice(
         set: { name: input.vendor },
       })
       .returning();
+    if (input.documentId) {
+      if (input.confirmExtraction !== true)
+        throw new AppError(
+          400,
+          'EXTRACTION_CONFIRMATION',
+          'Confirm that you reviewed the source and corrected the extracted fields.',
+        );
+      const duplicate = await tx
+        .select({ id: s.invoices.id })
+        .from(s.invoices)
+        .where(
+          and(
+            eq(s.invoices.tenantId, tenantId),
+            eq(s.invoices.vendorId, vendor.id),
+            sql`lower(trim(${s.invoices.number})) = ${input.number.toLowerCase().trim()}`,
+          ),
+        );
+      if (duplicate.some((row) => row.id !== id))
+        throw new AppError(
+          409,
+          'DUPLICATE_INVOICE',
+          'This supplier invoice number already exists. Review the existing invoice instead.',
+        );
+    }
     const data = {
       tenantId,
       vendorId: vendor.id,
@@ -124,21 +156,34 @@ export async function saveInvoice(
       const [row] = await tx.insert(s.invoices).values(data).returning();
       invoiceId = row.id;
     }
-    if (input.extraction)
+    const document = input.documentId
+      ? await bindDocument(tenantId, input.documentId, invoiceId!, tx as unknown as Database)
+      : undefined;
+    const extraction = document
+      ? (document.extraction as { metadata: z.infer<typeof invoiceInput>['extraction'] }).metadata
+      : input.extraction;
+    if (extraction)
       await tx.insert(s.invoiceFiles).values({
         tenantId,
         invoiceId: invoiceId!,
-        filename: input.extraction.filename,
-        sha256: input.extraction.sha256,
-        size: input.extraction.size,
-        outcome: input.extraction.outcome,
-        metadata: input.extraction.fields,
+        filename: extraction.filename,
+        sha256: extraction.sha256,
+        size: extraction.size,
+        outcome: extraction.outcome,
+        metadata: extraction.fields,
       });
+    if (id)
+      await invalidateBusinessApprovals(
+        tenantId,
+        tx as unknown as Database,
+        { invoiceId: id },
+        actorId,
+      );
     await tx.insert(s.auditEvents).values({
       tenantId,
       type: id ? 'invoice.edited' : 'invoice.imported',
       entityId: invoiceId,
-      detail: { source: input.source, isDemo: input.isDemo },
+      detail: { source: input.source, isDemo: input.isDemo, actorId },
     });
     return invoiceId!;
   });
@@ -152,6 +197,7 @@ export async function changeStatus(
   await (
     await db()
   ).transaction(async (tx) => {
+    await businessWriteGuard(tenantId, tx as unknown as Database);
     const [row] = await tx
       .select()
       .from(s.invoices)
@@ -201,6 +247,12 @@ export async function changeStatus(
 }
 export async function deleteInvoice(tenantId: string, id: string) {
   await ownedInvoice(tenantId, id);
+  if (await workspaceOrganization(tenantId))
+    throw new AppError(
+      409,
+      'BUSINESS_HISTORY',
+      'Business invoices are retained with their maker-checker history. Reject the invoice instead of deleting it.',
+    );
   const d = await db();
   const matches = await d
     .select()

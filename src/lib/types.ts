@@ -15,7 +15,7 @@ export type Invoice = {
   tokenAmount: string;
   status: InvoiceStatus;
   isDemo: boolean;
-  source: 'manual' | 'pdf' | 'txt' | 'csv';
+  source: 'manual' | 'pdf' | 'txt' | 'csv' | 'image' | 'email';
   createdAt: string;
 };
 export type Finding = {

@@ -54,7 +54,8 @@ test.describe('controlled recovery interface; disposable workspace and mocked fi
       checkedAt: new Date().toISOString(),
       scope: 'member:' + specs[0].payer,
       verified: !failVerification,
-      allOriginalsClosed: completed.size === 3,
+      // A different administrator workspace still has its original hold.
+      allOriginalsClosed: false,
       issues: failVerification ? ['WALLET_LIABILITY_CONFLICT'] : [],
       nextId: failVerification ? null : specs.find((s) => !completed.has(s.id))?.id || null,
       records: specs.map((s) => ({
@@ -177,7 +178,7 @@ test.describe('controlled recovery interface; disposable workspace and mocked fi
       },
     };
   }
-  test('requires each confirmation and independently reads audit/accounting before the next original; keeps checkout blocked until flag shutdown', async () => {
+  test('requires each confirmation and independently reads audit/accounting before the next original; keeps checkout blocked until flag shutdown but does not inherit an administrator hold', async () => {
     const f = await fixture();
     await f.page.setViewportSize({ width: 390, height: 900 });
     const button = f.panel.getByRole('button', { name: 'Recover this original hold' });

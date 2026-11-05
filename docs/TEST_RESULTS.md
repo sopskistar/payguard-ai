@@ -1,3 +1,15 @@
+# Business workflow expansion — November 5, 2026
+
+**316 unit/integration tests pass**. The complete optimized-app browser suite passes **62 cases, zero failures/flakes, two deliberate live-provider skips**, using a new disposable local PGlite database with all live payment, memory, storage and email credentials disabled. A separate focused workflow/recovery run passes 12/12. TypeScript, formatting and the optimized build pass. ESLint has zero errors and one existing warning in unrelated owner video tooling. The current dependency audit reports zero advisories.
+
+Tests include actual PDF/image/scanned-PDF extraction and local English OCR; source fingerprint preservation, review, matching, duplicates, quotas and deletion; distinct maker-checker identities, role escalation, revocation, concurrency and edit invalidation; authentic supplier timeline and memory provenance; signed inbound webhook idempotency and negative security cases; and existing wallet, recovered-intent, payer-binding and settlement safeguards. Controlled email/storage responses are simulations; live forwarding and private-store acceptance are not claimed. The earlier focused browser failures and their causes are preserved separately; they are not relabeled as passing runs.
+
+The existing live Walrus recall evaluation passes 18/18 authored contracts, and the read-only provider audit confirms 33 distinct Mainnet blobs. No new memory write, payment quote, preparation, financial signature or settlement is performed by this release validation. The physical Nightly financial acceptance remains unverified.
+
+[Local validation ledger](evidence/business-release-local-validation.json) · [full browser results](evidence/business-full-browser.json) · [focused browser results](evidence/business-focused-browser-5.json) · [business workflow and setup](BUSINESS_WORKFLOWS.md).
+
+---
+
 # Approved video presentation validation
 
 The presentation release installs **https://youtu.be/i2ZsEPIegy4** without changing the film or financial, memory or database logic. Validation completed November 3 local time / November 4 UTC:

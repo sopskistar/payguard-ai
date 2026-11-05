@@ -1,6 +1,21 @@
 import type { NextConfig } from 'next';
 const config: NextConfig = {
-  serverExternalPackages: ['@mysten-incubation/memwal', 'pdf-parse', '@electric-sql/pglite'],
+  serverExternalPackages: [
+    '@mysten-incubation/memwal',
+    'pdf-parse',
+    '@electric-sql/pglite',
+    'tesseract.js',
+    'tesseract.js-core',
+    '@tesseract.js-data/eng',
+    'sharp',
+  ],
+  outputFileTracingIncludes: {
+    '/api/*': [
+      './node_modules/tesseract.js/src/**/*',
+      './node_modules/tesseract.js-core/**/*',
+      './node_modules/@tesseract.js-data/eng/4.0.0/*',
+    ],
+  },
   async headers() {
     return [
       {

@@ -1,9 +1,10 @@
 'use client';
 import { useState, type FormEvent } from 'react';
-import { Upload, FileText, LockKeyhole } from 'lucide-react';
+import { Upload, LockKeyhole } from 'lucide-react';
 import type { Invoice, Assessment } from '@/lib/types';
 import { api, Field, Submit, Badge } from './ui';
-import type { Extraction } from '@/lib/intake';
+import type { DocumentExtraction } from '@/lib/documents';
+import { ExtractionReview } from './extraction-review';
 const today = new Date().toISOString().slice(0, 10);
 export function InvoiceForm({
   invoice,
@@ -11,45 +12,80 @@ export function InvoiceForm({
   busy,
   setBusy,
   notify,
+  extractPath = 'invoices/extract',
+  savePath,
+  initialExtraction,
+  previewUrl,
 }: {
   invoice?: Invoice;
+  extractPath?: string;
+  savePath?: string;
+  initialExtraction?: DocumentExtraction;
+  previewUrl?: string | null;
   onSaved: (id: string) => void;
   busy: boolean;
   setBusy: (b: boolean) => void;
   notify: (s: string, error?: boolean) => void;
 }) {
   const [values, setValues] = useState<Record<string, string>>({
-    vendor: invoice?.vendor || '',
-    number: invoice?.number || '',
-    issued: invoice?.issued || today,
-    due: invoice?.due || today,
-    amount: invoice?.amount || '',
-    currency: invoice?.currency || 'USD',
-    memo: invoice?.memo || '',
-    recipient: invoice?.recipient || '',
-    wallet: invoice?.wallet || '',
-    coinType: invoice?.coinType || '',
-    tokenAmount: invoice?.tokenAmount || '',
+    ...initialExtraction?.fields,
+    vendor: (initialExtraction?.fields.vendor ?? invoice?.vendor) || '',
+    number: (initialExtraction?.fields.number ?? invoice?.number) || '',
+    issued: initialExtraction ? initialExtraction.fields.issued || '' : invoice?.issued || today,
+    due: initialExtraction ? initialExtraction.fields.due || '' : invoice?.due || today,
+    amount: (initialExtraction?.fields.amount ?? invoice?.amount) || '',
+    currency: initialExtraction
+      ? initialExtraction.fields.currency || ''
+      : invoice?.currency || 'USD',
+    memo: (initialExtraction?.fields.memo ?? invoice?.memo) || '',
+    recipient: (initialExtraction?.fields.recipient ?? invoice?.recipient) || '',
+    wallet: (initialExtraction?.fields.wallet ?? invoice?.wallet) || '',
+    coinType: (initialExtraction?.fields.coinType ?? invoice?.coinType) || '',
+    tokenAmount: (initialExtraction?.fields.tokenAmount ?? invoice?.tokenAmount) || '',
   });
-  const [source, setSource] = useState<Invoice['source']>(invoice?.source || 'manual');
-  const [extraction, setExtraction] = useState<Extraction>();
+  const [source, setSource] = useState<Invoice['source']>(
+    initialExtraction ? initialExtraction.source || 'email' : invoice?.source || 'manual',
+  );
+  const [extraction, setExtraction] = useState<DocumentExtraction | undefined>(initialExtraction);
+  const [processing, setProcessing] = useState(false);
+  const [uploadError, setUploadError] = useState('');
+  const [confirmedExtraction, setConfirmedExtraction] = useState(false);
   const [importKey] = useState(() => crypto.randomUUID());
   const change = (key: string, value: string) => setValues((v) => ({ ...v, [key]: value }));
   async function upload(file?: File) {
     if (!file) return;
     setBusy(true);
+    setProcessing(true);
+    setUploadError('');
+    setConfirmedExtraction(false);
     try {
       const data = new FormData();
       data.set('file', file);
-      const result = await api<Extraction>('invoices/extract', data);
+      const result = await api<DocumentExtraction>(extractPath, data);
       setExtraction(result);
-      setValues((v) => ({ ...v, ...result.fields }));
-      setSource(file.name.split('.').pop() as Invoice['source']);
+      setValues({
+        vendor: '',
+        number: '',
+        issued: '',
+        due: '',
+        amount: '',
+        currency: '',
+        memo: '',
+        recipient: '',
+        wallet: '',
+        coinType: '',
+        tokenAmount: '',
+        ...result.fields,
+      });
+      setConfirmedExtraction(false);
+      setSource(result.source || 'image');
       notify(result.message);
     } catch (e) {
+      setUploadError((e as Error).message);
       notify((e as Error).message, true);
     } finally {
       setBusy(false);
+      setProcessing(false);
     }
   }
   async function submit(e: FormEvent) {
@@ -57,13 +93,15 @@ export function InvoiceForm({
     setBusy(true);
     try {
       const result = await api<{ id: string }>(
-        invoice ? `invoices/${invoice.id}` : 'invoices',
+        savePath || (invoice ? `invoices/${invoice.id}` : 'invoices'),
         {
           ...values,
           importKey,
           isDemo: invoice?.isDemo || false,
           source,
           extraction: extraction?.metadata,
+          documentId: extraction?.documentId,
+          confirmExtraction: confirmedExtraction,
         },
         invoice ? 'PATCH' : 'POST',
       );
@@ -80,25 +118,85 @@ export function InvoiceForm({
       <label className="upload-area">
         <Upload size={24} />
         <strong>Start with an invoice</strong>
-        <span>PDF, TXT or a single-row CSV · up to 5 MB</span>
+        <span>PDF, PNG, JPEG, WebP, TXT or CSV · up to 3 MB</span>
         <input
           aria-label="Upload invoice"
           type="file"
-          accept=".pdf,.txt,.csv"
+          accept=".pdf,.png,.jpg,.jpeg,.webp,.txt,.csv"
           disabled={busy}
-          onChange={(e) => void upload(e.target.files?.[0])}
+          onChange={(e) => {
+            const file = e.currentTarget.files?.[0];
+            e.currentTarget.value = '';
+            void upload(file);
+          }}
         />
       </label>
-      {extraction && (
-        <div className="notice">
-          <FileText size={18} />
+      {uploadError && (
+        <div className="notice" role="alert">
           <div>
-            {extraction.message}
-            <small>
-              Extraction: {extraction.metadata.outcome}. Uploaded documents are not stored.
-            </small>
+            <strong>The selected file was not processed.</strong>
+            <p>{uploadError}</p>
+            <p>Any earlier source shown below has not been replaced.</p>
+            <button
+              type="button"
+              className="button outline small"
+              onClick={() => {
+                setUploadError('');
+                setExtraction(undefined);
+                setSource('manual');
+                setConfirmedExtraction(false);
+              }}
+            >
+              Enter details manually
+            </button>
           </div>
         </div>
+      )}
+      {processing && (
+        <p role="status">
+          Processing the source document… PDF and English OCR extraction may take up to 40 seconds.
+        </p>
+      )}
+      {extraction && (
+        <>
+          <ExtractionReview extraction={extraction} previewUrl={previewUrl} />
+          <p className="small-text">
+            {extraction.retained
+              ? 'Private source retained for up to seven days of review access. You can delete it in Invoice Inbox.'
+              : 'Source processed ephemerally; no raw attachment was stored. Keep your local original.'}
+          </p>
+          {extraction.supplierMatches?.map((match) => (
+            <div className="notice" key={match.id}>
+              <div>
+                <strong>
+                  {match.match === 'exact'
+                    ? 'Matching supplier name'
+                    : 'Possible supplier; confirm the identity'}
+                  : {match.name}
+                </strong>
+                <p>Proposed destination: {values.recipient || 'Missing'}</p>
+                <p>
+                  Established destination:{' '}
+                  {match.establishedRecipient || 'No established reference'}
+                </p>
+                <button
+                  type="button"
+                  className="button outline small"
+                  onClick={() => change('vendor', match.name)}
+                >
+                  Use this supplier name
+                </button>
+                <small>A name match never establishes trust.</small>
+              </div>
+            </div>
+          ))}
+          {!!extraction.duplicates?.length && (
+            <p role="alert">
+              Possible duplicate invoices: {extraction.duplicates.map((d) => d.number).join(', ')}.
+              Review the saved invoice before importing another.
+            </p>
+          )}
+        </>
       )}
       <div className="form-grid">
         {[
@@ -129,16 +227,14 @@ export function InvoiceForm({
           </Field>
         ))}
       </div>
-      <details className="form-details" open={!!invoice?.recipient}>
-        <summary>
-          Onchain payment details <span>Optional</span>
-        </summary>
+      <details className="form-details" open={!!values.recipient || !!extraction}>
+        <summary>Payment destination and optional Sui details</summary>
         <div className="form-stack">
-          <Field label="Recipient Sui address">
+          <Field label="Proposed payment destination">
             <input
               value={values.recipient}
               onChange={(e) => change('recipient', e.target.value)}
-              placeholder="0x + 64 hexadecimal characters"
+              placeholder="Full Sui address, iban:GB… or bank:account reference"
             />
           </Field>
           <Field label="Coin type">
@@ -176,11 +272,25 @@ export function InvoiceForm({
           rows={2}
         />
       </Field>
+      {extraction && (
+        <label className="checkbox">
+          <input
+            type="checkbox"
+            checked={confirmedExtraction}
+            onChange={(e) => setConfirmedExtraction(e.target.checked)}
+            required
+          />
+          I reviewed the source, corrected uncertain fields and checked the proposed payment
+          destination. This does not establish supplier trust.
+        </label>
+      )}
       <div className="form-footer">
         <span>
           <LockKeyhole size={14} /> Saved privately to your workspace
         </span>
-        <Submit busy={busy}>Save & review invoice</Submit>
+        <Submit busy={busy} disabled={!!uploadError || (!!extraction && !confirmedExtraction)}>
+          Save & review invoice
+        </Submit>
       </div>
     </form>
   );

@@ -44,8 +44,7 @@ export function HistoricalServiceRecovery({
       throw Error('The signed-in workspace changed. No recovery request was sent.');
     setStatus(current);
     onBlockedChange(
-      !!current.records.length &&
-        (current.enabled || !current.verified || !!current.nextId || !current.allOriginalsClosed),
+      !!current.records.length && (current.enabled || !current.verified || !!current.nextId),
     );
     return current;
   }, [scope, onBlockedChange]);
@@ -269,12 +268,14 @@ export function HistoricalServiceRecovery({
         {status && !status.nextId && status.verified && (
           <p role="status">
             All historical holds in this workspace have verified recovery audits. New checkout stays
-            stopped until all four originals are closed and the recovery window is disabled.
+            stopped until the recovery window is disabled. Other workspaces keep their own holds.
           </p>
         )}
         {status?.verified &&
-          status.allOriginalsClosed &&
           !status.enabled &&
+          !status.nextId &&
+          !pendingId &&
+          !failure &&
           audience === 'customer' && (
             <p>
               <a className="button primary" href="/services?invoice=PG-TEST-1103-01">

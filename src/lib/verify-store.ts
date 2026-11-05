@@ -4,13 +4,20 @@ import { and, eq, desc } from 'drizzle-orm';
 import { z } from 'zod';
 import { db, type Database } from '@/db';
 import * as s from '@/db/schema';
-import { address, units } from './validation';
+import { units } from './validation';
+import { recipientReference } from './recipient-reference';
 import { AppError } from './errors';
 import { approvalGate, instructionSignals } from './verify';
 import type { VendorTrust, PaymentInstruction, HumanVerification, Invoice } from './types';
+import {
+  businessApprovalGate,
+  businessWriteGuard,
+  invalidateBusinessApprovals,
+  workspaceOrganization,
+} from './organization-access';
 export const profileInput = z.object({
   vendorId: z.string().uuid(),
-  trustedRecipient: address,
+  trustedRecipient: recipientReference,
   emailDomain: z
     .string()
     .trim()
@@ -126,13 +133,18 @@ export async function trustContext(tenantId: string, invoice: Invoice, connectio
   const verification = checks[0]
     ? ({ ...checks[0], checkedAt: checks[0].checkedAt.toISOString() } as HumanVerification)
     : undefined;
+  const gate = approvalGate(invoice, profile, instruction, verification, hash);
+  if (!(await businessApprovalGate(tenantId, invoice.id, hash, profile?.revision, d))) {
+    gate.allowed = false;
+    gate.reason = 'A distinct authorized business verifier must approve these exact instructions.';
+  }
   return {
     profile,
     instruction,
     verification,
     instructionHash: hash,
     signals: instructionSignals(invoice, profile, instruction),
-    gate: approvalGate(invoice, profile, instruction, verification, hash),
+    gate,
   };
 }
 // The overview uses the same current-instruction gate as the mutation routes.
@@ -159,6 +171,15 @@ export async function listApprovalGates(
         ...check,
         checkedAt: check.checkedAt.toISOString(),
       } as HumanVerification);
+  const organization = await workspaceOrganization(tenantId, d);
+  const businessChecks = organization
+    ? await d
+        .select()
+        .from(s.supplierChanges)
+        .where(
+          and(eq(s.supplierChanges.tenantId, tenantId), eq(s.supplierChanges.state, 'approved')),
+        )
+    : [];
   return Object.fromEntries(
     invoices.map((invoice) => {
       const row = byInvoice.get(invoice.id);
@@ -172,22 +193,38 @@ export async function listApprovalGates(
             receivedAt: row.receivedAt.toISOString(),
           }
         : undefined;
-      return [
-        invoice.id,
-        approvalGate(
-          invoice,
-          profiles.find((p) => p.vendorId === invoice.vendorId),
-          instruction,
-          latest.get(invoice.id),
-          instructionHash(invoice, instruction),
-        ),
-      ];
+      const hash = instructionHash(invoice, instruction);
+      const profile = profiles.find((p) => p.vendorId === invoice.vendorId);
+      const gate = approvalGate(invoice, profile, instruction, latest.get(invoice.id), hash);
+      if (
+        organization &&
+        !businessChecks.some(
+          (r) =>
+            r.invoiceId === invoice.id &&
+            r.instructionHash === hash &&
+            r.profileRevision === profile?.revision &&
+            r.checkedBy &&
+            r.checkedBy !== r.proposedBy &&
+            r.expiresAt > new Date(),
+        )
+      ) {
+        gate.allowed = false;
+        gate.reason =
+          'A distinct authorized business verifier must approve these exact instructions.';
+      }
+      return [invoice.id, gate];
     }),
   );
 }
 export async function saveTrust(tenantId: string, input: z.infer<typeof profileInput>) {
   const d = await db();
   await d.transaction(async (tx) => {
+    if (await businessWriteGuard(tenantId, tx as unknown as Database))
+      throw new AppError(
+        409,
+        'TWO_PERSON_REQUIRED',
+        'Propose this reference through Team Verification so a different authorized member can verify it.',
+      );
     const [vendor] = await tx
       .select()
       .from(s.vendors)
@@ -240,10 +277,15 @@ export async function saveTrust(tenantId: string, input: z.infer<typeof profileI
     });
   });
 }
-export async function saveInstructions(tenantId: string, input: z.infer<typeof instructionInput>) {
+export async function saveInstructions(
+  tenantId: string,
+  input: z.infer<typeof instructionInput>,
+  actorId = tenantId,
+) {
   await (
     await db()
   ).transaction(async (tx) => {
+    await businessWriteGuard(tenantId, tx as unknown as Database, actorId);
     const [invoice] = await tx
       .select()
       .from(s.invoices)
@@ -262,16 +304,28 @@ export async function saveInstructions(tenantId: string, input: z.infer<typeof i
       .insert(s.paymentInstructions)
       .values(values)
       .onConflictDoUpdate({ target: s.paymentInstructions.invoiceId, set: values });
+    await invalidateBusinessApprovals(
+      tenantId,
+      tx as unknown as Database,
+      { invoiceId: invoice.id },
+      actorId,
+    );
     await tx.insert(s.auditEvents).values({
       tenantId,
       type: 'instructions.updated',
       entityId: invoice.id,
-      detail: { priorAttestationsInvalidated: true },
+      detail: { priorAttestationsInvalidated: true, actorId },
     });
   });
 }
 export async function recordHumanCheck(tenantId: string, input: z.infer<typeof humanInput>) {
   return (await db()).transaction(async (tx) => {
+    if (await businessWriteGuard(tenantId, tx as unknown as Database))
+      throw new AppError(
+        409,
+        'TWO_PERSON_REQUIRED',
+        'Use Team Verification; a separate identity must review the proposal.',
+      );
     const [row] = await tx
       .select()
       .from(s.invoices)

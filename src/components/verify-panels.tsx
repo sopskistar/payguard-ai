@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState, type FormEvent } from 'react';
 import Link from 'next/link';
+import { SupplierTimeline } from './supplier-timeline';
 import {
   ArrowRight,
   Phone,
@@ -403,13 +404,8 @@ export function VendorProfiles({
         <section className="panel">
           <h2>{vendors.find((v) => v.id === vendorId)?.name || 'Select a vendor'}</h2>
           <form className="form-stack" key={`${vendorId}-${profile?.revision}`} onSubmit={save}>
-            <Field label="Established Sui recipient">
-              <input
-                name="recipient"
-                required
-                pattern="0x[a-fA-F0-9]{64}"
-                defaultValue={profile?.trustedRecipient}
-              />
+            <Field label="Established payment destination">
+              <input name="recipient" required defaultValue={profile?.trustedRecipient} />
             </Field>
             <Field label="Established supplier email domain">
               <input
@@ -463,6 +459,14 @@ export function VendorProfiles({
           </form>
         </section>
       </div>
+      {data.mode !== 'public-demo' && vendorId && (
+        <SupplierTimeline key={vendorId} vendorId={vendorId} />
+      )}
+      <p>
+        <Link href="/app/business">
+          Use Team Verification for shared business maker-checker decisions.
+        </Link>
+      </p>
     </>
   );
 }

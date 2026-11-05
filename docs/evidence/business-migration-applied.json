@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-11-05T13:36:34.128Z",
+  "migration": "0007_mixed_valeria_richards",
+  "sha256": "56ffaa30c5c798cfde6d0e35860fda96f567a630d4f2f8c7aa9aeeb0c9b96e23",
+  "existingMigrationsVerified": 7,
+  "tables": [
+    "organizations",
+    "organization_members",
+    "supplier_changes",
+    "intake_documents",
+    "inbound_routes",
+    "inbound_messages"
+  ],
+  "financialRowChanges": 0,
+  "additiveOnly": true,
+  "applied": true,
+  "atomic": true
+}

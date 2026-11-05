@@ -4633,3 +4633,154 @@ tr:hover td {
     font-size: 13px;
   }
 }
+
+/* Business workflow: retained product typography and quiet chronological structure. */
+.business-workspace {
+  display: grid;
+  gap: 1.25rem;
+  min-width: 0;
+}
+.business-workspace .panel,
+.extraction-review,
+.supplier-timeline {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.business-workspace details > summary,
+.extraction-review details > summary {
+  cursor: pointer;
+  margin-block: 0.8rem;
+}
+.document-preview {
+  display: block;
+  width: 100%;
+  max-height: 620px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #fff;
+}
+.source-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  max-height: 340px;
+  overflow: auto;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.78rem;
+  line-height: 1.65;
+}
+.extraction-review {
+  display: grid;
+  gap: 0.55rem;
+  padding-block: 0.5rem;
+}
+.document-list,
+.timeline-events {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+.document-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-block: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.document-list li > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+}
+.document-list li small {
+  flex-basis: 100%;
+  overflow-wrap: anywhere;
+}
+.timeline-events li {
+  position: relative;
+  margin-left: 0.45rem;
+  padding: 0.2rem 0 1.5rem 1.5rem;
+  border-left: 1px solid var(--border);
+}
+.timeline-events li::before {
+  content: '';
+  position: absolute;
+  left: -4px;
+  top: 0.6rem;
+  width: 7px;
+  height: 7px;
+  background: var(--mint, #72ebca);
+  border-radius: 50%;
+}
+.timeline-events li > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
+}
+.timeline-events time,
+.timeline-events small {
+  font-size: 0.75rem;
+  opacity: 0.75;
+}
+.timeline-events h3 {
+  margin-block: 0.7rem 0.3rem;
+  font-size: 1rem;
+}
+.business-invoice-list {
+  display: grid;
+  gap: 0.5rem;
+}
+.business-invoice {
+  display: flex;
+  align-items: center;
+  text-align: left;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  padding: 0.9rem;
+  background: transparent;
+  color: inherit;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.business-invoice.selected {
+  border-color: var(--mint, #72ebca);
+}
+.business-invoice strong {
+  flex: 1;
+}
+.business-proposal {
+  border-top: 1px solid var(--border);
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+}
+.business-workspace .section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.business-workspace code,
+.supplier-timeline code {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+@media (max-width: 600px) {
+  .business-workspace .comparison-grid {
+    grid-template-columns: 1fr;
+  }
+  .business-workspace .detail-list > div {
+    min-width: 0;
+  }
+  .document-list li {
+    flex-direction: column;
+  }
+}
