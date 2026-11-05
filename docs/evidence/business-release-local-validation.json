@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-11-05T13:37:11.400227+00:00",
+  "checkedAt": "2026-11-05T14:15:16.107Z",
   "unitIntegration": {
     "passed": 316,
     "failed": 0,
@@ -36,7 +36,12 @@
   "memoryEvaluation": {
     "existingLiveRecallContractsPassed": 18,
     "total": 18,
-    "readOnlyProviderJobBlobNamespaceChecks": 33
+    "readOnlyProviderJobBlobNamespaceChecks": 33,
+    "applicationConfirmed": 33,
+    "pendingDatabaseRows": 1,
+    "providerDistinctVerified": 34,
+    "proposedNewWrites": 16,
+    "newWritesExecuted": 0
   },
   "coverage": [
     "real PDF and scanned PDF extraction",
@@ -57,5 +62,33 @@
   "credentialScan": {
     "sourceAndBrowserFiles": 189,
     "configuredSecretMatches": 0
+  },
+  "packagedDependencyAcceptance": {
+    "checkedAt": "2026-11-05T13:59:14.172Z",
+    "builtTrace": ".next/server/app/api/business/[[...path]]/route.js.nft.json",
+    "isolatedDependencies": true,
+    "sourceNodeModulesFallback": false,
+    "realPdfText": true,
+    "realPdfRasterPreview": true,
+    "realLocalImageOcr": true,
+    "databaseAccess": false,
+    "financialOperations": 0,
+    "providerWrites": 0
+  },
+  "finalPackagingFocusedBrowser": {
+    "startTime": "2026-11-05T14:00:44.083Z",
+    "duration": 33951.903,
+    "expected": 12,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "finalBrowser": {
+    "startTime": "2026-11-05T14:11:26.251Z",
+    "duration": 117253.008,
+    "expected": 62,
+    "skipped": 2,
+    "unexpected": 0,
+    "flaky": 0
   }
 }

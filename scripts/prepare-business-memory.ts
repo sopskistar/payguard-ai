@@ -35,69 +35,71 @@ async function main() {
   )
     throw Error('Account is not ready.');
   const baseline = JSON.parse(
-    await readFile('docs/evidence/business-memory-baseline-1793875869678.json', 'utf8'),
+    await readFile('docs/evidence/business-memory-provider-current.json', 'utf8'),
   );
   if (
     !baseline.allRecordedConfirmedReverified ||
-    baseline.distinctConfirmedMainnetBlobs !== 33 ||
+    baseline.distinctVerifiedProviderMainnetBlobs !== 34 ||
     Date.now() - Date.parse(baseline.checkedAt) > 86400000
   )
     throw Error('A fresh complete baseline is required.');
-  const records = businessLearningScenarios.map((s) => {
-    const vendorId = stableBusinessId('vendor:' + s.supplier),
-      invoiceId = stableBusinessId('invoice:' + s.id),
-      policyId = stableBusinessId('policy:' + s.id);
-    const policy: Policy = {
-      id: policyId,
-      vendorId,
-      invoiceId: s.scope === 'invoice' ? invoiceId : null,
-      kind: s.kind,
-      value: s.value,
-      text: 'Synthetic scenario ' + s.id + '. ' + s.content,
-      hard: false,
-      currency: 'USD',
-      isDemo: true,
-      scope: s.scope,
-      active: s.active,
-      expiresAt: s.expiresAt,
-      supersededBy: s.supersededBy ? stableBusinessId('policy:' + s.supersededBy) : undefined,
-    };
-    const text = minimizedMemory(OWNER_ID, policy, true);
-    return {
-      scenarioId: s.id,
-      syntheticSupplier: s.supplier,
-      originalSituation: s.situation,
-      syntheticHumanDecision: s.syntheticDecision,
-      purpose: s.purpose,
-      expectedRetrieval: s.expected,
-      tenantId: OWNER_ID,
-      namespace: namespaceFor(OWNER_ID),
-      accountId: process.env.MEMWAL_ACCOUNT_ID,
-      vendorId,
-      invoiceId,
-      policyId,
-      operationKey: 'business-v2-' + s.id,
-      policy,
-      syntheticFixture: {
+  const records = businessLearningScenarios
+    .filter((s) => s.id !== 'BUS-04')
+    .map((s) => {
+      const vendorId = stableBusinessId('vendor:' + s.supplier),
+        invoiceId = stableBusinessId('invoice:' + s.id),
+        policyId = stableBusinessId('policy:' + s.id);
+      const policy: Policy = {
+        id: policyId,
+        vendorId,
+        invoiceId: s.scope === 'invoice' ? invoiceId : null,
+        kind: s.kind,
+        value: s.value,
+        text: 'Synthetic scenario ' + s.id + '. ' + s.content,
+        hard: false,
+        currency: 'USD',
+        isDemo: true,
+        scope: s.scope,
+        active: s.active,
+        expiresAt: s.expiresAt,
+        supersededBy: s.supersededBy ? stableBusinessId('policy:' + s.supersededBy) : undefined,
+      };
+      const text = minimizedMemory(OWNER_ID, policy, true);
+      return {
+        scenarioId: s.id,
+        syntheticSupplier: s.supplier,
+        originalSituation: s.situation,
+        syntheticHumanDecision: s.syntheticDecision,
+        purpose: s.purpose,
+        expectedRetrieval: s.expected,
+        tenantId: OWNER_ID,
+        namespace: namespaceFor(OWNER_ID),
+        accountId: process.env.MEMWAL_ACCOUNT_ID,
         vendorId,
         invoiceId,
-        number: 'BUSINESS-V2-' + s.id,
-        issued: '2026-11-05',
-        due: '2026-12-05',
-        amount: '1000',
-        currency: 'USD',
-        recipient: 'bank:SYNTHETIC-' + s.id,
-        isDemo: true,
-        memo:
-          'Synthetic reviewed learning fixture ' +
-          s.id +
-          '. Not a supplier payment or financial acceptance.',
-      },
-      exactText: text,
-      sha256: createHash('sha256').update(text).digest('hex'),
-      utf8Bytes: Buffer.byteLength(text),
-    };
-  });
+        policyId,
+        operationKey: 'business-v2-' + s.id,
+        policy,
+        syntheticFixture: {
+          vendorId,
+          invoiceId,
+          number: 'BUSINESS-V2-' + s.id,
+          issued: '2026-11-05',
+          due: '2026-12-05',
+          amount: '1000',
+          currency: 'USD',
+          recipient: 'bank:SYNTHETIC-' + s.id,
+          isDemo: true,
+          memo:
+            'Synthetic reviewed learning fixture ' +
+            s.id +
+            '. Not a supplier payment or financial acceptance.',
+        },
+        exactText: text,
+        sha256: createHash('sha256').update(text).digest('hex'),
+        utf8Bytes: Buffer.byteLength(text),
+      };
+    });
   const payload = {
     version: 1,
     batchId: 'payguard-business-v2-2026-11-05',
@@ -106,9 +108,13 @@ async function main() {
     destinationOwner: accountProof.accountOwner,
     canonicalChainIdentifier: accountProof.chainIdentifier,
     namespace: namespaceFor(OWNER_ID),
-    startingDistinctConfirmed: 33,
+    startingDistinctConfirmed: 34,
+    countBasis:
+      'Provider-completed, currently listed, job/namespace/account verified. Application metadata remains 33 confirmed and one pending; no existing row was changed.',
+    startingApplicationConfirmed: 33,
+    startingPendingDatabaseJobs: 1,
     targetDistinctConfirmed: 50,
-    maxNewWrites: 17,
+    maxNewWrites: 16,
     totalUtf8Bytes: records.reduce((n, r) => n + r.utf8Bytes, 0),
     cost: {
       estimatedDirectSui: '0',

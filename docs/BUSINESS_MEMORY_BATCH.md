@@ -2,7 +2,7 @@
 
 **Awaiting owner approval. No writes have been executed.**
 
-Batch digest: `55c3168e072710149cb0c76027b9ba0faf3ab8e50a923fb42ee1d81ce6837582`
+Batch digest: `d6117ac6e40d2d59125454dfdb2bd29594ebf7ac8271785965e2da5c0eb9bc15`
 
 Destination account: `0x7cf55b418a403dc667fcd98296fb05d894faef3b3a96657e06ef8108e45ff301`
 
@@ -10,7 +10,11 @@ Onchain account owner: `0x9c9f7a5f3562be063f8cdac9eb34b51e888c3267eac952282ed4ab
 
 Namespace: `payguard-v1-6ccb21624a510029c350b89da522cf9c`
 
-33 provider-reverified distinct confirmed Mainnet blobs → target 50. This batch contains exactly 17 distinct synthetic records, 8,722 UTF-8 bytes in total.
+34 distinct provider-verified Mainnet blobs → target 50. This batch contains exactly 16 distinct synthetic records, 8,193 UTF-8 bytes in total.
+
+The application retains 33 confirmed rows and one older pending row. A read-only audit independently established that the pending job is already completed, currently listed and retrievable with its exact decrypted text. Its customer-owned database status was not changed through an administrator session. It is included in the provider count, and remains unavailable to application policy until legitimately reconciled. No new write produced this additional existing blob.
+
+This revised proposal supersedes the earlier 17-record digest beginning `55c3168e`. The new digest above requires its own exact approval. BUS-04 remains a local invoice-exception test but is omitted from this write batch; that behavior already has existing evaluation coverage.
 
 Estimated direct owner-wallet cost: **0 SUI / 0 WAL**, using the existing managed sponsored relayer. Maximum paid operations: **0**. No funding, renewal, paid fallback or financial transaction is authorized. Stop on unavailable sponsorship, exhausted quota, unexpected charges, ownership changes or ambiguous accepted jobs. Sponsored storage retention follows the provider epochs; no automatic renewal is authorized.
 
@@ -21,7 +25,6 @@ This is a sponsored-path estimate, not a fiat billing quote. The operator must n
 | BUS-01 | Alder Paper Synthetic      | Retain the independent callback requirement on later destination changes.         | apply                  |
 | BUS-02 | Birch Components Synthetic | Escalate subsequent substitution attempts.                                        | apply                  |
 | BUS-03 | Cedar Freight Synthetic    | Remember that repeated billing requires line-item comparison.                     | apply                  |
-| BUS-04 | Dogwood Services Synthetic | Keep exception context scoped to the original invoice.                            | apply                  |
 | BUS-05 | Elm Packaging Synthetic    | Preserve established-channel separation.                                          | apply                  |
 | BUS-06 | Fir Equipment Synthetic    | Escalate conflicting source instructions.                                         | apply                  |
 | BUS-07 | Grove Design Synthetic     | Correct a false positive while retaining source checks.                           | apply                  |

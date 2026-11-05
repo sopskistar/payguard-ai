@@ -43,6 +43,8 @@ Use a dedicated receiving subdomain. Add the exact MX/DNS records supplied by Re
 
 Resend receiving/retention quotas and Blob storage/egress charges depend on the owner’s plan. Review current provider pricing before enabling them. No real inbound email or private-store acceptance is claimed until an actual message completes the deployed flow. Local tests exercise signed events, private-storage flags, idempotency, sender warnings and negative cases with controlled provider responses.
 
+Serverless PDF packaging follows the [upstream worker/canvas guide](https://github.com/mehmet-kozan/pdf-parse/blob/main/docs/troubleshooting.md). The release validates extraction against an isolated copy of the actual dependency trace, including native canvas, PDF worker and OCR assets.
+
 References: [Resend receiving](https://resend.com/docs/dashboard/receiving/introduction), [webhook verification](https://resend.com/docs/webhooks/verify-webhooks-requests), [received-email authentication metadata](https://resend.com/docs/api-reference/emails/retrieve-received-email), [private Blob SDK](https://vercel.com/docs/vercel-blob/using-blob-sdk), [Tesseract.js](https://github.com/naptha/tesseract.js).
 
 ## Retention cleanup
@@ -75,7 +77,7 @@ Vendor Trust and the selected Team Verification invoice show actual audit and ro
 
 A confirmed memory entry exposes its retained job, blob and namespace only to authorized members. Applicability distinguishes current, inactive, expired and explicitly superseded policies. Retrieval timestamps come from recall records; influence is asserted only where `review.evaluated` records the memory as actually used. The timeline does not silently perform a fresh provider availability check.
 
-An approved change can produce a minimized learning candidate for owner review. This action is explicitly **database-only** and does not create a confirmed memory. Actual Walrus writes require separate content/cost consent through the existing integration. The proposed 17-record synthetic batch is independently bounded in [its reviewed manifest](BUSINESS_MEMORY_BATCH.md).
+An approved change can produce a minimized learning candidate for owner review. This action is explicitly **database-only** and does not create a confirmed memory. Actual Walrus writes require separate content/cost consent through the existing integration. The proposed 16-record synthetic batch is independently bounded in [its reviewed manifest](BUSINESS_MEMORY_BATCH.md).
 
 ## Release and incident boundaries
 

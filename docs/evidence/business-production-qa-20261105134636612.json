@@ -1,0 +1,66 @@
+{
+  "checkedAt": "2026-11-05T13:46:30.354Z",
+  "expectedCommit": "b1386e89615b77efe5d379b0e22fea50279e56f7",
+  "scope": "New synthetic business workspace; no original private workspace access",
+  "checks": [
+    {
+      "code": "EXACT_PRODUCTION_RELEASE",
+      "passed": true
+    },
+    {
+      "code": "NORMAL_WALLET_CHALLENGE",
+      "passed": true
+    },
+    {
+      "code": "NORMAL_WALLET_AUTHENTICATION",
+      "passed": true
+    },
+    {
+      "code": "NORMAL_WALLET_CHALLENGE",
+      "passed": true
+    },
+    {
+      "code": "NORMAL_WALLET_AUTHENTICATION",
+      "passed": true
+    },
+    {
+      "code": "NORMAL_WALLET_CHALLENGE",
+      "passed": true
+    },
+    {
+      "code": "NORMAL_WALLET_AUTHENTICATION",
+      "passed": true
+    },
+    {
+      "code": "EXPLICIT_ORGANIZATION_CREATION",
+      "passed": true
+    },
+    {
+      "code": "DISTINCT_VERIFIER_MEMBERSHIP",
+      "passed": true
+    },
+    {
+      "code": "FOREIGN_WORKSPACE_REFUSED",
+      "passed": true
+    },
+    {
+      "code": "REAL_PRODUCTION_PDF_EXTRACTION",
+      "passed": false
+    }
+  ],
+  "financialQuotes": 0,
+  "preparations": 0,
+  "financialSignatures": 0,
+  "recoveryRequests": 0,
+  "memoryWrites": 0,
+  "organizationId": "b5e99afe-9eb1-4ef2-8722-211a090e1065",
+  "pdfResponse": {
+    "status": 503,
+    "body": {
+      "code": "BUSINESS_UNAVAILABLE",
+      "error": "This operation could not be confirmed. Refresh its saved state before trying again."
+    }
+  },
+  "verified": false,
+  "failure": "REAL_PRODUCTION_PDF_EXTRACTION"
+}

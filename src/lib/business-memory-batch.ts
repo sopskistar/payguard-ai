@@ -54,23 +54,24 @@ export function validateBusinessBatch(
     batch.batchId !== 'payguard-business-v2-2026-11-05' ||
     batch.destinationAccount !== expected.account ||
     batch.namespace !== expected.namespace ||
-    batch.startingDistinctConfirmed !== 33 ||
+    batch.startingDistinctConfirmed !== 34 ||
     batch.targetDistinctConfirmed !== 50 ||
-    batch.maxNewWrites !== 17 ||
+    batch.maxNewWrites !== 16 ||
     batch.cost.maximumPaidOperations !== 0 ||
-    batch.records.length !== 17
+    batch.records.length !== 16
   )
     throw Error('BATCH_SCOPE');
   if (
-    new Set(batch.records.map((r) => r.scenarioId)).size !== 17 ||
-    new Set(batch.records.map((r) => r.operationKey)).size !== 17 ||
-    new Set(batch.records.map((r) => r.exactText)).size !== 17
+    new Set(batch.records.map((r) => r.scenarioId)).size !== 16 ||
+    new Set(batch.records.map((r) => r.operationKey)).size !== 16 ||
+    new Set(batch.records.map((r) => r.exactText)).size !== 16
   )
     throw Error('BATCH_DUPLICATE');
   for (const row of batch.records) {
     const scenario = businessLearningScenarios.find((s) => s.id === row.scenarioId);
     if (
       !scenario ||
+      scenario.id === 'BUS-04' ||
       row.tenantId !== expected.tenant ||
       row.accountId !== expected.account ||
       row.namespace !== expected.namespace ||

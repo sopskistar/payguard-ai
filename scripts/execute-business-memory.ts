@@ -198,7 +198,7 @@ async function main() {
     );
   }
   await preserve();
-  if (new Set(results.map((r) => r.blobId)).size !== 17) throw Error('DUPLICATE_NEW_BLOB');
+  if (new Set(results.map((r) => r.blobId)).size !== 16) throw Error('DUPLICATE_NEW_BLOB');
   const path = 'docs/evidence/business-memory-execution-' + Date.now() + '.json';
   await writeFile(
     path,
@@ -207,7 +207,7 @@ async function main() {
         checkedAt: new Date().toISOString(),
         manifestSha: batch.sha256,
         results,
-        confirmedNewDistinct: 17,
+        confirmedNewDistinct: 16,
         financialTransactions: 0,
         paidOperations: 0,
         originalMemoriesPreserved: true,
@@ -216,7 +216,7 @@ async function main() {
       2,
     ) + '\n',
   );
-  console.log(JSON.stringify({ path, confirmedNewDistinct: 17, financialTransactions: 0 }));
+  console.log(JSON.stringify({ path, confirmedNewDistinct: 16, financialTransactions: 0 }));
 }
 main().catch((error) => {
   const code = /^[A-Z_]+$/.test(error?.message) ? error.message : 'BATCH_UNCERTAIN';

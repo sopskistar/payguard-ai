@@ -52,9 +52,9 @@ An approved supplier change **does not authorize a blockchain payment**. A human
 
 ## Walrus Memory
 
-The November 5 read-only audit reverified **33 distinct confirmed Mainnet blobs** across 34 database memory rows, including matching completed jobs, namespaces and current provider listings. Existing evidence is preserved.
+The November 5 read-only audit reverified **33 application-confirmed records** and one older pending database job whose additional Mainnet blob is already provider-completed, currently listed and retrievable with matching decrypted text: **34 distinct provider-verified blobs**. The pending customer-owned row remains unchanged and is excluded from application policy until legitimate reconciliation. Existing evidence is preserved.
 
-A reviewed proposal adds **17 distinct synthetic learning records** toward a target of 50. These writes remain subject to the owner’s exact manifest and cost approval; database candidates are not counted as confirmed Mainnet memories. [Batch manifest](docs/BUSINESS_MEMORY_BATCH.md).
+A reviewed proposal adds **16 distinct synthetic learning records** toward a target of 50. These writes remain subject to the owner’s exact manifest and cost approval; database candidates are not counted as confirmed Mainnet memories. [Batch manifest](docs/BUSINESS_MEMORY_BATCH.md).
 
 The existing live-recall evaluation passed **18/18 authored synthetic contracts**, with baseline holds preserved and no stale or wrong-scope policy applied. New scenario tests cover supersession, expired guidance, tenant/supplier isolation, OCR corrections and prompt injection. These are contract evaluations, not real-world fraud-detection accuracy scores. [Memory evidence](docs/MEMORY_EVALUATION.md).
 
@@ -118,6 +118,7 @@ npm test
 npm run typecheck
 npm run lint
 npm run build
+npm run test:intake:package
 npm run test:e2e:qa
 ```
 

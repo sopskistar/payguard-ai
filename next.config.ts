@@ -3,6 +3,7 @@ const config: NextConfig = {
   serverExternalPackages: [
     '@mysten-incubation/memwal',
     'pdf-parse',
+    '@napi-rs/canvas',
     '@electric-sql/pglite',
     'tesseract.js',
     'tesseract.js-core',
@@ -11,6 +12,10 @@ const config: NextConfig = {
   ],
   outputFileTracingIncludes: {
     '/api/*': [
+      './node_modules/pdf-parse/dist/worker/**/*',
+      './node_modules/pdfjs-dist/legacy/build/pdf.worker*.mjs',
+      './node_modules/@napi-rs/canvas/**/*',
+      './node_modules/@napi-rs/canvas-linux-x64-gnu/*',
       './node_modules/tesseract.js/src/**/*',
       './node_modules/tesseract.js-core/**/*',
       './node_modules/@tesseract.js-data/eng/4.0.0/*',

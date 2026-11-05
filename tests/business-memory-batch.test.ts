@@ -18,8 +18,8 @@ function changed(fn: (b: typeof original) => void) {
   b.sha256 = createHash('sha256').update(JSON.stringify(payload)).digest('hex');
   return b;
 }
-it('accepts only the reviewed exact 17-record synthetic manifest with zero paid operations', () => {
-  expect(validateBusinessBatch(original, original.sha256, expected).records).toHaveLength(17);
+it('accepts only the reviewed exact 16-record synthetic manifest with zero paid operations', () => {
+  expect(validateBusinessBatch(original, original.sha256, expected).records).toHaveLength(16);
 });
 it('requires explicit exact-digest approval and detects altered text', () => {
   expect(() => validateBusinessBatch(original, '', expected)).toThrow('BATCH_NOT_APPROVED');

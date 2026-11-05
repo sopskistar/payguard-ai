@@ -263,7 +263,10 @@ export async function extractInvoice(bytes: Uint8Array, filename: string): Promi
     preview: string | undefined,
     ocrUsed = false;
   if (type.source === 'pdf') {
+    // Load the provider's Node canvas globals before PDF.js evaluates.
+    const { CanvasFactory, getPath } = await import('pdf-parse/worker');
     const { PDFParse } = await import('pdf-parse');
+    PDFParse.setWorker(getPath());
     const parser = new PDFParse({
       // PDF.js transfers its input buffer. Preserve the original source for hashing and private retention.
       data: Uint8Array.from(bytes),
@@ -271,6 +274,7 @@ export async function extractInvoice(bytes: Uint8Array, filename: string): Promi
       maxImageSize: 12000000,
       useSystemFonts: false,
       disableFontFace: true,
+      CanvasFactory,
     });
     try {
       const result = await deadline(

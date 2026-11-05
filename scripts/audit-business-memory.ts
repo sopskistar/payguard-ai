@@ -2,14 +2,34 @@
 import { config } from 'dotenv';
 import { neon } from '@neondatabase/serverless';
 import { writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 config({ path: '.env.local', quiet: true });
 async function main() {
   const { memoryClient, namespaceFor } = await import('../src/lib/integrations/memory');
+  const { SuiGrpcClient } = await import('@mysten/sui/grpc');
+  const { MAINNET_GENESIS } = await import('../src/lib/service-protocol');
+  const chain = new SuiGrpcClient({
+    network: 'mainnet',
+    baseUrl: 'https://fullnode.mainnet.sui.io:443',
+  });
+  const [{ chainIdentifier }, { object }] = await Promise.all([
+    chain.core.getChainIdentifier(),
+    chain.core.getObject({ objectId: process.env.MEMWAL_ACCOUNT_ID!, include: { json: true } }),
+  ]);
+  const accountOwner = object.json?.owner;
+  if (
+    chainIdentifier !== MAINNET_GENESIS ||
+    !object.type.endsWith('::account::MemWalAccount') ||
+    typeof accountOwner !== 'string' ||
+    object.json?.active !== true ||
+    object.json?.admin_quarantined !== false
+  )
+    throw Error('ACCOUNT_IDENTITY_UNAVAILABLE');
   const sql = neon(process.env.DATABASE_URL!);
   const [mode, jobs] = await sql.transaction(
     [
       sql`select current_setting('transaction_read_only') as read_only`,
-      sql`select j.id,j.tenant_id,j.namespace,j.job_id,j.blob_id,j.account_id,j.status,j.completed_at,r.policy from memory_jobs j left join user_rules r on r.id=j.policy_id order by j.created_at,j.id`,
+      sql`select j.id,j.tenant_id,j.namespace,j.job_id,j.blob_id,j.account_id,j.status,j.completed_at,j.text,r.policy from memory_jobs j left join user_rules r on r.id=j.policy_id order by j.created_at,j.id`,
     ],
     { readOnly: true, isolationLevel: 'RepeatableRead' },
   );
@@ -67,6 +87,7 @@ async function main() {
         matchingNamespace:
           status.namespace === row.namespace && row.namespace === namespaceFor(row.tenant_id),
         matchingAccount: row.account_id === process.env.MEMWAL_ACCOUNT_ID,
+        matchingOwner: status.owner === accountOwner,
         superseded: !!row.policy?.supersededBy || row.policy?.active === false,
         completedAt: row.completed_at,
       });
@@ -80,9 +101,69 @@ async function main() {
       c.matchingBlob &&
       c.matchingNamespace &&
       c.matchingAccount &&
+      c.matchingOwner &&
       c.currentlyListed &&
       !c.expired,
   );
+  const unconfirmedChecks: Record<string, unknown>[] = [];
+  for (const row of jobs.filter((j) => j.status !== 'confirmed')) {
+    if (!row.job_id) {
+      unconfirmedChecks.push({
+        id: row.id,
+        databaseStatus: row.status,
+        providerStatus: 'not-submitted',
+        verified: false,
+      });
+      continue;
+    }
+    try {
+      const client = memoryClient(row.tenant_id);
+      const status = await client.getRememberStatus(row.job_id);
+      const listed = listings
+        .get(row.tenant_id)
+        ?.find((m) => m.blob_id === status.blob_id && m.namespace_id === row.namespace);
+      // List responses contain metadata only. Exact text needs authenticated decryption/recall.
+      const recalled =
+        status.status === 'done'
+          ? await client.recall({ query: row.text, namespace: row.namespace, limit: 30 })
+          : undefined;
+      const exact = recalled?.results.find(
+        (m) => m.blob_id === status.blob_id && m.text === row.text,
+      );
+      const valid =
+        status.status === 'done' &&
+        status.namespace === row.namespace &&
+        row.namespace === namespaceFor(row.tenant_id) &&
+        row.account_id === process.env.MEMWAL_ACCOUNT_ID &&
+        status.owner === accountOwner &&
+        !!listed &&
+        !!exact &&
+        (!listed.expires_at || Date.parse(listed.expires_at) > Date.now());
+      unconfirmedChecks.push({
+        id: row.id,
+        databaseStatus: row.status,
+        providerStatus: status.status,
+        blobId: status.blob_id || null,
+        namespace: row.namespace,
+        currentlyListed: !!listed,
+        matchingExactDecryptedText: !!exact,
+        providerOwner: status.owner || null,
+        verified: valid,
+        applicationStatusChanged: false,
+      });
+    } catch {
+      unconfirmedChecks.push({
+        id: row.id,
+        databaseStatus: row.status,
+        providerStatus: 'unavailable',
+        verified: false,
+      });
+    }
+  }
+  const providerDistinct = new Set([
+    ...verified.map((c) => c.blobId),
+    ...unconfirmedChecks.filter((c) => c.verified).map((c) => c.blobId),
+  ]).size;
   const report = {
     checkedAt: new Date().toISOString(),
     readOnly: true,
@@ -99,20 +180,37 @@ async function main() {
     duplicateConfirmedBlobs: verified.length - new Set(verified.map((c) => c.blobId)).size,
     supersededConfirmed: verified.filter((c) => c.superseded).length,
     checks,
+    unconfirmedChecks: unconfirmedChecks.map((c) => ({
+      recordFingerprint: createHash('sha256').update(String(c.id)).digest('hex'),
+      databaseStatus: c.databaseStatus,
+      providerStatus: c.providerStatus,
+      currentlyListed: c.currentlyListed ?? false,
+      matchingExactDecryptedText: c.matchingExactDecryptedText ?? false,
+      verified: c.verified,
+      applicationStatusChanged: false,
+      privateTechnicalReferencesWithheld: true,
+    })),
+    distinctVerifiedProviderMainnetBlobs: providerDistinct,
+    applicationConfirmedDistinctBlobs: new Set(verified.map((c) => c.blobId)).size,
     destinationAccount: process.env.MEMWAL_ACCOUNT_ID,
+    accountOwner,
+    canonicalChainIdentifier: chainIdentifier,
     providerWrites: 0,
     databaseMutations: 0,
-    additionalDistinctTarget: Math.max(0, 50 - new Set(verified.map((c) => c.blobId)).size),
+    additionalDistinctTarget: Math.max(0, 50 - providerDistinct),
     allRecordedConfirmedReverified:
       verified.length === jobs.filter((j) => j.status === 'confirmed').length,
   };
-  const path = 'docs/evidence/business-memory-baseline-' + Date.now() + '.json';
+  const path =
+    process.env.PAYGUARD_BUSINESS_MEMORY_AUDIT ||
+    'docs/evidence/business-memory-baseline-' + Date.now() + '.json';
   await writeFile(path, JSON.stringify(report, null, 2) + '\n', { flag: 'wx' });
   console.log(
     JSON.stringify({
       path,
       databaseRows: report.databaseRows,
       confirmed: report.distinctConfirmedMainnetBlobs,
+      providerDistinct,
       additionalTarget: report.additionalDistinctTarget,
       verified: report.allRecordedConfirmedReverified,
       writes: 0,

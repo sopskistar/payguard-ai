@@ -1,0 +1,59 @@
+{
+  "checkedAt": "2026-11-05T13:44:30.867Z",
+  "expectedCommit": "b1386e89615b77efe5d379b0e22fea50279e56f7",
+  "scope": "New synthetic business workspace; no original private workspace access",
+  "checks": [
+    {
+      "code": "EXACT_PRODUCTION_RELEASE",
+      "passed": true
+    },
+    {
+      "code": "NORMAL_WALLET_CHALLENGE",
+      "passed": true
+    },
+    {
+      "code": "NORMAL_WALLET_AUTHENTICATION",
+      "passed": true
+    },
+    {
+      "code": "NORMAL_WALLET_CHALLENGE",
+      "passed": true
+    },
+    {
+      "code": "NORMAL_WALLET_AUTHENTICATION",
+      "passed": true
+    },
+    {
+      "code": "NORMAL_WALLET_CHALLENGE",
+      "passed": true
+    },
+    {
+      "code": "NORMAL_WALLET_AUTHENTICATION",
+      "passed": true
+    },
+    {
+      "code": "EXPLICIT_ORGANIZATION_CREATION",
+      "passed": true
+    },
+    {
+      "code": "DISTINCT_VERIFIER_MEMBERSHIP",
+      "passed": true
+    },
+    {
+      "code": "FOREIGN_WORKSPACE_REFUSED",
+      "passed": true
+    },
+    {
+      "code": "REAL_PRODUCTION_PDF_EXTRACTION",
+      "passed": false
+    }
+  ],
+  "financialQuotes": 0,
+  "preparations": 0,
+  "financialSignatures": 0,
+  "recoveryRequests": 0,
+  "memoryWrites": 0,
+  "organizationId": "fae2d517-1e10-4422-851c-b3a66eeceaae",
+  "verified": false,
+  "failure": "REAL_PRODUCTION_PDF_EXTRACTION"
+}
