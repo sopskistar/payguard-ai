@@ -1,0 +1,123 @@
+{
+  "checkedAt": "2026-11-05T09:33:13.932Z",
+  "readOnly": true,
+  "transactionMode": "READ ONLY REPEATABLE READ",
+  "phase": "post-request-reconciliation",
+  "verified": true,
+  "stopRequired": false,
+  "issues": [],
+  "customerReleasedAtomic": "0",
+  "administratorReleasedAtomic": "0",
+  "recoveredCount": 0,
+  "allFourRecovered": false,
+  "heldReviews": 0,
+  "intents": [
+    {
+      "id": "544d939d-02d5-4d98-b549-69fb9fb501e8",
+      "role": "member",
+      "payer": "0xdce341eacb826d2a98abb80ed725bf38f0650a630789abb210e9a079c42365fa",
+      "originalDigest": "EDe8JMezpxR4qpWFiMQni6ETMdYfYXiM8Sdxnkzvse3s",
+      "state": "approved",
+      "originalPreserved": true,
+      "releasedAtomic": "0",
+      "recoveryAudits": [],
+      "heldReviews": 0
+    },
+    {
+      "id": "7a025238-06d9-43ca-8b5f-16ef7079f086",
+      "role": "member",
+      "payer": "0xdce341eacb826d2a98abb80ed725bf38f0650a630789abb210e9a079c42365fa",
+      "originalDigest": "CcfxLSCtm6Nr6gZvLbif4dFYJTyt3ECCSDR4nMaQzGw6",
+      "state": "approved",
+      "originalPreserved": true,
+      "releasedAtomic": "0",
+      "recoveryAudits": [],
+      "heldReviews": 0
+    },
+    {
+      "id": "d23937ed-1907-4e40-8156-488f453a921a",
+      "role": "member",
+      "payer": "0xdce341eacb826d2a98abb80ed725bf38f0650a630789abb210e9a079c42365fa",
+      "originalDigest": "7dDdwa2iHbGkXsmrk5wKT3TerFoQ46hMtEDaxq8vFiJR",
+      "state": "approved",
+      "originalPreserved": true,
+      "releasedAtomic": "0",
+      "recoveryAudits": [],
+      "heldReviews": 0
+    },
+    {
+      "id": "b0386342-a7c2-40ba-909e-9edf17501767",
+      "role": "owner",
+      "payer": "0xc0f3fbf8a029fe354571b58d9e079c1aa4e9ca111a2b025dca470d4bc96397a8",
+      "originalDigest": "7GiPuDNq1vN8pLn2cqJf8kYMrt9zmbdDBbAfdoYtGdRj",
+      "state": "approved",
+      "originalPreserved": true,
+      "releasedAtomic": "0",
+      "recoveryAudits": [],
+      "heldReviews": 0
+    }
+  ],
+  "budgets": [
+    {
+      "ledger": "other-preserved-session",
+      "beforeAtomic": "2000000",
+      "releasedAtomic": "0",
+      "expectedAtomic": "2000000",
+      "actualAtomic": "2000000",
+      "liabilityAtomic": "2000000"
+    },
+    {
+      "ledger": "public-sponsor",
+      "beforeAtomic": "3000000",
+      "releasedAtomic": "0",
+      "expectedAtomic": "3000000",
+      "actualAtomic": "3000000",
+      "liabilityAtomic": "3000000"
+    },
+    {
+      "ledger": "customer-wallet",
+      "beforeAtomic": "3000000",
+      "releasedAtomic": "0",
+      "expectedAtomic": "3000000",
+      "actualAtomic": "3000000",
+      "liabilityAtomic": "3000000"
+    },
+    {
+      "ledger": "other-preserved-session",
+      "beforeAtomic": "2000000",
+      "releasedAtomic": "0",
+      "expectedAtomic": "2000000",
+      "actualAtomic": "2000000",
+      "liabilityAtomic": "2000000"
+    },
+    {
+      "ledger": "administrator-original-session",
+      "beforeAtomic": "1000000",
+      "releasedAtomic": "0",
+      "expectedAtomic": "1000000",
+      "actualAtomic": "1000000",
+      "liabilityAtomic": "1000000"
+    }
+  ],
+  "counts": {
+    "receiptsAndReports": 3,
+    "confirmedMemories": 33,
+    "memoryRows": 34,
+    "harborlineRecords": 1,
+    "submissions": 3,
+    "settling": 0
+  },
+  "protectedHashesUnchanged": {
+    "receipts": true,
+    "memories": true,
+    "harborline": true,
+    "otherIntents": true,
+    "intentSet": true,
+    "workspaceBindings": true,
+    "submissionsAndSettling": true
+  },
+  "recoveryRequestsSent": 0,
+  "sqlMutations": 0,
+  "noAutomaticRetry": true,
+  "executionTimeEvidence": "Only the guarded application endpoint obtains fresh execution-time provider evidence; this inspection is not authorization to release."
+}

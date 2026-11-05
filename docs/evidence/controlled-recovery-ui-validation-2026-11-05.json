@@ -1,0 +1,44 @@
+{
+  "checkedAt": "2026-11-05T09:37:11.334Z",
+  "baseCommit": "921b3056e507dcb47703d573fc2b0c045e22d3fb",
+  "scope": "Session-owned controls for the four explicitly approved originals; guarded recovery unchanged",
+  "unit": {
+    "passed": 260,
+    "failed": 0,
+    "suites": 46
+  },
+  "browser": {
+    "startTime": "2026-11-05T09:31:43.203Z",
+    "duration": 143362.333,
+    "expected": 54,
+    "skipped": 2,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "browserEvidence": "recovery-ui-browser-2026-11-05.json",
+  "typeScript": "passed",
+  "productionBuild": "passed",
+  "lint": {
+    "errors": 0,
+    "preExistingWarnings": 1
+  },
+  "targetedFormatting": "passed",
+  "credentialMatches": 0,
+  "productionPreservation": {
+    "evidence": "controlled-recovery-20261105093313932.json",
+    "verified": true,
+    "recovered": 0,
+    "protectedHashesUnchanged": {
+      "receipts": true,
+      "memories": true,
+      "harborline": true,
+      "otherIntents": true,
+      "intentSet": true,
+      "workspaceBindings": true,
+      "submissionsAndSettling": true
+    }
+  },
+  "productionRecoveryRequests": 0,
+  "financialSubmissions": 0,
+  "walrusWrites": 0
+}

@@ -35,6 +35,7 @@ import {
   type ServiceWalletProvider,
 } from '@/lib/service-wallet';
 import { ServicePaymentTimeline } from './service-payment-timeline';
+import { HistoricalServiceRecovery } from './historical-service-recovery';
 import type { RequestDiagnostic } from '@/lib/request-diagnostics';
 import type { walletOperationPolicy } from '@/lib/wallet-policy';
 import type { ServiceSigningState } from '@/lib/service-recovery';
@@ -192,10 +193,11 @@ export function ServicePayment() {
     }>(),
     [signatureAttempted, setSignatureAttempted] = useState(false),
     [memory, setMemory] = useState(''),
-    [saved, setSaved] = useState<SavedIntent[]>([]);
+    [saved, setSaved] = useState<SavedIntent[]>([]),
+    [controlledRecoveryBlocked, setControlledRecoveryBlocked] = useState(false);
   const quoteExpired = !!quote && Date.parse(quote.expiresAt) <= now;
   const otherRecoveryHolds = recoveryHolds.filter((i) => i.id !== quote?.id);
-  const recoveryBlocked = otherRecoveryHolds.length > 0;
+  const recoveryBlocked = otherRecoveryHolds.length > 0 || controlledRecoveryBlocked;
   let walletCheck = {
     status: walletCheckError ? 'UNAVAILABLE' : 'Not checked',
     message: walletCheckError || 'Choose your Sui wallet and check its account without signing.',
@@ -320,6 +322,9 @@ export function ServicePayment() {
     setPublicPilot(r.publicPilot);
     setCapabilityState('ready');
   }, []);
+  const refreshAfterRecovery = useCallback(async () => {
+    applyMetadata(await api<PaymentMetadata>('service-payments'));
+  }, [applyMetadata]);
   const loadWorkspace = useCallback(
     async (restore = false) => {
       setCapabilityState('loading');
@@ -814,19 +819,30 @@ export function ServicePayment() {
               ? 'Payment capability unavailable'
               : capabilityState === 'anonymous'
                 ? 'Workspace sign-in required'
-                : recoveryBlocked
-                  ? 'Earlier payment requires reconciliation'
-                  : signingAllowed
-                    ? capabilities?.environment === 'production'
-                      ? 'Wallet signing available · exact approval required'
-                      : data?.mode === 'member'
-                        ? 'Local wallet signing available · exact approval required'
-                        : 'Local signing available · owner approval required'
-                    : 'Transaction signing disabled by server configuration'}
+                : controlledRecoveryBlocked && !otherRecoveryHolds.length
+                  ? 'Recovery verification or window closure required'
+                  : recoveryBlocked
+                    ? 'Earlier payment requires reconciliation'
+                    : signingAllowed
+                      ? capabilities?.environment === 'production'
+                        ? 'Wallet signing available · exact approval required'
+                        : data?.mode === 'member'
+                          ? 'Local wallet signing available · exact approval required'
+                          : 'Local signing available · owner approval required'
+                      : 'Transaction signing disabled by server configuration'}
         </Badge>
       </header>
       <main id="main" className="judge-intro">
         <h1>Pay for deeper evidence.</h1>
+        {capabilityState === 'ready' && data?.mode !== 'public-demo' && (
+          <HistoricalServiceRecovery
+            key={(data?.mode || '') + ':' + dedicatedPayer}
+            payer={dedicatedPayer}
+            audience={data?.mode === 'member' ? 'customer' : 'owner'}
+            onBlockedChange={setControlledRecoveryBlocked}
+            onVerified={refreshAfterRecovery}
+          />
+        )}
         {capabilityState === 'ready' && data?.mode !== 'public-demo' && (
           <section className="notice" aria-label="Checkout account">
             <div>
@@ -950,7 +966,7 @@ export function ServicePayment() {
             ? 'A saved settled intent exists; inspect its independently verified receipt and delivered report.'
             : 'Inspect the public payment proof for recorded owner-controlled Mainnet results; this session has not loaded a saved receipt.'}
         </div>
-        {recoveryBlocked && (
+        {otherRecoveryHolds.length > 0 && (
           <section className="notice" role="status" aria-label="Earlier payment recovery hold">
             <strong>Earlier prepared payments require reconciliation.</strong>
             <p>

@@ -7,8 +7,13 @@ import { migrate } from 'drizzle-orm/pglite/migrator';
 import type { PGlite } from '@electric-sql/pglite';
 import { Transaction } from '@mysten/sui/transactions';
 import { eq, and } from 'drizzle-orm';
-const mock = vi.hoisted(() => ({ evidence: vi.fn() }));
+const mock = vi.hoisted(() => ({
+  evidence: vi.fn(),
+  scope: [] as import('@/lib/approved-service-recoveries').ApprovedServiceRecovery[],
+}));
 vi.mock('@/lib/integrations/service-expiry', () => ({ readServiceExpiryEvidence: mock.evidence }));
+vi.mock('@/lib/approved-service-recoveries', () => ({ APPROVED_SERVICE_RECOVERIES: mock.scope }));
+import { controlledServiceRecoveryStatus } from '@/lib/controlled-service-recovery';
 import { db } from '@/db';
 import * as s from '@/db/schema';
 import { seedDemo, listInvoices } from '@/lib/store';
@@ -90,6 +95,7 @@ beforeEach(async () => {
   await d.delete(s.auditEvents);
   vi.stubEnv('SERVICE_EXPIRED_RECOVERY_ENABLED', 'true');
   mock.evidence.mockReset().mockImplementation(async (window) => evidence(window));
+  mock.scope.length = 0;
 });
 afterAll(async () => {
   await ((await db()) as unknown as { $client: PGlite }).$client.close();
@@ -195,6 +201,15 @@ async function fixture() {
         capAtomic,
       });
   }
+  mock.scope.push({
+    id,
+    role: 'member',
+    payer: address,
+    digest: prepared.digest,
+    amountAtomic: '1000000',
+    minEpoch: '1300',
+    maxEpoch: '1301',
+  });
   return { id, prepared };
 }
 async function reserved() {
@@ -390,4 +405,123 @@ it('serializes recoveries of different intents sharing the same reservation ledg
   expect(await reserved()).toEqual(['0', '0']);
   expect((await events(a.id)).filter((e) => e.type === 'service.expiry_recovered')).toHaveLength(1);
   expect((await events(b.id)).filter((e) => e.type === 'service.expiry_recovered')).toHaveLength(1);
+});
+it('exposes the real flag and exact owned originals without provider calls, writes or another workspace records', async () => {
+  const a = await fixture(),
+    b = await fixture(),
+    before = await reserved();
+  const result = await controlledServiceRecoveryStatus(memberId);
+  expect(result).toMatchObject({
+    enabled: true,
+    verified: true,
+    nextId: a.id,
+    wallet: { reservedAtomic: '2000000', liabilityAtomic: '2000000' },
+    sponsor: { reservedAtomic: '2000000', liabilityAtomic: '2000000' },
+  });
+  expect(result.records.map((r) => r.id)).toEqual([a.id, b.id]);
+  expect(JSON.stringify(result)).not.toContain(a.prepared.bytes);
+  expect((await controlledServiceRecoveryStatus(OWNER_ID)).records).toEqual([]);
+  vi.stubEnv('SERVICE_EXPIRED_RECOVERY_ENABLED', 'false');
+  expect((await controlledServiceRecoveryStatus(memberId)).enabled).toBe(false);
+  expect(await reserved()).toEqual(before);
+  expect(mock.evidence).not.toHaveBeenCalled();
+  expect(fetch).not.toHaveBeenCalled();
+});
+it('independently verifies one persisted recovery, audit and whole-ledger reduction before selecting the next original', async () => {
+  const a = await fixture(),
+    b = await fixture();
+  await recoverExpiredService(memberId, a.id);
+  const result = await controlledServiceRecoveryStatus(memberId);
+  expect(result).toMatchObject({
+    verified: true,
+    nextId: b.id,
+    wallet: { reservedAtomic: '1000000' },
+    sponsor: { reservedAtomic: '1000000' },
+  });
+  expect(result.records[0]).toMatchObject({
+    state: 'expired-unexecuted',
+    recoveredVerified: true,
+    releasedAtomic: '1000000',
+    digest: a.prepared.digest,
+  });
+  expect(result.records[0].auditId).toBeTruthy();
+  expect(mock.evidence).toHaveBeenCalledOnce();
+});
+it('blocks the recovery UI on a missing audit field or reserved-liability discrepancy', async () => {
+  const a = await fixture();
+  await fixture();
+  await recoverExpiredService(memberId, a.id);
+  const event = (await events(a.id)).find((e) => e.type === 'service.expiry_recovered')!;
+  await (
+    await db()
+  )
+    .update(s.auditEvents)
+    .set({ detail: { ...(event.detail as object), releasedAtomic: '2000000' } })
+    .where(eq(s.auditEvents.id, event.id));
+  expect(await controlledServiceRecoveryStatus(memberId)).toMatchObject({
+    verified: false,
+    nextId: null,
+  });
+  await (
+    await db()
+  )
+    .update(s.serviceSpendingSessions)
+    .set({ reservedAtomic: '7' })
+    .where(eq(s.serviceSpendingSessions.id, walletBudget));
+  const result = await controlledServiceRecoveryStatus(memberId);
+  expect(result.issues).toContain('WALLET_LIABILITY_CONFLICT');
+  expect(result.nextId).toBeNull();
+});
+it('keeps an unsuccessful chain check stopped across read-only refreshes without another recovery attempt', async () => {
+  const a = await fixture();
+  await fixture();
+  mock.evidence.mockImplementation(async (window) =>
+    evidence(window).map((e) => ({ ...e, error: 'UNAVAILABLE' })),
+  );
+  await recoverExpiredService(memberId, a.id);
+  for (let i = 0; i < 2; i++)
+    expect(await controlledServiceRecoveryStatus(memberId)).toMatchObject({
+      verified: false,
+      nextId: null,
+    });
+  expect(mock.evidence).toHaveBeenCalledOnce();
+  expect(await reserved()).toEqual(['2000000', '2000000']);
+});
+it('reports all completed originals with zero reservations and never creates a second audit on refresh', async () => {
+  const a = await fixture(),
+    b = await fixture(),
+    c = await fixture();
+  for (const f of [a, b, c]) await recoverExpiredService(memberId, f.id);
+  const result = await controlledServiceRecoveryStatus(memberId);
+  expect(result).toMatchObject({
+    verified: true,
+    nextId: null,
+    wallet: { reservedAtomic: '0' },
+    sponsor: { reservedAtomic: '0' },
+  });
+  expect(result.records.every((r) => r.recoveredVerified && r.auditId)).toBe(true);
+  const ids = result.records.map((r) => r.auditId);
+  expect((await controlledServiceRecoveryStatus(memberId)).records.map((r) => r.auditId)).toEqual(
+    ids,
+  );
+  expect(mock.evidence).toHaveBeenCalledTimes(3);
+});
+it('keeps completed historical audits verified when one later normal purchase reserves funds after flag shutdown', async () => {
+  const a = await fixture(),
+    b = await fixture(),
+    c = await fixture();
+  for (const f of [a, b, c]) await recoverExpiredService(memberId, f.id);
+  await fixture();
+  mock.scope.pop(); // A later normal purchase is outside the four-record approval.
+  expect((await controlledServiceRecoveryStatus(memberId)).verified).toBe(false);
+  vi.stubEnv('SERVICE_EXPIRED_RECOVERY_ENABLED', 'false');
+  const status = await controlledServiceRecoveryStatus(memberId);
+  expect(status).toMatchObject({
+    enabled: false,
+    verified: true,
+    nextId: null,
+    wallet: { reservedAtomic: '1000000', liabilityAtomic: '1000000' },
+  });
+  expect(status.records).toHaveLength(3);
+  expect(status.records.every((r) => r.recoveredVerified)).toBe(true);
 });

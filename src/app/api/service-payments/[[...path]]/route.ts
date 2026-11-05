@@ -5,6 +5,7 @@ import { AppError } from '@/lib/errors';
 import { withDatabaseRequest } from '@/db';
 import { requestFailure } from '@/lib/request-diagnostics';
 import { serviceWalletSigningAllowed, walletOperationPolicy } from '@/lib/wallet-policy';
+import { controlledServiceRecoveryStatus } from '@/lib/controlled-service-recovery';
 import {
   SERVICE_SESSION_CAP,
   serviceAddressSchema,
@@ -51,6 +52,10 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
     const path = (await params).path || [];
     stage = req.method === 'GET' ? 'payment-status' : !path.length ? 'quote' : 'payment-request';
     if (path.length > 2) throw new AppError(404, 'NOT_FOUND', 'Unknown service action');
+    if (req.method === 'GET' && path.length === 1 && path[0] === 'recovery')
+      return NextResponse.json(await controlledServiceRecoveryStatus(tenantId), {
+        headers: { 'Cache-Control': 'private, no-store' },
+      });
     if (req.method === 'GET' && path.length === 1 && ['setup', 'setup-check'].includes(path[0])) {
       if (actor.role !== 'owner')
         throw new AppError(
