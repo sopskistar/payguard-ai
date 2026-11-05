@@ -13,6 +13,16 @@ export type ServiceExpiryEvidence = {
   checkedAt: string;
   digest: string;
   error?: string;
+  // Server-generated fixed labels/codes only; no provider messages or auth metadata.
+  reads?: {
+    stage: string;
+    method: string;
+    attempt: number;
+    checkedAt: string;
+    code: string;
+    grpcCode?: string;
+    httpStatus?: number;
+  }[];
   genesis?: string;
   epoch?: string;
   protocolVersion?: string;
@@ -29,6 +39,12 @@ export type ServiceExpiryEvidence = {
     checkpoint?: string;
     success?: boolean;
   };
+  transactionLookups?: {
+    stage: 'original-transaction' | 'final-transaction';
+    outcome: 'not-found' | 'found' | 'unknown';
+    checkpoint?: string;
+    success?: boolean;
+  }[];
 };
 const integer = (v?: string) => (v !== undefined && /^\d+$/.test(v) ? BigInt(v) : null);
 export function assessServiceExpiry(

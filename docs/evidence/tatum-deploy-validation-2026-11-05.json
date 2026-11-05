@@ -1,0 +1,53 @@
+{
+  "checkedAt": "2026-11-05T07:22:04.841Z",
+  "scope": "Approved Tatum historical-read correction only",
+  "unit": {
+    "passed": 254,
+    "failed": 0,
+    "files": 36
+  },
+  "browser": {
+    "startTime": "2026-11-05T07:19:04.382Z",
+    "duration": 75887.444,
+    "expected": 50,
+    "skipped": 2,
+    "unexpected": 0,
+    "flaky": 0,
+    "disposableLocalDatabase": true,
+    "liveCredentials": false
+  },
+  "typeScript": {
+    "command": "npm run typecheck",
+    "exitCode": 0
+  },
+  "build": {
+    "command": "npm run build",
+    "exitCode": 0,
+    "next": "16.4.3",
+    "deployed": false
+  },
+  "lint": {
+    "command": "npm run lint",
+    "exitCode": 0,
+    "errors": 0,
+    "preExistingWarnings": 1,
+    "warningFile": "demo-video/judge-final/capture-public.mjs"
+  },
+  "formatting": {
+    "exitCode": 0,
+    "scope": "Changed recovery files and documentation"
+  },
+  "credentialScan": {
+    "taskFiles": 17,
+    "matches": 0
+  },
+  "productionMutations": 0,
+  "recoveryInvocations": 0,
+  "configurationChanges": 0,
+  "approvedVideoAndInterfaceChanged": false,
+  "restrictionsEncountered": [
+    "Restricted build could not parse TypeScript --showConfig; unrestricted local build passed.",
+    "Restricted local browser server did not become ready; fresh unrestricted disposable run passed on port 3067."
+  ],
+  "deployment": "Pending approved git push; no recovery flag change"
+}

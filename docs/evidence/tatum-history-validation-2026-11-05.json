@@ -1,0 +1,214 @@
+{
+  "checkedAt": "2026-11-05T06:37:07.769Z",
+  "productionFinancialRecordsChanged": false,
+  "unit": {
+    "command": "npm test -- --reporter=json --outputFile=.data/tatum-history-unit-results.json",
+    "passed": 254,
+    "failed": 0,
+    "files": 36,
+    "relevant": [
+      {
+        "file": "service-expiry-provider.test.ts",
+        "status": "passed",
+        "tests": [
+          {
+            "name": "reads both fixed providers before and after boundary verification without signing or submitting",
+            "status": "passed"
+          },
+          {
+            "name": "retains classified tatum failure without leaking credentials or retrying",
+            "status": "passed"
+          },
+          {
+            "name": "retains classified sui-fullnode failure without leaking credentials or retrying",
+            "status": "passed"
+          },
+          {
+            "name": "preserves positive or incomplete transaction evidence instead of translating it into NOT_FOUND",
+            "status": "passed"
+          },
+          {
+            "name": "retains HTTP 429 as quota history and retries one read after cooldown",
+            "status": "passed"
+          },
+          {
+            "name": "stops after persistent quota failures without skipping history or changing provider",
+            "status": "passed"
+          },
+          {
+            "name": "holds if a transaction appears after the initial NOT_FOUND and preserves both observations",
+            "status": "passed"
+          },
+          {
+            "name": "never erases a found transaction when a later lookup returns NOT_FOUND",
+            "status": "passed"
+          },
+          {
+            "name": "fails closed for pruned historical responses",
+            "status": "passed"
+          },
+          {
+            "name": "fails closed for wrong-epoch historical responses",
+            "status": "passed"
+          },
+          {
+            "name": "holds incorrect wrong-number checkpoint boundaries",
+            "status": "passed"
+          },
+          {
+            "name": "holds incorrect wrong-digest checkpoint boundaries",
+            "status": "passed"
+          },
+          {
+            "name": "holds incorrect open checkpoint boundaries",
+            "status": "passed"
+          },
+          {
+            "name": "rejects another network and pruning that overtakes the validity window during the read",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "file": "service-expiry-store.test.ts",
+        "status": "passed",
+        "tests": [
+          {
+            "name": "authenticates ownership and keeps recovery disabled unless explicitly enabled",
+            "status": "passed"
+          },
+          {
+            "name": "keeps valid epochs, provider failures, conflicts, discovered executions and missing history reserved with an audit explanation",
+            "status": "passed"
+          },
+          {
+            "name": "preserves uncertain wallet history and original bytes/digest while releasing only the proven expired reservation",
+            "status": "passed"
+          },
+          {
+            "name": "serializes simultaneous recoveries and repeats without a second release or second transition",
+            "status": "passed"
+          },
+          {
+            "name": "preserves submitted evidence, receipts and settled spending rather than freeing a paid reservation",
+            "status": "passed"
+          },
+          {
+            "name": "does not release an inconsistent liability ledger or a substituted preparation",
+            "status": "passed"
+          },
+          {
+            "name": "keeps reservations when a later reconciliation discovers a finalized transaction",
+            "status": "passed"
+          },
+          {
+            "name": "holds unexpected settlement or confirmation audits even without a stored digest or receipt",
+            "status": "passed"
+          },
+          {
+            "name": "serializes recoveries of different intents sharing the same reservation ledgers",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "file": "service-expiry.test.ts",
+        "status": "passed",
+        "tests": [
+          {
+            "name": "requires strictly later epochs, not an expired quote or one missing digest",
+            "status": "passed"
+          },
+          {
+            "name": "keeps holds when tatum is unavailable",
+            "status": "passed"
+          },
+          {
+            "name": "keeps holds when sui-fullnode is unavailable",
+            "status": "passed"
+          },
+          {
+            "name": "blocks conflicting, finalized, incomplete and wrong-digest responses without asserting failure",
+            "status": "passed"
+          },
+          {
+            "name": "requires retained transaction history, a closed final epoch checkpoint and fresh reviewed protocol evidence",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "file": "tatum-read.test.ts",
+        "status": "passed",
+        "tests": [
+          {
+            "name": "serializes concurrent starts and spaces them by 500ms across callers",
+            "status": "passed"
+          },
+          {
+            "name": "does not retry transport or authentication errors and keeps the queue usable",
+            "status": "passed"
+          }
+        ]
+      }
+    ]
+  },
+  "browser": {
+    "command": "PAYGUARD_QA_PORT=3061 PAYGUARD_QA_OUTPUT_DIR=.data/tatum-history-qa-unrestricted PAYGUARD_QA_EVIDENCE=docs/evidence/tatum-history-browser-2026-11-05.json npm run test:e2e:qa",
+    "startTime": "2026-11-05T06:33:29.883Z",
+    "duration": 109846.14799999999,
+    "expected": 50,
+    "skipped": 2,
+    "unexpected": 0,
+    "flaky": 0,
+    "storage": "New disposable local PGlite; not Neon",
+    "liveCredentials": false
+  },
+  "typeScript": {
+    "command": "npm run typecheck",
+    "exitCode": 0
+  },
+  "build": {
+    "command": "npm run build",
+    "exitCode": 0,
+    "nextVersion": "16.4.3",
+    "deployed": false
+  },
+  "lint": {
+    "command": "npm run lint",
+    "exitCode": 0,
+    "errors": 0,
+    "warnings": 1,
+    "warningSource": "Untouched demo-video/judge-final/capture-public.mjs: unused mkdir"
+  },
+  "formatting": {
+    "scope": "All changed recovery source, scripts, tests, documentation and new evidence",
+    "command": "npx prettier --check <task files>",
+    "exitCode": 0
+  },
+  "actualProviderChecks": {
+    "originalPattern429Reproduced": true,
+    "pacedHistoricalReadsPass": true,
+    "canonicalArchivalHistoryCorroborated": true,
+    "archiveUsedForRecovery": false,
+    "allFourEligibleAt": "2026-11-05T06:36:24.040Z"
+  },
+  "preservedFailures": [
+    "Initial sandbox network probes: DNS resolution blocked; repeated with approved network access.",
+    "Initial TypeScript checks found closure narrowing errors in diagnostic/checkpoint callbacks; corrected before passing final checks.",
+    "Restricted production build: could not parse TypeScript --showConfig; approved unrestricted build passed.",
+    "Restricted browser runner: isolated server did not become ready; no browser cases ran. New unrestricted disposable run passed on port 3061."
+  ],
+  "limitations": [
+    "Database concurrency cases use disposable PGlite; no contention experiment on Production Neon.",
+    "Public archive probes demonstrate observed data access and independent checkpoint agreement, not a production SLA or cryptographic non-inclusion proof.",
+    "Production recovery and physical Nightly financial signing were not exercised."
+  ],
+  "gitDiffCheck": {
+    "exitCode": 0
+  },
+  "credentialScan": {
+    "taskFiles": 14,
+    "knownSecretValueMatches": 0
+  }
+}

@@ -1,0 +1,1130 @@
+{
+  "checkedAt": "2026-11-05T07:17:26.256Z",
+  "readOnly": true,
+  "databaseTransactionMode": "READ ONLY REPEATABLE READ",
+  "productionRelease": {
+    "application": "PayGuard Verify",
+    "commit": "69425c577c629cc9d740def313c73c522ed022c3",
+    "recordedProofCount": 32,
+    "ownerProofCount": 30,
+    "proofExportedAt": "2026-11-01T12:49:41.554Z",
+    "modes": ["public-demo", "owner-admin", "wallet-member", "recorded-proof"]
+  },
+  "expectedDeployedCommit": "69425c577c629cc9d740def313c73c522ed022c3",
+  "deployedCommitMatches": true,
+  "dataAccess": "Authorized operator database audit in enforced READ ONLY transactions; no customer endpoint or impersonated session",
+  "rules": {
+    "protocolVersion": "139",
+    "sourceRevision": "485613f749ed",
+    "source": "https://github.com/MystenLabs/sui/blob/485613f749ed/crates/sui-types/src/transaction.rs"
+  },
+  "endpoints": {
+    "tatum": "sui-mainnet-grpc.gateway.tatum.io:443",
+    "sui-fullnode": "fullnode.mainnet.sui.io:443"
+  },
+  "historicalEvidenceMethod": "Existing independent LedgerService.GetEpoch/GetCheckpoint/GetTransaction with shared Tatum pacing; no source substitution",
+  "intents": [
+    {
+      "id": "544d939d-02d5-4d98-b549-69fb9fb501e8",
+      "role": "member",
+      "owningWorkspace": {
+        "role": "member",
+        "referenceSha256": "519bdbe9133a11607b568762e58461b0f0185d4ac980a2e971a1c5086fb12f42",
+        "authenticatedWallet": "0xdce341eacb826d2a98abb80ed725bf38f0650a630789abb210e9a079c42365fa",
+        "recordedPayer": "0xdce341eacb826d2a98abb80ed725bf38f0650a630789abb210e9a079c42365fa",
+        "preparedSender": "0xdce341eacb826d2a98abb80ed725bf38f0650a630789abb210e9a079c42365fa",
+        "quotePayer": "0xdce341eacb826d2a98abb80ed725bf38f0650a630789abb210e9a079c42365fa",
+        "isOriginalAdministratorWorkspace": false
+      },
+      "state": "approved",
+      "digest": "EDe8JMezpxR4qpWFiMQni6ETMdYfYXiM8Sdxnkzvse3s",
+      "window": {
+        "digest": "EDe8JMezpxR4qpWFiMQni6ETMdYfYXiM8Sdxnkzvse3s",
+        "minEpoch": "1300",
+        "maxEpoch": "1301"
+      },
+      "preparedDigestMatchesBytes": true,
+      "preparationValidated": true,
+      "currentMainnetEpoch": [
+        {
+          "provider": "tatum",
+          "epoch": "1302"
+        },
+        {
+          "provider": "sui-fullnode",
+          "epoch": "1302"
+        }
+      ],
+      "reservationAtomic": "1000000",
+      "reservations": [
+        {
+          "ledger": "public-sponsorship",
+          "reservedAtomic": "3000000",
+          "liabilityAtomic": "3000000",
+          "capAtomic": "20000000",
+          "accountingAgrees": true,
+          "wouldReleaseAtomic": "1000000",
+          "proposedAfterThisIntentAtomic": "2000000"
+        },
+        {
+          "ledger": "original-wallet-or-session",
+          "reservedAtomic": "3000000",
+          "liabilityAtomic": "3000000",
+          "capAtomic": "3000000",
+          "accountingAgrees": true,
+          "wouldReleaseAtomic": "1000000",
+          "proposedAfterThisIntentAtomic": "2000000"
+        }
+      ],
+      "providerEvidence": [
+        {
+          "provider": "tatum",
+          "digest": "EDe8JMezpxR4qpWFiMQni6ETMdYfYXiM8Sdxnkzvse3s",
+          "checkedAt": "2026-11-05T07:17:00.984Z",
+          "reads": [
+            {
+              "stage": "identity-before",
+              "method": "GetServiceInfo",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:04.276Z",
+              "code": "OK"
+            },
+            {
+              "stage": "current-epoch",
+              "method": "GetEpoch",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:04.438Z",
+              "code": "OK"
+            },
+            {
+              "stage": "original-transaction",
+              "method": "GetTransaction",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:05.017Z",
+              "code": "NOT_FOUND",
+              "grpcCode": "NOT_FOUND"
+            },
+            {
+              "stage": "first-valid-epoch",
+              "method": "GetEpoch",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:05.428Z",
+              "code": "OK"
+            },
+            {
+              "stage": "last-valid-epoch",
+              "method": "GetEpoch",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:05.930Z",
+              "code": "OK"
+            },
+            {
+              "stage": "closed-epoch-checkpoint",
+              "method": "GetCheckpoint",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:06.453Z",
+              "code": "OK"
+            },
+            {
+              "stage": "final-transaction",
+              "method": "GetTransaction",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:06.928Z",
+              "code": "NOT_FOUND",
+              "grpcCode": "NOT_FOUND"
+            },
+            {
+              "stage": "identity-after",
+              "method": "GetServiceInfo",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:07.432Z",
+              "code": "OK"
+            }
+          ],
+          "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+          "epoch": "1302",
+          "protocolVersion": "139",
+          "expirationEnabled": true,
+          "checkpoint": "341836021",
+          "lowestCheckpoint": "237661232",
+          "transactionLookups": [
+            {
+              "stage": "original-transaction",
+              "outcome": "not-found"
+            },
+            {
+              "stage": "final-transaction",
+              "outcome": "not-found"
+            }
+          ],
+          "transaction": {
+            "outcome": "not-found"
+          },
+          "firstValidCheckpoint": "341020094",
+          "lastValidCheckpoint": "341729440",
+          "boundaryDigest": "HxSEAzGSWA1Cx8a4Ydtxrhpog4GiE9Cwju6pxy3gwp4X",
+          "boundaryEpoch": "1301",
+          "boundaryClosed": true
+        },
+        {
+          "provider": "sui-fullnode",
+          "digest": "EDe8JMezpxR4qpWFiMQni6ETMdYfYXiM8Sdxnkzvse3s",
+          "checkedAt": "2026-11-05T07:17:00.990Z",
+          "reads": [
+            {
+              "stage": "identity-before",
+              "method": "GetServiceInfo",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:04.480Z",
+              "code": "OK"
+            },
+            {
+              "stage": "current-epoch",
+              "method": "GetEpoch",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:04.678Z",
+              "code": "OK"
+            },
+            {
+              "stage": "original-transaction",
+              "method": "GetTransaction",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:04.881Z",
+              "code": "NOT_FOUND",
+              "grpcCode": "NOT_FOUND"
+            },
+            {
+              "stage": "first-valid-epoch",
+              "method": "GetEpoch",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:05.074Z",
+              "code": "OK"
+            },
+            {
+              "stage": "last-valid-epoch",
+              "method": "GetEpoch",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:05.269Z",
+              "code": "OK"
+            },
+            {
+              "stage": "closed-epoch-checkpoint",
+              "method": "GetCheckpoint",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:05.493Z",
+              "code": "OK"
+            },
+            {
+              "stage": "final-transaction",
+              "method": "GetTransaction",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:05.689Z",
+              "code": "NOT_FOUND",
+              "grpcCode": "NOT_FOUND"
+            },
+            {
+              "stage": "identity-after",
+              "method": "GetServiceInfo",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:05.880Z",
+              "code": "OK"
+            }
+          ],
+          "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+          "epoch": "1302",
+          "protocolVersion": "139",
+          "expirationEnabled": true,
+          "checkpoint": "341836015",
+          "lowestCheckpoint": "336567794",
+          "transactionLookups": [
+            {
+              "stage": "original-transaction",
+              "outcome": "not-found"
+            },
+            {
+              "stage": "final-transaction",
+              "outcome": "not-found"
+            }
+          ],
+          "transaction": {
+            "outcome": "not-found"
+          },
+          "firstValidCheckpoint": "341020094",
+          "lastValidCheckpoint": "341729440",
+          "boundaryDigest": "HxSEAzGSWA1Cx8a4Ydtxrhpog4GiE9Cwju6pxy3gwp4X",
+          "boundaryEpoch": "1301",
+          "boundaryClosed": true
+        }
+      ],
+      "chainDecision": {
+        "eligible": true,
+        "reason": "EXPIRED_UNEXECUTED"
+      },
+      "payloadPersisted": false,
+      "executionDigest": null,
+      "auditHistory": [
+        {
+          "type": "service.challenge",
+          "at": "2026-11-03T09:38:09.173Z"
+        },
+        {
+          "type": "service.approved",
+          "at": "2026-11-03T09:38:24.662Z"
+        },
+        {
+          "type": "service.prepared",
+          "at": "2026-11-03T09:38:24.662Z"
+        }
+      ],
+      "originalRecordSha256": "77a6894e716cbcd434b98b73cd76a8f26bac174e01e3d86dcc778faa741ce33b",
+      "walletEvents": [],
+      "eligibleAtObservation": true,
+      "reasons": [],
+      "remainingUncertainty": "Dated read-only eligibility; recovery must repeat all checks under row locks with fresh evidence. No cryptographic non-inclusion proof or physical financial-signing certification."
+    },
+    {
+      "id": "b0386342-a7c2-40ba-909e-9edf17501767",
+      "role": "owner",
+      "owningWorkspace": {
+        "role": "owner",
+        "referenceSha256": "9c9c3d41ae85ac07697164ec2f55e954a57faee15f5619cf646c811c2d8e8f51",
+        "authenticatedWallet": null,
+        "recordedPayer": "0xc0f3fbf8a029fe354571b58d9e079c1aa4e9ca111a2b025dca470d4bc96397a8",
+        "preparedSender": "0xc0f3fbf8a029fe354571b58d9e079c1aa4e9ca111a2b025dca470d4bc96397a8",
+        "quotePayer": null,
+        "isOriginalAdministratorWorkspace": true
+      },
+      "state": "approved",
+      "digest": "7GiPuDNq1vN8pLn2cqJf8kYMrt9zmbdDBbAfdoYtGdRj",
+      "window": {
+        "digest": "7GiPuDNq1vN8pLn2cqJf8kYMrt9zmbdDBbAfdoYtGdRj",
+        "minEpoch": "1300",
+        "maxEpoch": "1301"
+      },
+      "preparedDigestMatchesBytes": true,
+      "preparationValidated": true,
+      "currentMainnetEpoch": [
+        {
+          "provider": "tatum",
+          "epoch": "1302"
+        },
+        {
+          "provider": "sui-fullnode",
+          "epoch": "1302"
+        }
+      ],
+      "reservationAtomic": "1000000",
+      "reservations": [
+        {
+          "ledger": "original-wallet-or-session",
+          "reservedAtomic": "1000000",
+          "liabilityAtomic": "1000000",
+          "capAtomic": "3000000",
+          "accountingAgrees": true,
+          "wouldReleaseAtomic": "1000000",
+          "proposedAfterThisIntentAtomic": "0"
+        }
+      ],
+      "providerEvidence": [
+        {
+          "provider": "tatum",
+          "digest": "7GiPuDNq1vN8pLn2cqJf8kYMrt9zmbdDBbAfdoYtGdRj",
+          "checkedAt": "2026-11-05T07:17:07.442Z",
+          "reads": [
+            {
+              "stage": "identity-before",
+              "method": "GetServiceInfo",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:08.429Z",
+              "code": "OK"
+            },
+            {
+              "stage": "current-epoch",
+              "method": "GetEpoch",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:08.596Z",
+              "code": "OK"
+            },
+            {
+              "stage": "original-transaction",
+              "method": "GetTransaction",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:09.073Z",
+              "code": "NOT_FOUND",
+              "grpcCode": "NOT_FOUND"
+            },
+            {
+              "stage": "first-valid-epoch",
+              "method": "GetEpoch",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:09.565Z",
+              "code": "OK"
+            },
+            {
+              "stage": "last-valid-epoch",
+              "method": "GetEpoch",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:10.068Z",
+              "code": "OK"
+            },
+            {
+              "stage": "closed-epoch-checkpoint",
+              "method": "GetCheckpoint",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:10.975Z",
+              "code": "OK"
+            },
+            {
+              "stage": "final-transaction",
+              "method": "GetTransaction",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:11.120Z",
+              "code": "NOT_FOUND",
+              "grpcCode": "NOT_FOUND"
+            },
+            {
+              "stage": "identity-after",
+              "method": "GetServiceInfo",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:11.611Z",
+              "code": "OK"
+            }
+          ],
+          "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+          "epoch": "1302",
+          "protocolVersion": "139",
+          "expirationEnabled": true,
+          "checkpoint": "341836037",
+          "lowestCheckpoint": "237661232",
+          "transactionLookups": [
+            {
+              "stage": "original-transaction",
+              "outcome": "not-found"
+            },
+            {
+              "stage": "final-transaction",
+              "outcome": "not-found"
+            }
+          ],
+          "transaction": {
+            "outcome": "not-found"
+          },
+          "firstValidCheckpoint": "341020094",
+          "lastValidCheckpoint": "341729440",
+          "boundaryDigest": "HxSEAzGSWA1Cx8a4Ydtxrhpog4GiE9Cwju6pxy3gwp4X",
+          "boundaryEpoch": "1301",
+          "boundaryClosed": true
+        },
+        {
+          "provider": "sui-fullnode",
+          "digest": "7GiPuDNq1vN8pLn2cqJf8kYMrt9zmbdDBbAfdoYtGdRj",
+          "checkedAt": "2026-11-05T07:17:07.443Z",
+          "reads": [
+            {
+              "stage": "identity-before",
+              "method": "GetServiceInfo",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:07.998Z",
+              "code": "OK"
+            },
+            {
+              "stage": "current-epoch",
+              "method": "GetEpoch",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:08.229Z",
+              "code": "OK"
+            },
+            {
+              "stage": "original-transaction",
+              "method": "GetTransaction",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:08.421Z",
+              "code": "NOT_FOUND",
+              "grpcCode": "NOT_FOUND"
+            },
+            {
+              "stage": "first-valid-epoch",
+              "method": "GetEpoch",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:08.621Z",
+              "code": "OK"
+            },
+            {
+              "stage": "last-valid-epoch",
+              "method": "GetEpoch",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:08.816Z",
+              "code": "OK"
+            },
+            {
+              "stage": "closed-epoch-checkpoint",
+              "method": "GetCheckpoint",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:09.343Z",
+              "code": "OK"
+            },
+            {
+              "stage": "final-transaction",
+              "method": "GetTransaction",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:09.518Z",
+              "code": "NOT_FOUND",
+              "grpcCode": "NOT_FOUND"
+            },
+            {
+              "stage": "identity-after",
+              "method": "GetServiceInfo",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:09.695Z",
+              "code": "OK"
+            }
+          ],
+          "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+          "epoch": "1302",
+          "protocolVersion": "139",
+          "expirationEnabled": true,
+          "checkpoint": "341836031",
+          "lowestCheckpoint": "336567794",
+          "transactionLookups": [
+            {
+              "stage": "original-transaction",
+              "outcome": "not-found"
+            },
+            {
+              "stage": "final-transaction",
+              "outcome": "not-found"
+            }
+          ],
+          "transaction": {
+            "outcome": "not-found"
+          },
+          "firstValidCheckpoint": "341020094",
+          "lastValidCheckpoint": "341729440",
+          "boundaryDigest": "HxSEAzGSWA1Cx8a4Ydtxrhpog4GiE9Cwju6pxy3gwp4X",
+          "boundaryEpoch": "1301",
+          "boundaryClosed": true
+        }
+      ],
+      "chainDecision": {
+        "eligible": true,
+        "reason": "EXPIRED_UNEXECUTED"
+      },
+      "payloadPersisted": false,
+      "executionDigest": null,
+      "auditHistory": [
+        {
+          "type": "service.challenge",
+          "at": "2026-11-03T10:00:04.945Z"
+        },
+        {
+          "type": "service.approved",
+          "at": "2026-11-03T10:00:28.204Z"
+        },
+        {
+          "type": "service.prepared",
+          "at": "2026-11-03T10:00:28.204Z"
+        },
+        {
+          "type": "service.wallet_requested",
+          "at": "2026-11-03T10:00:30.929Z"
+        },
+        {
+          "type": "service.wallet_error",
+          "at": "2026-11-03T10:00:30.936Z"
+        }
+      ],
+      "originalRecordSha256": "45454e88a346f8eb23e4e4231da51b7a6b4947b76b6fa8e34c14537a9e28826a",
+      "walletEvents": [
+        {
+          "type": "service.wallet_requested",
+          "at": "2026-11-03T10:00:30.929Z",
+          "code": null
+        },
+        {
+          "type": "service.wallet_error",
+          "at": "2026-11-03T10:00:30.936Z",
+          "code": "PROVIDER_ERROR"
+        }
+      ],
+      "eligibleAtObservation": true,
+      "reasons": [],
+      "remainingUncertainty": "Dated read-only eligibility; recovery must repeat all checks under row locks with fresh evidence. No cryptographic non-inclusion proof or physical financial-signing certification."
+    },
+    {
+      "id": "7a025238-06d9-43ca-8b5f-16ef7079f086",
+      "role": "member",
+      "owningWorkspace": {
+        "role": "member",
+        "referenceSha256": "519bdbe9133a11607b568762e58461b0f0185d4ac980a2e971a1c5086fb12f42",
+        "authenticatedWallet": "0xdce341eacb826d2a98abb80ed725bf38f0650a630789abb210e9a079c42365fa",
+        "recordedPayer": "0xdce341eacb826d2a98abb80ed725bf38f0650a630789abb210e9a079c42365fa",
+        "preparedSender": "0xdce341eacb826d2a98abb80ed725bf38f0650a630789abb210e9a079c42365fa",
+        "quotePayer": "0xdce341eacb826d2a98abb80ed725bf38f0650a630789abb210e9a079c42365fa",
+        "isOriginalAdministratorWorkspace": false
+      },
+      "state": "approved",
+      "digest": "CcfxLSCtm6Nr6gZvLbif4dFYJTyt3ECCSDR4nMaQzGw6",
+      "window": {
+        "digest": "CcfxLSCtm6Nr6gZvLbif4dFYJTyt3ECCSDR4nMaQzGw6",
+        "minEpoch": "1300",
+        "maxEpoch": "1301"
+      },
+      "preparedDigestMatchesBytes": true,
+      "preparationValidated": true,
+      "currentMainnetEpoch": [
+        {
+          "provider": "tatum",
+          "epoch": "1302"
+        },
+        {
+          "provider": "sui-fullnode",
+          "epoch": "1302"
+        }
+      ],
+      "reservationAtomic": "1000000",
+      "reservations": [
+        {
+          "ledger": "public-sponsorship",
+          "reservedAtomic": "3000000",
+          "liabilityAtomic": "3000000",
+          "capAtomic": "20000000",
+          "accountingAgrees": true,
+          "wouldReleaseAtomic": "1000000",
+          "proposedAfterThisIntentAtomic": "2000000"
+        },
+        {
+          "ledger": "original-wallet-or-session",
+          "reservedAtomic": "3000000",
+          "liabilityAtomic": "3000000",
+          "capAtomic": "3000000",
+          "accountingAgrees": true,
+          "wouldReleaseAtomic": "1000000",
+          "proposedAfterThisIntentAtomic": "2000000"
+        }
+      ],
+      "providerEvidence": [
+        {
+          "provider": "tatum",
+          "digest": "CcfxLSCtm6Nr6gZvLbif4dFYJTyt3ECCSDR4nMaQzGw6",
+          "checkedAt": "2026-11-05T07:17:11.619Z",
+          "reads": [
+            {
+              "stage": "identity-before",
+              "method": "GetServiceInfo",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:12.434Z",
+              "code": "OK"
+            },
+            {
+              "stage": "current-epoch",
+              "method": "GetEpoch",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:12.633Z",
+              "code": "OK"
+            },
+            {
+              "stage": "original-transaction",
+              "method": "GetTransaction",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:13.157Z",
+              "code": "NOT_FOUND",
+              "grpcCode": "NOT_FOUND"
+            },
+            {
+              "stage": "first-valid-epoch",
+              "method": "GetEpoch",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:13.885Z",
+              "code": "OK"
+            },
+            {
+              "stage": "last-valid-epoch",
+              "method": "GetEpoch",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:14.136Z",
+              "code": "OK"
+            },
+            {
+              "stage": "closed-epoch-checkpoint",
+              "method": "GetCheckpoint",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:14.640Z",
+              "code": "OK"
+            },
+            {
+              "stage": "final-transaction",
+              "method": "GetTransaction",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:15.113Z",
+              "code": "NOT_FOUND",
+              "grpcCode": "NOT_FOUND"
+            },
+            {
+              "stage": "identity-after",
+              "method": "GetServiceInfo",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:15.614Z",
+              "code": "OK"
+            }
+          ],
+          "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+          "epoch": "1302",
+          "protocolVersion": "139",
+          "expirationEnabled": true,
+          "checkpoint": "341836056",
+          "lowestCheckpoint": "237661232",
+          "transactionLookups": [
+            {
+              "stage": "original-transaction",
+              "outcome": "not-found"
+            },
+            {
+              "stage": "final-transaction",
+              "outcome": "not-found"
+            }
+          ],
+          "transaction": {
+            "outcome": "not-found"
+          },
+          "firstValidCheckpoint": "341020094",
+          "lastValidCheckpoint": "341729440",
+          "boundaryDigest": "HxSEAzGSWA1Cx8a4Ydtxrhpog4GiE9Cwju6pxy3gwp4X",
+          "boundaryEpoch": "1301",
+          "boundaryClosed": true
+        },
+        {
+          "provider": "sui-fullnode",
+          "digest": "CcfxLSCtm6Nr6gZvLbif4dFYJTyt3ECCSDR4nMaQzGw6",
+          "checkedAt": "2026-11-05T07:17:11.620Z",
+          "reads": [
+            {
+              "stage": "identity-before",
+              "method": "GetServiceInfo",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:12.507Z",
+              "code": "OK"
+            },
+            {
+              "stage": "current-epoch",
+              "method": "GetEpoch",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:12.710Z",
+              "code": "OK"
+            },
+            {
+              "stage": "original-transaction",
+              "method": "GetTransaction",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:12.890Z",
+              "code": "NOT_FOUND",
+              "grpcCode": "NOT_FOUND"
+            },
+            {
+              "stage": "first-valid-epoch",
+              "method": "GetEpoch",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:13.131Z",
+              "code": "OK"
+            },
+            {
+              "stage": "last-valid-epoch",
+              "method": "GetEpoch",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:13.342Z",
+              "code": "OK"
+            },
+            {
+              "stage": "closed-epoch-checkpoint",
+              "method": "GetCheckpoint",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:13.713Z",
+              "code": "OK"
+            },
+            {
+              "stage": "final-transaction",
+              "method": "GetTransaction",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:13.900Z",
+              "code": "NOT_FOUND",
+              "grpcCode": "NOT_FOUND"
+            },
+            {
+              "stage": "identity-after",
+              "method": "GetServiceInfo",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:14.085Z",
+              "code": "OK"
+            }
+          ],
+          "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+          "epoch": "1302",
+          "protocolVersion": "139",
+          "expirationEnabled": true,
+          "checkpoint": "341836050",
+          "lowestCheckpoint": "336567804",
+          "transactionLookups": [
+            {
+              "stage": "original-transaction",
+              "outcome": "not-found"
+            },
+            {
+              "stage": "final-transaction",
+              "outcome": "not-found"
+            }
+          ],
+          "transaction": {
+            "outcome": "not-found"
+          },
+          "firstValidCheckpoint": "341020094",
+          "lastValidCheckpoint": "341729440",
+          "boundaryDigest": "HxSEAzGSWA1Cx8a4Ydtxrhpog4GiE9Cwju6pxy3gwp4X",
+          "boundaryEpoch": "1301",
+          "boundaryClosed": true
+        }
+      ],
+      "chainDecision": {
+        "eligible": true,
+        "reason": "EXPIRED_UNEXECUTED"
+      },
+      "payloadPersisted": false,
+      "executionDigest": null,
+      "auditHistory": [
+        {
+          "type": "service.challenge",
+          "at": "2026-11-03T19:39:54.712Z"
+        },
+        {
+          "type": "service.approved",
+          "at": "2026-11-03T19:40:06.433Z"
+        },
+        {
+          "type": "service.prepared",
+          "at": "2026-11-03T19:40:06.433Z"
+        }
+      ],
+      "originalRecordSha256": "0ea5ff3464d465e740356e5156a1b80f4fae1e4855985803c5c6a72ab2b7b57d",
+      "walletEvents": [],
+      "eligibleAtObservation": true,
+      "reasons": [],
+      "remainingUncertainty": "Dated read-only eligibility; recovery must repeat all checks under row locks with fresh evidence. No cryptographic non-inclusion proof or physical financial-signing certification."
+    },
+    {
+      "id": "d23937ed-1907-4e40-8156-488f453a921a",
+      "role": "member",
+      "owningWorkspace": {
+        "role": "member",
+        "referenceSha256": "519bdbe9133a11607b568762e58461b0f0185d4ac980a2e971a1c5086fb12f42",
+        "authenticatedWallet": "0xdce341eacb826d2a98abb80ed725bf38f0650a630789abb210e9a079c42365fa",
+        "recordedPayer": "0xdce341eacb826d2a98abb80ed725bf38f0650a630789abb210e9a079c42365fa",
+        "preparedSender": "0xdce341eacb826d2a98abb80ed725bf38f0650a630789abb210e9a079c42365fa",
+        "quotePayer": "0xdce341eacb826d2a98abb80ed725bf38f0650a630789abb210e9a079c42365fa",
+        "isOriginalAdministratorWorkspace": false
+      },
+      "state": "approved",
+      "digest": "7dDdwa2iHbGkXsmrk5wKT3TerFoQ46hMtEDaxq8vFiJR",
+      "window": {
+        "digest": "7dDdwa2iHbGkXsmrk5wKT3TerFoQ46hMtEDaxq8vFiJR",
+        "minEpoch": "1300",
+        "maxEpoch": "1301"
+      },
+      "preparedDigestMatchesBytes": true,
+      "preparationValidated": true,
+      "currentMainnetEpoch": [
+        {
+          "provider": "tatum",
+          "epoch": "1302"
+        },
+        {
+          "provider": "sui-fullnode",
+          "epoch": "1302"
+        }
+      ],
+      "reservationAtomic": "1000000",
+      "reservations": [
+        {
+          "ledger": "public-sponsorship",
+          "reservedAtomic": "3000000",
+          "liabilityAtomic": "3000000",
+          "capAtomic": "20000000",
+          "accountingAgrees": true,
+          "wouldReleaseAtomic": "1000000",
+          "proposedAfterThisIntentAtomic": "2000000"
+        },
+        {
+          "ledger": "original-wallet-or-session",
+          "reservedAtomic": "3000000",
+          "liabilityAtomic": "3000000",
+          "capAtomic": "3000000",
+          "accountingAgrees": true,
+          "wouldReleaseAtomic": "1000000",
+          "proposedAfterThisIntentAtomic": "2000000"
+        }
+      ],
+      "providerEvidence": [
+        {
+          "provider": "tatum",
+          "digest": "7dDdwa2iHbGkXsmrk5wKT3TerFoQ46hMtEDaxq8vFiJR",
+          "checkedAt": "2026-11-05T07:17:15.624Z",
+          "reads": [
+            {
+              "stage": "identity-before",
+              "method": "GetServiceInfo",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:18.164Z",
+              "code": "OK"
+            },
+            {
+              "stage": "current-epoch",
+              "method": "GetEpoch",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:18.871Z",
+              "code": "OK"
+            },
+            {
+              "stage": "original-transaction",
+              "method": "GetTransaction",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:19.808Z",
+              "code": "NOT_FOUND",
+              "grpcCode": "NOT_FOUND"
+            },
+            {
+              "stage": "first-valid-epoch",
+              "method": "GetEpoch",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:19.964Z",
+              "code": "OK"
+            },
+            {
+              "stage": "last-valid-epoch",
+              "method": "GetEpoch",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:22.286Z",
+              "code": "OK"
+            },
+            {
+              "stage": "closed-epoch-checkpoint",
+              "method": "GetCheckpoint",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:22.459Z",
+              "code": "OK"
+            },
+            {
+              "stage": "final-transaction",
+              "method": "GetTransaction",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:22.935Z",
+              "code": "NOT_FOUND",
+              "grpcCode": "NOT_FOUND"
+            },
+            {
+              "stage": "identity-after",
+              "method": "GetServiceInfo",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:23.430Z",
+              "code": "OK"
+            }
+          ],
+          "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+          "epoch": "1302",
+          "protocolVersion": "139",
+          "expirationEnabled": true,
+          "checkpoint": "341836090",
+          "lowestCheckpoint": "237661232",
+          "transactionLookups": [
+            {
+              "stage": "original-transaction",
+              "outcome": "not-found"
+            },
+            {
+              "stage": "final-transaction",
+              "outcome": "not-found"
+            }
+          ],
+          "transaction": {
+            "outcome": "not-found"
+          },
+          "firstValidCheckpoint": "341020094",
+          "lastValidCheckpoint": "341729440",
+          "boundaryDigest": "HxSEAzGSWA1Cx8a4Ydtxrhpog4GiE9Cwju6pxy3gwp4X",
+          "boundaryEpoch": "1301",
+          "boundaryClosed": true
+        },
+        {
+          "provider": "sui-fullnode",
+          "digest": "7dDdwa2iHbGkXsmrk5wKT3TerFoQ46hMtEDaxq8vFiJR",
+          "checkedAt": "2026-11-05T07:17:15.627Z",
+          "reads": [
+            {
+              "stage": "identity-before",
+              "method": "GetServiceInfo",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:16.242Z",
+              "code": "OK"
+            },
+            {
+              "stage": "current-epoch",
+              "method": "GetEpoch",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:16.955Z",
+              "code": "OK"
+            },
+            {
+              "stage": "original-transaction",
+              "method": "GetTransaction",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:17.692Z",
+              "code": "NOT_FOUND",
+              "grpcCode": "NOT_FOUND"
+            },
+            {
+              "stage": "first-valid-epoch",
+              "method": "GetEpoch",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:17.873Z",
+              "code": "OK"
+            },
+            {
+              "stage": "last-valid-epoch",
+              "method": "GetEpoch",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:18.280Z",
+              "code": "OK"
+            },
+            {
+              "stage": "closed-epoch-checkpoint",
+              "method": "GetCheckpoint",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:21.185Z",
+              "code": "OK"
+            },
+            {
+              "stage": "final-transaction",
+              "method": "GetTransaction",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:21.680Z",
+              "code": "NOT_FOUND",
+              "grpcCode": "NOT_FOUND"
+            },
+            {
+              "stage": "identity-after",
+              "method": "GetServiceInfo",
+              "attempt": 1,
+              "checkedAt": "2026-11-05T07:17:22.359Z",
+              "code": "OK"
+            }
+          ],
+          "genesis": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+          "epoch": "1302",
+          "protocolVersion": "139",
+          "expirationEnabled": true,
+          "checkpoint": "341836085",
+          "lowestCheckpoint": "336567855",
+          "transactionLookups": [
+            {
+              "stage": "original-transaction",
+              "outcome": "not-found"
+            },
+            {
+              "stage": "final-transaction",
+              "outcome": "not-found"
+            }
+          ],
+          "transaction": {
+            "outcome": "not-found"
+          },
+          "firstValidCheckpoint": "341020094",
+          "lastValidCheckpoint": "341729440",
+          "boundaryDigest": "HxSEAzGSWA1Cx8a4Ydtxrhpog4GiE9Cwju6pxy3gwp4X",
+          "boundaryEpoch": "1301",
+          "boundaryClosed": true
+        }
+      ],
+      "chainDecision": {
+        "eligible": true,
+        "reason": "EXPIRED_UNEXECUTED"
+      },
+      "payloadPersisted": false,
+      "executionDigest": null,
+      "auditHistory": [
+        {
+          "type": "service.challenge",
+          "at": "2026-11-03T19:42:36.944Z"
+        },
+        {
+          "type": "service.approved",
+          "at": "2026-11-03T19:42:47.515Z"
+        },
+        {
+          "type": "service.prepared",
+          "at": "2026-11-03T19:42:47.515Z"
+        }
+      ],
+      "originalRecordSha256": "2239c6c8616c62691f9d1e35f5d1dbbe192b656326cb65feec6d6e5dbac40b40",
+      "walletEvents": [],
+      "eligibleAtObservation": true,
+      "reasons": [],
+      "remainingUncertainty": "Dated read-only eligibility; recovery must repeat all checks under row locks with fresh evidence. No cryptographic non-inclusion proof or physical financial-signing certification."
+    }
+  ],
+  "allEligibleAtObservation": true,
+  "preservation": {
+    "historicalUnchanged": {
+      "memories": true,
+      "receipts": true,
+      "intents": true,
+      "business": true
+    },
+    "originalMemoryTuplesPreserved": true,
+    "unchangedDuringAudit": {
+      "memories": true,
+      "receipts": true,
+      "intents": true,
+      "business": true,
+      "budgets": true,
+      "providerAndWalletHistory": true,
+      "allIntents": true
+    },
+    "unchangedSincePriorEligibility": {
+      "memories": true,
+      "receipts": true,
+      "intents": true,
+      "business": true,
+      "budgets": true,
+      "providerAndWalletHistory": true,
+      "allIntents": true
+    },
+    "priorEligibilityCheckedAt": "2026-11-05T06:36:24.040Z",
+    "fingerprints": {
+      "memories": "0bca6bef1213d45922a5884fee744d3cb12cf659047c86c55791ed543fb6528c",
+      "receipts": "3d9fcb7a9e47f9d96dc53c7d59607f36a607842f4f3e70b56a45c3d4215595b8",
+      "intents": "325ba5ac0b37e8f56d6a1bc794599f61d7f9924370a8bdbbd50ba6df72d41e7b",
+      "business": "e7380b097984d66abe3c5d4e8b8a8c9d3975870e784b38ef0b3839b7a5b40a1f",
+      "budgets": "eb4a716ede7af350c9c551c9f13bbbc6136a43cc81552ac2af14e7992617c623",
+      "providerAndWalletHistory": "fbe53ff5262eb67a86505247dd99bf0b577981061356c86d91ecb85c1e3987bb",
+      "allIntents": "21763e09173ba620669133483bc807c942d22b8e89b689536716de76acea1370"
+    },
+    "confirmedMemories": 33,
+    "memoryRows": 34,
+    "receiptsAndReports": 3,
+    "originalIntents": 4,
+    "harborlineRecords": 1,
+    "counts": [
+      {
+        "recovery_events": 0,
+        "submissions": 3,
+        "settling": 0
+      }
+    ]
+  },
+  "productionRecoveryInvocations": 0,
+  "configurationChanges": 0,
+  "recordMutations": 0,
+  "financialSignatures": 0,
+  "newQuotes": 0,
+  "transactionPreparations": 0,
+  "transactionSubmissions": 0,
+  "walrusWrites": 0,
+  "safeForNewCheckoutNow": false,
+  "nextStep": "Separate explicit approval of four specific recoveries after deployment review; repeat fresh chain and liability checks. Holds are unchanged."
+}

@@ -16,39 +16,8 @@ import { bcs } from '@mysten/sui/bcs';
 import { serviceCoinFunding } from '../service-protocol';
 import { checkServiceCoinObjects } from '../service-funding';
 import { Transaction } from '@mysten/sui/transactions';
-import {
-  PaymentCheckError,
-  paymentCheck,
-  failedPaymentCheck,
-  type PaymentDiagnostic,
-} from '../service-setup';
-
-// Read-only preflight calls share a conservative two-starts/second queue per
-// server process. No transaction verification, signing or settlement uses it.
-let readQueue: Promise<unknown> = Promise.resolve();
-let nextReadAt = 0;
-async function pacedTatumRead<T>(operation: () => Promise<T>): Promise<T> {
-  const turn = readQueue.then(async () => {
-    const delay = Math.max(0, nextReadAt - Date.now());
-    if (delay) await new Promise((resolve) => setTimeout(resolve, delay));
-    nextReadAt = Date.now() + 500;
-    try {
-      return await operation();
-    } catch (error) {
-      if (failedPaymentCheck('', '', error).classification !== 'rate_limit') throw error;
-      // A different instance or read path can share the provider key. Permit
-      // one cooled-down READ retry; persistent quotas remain visible failures.
-      await new Promise((resolve) => setTimeout(resolve, 1100));
-      nextReadAt = Date.now() + 500;
-      return operation();
-    }
-  });
-  readQueue = turn.then(
-    () => undefined,
-    () => undefined,
-  );
-  return turn;
-}
+import { PaymentCheckError, paymentCheck, type PaymentDiagnostic } from '../service-setup';
+import { pacedTatumRead } from './tatum-read';
 
 export function parseServiceBalance(b: GrpcTypes.Balance | undefined) {
   if (!b || b.balance == null || canonicalCoin(b.coinType || '') !== canonicalCoin(SERVICE_ASSET))

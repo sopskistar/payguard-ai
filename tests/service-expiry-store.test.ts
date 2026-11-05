@@ -345,3 +345,49 @@ it('does not release an inconsistent liability ledger or a substituted preparati
   expect((await recoverExpiredService(memberId, f.id)).reason).toBe('PREPARED_DIGEST_MISMATCH');
   expect(await reserved()).toEqual(before);
 });
+it('keeps reservations when a later reconciliation discovers a finalized transaction', async () => {
+  const f = await fixture(),
+    before = await reserved();
+  mock.evidence.mockImplementationOnce(async (window) =>
+    evidence(window).map((e) => (e.provider === 'tatum' ? { ...e, error: 'UNAVAILABLE' } : e)),
+  );
+  expect((await recoverExpiredService(memberId, f.id)).recovered).toBe(false);
+  mock.evidence.mockImplementationOnce(async (window) =>
+    evidence(window).map((e) =>
+      e.provider === 'sui-fullnode'
+        ? { ...e, transaction: { outcome: 'found', checkpoint: '150', success: true } }
+        : e,
+    ),
+  );
+  expect((await recoverExpiredService(memberId, f.id)).reason).toBe('TRANSACTION_FOUND_RECONCILE');
+  expect(await reserved()).toEqual(before);
+  expect((await ownedService(memberId, f.id)).state).toBe('approved');
+});
+it('holds unexpected settlement or confirmation audits even without a stored digest or receipt', async () => {
+  for (const type of ['service.settlement_requested', 'service.confirmation_uncertain']) {
+    const f = await fixture(),
+      before = await reserved();
+    await (
+      await db()
+    )
+      .insert(s.auditEvents)
+      .values({ tenantId: memberId, entityId: f.id, type, detail: { fixture: true } });
+    expect((await recoverExpiredService(memberId, f.id)).reason).toBe(
+      'SUBMISSION_REQUIRES_RECONCILIATION',
+    );
+    expect(await reserved()).toEqual(before);
+  }
+  expect(mock.evidence).not.toHaveBeenCalled();
+});
+it('serializes recoveries of different intents sharing the same reservation ledgers', async () => {
+  const a = await fixture(),
+    b = await fixture();
+  const results = await Promise.all([
+    recoverExpiredService(memberId, a.id),
+    recoverExpiredService(memberId, b.id),
+  ]);
+  expect(results.every((r) => r.recovered && r.releasedAtomic === '1000000')).toBe(true);
+  expect(await reserved()).toEqual(['0', '0']);
+  expect((await events(a.id)).filter((e) => e.type === 'service.expiry_recovered')).toHaveLength(1);
+  expect((await events(b.id)).filter((e) => e.type === 'service.expiry_recovered')).toHaveLength(1);
+});
