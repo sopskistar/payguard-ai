@@ -18,6 +18,7 @@ import {
   senderEvidence,
   attachmentUrl,
   boundedResponse,
+  inspectInboundAttachmentHosts,
 } from '@/lib/inbound-email';
 import { boundedBytes } from '@/lib/business-http';
 let directory: string;
@@ -213,4 +214,82 @@ it('rejects SSRF hosts, redirects credentials and oversized/chunked attachments'
   await expect(
     boundedBytes(new Request('http://localhost', { method: 'POST', body: new Uint8Array(20) }), 10),
   ).rejects.toMatchObject({ code: 'BODY_SIZE' });
+});
+
+it('returns only hostnames from authenticated provider metadata for an owned host failure', async () => {
+  const t = await tenant(),
+    id = randomUUID();
+  await (await db()).insert(s.inboundMessages).values({
+    id: 'resend:' + id,
+    tenantId: t.id,
+    state: 'failed',
+    errorCode: 'ATTACHMENT_HOST',
+  });
+  const fetch = vi.fn(
+    async (url: string) =>
+      new Response(
+        JSON.stringify(
+          url.includes('/attachments')
+            ? {
+                data: [
+                  {
+                    download_url:
+                      'https://unrecognized.fixture.example/private/path?signature=never-return-this',
+                  },
+                ],
+              }
+            : { id, to: [t.address] },
+        ),
+      ),
+  );
+  vi.stubGlobal('fetch', fetch);
+  const result = await inspectInboundAttachmentHosts(t.id, id);
+  expect(result).toEqual({
+    emailId: id,
+    state: 'failed',
+    attachmentHosts: ['unrecognized.fixture.example'],
+  });
+  expect(fetch).toHaveBeenCalledTimes(2);
+  expect(
+    fetch.mock.calls.every(([url]) => url.startsWith('https://api.resend.com/emails/receiving/')),
+  ).toBe(true);
+  expect(JSON.stringify(result)).not.toMatch(/signature|private\/path|download_url|Bearer/);
+  expect(blobs.put).not.toHaveBeenCalled();
+});
+
+it('denies cross-workspace and wrong-state diagnostics before contacting Resend', async () => {
+  const t = await tenant(),
+    other = await tenant(),
+    id = randomUUID();
+  await (await db()).insert(s.inboundMessages).values({
+    id: 'resend:' + id,
+    tenantId: t.id,
+    state: 'completed',
+  });
+  const fetch = vi.fn();
+  vi.stubGlobal('fetch', fetch);
+  await expect(inspectInboundAttachmentHosts(other.id, id)).rejects.toMatchObject({
+    code: 'NOT_FOUND',
+  });
+  await expect(inspectInboundAttachmentHosts(t.id, id)).rejects.toMatchObject({
+    code: 'INBOUND_DIAGNOSTIC_STATE',
+  });
+  expect(fetch).not.toHaveBeenCalled();
+});
+
+it('refuses diagnostic metadata whose destination conflicts with the verified workspace', async () => {
+  const t = await tenant(),
+    id = randomUUID();
+  await (await db()).insert(s.inboundMessages).values({
+    id: 'resend:' + id,
+    tenantId: t.id,
+    state: 'failed',
+    errorCode: 'ATTACHMENT_HOST',
+  });
+  const fetch = vi.fn(async () => new Response(JSON.stringify({ id, to: ['other@example.test'] })));
+  vi.stubGlobal('fetch', fetch);
+  await expect(inspectInboundAttachmentHosts(t.id, id)).rejects.toMatchObject({
+    code: 'EMAIL_DESTINATION_CONFLICT',
+  });
+  expect(fetch).toHaveBeenCalledTimes(1);
 });
