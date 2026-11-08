@@ -1,0 +1,42 @@
+{
+  "checkedAt": "2026-11-08T20:24:44.807Z",
+  "parentCommit": "1a5b594c4945656c24d1d410cec5de2abfd290d7",
+  "change": "Recognize existing SDK-supported complete Blob OIDC credentials alongside the static token; keep private access and tenant authorization",
+  "unit": {
+    "passed": 326,
+    "failed": 0,
+    "skipped": 0,
+    "success": true
+  },
+  "initialFullRun": {
+    "passed": 308,
+    "assertionFailures": 0,
+    "skipped": 18,
+    "complete": false,
+    "cause": "Cold disposable business database setup exceeded default 10-second hook during concurrent build; setup uses existing 30-second test budget, assertions unchanged"
+  },
+  "browser": {
+    "startTime": "2026-11-08T20:19:36.910Z",
+    "duration": 167799.443,
+    "expected": 62,
+    "skipped": 2,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "disposableDatabase": true,
+  "liveQaCredentials": false,
+  "readWriteAndOidcDisabledInQa": true,
+  "typecheck": "passed",
+  "build": "passed",
+  "format": "passed",
+  "lint": {
+    "errors": 0,
+    "existingWarnings": 1
+  },
+  "financialCodeChanged": false,
+  "financialActions": 0,
+  "memoryWrites": 0,
+  "realEmailAcceptance": "pending",
+  "privateUploadAcceptance": "pending",
+  "secretValuesPublished": false
+}

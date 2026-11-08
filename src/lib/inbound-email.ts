@@ -7,7 +7,11 @@ import { db } from '@/db';
 import * as s from '@/db/schema';
 import { AppError } from './errors';
 import { rateLimit } from './auth';
-import { privateStorageConfigured, createDocument } from './documents';
+import {
+  privateStorageConfigured,
+  privateStorageAuthentication,
+  createDocument,
+} from './documents';
 import { boundedBytes } from './business-http';
 import { MAX_UPLOAD } from './intake';
 const domain = () => process.env.INVOICE_INBOUND_DOMAIN?.toLowerCase();
@@ -22,6 +26,7 @@ export function inboundConfiguration() {
     configured: !missing.length,
     provider: 'Resend',
     missing,
+    storageAuthentication: privateStorageAuthentication(),
     liveEndToEndVerified: false,
     senderTrust: 'A verified webhook authenticates delivery by Resend, not the sender or supplier.',
     automaticSupplierApproval: false,

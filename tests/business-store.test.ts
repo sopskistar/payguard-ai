@@ -39,8 +39,10 @@ beforeAll(async () => {
   vi.stubEnv('DATABASE_URL', '');
   vi.stubEnv('LOCAL_DATABASE_PATH', directory);
   vi.stubEnv('BLOB_READ_WRITE_TOKEN', '');
+  vi.stubEnv('BLOB_STORE_ID', '');
+  vi.stubEnv('VERCEL_OIDC_TOKEN', '');
   await migrate(await db(), { migrationsFolder: 'drizzle' });
-});
+}, 30000);
 afterAll(async () => {
   await ((await db()) as unknown as { $client: PGlite }).$client.close();
   vi.unstubAllEnvs();

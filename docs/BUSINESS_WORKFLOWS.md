@@ -32,12 +32,14 @@ A repeated message reuses its persisted state. Partially completed deliveries re
 
 **Live receiving is disabled until all owner configuration is present:**
 
-| Setting                  | Owner configuration                                                            |
-| ------------------------ | ------------------------------------------------------------------------------ |
-| `RESEND_API_KEY`         | Receiving API access for the owner’s Resend account                            |
-| `RESEND_WEBHOOK_SECRET`  | Exact signing secret for this endpoint and `email.received` events             |
-| `INVOICE_INBOUND_DOMAIN` | A verified receiving domain or the owner’s assigned Resend receiving subdomain |
-| `BLOB_READ_WRITE_TOKEN`  | Token linked to a private Vercel Blob store                                    |
+| Setting                  | Owner configuration                                                                        |
+| ------------------------ | ------------------------------------------------------------------------------------------ |
+| `RESEND_API_KEY`         | Receiving API access for the owner’s Resend account                                        |
+| `RESEND_WEBHOOK_SECRET`  | Exact signing secret for this endpoint and `email.received` events                         |
+| `INVOICE_INBOUND_DOMAIN` | A verified receiving domain or the owner’s assigned Resend receiving subdomain             |
+| `BLOB_READ_WRITE_TOKEN`  | Token linked to a private Vercel Blob store; optional with the complete platform OIDC pair |
+
+A connected Vercel store may instead supply `BLOB_STORE_ID` and the platform-managed `VERCEL_OIDC_TOKEN`. The installed Blob SDK supports this mode, and readiness accepts it only when both are present. Do not manually copy or persist the short-lived OIDC token. The forwarding status reports only the authentication mode, never credential values. Uploads still require `access: 'private'`; an incomplete credential pair leaves live intake disabled. Disposable QA clears all three storage-credential variables.
 
 For the owner’s existing flownix.xyz/ShadowBid account, follow the [consolidated receiving checklist](PAYGUARD_EMAIL_OWNER_SETUP.md). No live delivery is claimed.
 

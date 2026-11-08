@@ -7,7 +7,15 @@ import { AppError } from './errors';
 import { rateLimit } from './auth';
 import { businessAccess, businessWriteGuard, REQUEST_ROLES } from './organization-access';
 import { extractInvoice, type Extraction } from './intake';
-export const privateStorageConfigured = () => !!process.env.BLOB_READ_WRITE_TOKEN;
+// Match the installed Blob SDK's supported environment credentials. A store name
+// alone grants no access; incomplete OIDC configuration remains unavailable.
+export function privateStorageAuthentication() {
+  if (process.env.BLOB_STORE_ID?.trim() && process.env.VERCEL_OIDC_TOKEN?.trim())
+    return 'platform-oidc';
+  if (process.env.BLOB_READ_WRITE_TOKEN?.trim()) return 'read-write-token';
+  return 'unavailable';
+}
+export const privateStorageConfigured = () => privateStorageAuthentication() !== 'unavailable';
 export type DocumentExtraction = Extraction & {
   documentId: string;
   retained: boolean;
