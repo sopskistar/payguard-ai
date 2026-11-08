@@ -18,7 +18,6 @@ import {
   senderEvidence,
   attachmentUrl,
   boundedResponse,
-  inspectInboundAttachmentHosts,
 } from '@/lib/inbound-email';
 import { boundedBytes } from '@/lib/business-http';
 let directory: string;
@@ -84,62 +83,76 @@ it('verifies the exact raw payload and refuses missing, forged and stale webhook
   const stale = signed({ type: 'test' }, new Date(Date.now() - 3600000));
   expect(() => verifyInbound('{"type":"test"}', stale.headers)).toThrow('signature');
 });
-it('processes a provider-verified message once, preserves sender risk evidence and never creates a trusted supplier', async () => {
-  const t = await tenant(),
-    id = randomUUID(),
-    attachmentId = randomUUID(),
-    bytes = Buffer.from(
-      'Supplier: Synthetic Forwarded Supplier\nInvoice: INBOUND-01\nAmount: 25\nCurrency: USD',
-    );
-  const fetch = vi.fn(async (url: string) =>
-    url.includes('inbound-cdn.resend.com')
-      ? new Response(bytes)
-      : new Response(
-          JSON.stringify(
-            url.includes('/attachments')
-              ? {
-                  has_more: false,
-                  data: [
-                    {
-                      id: attachmentId,
-                      filename: 'invoice.txt',
-                      size: bytes.length,
-                      download_url: 'https://inbound-cdn.resend.com/' + id + '/' + attachmentId,
-                    },
-                  ],
-                }
-              : {
-                  id,
-                  from: 'sender@untrusted.example',
-                  to: [t.address],
-                  reply_to: ['attacker@different.example'],
-                  authentication: { spf: 'pass', dkim: 'fail', dmarc: 'fail' },
-                },
+it.each(['inbound-cdn.resend.com', 'cdn.resend.app'])(
+  'processes a provider-verified message from %s once, preserves sender risk evidence and never creates a trusted supplier',
+  async (host) => {
+    const t = await tenant(),
+      id = randomUUID(),
+      attachmentId = randomUUID(),
+      bytes = Buffer.from(
+        'Supplier: Synthetic Forwarded Supplier\nInvoice: INBOUND-01\nAmount: 25\nCurrency: USD',
+      );
+    if (host === 'cdn.resend.app')
+      await (await db()).insert(s.inboundMessages).values({
+        id: 'resend:' + id,
+        tenantId: t.id,
+        state: 'failed',
+        errorCode: 'ATTACHMENT_HOST',
+      });
+    const fetch = vi.fn(async (url: string) =>
+      new URL(url).hostname === host
+        ? new Response(bytes)
+        : new Response(
+            JSON.stringify(
+              url.includes('/attachments')
+                ? {
+                    has_more: false,
+                    data: [
+                      {
+                        id: attachmentId,
+                        filename: 'invoice.txt',
+                        size: bytes.length,
+                        download_url: 'https://' + host + '/' + id + '/' + attachmentId,
+                      },
+                    ],
+                  }
+                : {
+                    id,
+                    from: 'sender@untrusted.example',
+                    to: [t.address],
+                    reply_to: ['attacker@different.example'],
+                    authentication: { spf: 'pass', dkim: 'fail', dmarc: 'fail' },
+                  },
+            ),
           ),
-        ),
-  );
-  vi.stubGlobal('fetch', fetch);
-  const event = { type: 'email.received', data: { email_id: id, to: [t.address] } };
-  expect(await receiveEmail(signed(event))).toMatchObject({
-    state: 'completed',
-    supplierApproved: false,
-  });
-  expect(await receiveEmail(signed(event))).toMatchObject({ state: 'completed' });
-  expect(fetch).toHaveBeenCalledTimes(3);
-  expect(blobs.put).toHaveBeenCalledTimes(1);
-  const docs = await (await db()).select().from(s.intakeDocuments);
-  const row = docs.find((d) => d.tenantId === t.id)!;
-  expect(row.status).toBe('review');
-  expect(row.invoiceId).toBeNull();
-  expect(
-    (row.extraction.emailEvidence as { supplierAuthenticated: boolean; warnings: string[] })
-      .supplierAuthenticated,
-  ).toBe(false);
-  expect((row.extraction.emailEvidence as { warnings: string[] }).warnings.join(' ')).toContain(
-    'failure',
-  );
-  expect(await (await db()).select().from(s.vendorTrustProfiles)).toHaveLength(0);
-});
+    );
+    vi.stubGlobal('fetch', fetch);
+    const event = { type: 'email.received', data: { email_id: id, to: [t.address] } };
+    expect(await receiveEmail(signed(event))).toMatchObject({
+      state: 'completed',
+      supplierApproved: false,
+    });
+    expect(await receiveEmail(signed(event))).toMatchObject({ state: 'completed' });
+    expect(fetch).toHaveBeenCalledTimes(3);
+    expect(blobs.put).toHaveBeenCalledTimes(1);
+    const docs = await (await db()).select().from(s.intakeDocuments);
+    const row = docs.find((d) => d.tenantId === t.id)!;
+    expect(row.status).toBe('review');
+    expect(row.invoiceId).toBeNull();
+    expect(row.messageId).toBe('resend:' + id + ':' + attachmentId);
+    expect(
+      (await (await db()).select().from(s.inboundMessages)).find((m) => m.id === 'resend:' + id),
+    ).toMatchObject({ state: 'completed', errorCode: null });
+    expect(
+      (row.extraction.emailEvidence as { supplierAuthenticated: boolean; warnings: string[] })
+        .supplierAuthenticated,
+    ).toBe(false);
+    expect((row.extraction.emailEvidence as { warnings: string[] }).warnings.join(' ')).toContain(
+      'failure',
+    );
+    expect(await (await db()).select().from(s.vendorTrustProfiles)).toHaveLength(0);
+  },
+);
 it('ignores an unauthorized destination without fetching another workspace message', async () => {
   const fetch = vi.fn();
   vi.stubGlobal('fetch', fetch);
@@ -216,80 +229,16 @@ it('rejects SSRF hosts, redirects credentials and oversized/chunked attachments'
   ).rejects.toMatchObject({ code: 'BODY_SIZE' });
 });
 
-it('returns only hostnames from authenticated provider metadata for an owned host failure', async () => {
-  const t = await tenant(),
-    id = randomUUID();
-  await (await db()).insert(s.inboundMessages).values({
-    id: 'resend:' + id,
-    tenantId: t.id,
-    state: 'failed',
-    errorCode: 'ATTACHMENT_HOST',
-  });
-  const fetch = vi.fn(
-    async (url: string) =>
-      new Response(
-        JSON.stringify(
-          url.includes('/attachments')
-            ? {
-                data: [
-                  {
-                    download_url:
-                      'https://unrecognized.fixture.example/private/path?signature=never-return-this',
-                  },
-                ],
-              }
-            : { id, to: [t.address] },
-        ),
-      ),
-  );
-  vi.stubGlobal('fetch', fetch);
-  const result = await inspectInboundAttachmentHosts(t.id, id);
-  expect(result).toEqual({
-    emailId: id,
-    state: 'failed',
-    attachmentHosts: ['unrecognized.fixture.example'],
-  });
-  expect(fetch).toHaveBeenCalledTimes(2);
-  expect(
-    fetch.mock.calls.every(([url]) => url.startsWith('https://api.resend.com/emails/receiving/')),
-  ).toBe(true);
-  expect(JSON.stringify(result)).not.toMatch(/signature|private\/path|download_url|Bearer/);
-  expect(blobs.put).not.toHaveBeenCalled();
-});
-
-it('denies cross-workspace and wrong-state diagnostics before contacting Resend', async () => {
-  const t = await tenant(),
-    other = await tenant(),
-    id = randomUUID();
-  await (await db()).insert(s.inboundMessages).values({
-    id: 'resend:' + id,
-    tenantId: t.id,
-    state: 'completed',
-  });
-  const fetch = vi.fn();
-  vi.stubGlobal('fetch', fetch);
-  await expect(inspectInboundAttachmentHosts(other.id, id)).rejects.toMatchObject({
-    code: 'NOT_FOUND',
-  });
-  await expect(inspectInboundAttachmentHosts(t.id, id)).rejects.toMatchObject({
-    code: 'INBOUND_DIAGNOSTIC_STATE',
-  });
-  expect(fetch).not.toHaveBeenCalled();
-});
-
-it('refuses diagnostic metadata whose destination conflicts with the verified workspace', async () => {
-  const t = await tenant(),
-    id = randomUUID();
-  await (await db()).insert(s.inboundMessages).values({
-    id: 'resend:' + id,
-    tenantId: t.id,
-    state: 'failed',
-    errorCode: 'ATTACHMENT_HOST',
-  });
-  const fetch = vi.fn(async () => new Response(JSON.stringify({ id, to: ['other@example.test'] })));
-  vi.stubGlobal('fetch', fetch);
-  await expect(inspectInboundAttachmentHosts(t.id, id)).rejects.toMatchObject({
-    code: 'EMAIL_DESTINATION_CONFLICT',
-  });
-  expect(fetch).toHaveBeenCalledTimes(1);
+it('does not trust lookalikes, other resend.app subdomains, credentials, ports or insecure CDN URLs', () => {
+  for (const url of [
+    'http://cdn.resend.app/invoice.pdf',
+    'https://cdn.resend.app.attacker.example/invoice.pdf',
+    'https://attacker.resend.app/invoice.pdf',
+    'https://sub.cdn.resend.app/invoice.pdf',
+    'https://cdn-resend.app/invoice.pdf',
+    'https://cdn.resend.app:8443/invoice.pdf',
+    'https://user:password@cdn.resend.app/invoice.pdf',
+    'https://cdn.resend.app@127.0.0.1/invoice.pdf',
+  ])
+    expect(() => attachmentUrl(url)).toThrow();
 });

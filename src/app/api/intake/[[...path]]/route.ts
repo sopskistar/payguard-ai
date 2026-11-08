@@ -2,12 +2,7 @@ import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import { withDatabaseRequest } from '@/db';
 import { requireWorkspace, checkOrigin, rateLimit } from '@/lib/auth';
-import {
-  receiveEmail,
-  inboundConfiguration,
-  ensureInboundRoute,
-  inspectInboundAttachmentHosts,
-} from '@/lib/inbound-email';
+import { receiveEmail, inboundConfiguration, ensureInboundRoute } from '@/lib/inbound-email';
 import { documentList, readDocument, documentPreview, deleteDocument } from '@/lib/documents';
 import { privateJson, businessFailure, businessBody } from '@/lib/business-http';
 import { businessAccess, workspaceOrganization } from '@/lib/organization-access';
@@ -24,13 +19,6 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
     const actor = await requireWorkspace();
     const tenantId = actor.tenantId;
     if (req.method !== 'GET') await rateLimit(tenantId + ':intake', 60);
-    if (
-      req.method === 'GET' &&
-      path.length === 3 &&
-      path[0] === 'forwarding' &&
-      path[2] === 'attachment-hosts'
-    )
-      return privateJson(await inspectInboundAttachmentHosts(tenantId, path[1]));
     if (path[0] === 'forwarding' && path.length === 1) {
       if (req.method === 'GET')
         return privateJson({

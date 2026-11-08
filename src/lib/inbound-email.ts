@@ -175,6 +175,9 @@ export async function boundedResponse(response: Response, max: number) {
 export function attachmentUrl(value: string) {
   const url = new URL(value);
   const allowed =
+    // Exact CDN returned by Resend's authenticated receiving API (2026-11-08).
+    // Other resend.app subdomains are not attachment hosts approved by this check.
+    url.hostname === 'cdn.resend.app' ||
     /^(?:[a-z0-9-]+\.)*(?:resend\.com|resend-storage\.com)$/.test(url.hostname) ||
     /^[a-z0-9.-]+\.s3\.[a-z0-9-]+\.amazonaws\.com$/.test(url.hostname) ||
     /^[a-z0-9-]+\.r2\.cloudflarestorage\.com$/.test(url.hostname);
@@ -185,47 +188,6 @@ export function attachmentUrl(value: string) {
       'Attachment host is not in the owner-reviewed provider allowlist.',
     );
   return url.toString();
-}
-// Read metadata only for an already signature-verified, failed message owned by
-// this workspace. Never return attachment URLs, signed queries or email content.
-export async function inspectInboundAttachmentHosts(tenantId: string, emailId: string) {
-  const id = 'resend:' + z.string().uuid().parse(emailId);
-  const [message] = await (
-    await db()
-  )
-    .select()
-    .from(s.inboundMessages)
-    .where(and(eq(s.inboundMessages.id, id), eq(s.inboundMessages.tenantId, tenantId)));
-  if (!message) throw new AppError(404, 'NOT_FOUND', 'Inbound message not found.');
-  if (message.state !== 'failed' || message.errorCode !== 'ATTACHMENT_HOST')
-    throw new AppError(
-      409,
-      'INBOUND_DIAGNOSTIC_STATE',
-      'This message has no attachment-host failure.',
-    );
-  if (!inboundConfiguration().configured)
-    throw new AppError(503, 'INBOUND_NOT_CONFIGURED', 'Inbound email is not configured.');
-  await rateLimit(tenantId + ':inbound-host-inspection', 10);
-  const route = await ensureInboundRoute(tenantId, undefined, false);
-  const email = z
-    .object({ id: z.string().uuid(), to: z.array(z.string()) })
-    .parse(await providerGet('/emails/receiving/' + emailId + '?html_format=cid'));
-  if (!route?.enabled || email.id !== emailId || !email.to.map(mailbox).includes(route.address))
-    throw new AppError(
-      409,
-      'EMAIL_DESTINATION_CONFLICT',
-      'Provider metadata does not match the owned destination.',
-    );
-  const attachments = z
-    .object({
-      data: z.array(z.object({ download_url: z.url() })).max(3),
-    })
-    .parse(await providerGet('/emails/receiving/' + emailId + '/attachments'));
-  return {
-    emailId,
-    state: message.state,
-    attachmentHosts: [...new Set(attachments.data.map((a) => new URL(a.download_url).hostname))],
-  };
 }
 export async function receiveEmail(req: Request) {
   if (!inboundConfiguration().configured)
