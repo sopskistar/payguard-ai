@@ -19,7 +19,7 @@ import {
   type ServiceChallenge,
 } from '@/lib/service-protocol';
 import type { Invoice, Snapshot } from '@/lib/types';
-import { api, Badge, Field } from './ui';
+import { api, Badge, Field, money } from './ui';
 import { WALLET_REVIEW_MESSAGE } from '@/lib/wallet-policy';
 import { PaymentSetup } from './payment-setup';
 import { Brand } from './brand';
@@ -93,6 +93,20 @@ type WalletFeatures = {
     }) => Promise<{ bytes: string; signature: string }>;
   };
 };
+// Wallet IDs and names can be shared by multiple adapters. Keep a stable selection per provider object.
+const walletSelections = new WeakMap<object, string>();
+const walletSelectionCounts = new Map<string, number>();
+function walletSelectionId(wallet: ServiceWalletProvider & { id?: string }) {
+  let id = walletSelections.get(wallet);
+  if (!id) {
+    const base = wallet.id || wallet.name;
+    const count = walletSelectionCounts.get(base) || 0;
+    walletSelectionCounts.set(base, count + 1);
+    id = count ? base + ':sui:' + count : base;
+    walletSelections.set(wallet, id);
+  }
+  return id;
+}
 async function request(path: string, body: unknown) {
   const payment = !!body && typeof body === 'object' && 'x402Version' in body;
   const r = await fetch('/api/service-payments' + path, {
@@ -149,6 +163,8 @@ async function request(path: string, body: unknown) {
 
 export function ServicePayment() {
   const router = useRouter();
+  const confirmationInFlight = useRef(false);
+  const actionInFlight = useRef(false);
   const quoteOperation = useRef<{ invoiceId: string; key: string } | undefined>(undefined);
   const [data, setData] = useState<Snapshot>(),
     [capabilityState, setCapabilityState] = useState<'loading' | 'ready' | 'error' | 'anonymous'>(
@@ -171,6 +187,7 @@ export function ServicePayment() {
     [checkedWallet, setCheckedWallet] = useState<ServiceWalletProvider>(),
     [connectedAccounts, setConnectedAccounts] = useState<readonly WalletAccount[]>([]),
     [walletCheckError, setWalletCheckError] = useState(''),
+    [networkConfirmed, setNetworkConfirmed] = useState(false),
     [recoveryHolds, setRecoveryHolds] = useState<NonNullable<PaymentMetadata['recoveryHolds']>>([]),
     [dedicatedPayer, setDedicatedPayer] = useState<string | null>(null),
     [busy, setBusy] = useState(false),
@@ -196,6 +213,10 @@ export function ServicePayment() {
     [saved, setSaved] = useState<SavedIntent[]>([]),
     [controlledRecoveryBlocked, setControlledRecoveryBlocked] = useState(false);
   const quoteExpired = !!quote && Date.parse(quote.expiresAt) <= now;
+  const allowanceReady =
+    (!exposure || BigInt(exposure.reservedAtomic) + 1000000n <= BigInt(exposure.capAtomic)) &&
+    (!publicPilot ||
+      BigInt(publicPilot.reservedAtomic) + 1000000n <= BigInt(publicPilot.capAtomic));
   const otherRecoveryHolds = recoveryHolds.filter((i) => i.id !== quote?.id);
   const recoveryBlocked = otherRecoveryHolds.length > 0 || controlledRecoveryBlocked;
   let walletCheck = {
@@ -362,7 +383,7 @@ export function ServicePayment() {
             'Sign in to the intended private wallet workspace again.',
           );
         applyMetadata(r);
-        if (restore && requested && selected) {
+        if (restore && selected && (requested || s.mode === 'member')) {
           const existing =
             r.intents.find(
               (i) =>
@@ -405,8 +426,16 @@ export function ServicePayment() {
               w.features['standard:connect'],
           )
           .map((w) => ({
-            id: w.id || w.name,
-            name: w.name + (w.id?.endsWith('.web') ? ' · web wallet' : ''),
+            id: walletSelectionId(w),
+            name:
+              w.name +
+              (w.id?.endsWith('.web') ? ' · web wallet' : '') +
+              (registry
+                .get()
+                .filter((other) => other.chains.includes(network) && other.name === w.name).length >
+              1
+                ? ' · Sui connection ' + (registry.get().indexOf(w) + 1)
+                : ''),
           })),
       );
     update();
@@ -419,7 +448,10 @@ export function ServicePayment() {
   }, [capabilityState, data?.mode, network]);
   useEffect(() => {
     if (!checkedWallet) return;
-    const update = () => setConnectedAccounts([...checkedWallet.accounts]);
+    const update = () => {
+      setConnectedAccounts([...checkedWallet.accounts]);
+      setNetworkConfirmed(false);
+    };
     const offChange = (checkedWallet.features as WalletFeatures)['standard:events']?.on(
       'change',
       update,
@@ -438,6 +470,8 @@ export function ServicePayment() {
     };
   }, [checkedWallet]);
   async function run(fn: () => Promise<void>) {
+    if (actionInFlight.current) return;
+    actionInFlight.current = true;
     setBusy(true);
     setError('');
     setDiagnostic(undefined);
@@ -446,6 +480,7 @@ export function ServicePayment() {
     } catch (e) {
       showError(e);
     } finally {
+      actionInFlight.current = false;
       setBusy(false);
       void api<PaymentMetadata>('service-payments')
         .then((r) => {
@@ -481,6 +516,71 @@ export function ServicePayment() {
     if (r.receipt) setReceipt(r.receipt);
     if (r.progress?.walletAttempted) setSignatureAttempted(true);
   }
+  useEffect(() => {
+    if (
+      !quote ||
+      receipt ||
+      !['settling', 'pending', 'submission-uncertain'].includes(paymentState)
+    )
+      return;
+    let cancelled = false;
+    let attempts = 0;
+    let timer: ReturnType<typeof setTimeout>;
+    const poll = async () => {
+      if (cancelled) return;
+      if (!document.hidden && !actionInFlight.current && !confirmationInFlight.current) {
+        confirmationInFlight.current = true;
+        try {
+          const r = await request('/' + quote.id + '/resume', {});
+          if (cancelled) return;
+          setProgress(reconciledProgress(quote.id, r.progress));
+          trackState(quote.id, r.state, r.digest);
+          if (r.receipt) {
+            setReceipt(r.receipt);
+            setPending(false);
+            setPaymentState('settled');
+            setError('');
+            setDiagnostic(undefined);
+            setStatusMessage(
+              'Your report and receipt are ready. Reopen them anytime without another charge.',
+            );
+            void refreshAfterRecovery();
+            return;
+          }
+          if (r.state === 'failed') {
+            setPending(false);
+            setPaymentState('failed');
+            return;
+          }
+          setStatusMessage('Verifying your payment. You do not need to pay again.');
+        } catch {
+          if (!cancelled)
+            setStatusMessage(
+              'Verifying your payment. You do not need to pay again. We will keep checking when the connection returns.',
+            );
+        } finally {
+          confirmationInFlight.current = false;
+        }
+      }
+      if (!cancelled)
+        timer = setTimeout(poll, Math.min(60000, 5000 * 2 ** Math.min(attempts++, 4)));
+    };
+    timer = setTimeout(poll, 2000);
+    const wake = () => {
+      if (!document.hidden) {
+        clearTimeout(timer);
+        timer = setTimeout(poll, 0);
+      }
+    };
+    document.addEventListener('visibilitychange', wake);
+    window.addEventListener('online', wake);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+      document.removeEventListener('visibilitychange', wake);
+      window.removeEventListener('online', wake);
+    };
+  }, [quote, receipt, paymentState, refreshAfterRecovery]);
   async function allowDeclinedRetry() {
     if (!quote) return;
     setStatusMessage('Checking previous attempt…');
@@ -518,7 +618,7 @@ export function ServicePayment() {
           w.features['sui:signTransaction'] &&
           w.features['standard:connect'],
       );
-    const matches = wallets.filter((w) => (w.id || w.name) === walletName);
+    const matches = wallets.filter((w) => walletSelectionId(w) === walletName);
     if (matches.length !== 1)
       throw new Error(
         'Choose one compatible Sui wallet. An unavailable or ambiguous provider cannot sign.',
@@ -557,6 +657,7 @@ export function ServicePayment() {
     setCheckedWallet(undefined);
     setConnectedAccounts([]);
     setWalletCheckError('');
+    setNetworkConfirmed(false);
     try {
       await connectSigningWallet(network, quote?.accepts[0].extra.authenticatedPayer);
     } catch (e) {
@@ -581,10 +682,30 @@ export function ServicePayment() {
     if (terms.network !== network)
       throw new Error('Quote network differs from the selected server mode. Request fresh terms.');
     const chain = serviceNetworkInfo(terms.network);
-    const { account, wallet } = await connectSigningWallet(
-      terms.network,
-      terms.extra.authenticatedPayer,
-    );
+    let wallet: ServiceWalletProvider, account: WalletAccount;
+    if (data?.mode === 'member') {
+      if (!checkedWallet || !networkConfirmed)
+        throw new Error('Connect and confirm your wallet network before continuing.');
+      wallet = checkedWallet;
+      const options = {
+        network: terms.network,
+        expectedPayer: dedicatedPayer,
+        audience: 'customer' as const,
+        authenticatedWallet: data.identity?.walletAddress || undefined,
+        quotePayer: terms.extra.authenticatedPayer,
+      };
+      account = selectPreparedServiceAccount(
+        getWallets().get(),
+        wallet,
+        selectServiceAccount(connectedAccounts, options),
+        options,
+      );
+    } else {
+      ({ wallet, account } = await connectSigningWallet(
+        terms.network,
+        terms.extra.authenticatedPayer,
+      ));
+    }
     const payer = normalizeSuiAddress(account.address);
     const client = new SuiGrpcClient({
       network: chain.sdk,
@@ -773,7 +894,11 @@ export function ServicePayment() {
       retryAllowed: false,
     }));
     setPending(false);
-    await request('/' + quote.id + '/events', { phase: 'signed', preparedDigest: prepared.digest });
+    // Telemetry failure must not strand an otherwise valid signed payload.
+    void request('/' + quote.id + '/events', {
+      phase: 'signed',
+      preparedDigest: prepared.digest,
+    }).catch(() => {});
     // A lost response is indeterminate. Resume the same intent instead of signing/paying again.
     setPaymentState('submission-uncertain');
     setPending(true);
@@ -890,7 +1015,9 @@ export function ServicePayment() {
                   disabled={busy || !!prepared}
                   value={walletName}
                   onChange={(e) => {
+                    if (e.target.value === walletName) return;
                     setWalletName(e.target.value);
+                    setNetworkConfirmed(false);
                     setCheckedWallet(undefined);
                     setConnectedAccounts([]);
                     setWalletCheckError('');
@@ -915,7 +1042,9 @@ export function ServicePayment() {
                 disabled={busy || !walletName}
                 onClick={() => void run(checkSigningAccount)}
               >
-                Check selected wallet account · no signing
+                {data?.mode === 'member'
+                  ? 'Connect selected wallet'
+                  : 'Check selected wallet account · no signing'}
               </button>
               <p role="status" aria-label="Wallet account check">
                 <strong>{walletCheck.status}</strong>: {walletCheck.message}
@@ -924,7 +1053,19 @@ export function ServicePayment() {
                 This check connects your selected wallet only. It does not request a payment quote,
                 prepare a transaction, sign, submit or change payment reservations.
               </p>
-              {quote && (
+              {checkedWallet && walletCheck.status === 'MATCH' && (
+                <label className="checkbox">
+                  <input
+                    type="checkbox"
+                    checked={networkConfirmed}
+                    disabled={busy || !!prepared}
+                    onChange={(event) => setNetworkConfirmed(event.target.checked)}
+                  />
+                  I confirm this account and {serviceNetworkInfo(network).name} in my wallet. No
+                  payment is authorized yet.
+                </label>
+              )}
+              {quote && data?.mode === 'owner' && (
                 <>
                   <p>
                     Approved quote payer:{' '}
@@ -974,7 +1115,10 @@ export function ServicePayment() {
               earlier outcome is unresolved. Quote expiry does not revoke a signed transaction.
               Account connection checks and saved receipts remain available.
             </p>
-            <p>Existing intent IDs: {otherRecoveryHolds.map((i) => i.id).join(', ')}</p>
+            <p>
+              We are checking the original payment. Your saved report will appear here when
+              verification completes.
+            </p>
           </section>
         )}
         {capabilityState === 'loading' && (
@@ -982,7 +1126,7 @@ export function ServicePayment() {
             Loading workspace and server capabilities. Wallet/provider status is not yet known.
           </p>
         )}
-        {capabilityState === 'ready' && (
+        {capabilityState === 'ready' && data?.mode === 'owner' && (
           <section className="notice service-preflight" aria-label="Server payment capabilities">
             <h2>Connection, login and purchase permissions</h2>
             <dl className="detail-list">
@@ -1089,90 +1233,99 @@ export function ServicePayment() {
                   and all unsettled reservations.
                 </p>
               )}
-              <button
-                className="button outline"
-                disabled={busy}
-                onClick={() =>
-                  void run(async () => {
-                    const r = await api<PaymentMetadata>('service-payments');
-                    if (quote && (r.network !== network || r.dedicatedPayer !== dedicatedPayer))
-                      throw new Error(
-                        'Payment party or network configuration changed. Cancel the unsigned quote and inspect fresh terms.',
-                      );
-                    applyMetadata(r);
-                  })
-                }
-              >
-                Refresh payment controls · no signing
-              </button>
-              <button
-                className="button outline"
-                disabled={busy}
-                onClick={() =>
-                  void run(async () =>
-                    setProposal(await api<Record<string, unknown>>('service-payments/preflight')),
-                  )
-                }
-              >
-                Check Mainnet proposal · no signing
-              </button>
-              {proposal && (
-                <section className="notice service-preflight">
-                  <h3>Read-only purchase preflight</h3>
-                  <p>
-                    This proposal does not authorize spending. PayGuard supplies a first-party
-                    consistency report, not independent supplier identity verification. The three
-                    published experiments used owner-controlled accounts; this proposal uses the
-                    payer shown below.
-                  </p>
-                  <dl className="detail-list">
-                    {[
-                      ['Network', proposal.network],
-                      ['Exact service fee', `${proposal.amount} · ${proposal.amountAtomic} MIST`],
-                      ['Coin type', proposal.asset],
-                      ['Authenticated payer', proposal.payer || 'Not configured'],
-                      ['Merchant recipient', proposal.recipient || 'Not configured'],
-                      [
-                        'Usable address-balance SUI',
-                        funding?.addressAtomic != null
-                          ? `${Number(funding.addressAtomic) / 1e9} SUI`
-                          : 'Not returned',
-                      ],
-                      [
-                        'Ordinary coin-object SUI',
-                        funding?.coinAtomic != null
-                          ? `${Number(funding.coinAtomic) / 1e9} SUI · owned-coin fallback available`
-                          : 'Not returned',
-                      ],
-                      ['Provider', proposal.provider],
-                      ['Service origin', proposal.resourceOrigin],
-                      ['Facilitator', proposal.facilitator],
-                      [
-                        'Payer network fee cap',
-                        `${proposal.maxPayerGasAtomic} MIST · facilitator sponsors gas`,
-                      ],
-                      ['Sponsor budget cap', `${proposal.maxSponsorGasAtomic} MIST`],
-                      ['Reason for purchase', proposal.purpose],
-                      ['Expected result', proposal.expectedResult],
-                    ].map(([label, value]) => (
-                      <div key={String(label)}>
-                        <dt>{String(label)}</dt>
-                        <dd>{String(value ?? 'Unavailable')}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                  <p role="status">
-                    {proposal.configurationReady
-                      ? proposal.sufficientlyFunded
-                        ? 'Parties and usable funds are verified. Exact purchase approval and provider permission are still required before signing.'
-                        : 'Parties are configured, but combined SUI funds are insufficient. Refresh after funding, or use the free Courtroom.'
-                      : `Proposal is incomplete. Configure public address names: ${Array.isArray(proposal.missing) ? proposal.missing.join(', ') : 'review server configuration'}. All parties must differ.`}
-                  </p>
-                  <details>
-                    <summary>Read-only chain proof and risk details</summary>
-                    <pre className="service-result">{JSON.stringify(proposal, null, 2)}</pre>
-                  </details>
-                </section>
+              {data.mode === 'owner' && (
+                <>
+                  <button
+                    className="button outline"
+                    disabled={busy}
+                    onClick={() =>
+                      void run(async () => {
+                        const r = await api<PaymentMetadata>('service-payments');
+                        if (quote && (r.network !== network || r.dedicatedPayer !== dedicatedPayer))
+                          throw new Error(
+                            'Payment party or network configuration changed. Cancel the unsigned quote and inspect fresh terms.',
+                          );
+                        applyMetadata(r);
+                      })
+                    }
+                  >
+                    Refresh payment controls · no signing
+                  </button>
+                  <button
+                    className="button outline"
+                    disabled={busy}
+                    onClick={() =>
+                      void run(async () =>
+                        setProposal(
+                          await api<Record<string, unknown>>('service-payments/preflight'),
+                        ),
+                      )
+                    }
+                  >
+                    Check Mainnet proposal · no signing
+                  </button>
+                  {proposal && (
+                    <section className="notice service-preflight">
+                      <h3>Read-only purchase preflight</h3>
+                      <p>
+                        This proposal does not authorize spending. PayGuard supplies a first-party
+                        consistency report, not independent supplier identity verification. The
+                        three published experiments used owner-controlled accounts; this proposal
+                        uses the payer shown below.
+                      </p>
+                      <dl className="detail-list">
+                        {[
+                          ['Network', proposal.network],
+                          [
+                            'Exact service fee',
+                            `${proposal.amount} · ${proposal.amountAtomic} MIST`,
+                          ],
+                          ['Coin type', proposal.asset],
+                          ['Authenticated payer', proposal.payer || 'Not configured'],
+                          ['Merchant recipient', proposal.recipient || 'Not configured'],
+                          [
+                            'Usable address-balance SUI',
+                            funding?.addressAtomic != null
+                              ? `${Number(funding.addressAtomic) / 1e9} SUI`
+                              : 'Not returned',
+                          ],
+                          [
+                            'Ordinary coin-object SUI',
+                            funding?.coinAtomic != null
+                              ? `${Number(funding.coinAtomic) / 1e9} SUI · owned-coin fallback available`
+                              : 'Not returned',
+                          ],
+                          ['Provider', proposal.provider],
+                          ['Service origin', proposal.resourceOrigin],
+                          ['Facilitator', proposal.facilitator],
+                          [
+                            'Payer network fee cap',
+                            `${proposal.maxPayerGasAtomic} MIST · facilitator sponsors gas`,
+                          ],
+                          ['Sponsor budget cap', `${proposal.maxSponsorGasAtomic} MIST`],
+                          ['Reason for purchase', proposal.purpose],
+                          ['Expected result', proposal.expectedResult],
+                        ].map(([label, value]) => (
+                          <div key={String(label)}>
+                            <dt>{String(label)}</dt>
+                            <dd>{String(value ?? 'Unavailable')}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                      <p role="status">
+                        {proposal.configurationReady
+                          ? proposal.sufficientlyFunded
+                            ? 'Parties and usable funds are verified. Exact purchase approval and provider permission are still required before signing.'
+                            : 'Parties are configured, but combined SUI funds are insufficient. Refresh after funding, or use the free Courtroom.'
+                          : `Proposal is incomplete. Configure public address names: ${Array.isArray(proposal.missing) ? proposal.missing.join(', ') : 'review server configuration'}. All parties must differ.`}
+                      </p>
+                      <details>
+                        <summary>Read-only chain proof and risk details</summary>
+                        <pre className="service-result">{JSON.stringify(proposal, null, 2)}</pre>
+                      </details>
+                    </section>
+                  )}
+                </>
               )}
               {['Unfinished payments', 'Paid report history'].map((group) => (
                 <section key={group} aria-label={group}>
@@ -1201,10 +1354,15 @@ export function ServicePayment() {
                         disabled={busy}
                         onClick={() => void run(() => openSavedIntent(i))}
                       >
-                        Resume saved {i.state} intent ·{' '}
+                        {data.mode === 'member'
+                          ? i.state === 'settled'
+                            ? 'Open report and receipt'
+                            : 'View purchase status'
+                          : `Resume saved ${i.state} intent`}{' '}
+                        ·{' '}
                         {data.invoices.find((v) => v.id === i.invoiceId)?.number ||
                           i.invoiceId.slice(0, 8)}{' '}
-                        · {i.id.slice(0, 8)}
+                        {data.mode === 'owner' ? ` · ${i.id.slice(0, 8)}` : ''}
                       </button>
                     ))}
                 </section>
@@ -1217,9 +1375,9 @@ export function ServicePayment() {
               </p>
               {!configured && (
                 <div role="status" className="notice">
-                  Quote preparation is disabled or incomplete. Review Payment Setup for the exact
-                  configuration status. ENABLE_AGENT_PAYMENTS=false keeps quotes off while read-only
-                  balance checks remain available. Settlement is separately disabled.
+                  {data.mode === 'member'
+                    ? 'Purchases are temporarily unavailable. You can still review invoices and reopen saved reports.'
+                    : 'Quote preparation is disabled or incomplete. Review Payment Setup for the exact configuration status.'}
                 </div>
               )}
               {data.invoices.length === 0 && (
@@ -1236,7 +1394,7 @@ export function ServicePayment() {
                 <input
                   value={search}
                   disabled={!!quote}
-                  placeholder="e.g. X402-EXPERIMENT-02"
+                  placeholder="Supplier or invoice number"
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </Field>
@@ -1300,12 +1458,14 @@ export function ServicePayment() {
                       </Link>
                     </dd>
                   </div>
-                  <div>
-                    <dt>Record ID</dt>
-                    <dd>
-                      <code>{selectedInvoice.id}</code>
-                    </dd>
-                  </div>
+                  {data.mode === 'owner' && (
+                    <div>
+                      <dt>Record ID</dt>
+                      <dd>
+                        <code>{selectedInvoice.id}</code>
+                      </dd>
+                    </div>
+                  )}
                   <div>
                     <dt>Context</dt>
                     <dd>
@@ -1313,7 +1473,7 @@ export function ServicePayment() {
                         ? 'Synthetic sample saved in this workspace'
                         : 'Saved workspace record; not independently certified'}{' '}
                       · {selectedInvoice.status} · issued {selectedInvoice.issued} ·{' '}
-                      {selectedInvoice.amount} {selectedInvoice.currency}
+                      {money(selectedInvoice)}
                     </dd>
                   </div>
                 </dl>
@@ -1323,6 +1483,11 @@ export function ServicePayment() {
                 disabled={
                   capabilityState !== 'ready' ||
                   !configured ||
+                  (data.mode === 'member' &&
+                    (walletCheck.status !== 'MATCH' ||
+                      !networkConfirmed ||
+                      !signingAllowed ||
+                      !allowanceReady)) ||
                   !selectedInvoice ||
                   selectedInvoice.status === 'paid' ||
                   recoveryBlocked ||
@@ -1332,12 +1497,49 @@ export function ServicePayment() {
                 }
                 onClick={() =>
                   void run(async () => {
+                    if (
+                      data.mode === 'member' &&
+                      (!checkedWallet || !networkConfirmed || walletCheck.status !== 'MATCH')
+                    )
+                      throw new Error(
+                        'Connect your wallet and confirm Sui Mainnet before reviewing the purchase.',
+                      );
+                    if (data.mode === 'member' && checkedWallet) {
+                      const options = {
+                        network,
+                        expectedPayer: dedicatedPayer,
+                        audience: 'customer' as const,
+                        authenticatedWallet: data.identity?.walletAddress || undefined,
+                      };
+                      selectPreparedServiceAccount(
+                        getWallets().get(),
+                        checkedWallet,
+                        selectServiceAccount(connectedAccounts, options),
+                        options,
+                      );
+                    }
                     if (quoteOperation.current?.invoiceId !== invoiceId)
                       quoteOperation.current = { invoiceId, key: crypto.randomUUID() };
-                    const r = await request('', {
-                      invoiceId,
-                      operationKey: quoteOperation.current.key,
-                    });
+                    let r;
+                    try {
+                      r = await request('', {
+                        invoiceId,
+                        operationKey: quoteOperation.current.key,
+                      });
+                    } catch (failure) {
+                      if ((failure as { code?: string }).code === 'REPORT_AVAILABLE') {
+                        const metadata = await api<PaymentMetadata>('service-payments');
+                        applyMetadata(metadata);
+                        const existing = metadata.intents.find(
+                          (item) => item.invoiceId === invoiceId && item.state === 'settled',
+                        );
+                        if (existing) {
+                          await openSavedIntent(existing);
+                          return;
+                        }
+                      }
+                      throw failure;
+                    }
                     parseServiceChallenge(
                       { x402Version: r.x402Version, resource: r.resource, accepts: r.accepts },
                       window.location.origin,
@@ -1369,15 +1571,31 @@ export function ServicePayment() {
                   })
                 }
               >
-                Request payment quote
+                {data.mode === 'member' ? 'Review purchase · 0.001 SUI' : 'Request payment quote'}
               </button>
+              {data.mode === 'member' && !allowanceReady && (
+                <p role="status">
+                  Your purchase allowance is used or reserved. Existing purchases and saved reports
+                  remain available.
+                </p>
+              )}
+              {busy && !quote && (
+                <p role="status">
+                  Checking invoice eligibility, purchase allowance and payment readiness…
+                </p>
+              )}
               {quote && (
                 <>
                   <h3>
-                    {receipt ? 'Purchase confirmed · saved receipt' : 'Payment required · x402 v2'}
+                    {receipt
+                      ? 'Purchase confirmed · saved receipt'
+                      : data.mode === 'member'
+                        ? 'Review your 0.001 SUI purchase'
+                        : 'Payment required · x402 v2'}
                   </h3>
                   <ServicePaymentTimeline
                     quoteId={quote.id}
+                    technical={data.mode === 'owner'}
                     preparedDigest={prepared?.digest || storedBytes?.digest}
                     phase={paymentState}
                     progress={progress}
@@ -1390,7 +1608,9 @@ export function ServicePayment() {
                   >
                     {receipt
                       ? 'Verify payment and view analysis report'
-                      : 'Resume existing payment'}
+                      : data.mode === 'member'
+                        ? 'Check payment status'
+                        : 'Resume existing payment'}
                   </button>
                   {statusMessage && <p role="status">{statusMessage}</p>}
                   {progress?.retryAllowed && signatureAttempted && (
@@ -1415,8 +1635,15 @@ export function ServicePayment() {
                       disabled={busy || signatureAttempted || progress?.canCancel === false}
                       onClick={() =>
                         void run(async () => {
-                          if (paymentState !== 'failed')
-                            await request('/' + quote.id + '/cancel', {});
+                          if (paymentState !== 'failed') {
+                            const cancelled = await request('/' + quote.id + '/cancel', {});
+                            if (cancelled.state !== 'cancelled') {
+                              setStatusMessage(
+                                'The transaction can still be valid. We are keeping it protected until independent checks prove it cannot settle. You do not need to pay again.',
+                              );
+                              return;
+                            }
+                          }
                           if (paymentState !== 'failed') trackState(quote.id, 'cancelled');
                           setQuote(undefined);
                           quoteOperation.current = undefined;
@@ -1432,88 +1659,115 @@ export function ServicePayment() {
                           : 'Cancel unpaid quote'}
                     </button>
                   )}
-                  <dl className="detail-list">
-                    <div>
-                      <dt>Provider and purpose</dt>
-                      <dd>
-                        PayGuard first-party invoice consistency analysis. This does not verify
-                        supplier identity.
-                      </dd>
-                    </div>
-                    <div>
-                      <dt>Service URL</dt>
-                      <dd>
-                        <code>{quote.resource.url}</code>
-                      </dd>
-                    </div>
-                    <div>
-                      <dt>Payer</dt>
-                      <dd>
-                        <code>
-                          {dedicatedPayer ||
-                            'Configure the dedicated payer before Mainnet approval.'}
-                        </code>
-                      </dd>
-                    </div>
-                    <div>
-                      <dt>Facilitator</dt>
-                      <dd>{FACILITATOR}</dd>
-                    </div>
-                    <div>
-                      <dt>Network</dt>
-                      <dd>
-                        {serviceNetworkInfo(quote.accepts[0].network).name} ·{' '}
-                        {quote.accepts[0].network}
-                      </dd>
-                    </div>
-                    <div>
-                      <dt>Asset</dt>
-                      <dd>
-                        <code>{quote.accepts[0].asset}</code>
-                      </dd>
-                    </div>
-                    <div>
-                      <dt>Exact service fee / cap</dt>
-                      <dd>
-                        0.001 {quote.accepts[0].network === 'sui:testnet' ? 'Testnet ' : ''}SUI
-                        (1,000,000 MIST; 9 decimals)
-                      </dd>
-                    </div>
-                    <div>
-                      <dt>Total session cap</dt>
-                      <dd>
-                        0.003 SUI ({SERVICE_SESSION_CAP} MIST); pending payments reserve this cap.
-                      </dd>
-                    </div>
-                    <div>
-                      <dt>Recipient</dt>
-                      <dd>
-                        <code>{quote.accepts[0].payTo}</code>
-                      </dd>
-                    </div>
-                    <div>
-                      <dt>Gas</dt>
-                      <dd>
-                        Facilitator-sponsored, maximum budget 2,000,000 MIST. Payer fee cap: 0 MIST.
-                        Sponsor: <code>{quote.accepts[0].extra.gasOwner}</code>
-                      </dd>
-                    </div>
-                    <div>
-                      <dt>Quote expires</dt>
-                      <dd>
-                        {new Date(quote.expiresAt).toLocaleString()}. This limits PayGuard
-                        submission, not the signed transaction’s chain lifetime.
-                      </dd>
-                    </div>
-                    <div>
-                      <dt>Signed-transaction lifetime</dt>
-                      <dd>
-                        Current epoch through the next epoch. Sui does not currently support
-                        timestamp expiry. Once signed bytes are disclosed, they can be relayed
-                        within that window; cancellation is not revocation.
-                      </dd>
-                    </div>
-                  </dl>
+                  {data.mode === 'member' && !receipt && (
+                    <dl className="detail-list" aria-label="Purchase summary">
+                      <div>
+                        <dt>Report price</dt>
+                        <dd>0.001 SUI · one purchase</dd>
+                      </div>
+                      <div>
+                        <dt>Network</dt>
+                        <dd>{serviceNetworkInfo(quote.accepts[0].network).name}</dd>
+                      </div>
+                      <div>
+                        <dt>Paying account</dt>
+                        <dd>
+                          <code>{dedicatedPayer}</code>
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Merchant destination</dt>
+                        <dd>
+                          <code>{quote.accepts[0].payTo}</code>
+                        </dd>
+                      </div>
+                    </dl>
+                  )}
+                  <details open={data.mode === 'owner'}>
+                    <summary>Purchase details and transaction safeguards</summary>
+                    <dl className="detail-list">
+                      <div>
+                        <dt>Provider and purpose</dt>
+                        <dd>
+                          PayGuard first-party invoice consistency analysis. This does not verify
+                          supplier identity.
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Service URL</dt>
+                        <dd>
+                          <code>{quote.resource.url}</code>
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Payer</dt>
+                        <dd>
+                          <code>
+                            {dedicatedPayer ||
+                              'Configure the dedicated payer before Mainnet approval.'}
+                          </code>
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Facilitator</dt>
+                        <dd>{FACILITATOR}</dd>
+                      </div>
+                      <div>
+                        <dt>Network</dt>
+                        <dd>
+                          {serviceNetworkInfo(quote.accepts[0].network).name} ·{' '}
+                          {quote.accepts[0].network}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Asset</dt>
+                        <dd>
+                          <code>{quote.accepts[0].asset}</code>
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Exact service fee / cap</dt>
+                        <dd>
+                          0.001 {quote.accepts[0].network === 'sui:testnet' ? 'Testnet ' : ''}SUI
+                          (1,000,000 MIST; 9 decimals)
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Total session cap</dt>
+                        <dd>
+                          0.003 SUI ({SERVICE_SESSION_CAP} MIST); pending payments reserve this cap.
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Recipient</dt>
+                        <dd>
+                          <code>{quote.accepts[0].payTo}</code>
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Gas</dt>
+                        <dd>
+                          Facilitator-sponsored, maximum budget 2,000,000 MIST. Payer fee cap: 0
+                          MIST. Sponsor: <code>{quote.accepts[0].extra.gasOwner}</code>
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Quote expires</dt>
+                        <dd>
+                          {new Date(quote.expiresAt).toLocaleString()}. This limits PayGuard
+                          submission, not the signed transaction’s chain lifetime.
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Signed-transaction lifetime</dt>
+                        <dd>
+                          Current epoch through the next epoch. Sui does not currently support
+                          timestamp expiry. Once signed bytes are disclosed, they can be relayed
+                          within that window; cancellation is not revocation.
+                        </dd>
+                      </div>
+                    </dl>
+                  </details>
                   <label className="checkbox">
                     <input
                       checked={consent}
@@ -1555,7 +1809,7 @@ export function ServicePayment() {
                             throw new Error(
                               'Official Slush web wallet unavailable. No signing requested.',
                             );
-                          setWalletName(registered.wallet.id || registered.wallet.name);
+                          setWalletName(walletSelectionId(registered.wallet));
                         })
                       }
                     >
@@ -1569,11 +1823,14 @@ export function ServicePayment() {
                         for one verification and settlement attempt. If the response is uncertain,
                         only resume the existing digest; do not sign or pay again.
                       </p>
-                      <p className="service-prepared-digest">
-                        Prepared digest (not settlement proof): <code>{prepared.digest}</code>.
-                        Retain this digest if a response is uncertain; do not prepare a replacement
-                        payment.
-                      </p>
+                      <details>
+                        <summary>Transaction details</summary>
+                        <p className="service-prepared-digest">
+                          Prepared digest (not settlement proof): <code>{prepared.digest}</code>.
+                          Retain this digest if a response is uncertain; do not prepare a
+                          replacement payment.
+                        </p>
+                      </details>
                       <details>
                         <summary>Inspect exact prepared transaction before signing</summary>
                         <pre className="service-result">
@@ -1594,13 +1851,15 @@ export function ServicePayment() {
                         }
                         onClick={() => void run(signPrepared)}
                       >
-                        Sign and submit in wallet
+                        {data.mode === 'member'
+                          ? 'Approve 0.001 SUI in wallet'
+                          : 'Sign and submit in wallet'}
                       </button>
                     </>
                   )}
                   {pending && (
                     <>
-                      {pendingDigest && (
+                      {pendingDigest && data.mode === 'owner' && (
                         <p className="service-prepared-digest">
                           Original digest to reconcile: <code>{pendingDigest}</code>. This is not
                           confirmation of success.
@@ -1609,7 +1868,7 @@ export function ServicePayment() {
                       <p role="status">
                         {paymentState === 'awaiting-wallet'
                           ? 'Wallet signing has not completed or returned a verified response. No new signature will be requested automatically. Check the existing intent before doing anything else.'
-                          : 'Submission or independent Tatum confirmation is pending. Resume the same digest; do not pay again.'}
+                          : 'Verifying your payment. You do not need to pay again.'}
                       </p>
                     </>
                   )}

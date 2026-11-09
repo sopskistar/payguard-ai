@@ -21,6 +21,7 @@ import {
   quoteService,
   approveService as approveCore,
   fulfillService as fulfillCore,
+  reconcileServicePayment,
   ownedService,
   cancelService,
   rememberService,
@@ -31,6 +32,7 @@ import {
   serviceRecoveryHolds,
 } from '@/lib/service-payments';
 import { serviceNetworkInfo, type ServiceChallenge } from '@/lib/service-protocol';
+import { reconcilePendingServicePayments } from '@/lib/service-reconciliation';
 import { AppError } from '@/lib/errors';
 import { assess } from '@/lib/integrations/memory';
 import * as memory from '@/lib/integrations/memory';
@@ -747,6 +749,9 @@ it('supports HTTPS customer quotes, exact wallet binding and a saved receipt wit
     expect(settles).toBe(before + 1);
     await expect(ownedService(OWNER_ID, row.id)).rejects.toMatchObject({ code: 'NOT_FOUND' });
     expect((await serviceExposure(member.id, randomUUID())).reservedAtomic).toBe('1000000');
+    await expect(quoteService(member.id, row.invoiceId, randomUUID())).rejects.toMatchObject({
+      code: 'REPORT_AVAILABLE',
+    });
   } finally {
     vi.stubEnv('APP_URL', 'http://localhost:3000');
     vi.stubEnv('ENABLE_AGENT_PAYMENTS', 'testnet');
@@ -774,6 +779,15 @@ it('holds expired prepared Mainnet attempts and blocks replacement quotes, prepa
     )
       .update(schema.servicePaymentIntents)
       .set({ expiresAt: new Date(Date.now() - 1000) })
+      .where(eq(schema.servicePaymentIntents.id, first.id));
+    const legacy = await ownedService(member.id, first.id);
+    const legacyApproval = { ...(legacy.approval as Record<string, unknown>) };
+    delete legacyApproval.selfServiceExpiry;
+    await (
+      await db()
+    )
+      .update(schema.servicePaymentIntents)
+      .set({ approval: legacyApproval })
       .where(eq(schema.servicePaymentIntents.id, first.id));
     const before = await ownedService(member.id, first.id),
       submissions = settles;
@@ -910,4 +924,72 @@ it('serializes the global public sponsor cap across different customers (no live
       .map((r) => (r as PromiseRejectedResult).reason.code),
   ).toEqual(['SPONSOR_CAP']);
   expect((await publicServiceExposure()).reservedAtomic).toBe('20000000');
+});
+
+it('delivers one report through concurrent receipt-only workers after a provider delay, without another settlement', async () => {
+  const row = await quote();
+  await approveService(OWNER_ID, row.id, payer.toSuiAddress());
+  mock.inspect.mockRejectedValueOnce(
+    new AppError(503, 'TATUM_UNAVAILABLE', 'Temporary fixture delay'),
+  );
+  expect((await fulfillService(OWNER_ID, row.id, await payload(row))).state).toBe('pending');
+  const before = settles;
+  const results = await Promise.all([
+    reconcileServicePayment(OWNER_ID, row.id),
+    reconcileServicePayment(OWNER_ID, row.id),
+    fulfillService(OWNER_ID, row.id),
+  ]);
+  expect(results.every((r) => r.state === 'settled')).toBe(true);
+  expect(new Set(results.map((r) => r.receipt?.id)).size).toBe(1);
+  expect(settles).toBe(before);
+  const receipts = await (
+    await db()
+  )
+    .select()
+    .from(schema.servicePaymentReceipts)
+    .where(eq(schema.servicePaymentReceipts.intentId, row.id));
+  expect(receipts).toHaveLength(1);
+  const completions = await (
+    await db()
+  )
+    .select()
+    .from(schema.auditEvents)
+    .where(eq(schema.auditEvents.entityId, row.invoiceId));
+  expect(
+    completions.filter(
+      (e) =>
+        e.type === 'service.review_completed' &&
+        (e.detail as { intentId?: string }).intentId === row.id,
+    ),
+  ).toHaveLength(1);
+});
+it('receipt-only processing cannot submit an unsigned or approved transaction or cross a workspace boundary', async () => {
+  const row = await quote();
+  const before = settles;
+  expect((await reconcileServicePayment(OWNER_ID, row.id)).state).toBe('quoted');
+  await approveService(OWNER_ID, row.id, payer.toSuiAddress());
+  expect((await reconcileServicePayment(OWNER_ID, row.id)).state).toBe('approved');
+  await expect(reconcileServicePayment(randomUUID(), row.id)).rejects.toMatchObject({
+    code: 'NOT_FOUND',
+  });
+  expect(settles).toBe(before);
+});
+
+it('the bounded scheduler drains persisted submitted purchases without a customer browser or a submission', async () => {
+  const row = await quote();
+  await approveService(OWNER_ID, row.id, payer.toSuiAddress());
+  mock.inspect.mockRejectedValueOnce(new AppError(503, 'TATUM_UNAVAILABLE', 'Fixture index delay'));
+  expect((await fulfillService(OWNER_ID, row.id, await payload(row))).state).toBe('pending');
+  const before = settles;
+  let result = await reconcilePendingServicePayments();
+  for (
+    let batch = 0;
+    batch < 6 && (await ownedService(OWNER_ID, row.id)).state === 'settling';
+    batch++
+  )
+    result = await reconcilePendingServicePayments();
+  expect(result.maximumPerRun).toBe(3);
+  expect(result.submissions).toBe(0);
+  expect((await ownedService(OWNER_ID, row.id)).state).toBe('settled');
+  expect(settles).toBe(before);
 });

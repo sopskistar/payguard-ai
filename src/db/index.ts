@@ -11,8 +11,11 @@ const requests = new AsyncLocalStorage<{ database?: Database; pool?: Pool }>();
 
 // A Neon WebSocket pool belongs to one request. All operations and interactive
 // transactions within that request reuse it; another request gets its own pool.
-export async function withDatabaseRequest<T>(operation: () => Promise<T>): Promise<T> {
-  if (!process.env.DATABASE_URL || requests.getStore()) return operation();
+export async function withDatabaseRequest<T>(
+  operation: () => Promise<T>,
+  fresh = false,
+): Promise<T> {
+  if (!process.env.DATABASE_URL || (!fresh && requests.getStore())) return operation();
   return requests.run({}, async () => {
     try {
       return await operation();

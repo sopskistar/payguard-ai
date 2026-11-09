@@ -12,12 +12,14 @@ export function ServicePaymentTimeline({
   phase,
   progress,
   receipt,
+  technical = true,
 }: {
   quoteId: string;
   preparedDigest?: string;
   phase: string;
   progress?: Progress;
   receipt?: Record<string, unknown>;
+  technical?: boolean;
 }) {
   const settled = !!receipt;
   const signing = progress?.signingState || phase;
@@ -66,34 +68,59 @@ export function ServicePaymentTimeline({
   return (
     <section className="notice service-prepared-digest" aria-label="Payment status timeline">
       <h3>Payment progress</h3>
-      <p>
-        Quote ID: <code>{quoteId}</code>
-      </p>
-      <p>
-        Prepared digest:{' '}
-        <code>{preparedDigest || progress?.prepared?.digest || 'Not prepared'}</code>
-      </p>
-      <p>
-        Execution digest:{' '}
-        <code>
-          {progress?.executionDigest || String(receipt?.digest || 'No signed submission received')}
-        </code>
-      </p>
-      <ol>
-        {entries.map(([label, status]) => (
-          <li key={label}>
-            <strong>{label}</strong> · {status}
+      {technical && (
+        <>
+          <p>
+            Quote ID: <code>{quoteId}</code>
+          </p>
+          <p>
+            Prepared digest:{' '}
+            <code>{preparedDigest || progress?.prepared?.digest || 'Not prepared'}</code>
+          </p>
+          <p>
+            Execution digest:{' '}
+            <code>
+              {progress?.executionDigest ||
+                String(receipt?.digest || 'No signed submission received')}
+            </code>
+          </p>
+        </>
+      )}
+      {!technical ? (
+        <ol>
+          <li>Review the exact price and merchant destination.</li>
+          <li>
+            {phase === 'awaiting-wallet'
+              ? 'Confirm the single approval in your wallet.'
+              : settled || progress?.submitted || phase === 'pending'
+                ? 'Wallet approval recorded.'
+                : 'Your wallet approval is still required.'}
           </li>
-        ))}
-      </ol>
-      {!settled && (
+          <li>
+            {settled
+              ? 'Payment verified. Your report and receipt are saved.'
+              : phase === 'failed'
+                ? 'Execution failed. No analysis receipt was created.'
+                : 'The original payment is checked automatically after submission.'}
+          </li>
+        </ol>
+      ) : (
+        <ol>
+          {entries.map(([label, status]) => (
+            <li key={label}>
+              <strong>{label}</strong> · {status}
+            </li>
+          ))}
+        </ol>
+      )}
+      {!settled && technical && (
         <p>
           A prepared digest is calculated locally. A signed or submitted digest is not a receipt
           either. SuiScan may not show it until execution; only finalized Tatum merchant-credit
           verification confirms payment.
         </p>
       )}
-      {progress?.diagnostic && (
+      {technical && progress?.diagnostic && (
         <p role="alert">
           {progress.diagnostic.stage} · {progress.diagnostic.code}: {progress.diagnostic.message} (
           {progress.diagnostic.checkedAt})

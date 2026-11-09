@@ -1,0 +1,23 @@
+name: Confirm submitted analysis purchases
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: receipt-confirmation
+  cancel-in-progress: false
+jobs:
+  confirm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Verify original payments and deliver reports
+        env:
+          CRON_SECRET: ${{ secrets.PAYGUARD_CRON_SECRET }}
+        run: |
+          test -n "$CRON_SECRET"
+          curl --fail --silent --show-error --max-time 55 \
+            --header "Authorization: Bearer $CRON_SECRET" \
+            https://payguard-ai-henna.vercel.app/api/service-reconciliation

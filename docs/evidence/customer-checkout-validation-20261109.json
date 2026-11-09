@@ -1,0 +1,104 @@
+{
+  "checkedAt": "2026-11-09T04:44:30.685688+00:00",
+  "scope": "Normal self-service customer checkout; existing branding, data and protected README preserved",
+  "unitIntegration": {
+    "passed": 337,
+    "failed": 0,
+    "skipped": 0
+  },
+  "completeBrowser": {
+    "startTime": "2026-11-09T04:41:37.032Z",
+    "duration": 114030.533,
+    "expected": 64,
+    "skipped": 2,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "separateFocusedBrowser": {
+    "startTime": "2026-11-09T04:35:02.963Z",
+    "duration": 52963.331,
+    "expected": 32,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "separateMobileBrowser": {
+    "startTime": "2026-11-09T04:41:04.155Z",
+    "duration": 12731.779999999999,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "retentionAndDatabaseTargeted": {
+    "passed": 23,
+    "failed": 0
+  },
+  "typecheck": "passed",
+  "productionBuild": "passed; optimized webpack",
+  "lint": {
+    "errors": 0,
+    "existingUnrelatedWarnings": 1
+  },
+  "format": {
+    "sourceTestsConfigurationDocumentation": "passed",
+    "protectedReadme": "Unchanged from GitHub commit 968a89b73016d4ea9dd33579bb50cbcc088e233f; its existing Prettier differences were not rewritten"
+  },
+  "readmeBlob": "bfd9aeca8ffd3aa88f1ca64a2e58e13448e0c717",
+  "packagedPdfOcr": {
+    "checkedAt": "2026-11-09T04:37:59.522Z",
+    "builtTrace": ".next/server/app/api/business/[[...path]]/route.js.nft.json",
+    "isolatedDependencies": true,
+    "sourceNodeModulesFallback": false,
+    "realPdfText": true,
+    "realPdfRasterPreview": true,
+    "realLocalImageOcr": true,
+    "databaseAccess": false,
+    "financialOperations": 0,
+    "providerWrites": 0
+  },
+  "financialFixtures": {
+    "browserAuthentication": "Genuine disposable local customer personal-message authentication",
+    "invoiceSource": "Real sample PDF, local extraction, explicit source-review confirmation and saved customer-owned invoice",
+    "walletAndPaymentProviders": "Simulated; not physical wallet acceptance",
+    "realQuotes": 0,
+    "realFinancialSignatures": 0,
+    "realTransactionSubmissions": 0,
+    "walrusWrites": 0
+  },
+  "delivery": {
+    "receiptOnlyWorker": true,
+    "durableQueue": "Existing settling intent and original digest",
+    "maximumPerInvocation": 3,
+    "browserBackoffSeconds": "5 to 60; no signing/submission path",
+    "githubSchedule": "*/5 * * * *; best effort",
+    "vercelHobbyFallback": "15 6 * * *",
+    "sourceCleanup": "0 6 * * *; at most 10 expired sources",
+    "sensitiveProductionSecretConfigured": true,
+    "encryptedActionsSecretConfigured": true,
+    "historicalRecoveryEnabled": false
+  },
+  "preservationBeforeDeployment": {
+    "intents": 31,
+    "receipts": 5,
+    "financialAudits": 106,
+    "memories": 50,
+    "confirmedMemories": 50,
+    "distinctBlobs": 50
+  },
+  "secretPatternScan": {
+    "filesScanned": 744,
+    "findings": 0,
+    "schedulerSecretIncluded": true
+  },
+  "physicalWalletAcceptance": {
+    "newFlow": "Not performed; owner approval required for any new live purchase",
+    "existingNightlyUse": "Owner reports success in another browser; no new extension-popup evidence fabricated",
+    "terminalSdk": "Previously verified; preserved"
+  },
+  "preliminaryBrowserFailures": [
+    "Updated source-review field selector to include extraction annotation",
+    "Updated consent selector to wait for purchase consent rather than the pre-quote network checkbox",
+    "Updated historical-recovery UI test to retain the new wallet-readiness requirement after recovery closure"
+  ]
+}

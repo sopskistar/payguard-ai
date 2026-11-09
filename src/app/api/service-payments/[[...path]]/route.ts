@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse, after } from 'next/server';
+import { continueServiceConfirmation } from '@/lib/service-reconciliation';
 import { z } from 'zod';
 import { requireWorkspace, checkOrigin, rateLimit } from '@/lib/auth';
 import { AppError } from '@/lib/errors';
@@ -48,8 +49,11 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
         'WALLET_AUTH_REQUIRED',
         'A verified wallet account is required for customer checkout.',
       );
-    if (req.method !== 'GET') await rateLimit(tenantId + ':service-payments', 30);
     const path = (await params).path || [];
+    if (req.method !== 'GET') {
+      if (path[1] === 'resume') await rateLimit(tenantId + ':receipt-status', 120);
+      else await rateLimit(tenantId + ':service-payments', 30);
+    }
     stage = req.method === 'GET' ? 'payment-status' : !path.length ? 'quote' : 'payment-request';
     if (path.length > 2) throw new AppError(404, 'NOT_FOUND', 'Unknown service action');
     if (req.method === 'GET' && path.length === 1 && path[0] === 'recovery')
@@ -249,6 +253,8 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path?: s
         },
       );
     }
+    if (result.state === 'pending' && !path[1])
+      after(() => continueServiceConfirmation(tenantId, id));
     return NextResponse.json(
       { ...result, progress: await serviceProgress(tenantId, id, actor?.sessionKey) },
       {

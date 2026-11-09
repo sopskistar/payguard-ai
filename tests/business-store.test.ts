@@ -27,6 +27,8 @@ import {
   purgeExpiredDocuments,
 } from '@/lib/documents';
 const memoryMock = vi.hoisted(() => ({ recall: vi.fn() }));
+const blobMock = vi.hoisted(() => ({ del: vi.fn(), put: vi.fn() }));
+vi.mock('@vercel/blob', () => blobMock);
 vi.mock('@mysten-incubation/memwal', () => ({
   MemWal: { create: () => ({ recall: memoryMock.recall }) },
 }));
@@ -583,4 +585,54 @@ it('expires private source access and purges only expired drafts while retaining
       ),
     );
   expect(events).toHaveLength(1);
+});
+
+it('scheduled retention bounds provider deletions, keeps unexpired sources and saved invoices, and holds failed provider deletion', async () => {
+  const f = await fixture(),
+    d = await db();
+  const prefix = 'intake/disposable-scheduler/';
+  const expired = Array.from({ length: 12 }, (_, index) => ({
+    id: randomUUID(),
+    tenantId: f.root.id,
+    createdBy: f.root.id,
+    invoiceId: index === 1 ? f.id : null,
+    filename: 'synthetic-retention-' + index + '.txt',
+    sha256: randomUUID(),
+    mime: 'text/plain',
+    size: 10,
+    source: 'upload',
+    extraction: { fields: { vendor: 'Synthetic retention' } },
+    objectPath: prefix + index + '/source',
+    status: index === 1 ? 'saved' : 'review',
+    expiresAt: new Date(Date.now() - 60000),
+  }));
+  const unexpired = {
+    ...expired[0],
+    id: randomUUID(),
+    sha256: randomUUID(),
+    objectPath: prefix + 'unexpired/source',
+    expiresAt: new Date(Date.now() + 86400000),
+  };
+  await d.insert(s.intakeDocuments).values([...expired, unexpired]);
+  const originalInvoice = await ownedInvoice(f.root.id, f.id);
+  blobMock.del.mockImplementation(async (paths: string[]) => {
+    if (paths[0] === expired[0].objectPath) throw Error('Synthetic provider deletion held');
+  });
+  const first = await purgeExpiredDocuments();
+  expect(first).toEqual({ deleted: 9, held: 1, maximumPerRun: 10, invoiceChanges: 0 });
+  expect(blobMock.del).toHaveBeenCalledTimes(10);
+  expect(
+    blobMock.del.mock.calls.every(([paths]) =>
+      paths.every((path: string) => path.startsWith(prefix) && !path.includes('unexpired')),
+    ),
+  ).toBe(true);
+  expect(await ownedInvoice(f.root.id, f.id)).toEqual(originalInvoice);
+  const rows = await d.select().from(s.intakeDocuments);
+  expect(rows.find((r) => r.id === expired[0].id)?.objectPath).toBe(expired[0].objectPath);
+  expect(rows.find((r) => r.id === unexpired.id)?.deletedAt).toBeNull();
+  const saved = rows.find((r) => r.id === expired[1].id)!;
+  expect(saved.invoiceId).toBe(f.id);
+  expect(saved.status).toBe('deleted');
+  expect(saved.sha256).toBe(expired[1].sha256);
+  blobMock.del.mockReset();
 });

@@ -1,0 +1,468 @@
+{
+  "checkedAt": "2026-11-09T04:35:57.684Z",
+  "baseURL": "http://localhost:3036",
+  "storage": "New disposable local PGlite; not Neon",
+  "existingDataChanged": false,
+  "liveCredentials": false,
+  "financialSubmissions": false,
+  "memoryWrites": false,
+  "video": false,
+  "stats": {
+    "startTime": "2026-11-09T04:35:02.963Z",
+    "duration": 52963.331,
+    "expected": 32,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "tests": [
+    {
+      "title": "creates an explicitly shared business and assigns a different authenticated verifier",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/business-workflow.spec.ts",
+            "line": 36,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "uploads a real PDF, previews extracted source and requires correction review before saving",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/business-workflow.spec.ts",
+            "line": 36,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "requires a proposal and blocks self-approval through the real authenticated API",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/business-workflow.spec.ts",
+            "line": 36,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "a separately signed-in verifier records evidence and the timeline shows the actual decision",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/business-workflow.spec.ts",
+            "line": 36,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "material edits invalidate the prior approval and a revoked session cannot read or decide",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/business-workflow.spec.ts",
+            "line": 36,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "cross-tenant documents, content validation and unconfigured forwarding fail safely",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/business-workflow.spec.ts",
+            "line": 36,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "the built application performs real local image OCR and leaves extraction unapproved",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/business-workflow.spec.ts",
+            "line": 36,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "failed source processing is visible inside the review form and requires an explicit manual fallback",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/business-workflow.spec.ts",
+            "line": 36,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "protects expired recovery with authentication, origin checks, explicit confirmation and its disabled default",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 26,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "customer wallet readiness comes before any quote or transaction preparation (wallet fixture)",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 26,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "automatically delivers a delayed report after refresh without another signature or submission (all providers mocked)",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 26,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "validates a 402 quote, enforces the signing pause and expires without opening a wallet",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 26,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "does not attribute a saved paid report to a different unpaid intent",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 26,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "requests the minimized Walrus rule only after its separate consent click",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 26,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "separates preparation and one wallet signature, then delivers an owned analysis receipt (fully mocked)",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 26,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "offers customer checkout without administrator configuration or an automatic charge (fully mocked)",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 26,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "keeps the selected Sui adapter when Nightly adapters share a provider ID (fully mocked)",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 26,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "checks the selected wallet during a recovery hold without preparation, signing or a replacement quote (fully mocked)",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 26,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "checks the exact Sui adapter without a quote while financial permissions and recovery holds block payment (fully mocked)",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 26,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "rejects account switches, network changes and disconnects before marking an attempt, then uses the fresh exact account (fully mocked)",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 26,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "identifies an administrator session using a different personal wallet before approval (wallet fixture)",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 26,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "prepares ordinary coin-object funding without a signature or charge (RPC and wallet fixtures)",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 26,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "prepares exact approved bytes with settlement disabled and never opens signing (fully mocked)",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 26,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "shows the real wallet rejection without submission or an automatic retry (mock wallet)",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 26,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "keeps provider failures unsigned/unresolved without a duplicate signature after reload (mock wallet)",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 26,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "keeps payload failures unsigned/unresolved without a duplicate signature after reload (mock wallet)",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 26,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "keeps bytes failures unsigned/unresolved without a duplicate signature after reload (mock wallet)",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 26,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "shows customer creation actions and a usable empty invoice state (UI fixture)",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 26,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "keeps an interrupted local marker locked when every wallet diagnostic request was lost",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 26,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "waits for server capability before showing a financial restriction",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 26,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "automatically restores an expired invoice quote and requires explicit cancellation before fresh terms",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 26,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "shows a sanitized database failure separately and retries only status reads",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 26,
+            "column": 6
+          }
+        }
+      ]
+    }
+  ]
+}

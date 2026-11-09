@@ -1,3 +1,15 @@
+# Self-service customer checkout — November 9, 2026 UTC
+
+**337/337 unit/integration tests pass.** The fresh complete browser suite passes **64 cases**, with **two intentional live-provider skips**, zero failures/flakes. Separate focused coverage passes **32/32**, and the phone-sized readiness/confirmation run passes **2/2**. These are separate runs, not additive totals. [Validation ledger](evidence/customer-checkout-validation-20261109.json) · [complete browser ledger](evidence/customer-checkout-browser-20261109.json) · [focused run](evidence/customer-checkout-focused-20261109.json) · [mobile run](evidence/customer-checkout-mobile-20261109.json).
+
+Tests use actual local customer authentication, real PDF upload/extraction and source review, with simulated signing/financial providers. Coverage includes readiness before quoting, exact Sui adapter/account binding, duplicate clicks, provider delay, automatic receipt delivery after refresh, saved report reopening, concurrent receipt workers, independent unsigned-expiry proofs, historical-hold protection, scheduler authentication, bounded source retention and provider-deletion failures. The targeted retention/database checks pass 23/23. No new live quote, financial signature, transaction submission or Walrus write was made.
+
+TypeScript, optimized build, packaged PDF/raster/OCR and source/test/configuration/documentation formatting pass. Lint has zero errors and one existing unused-import warning in unrelated local video tooling. The protected GitHub README is unchanged; its pre-existing Prettier differences were deliberately preserved. Secret scans include the new scheduler credential and existing local test-key variants; no public credential match was found. Physical extension acceptance of the changed checkout was not performed or inferred from the SDK/payment fixtures. [Customer workflow and operational details](CUSTOMER_CHECKOUT_2026-11-09.md).
+
+The earlier dated ledgers remain below with their original scope.
+
+---
+
 # Final project closeout — November 9, 2026 UTC
 
 Fresh validation against the preserved repository state passes **328/328 unit/integration tests**, with zero failures or skips, and the **complete optimized-app browser suite: 62 passes, two intentional live-provider skips, zero failures/flakes**. The earlier **31/31 targeted browser run** is a separate focused result, not an additional full-suite count. [Final validation ledger](evidence/final-closeout-validation.json) · [fresh complete browser ledger](evidence/final-closeout-browser.json) · [earlier targeted ledger](evidence/email-host-fix-browser-20261108.json).

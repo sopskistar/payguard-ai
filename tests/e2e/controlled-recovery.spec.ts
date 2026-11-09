@@ -198,14 +198,24 @@ test.describe('controlled recovery interface; disposable workspace and mocked fi
     }
     expect(f.writes).toEqual(f.specs.map((s) => s.id));
     await expect(
-      f.page.getByRole('button', { name: 'Request payment quote', exact: true }),
+      f.page.getByRole('button', {
+        name: /^(Request payment quote|Review purchase · 0.001 SUI)$/,
+        exact: true,
+      }),
     ).toBeDisabled();
     f.setEnabled(false);
     await f.panel.getByRole('button', { name: 'Refresh recovery status · read only' }).click();
     await expect(f.panel.getByText('Recovery window disabled')).toBeVisible();
     await expect(
-      f.page.getByRole('button', { name: 'Request payment quote', exact: true }),
-    ).toBeEnabled();
+      f.page.getByRole('button', {
+        name: /^(Request payment quote|Review purchase · 0.001 SUI)$/,
+        exact: true,
+      }),
+    ).toBeDisabled(); // Wallet readiness remains required after historical recovery closes.
+    await expect(f.page.getByLabel('Earlier payment recovery hold')).toHaveCount(0);
+    await expect(f.page.getByRole('status', { name: 'Wallet account check' })).toContainText(
+      'Not checked',
+    );
     await f.page.close();
   });
   test('an uncertain committed response never repeats or advances, including after reload, until the window is closed and status reconciled', async () => {

@@ -27,6 +27,7 @@ import {
 } from '@/lib/service-expiry';
 import {
   recoverExpiredService,
+  cancelService,
   ownedService,
   serviceRecoveryHolds,
   fulfillService,
@@ -524,4 +525,52 @@ it('keeps completed historical audits verified when one later normal purchase re
   });
   expect(status.records).toHaveLength(3);
   expect(status.records.every((r) => r.recoveredVerified)).toBe(true);
+});
+
+it('self-service cancellation of a new unsigned expired checkout requires independent proof while historical recovery stays disabled', async () => {
+  vi.stubEnv('SERVICE_EXPIRED_RECOVERY_ENABLED', 'false');
+  const f = await fixture();
+  const row = await ownedService(memberId, f.id);
+  await (
+    await db()
+  )
+    .update(s.servicePaymentIntents)
+    .set({ approval: { ...(row.approval as object), selfServiceExpiry: true } })
+    .where(eq(s.servicePaymentIntents.id, f.id));
+  const result = await cancelService(memberId, f.id);
+  expect(result.state).toBe('cancelled');
+  expect((await ownedService(memberId, f.id)).digest).toBeNull();
+  expect(await cancelService(memberId, f.id)).toMatchObject({ state: 'cancelled' });
+  await expect(recoverExpiredService(memberId, f.id)).rejects.toMatchObject({
+    code: 'RECOVERY_DISABLED',
+  });
+});
+it('does not release a new checkout on quote expiry when providers are uncertain or a wallet attempt exists', async () => {
+  vi.stubEnv('SERVICE_EXPIRED_RECOVERY_ENABLED', 'false');
+  const f = await fixture();
+  const row = await ownedService(memberId, f.id);
+  await (
+    await db()
+  )
+    .update(s.servicePaymentIntents)
+    .set({ approval: { ...(row.approval as object), selfServiceExpiry: true } })
+    .where(eq(s.servicePaymentIntents.id, f.id));
+  mock.evidence.mockResolvedValue([]);
+  expect(await cancelService(memberId, f.id)).toMatchObject({
+    state: 'approved',
+    recovered: false,
+    releasedAtomic: '0',
+  });
+  mock.evidence.mockImplementation(async (window) => evidence(window));
+  await (
+    await db()
+  )
+    .insert(s.auditEvents)
+    .values({ tenantId: memberId, type: 'service.wallet_requested', entityId: f.id, detail: {} });
+  expect(await cancelService(memberId, f.id)).toMatchObject({
+    state: 'approved',
+    recovered: false,
+    reason: 'UNSIGNED_CHECKOUT_REQUIRED',
+  });
+  expect((await ownedService(memberId, f.id)).state).toBe('approved');
 });

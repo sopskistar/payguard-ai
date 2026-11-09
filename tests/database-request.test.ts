@@ -46,3 +46,20 @@ it('closes on error without replaying the operation and uses a fresh next reques
   });
   expect(state.pools).toHaveLength(2);
 });
+it('gives deferred confirmation a fresh pool even when it inherits a completed request context', async () => {
+  vi.stubEnv('DATABASE_URL', 'fixture-never-connected');
+  let deferred!: () => Promise<unknown>;
+  await withDatabaseRequest(async () => {
+    const original = await db();
+    deferred = () =>
+      withDatabaseRequest(async () => {
+        const independent = await db();
+        expect(independent).not.toBe(original);
+        return independent;
+      }, true);
+    await deferred();
+    expect(await db()).toBe(original);
+  });
+  expect(state.pools).toHaveLength(2);
+  expect(state.pools.every((pool) => pool.end.mock.calls.length === 1)).toBe(true);
+});

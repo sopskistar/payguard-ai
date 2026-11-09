@@ -443,6 +443,12 @@ export async function quoteService(tenantId: string, invoiceId: string, operatio
     return old;
   }
   const invoice = await ownedInvoice(tenantId, invoiceId);
+  if (invoice.status === 'paid')
+    throw new AppError(
+      409,
+      'INVOICE_NOT_ELIGIBLE',
+      'This invoice is already paid. Your saved analysis receipts remain available.',
+    );
   const expectedPayer = await checkoutPayer(tenantId);
   await requireNoOtherServiceAttempt(tenantId);
   if (tenantId !== OWNER_ID && !publicServiceEnabled())
@@ -468,6 +474,28 @@ export async function quoteService(tenantId: string, invoiceId: string, operatio
       );
   }
   const context = await trustContext(tenantId, invoice);
+  if (tenantId !== OWNER_ID) {
+    const [delivered] = await d
+      .select({ id: s.servicePaymentIntents.id })
+      .from(s.servicePaymentIntents)
+      .innerJoin(
+        s.servicePaymentReceipts,
+        eq(s.servicePaymentReceipts.intentId, s.servicePaymentIntents.id),
+      )
+      .where(
+        and(
+          eq(s.servicePaymentIntents.tenantId, tenantId),
+          eq(s.servicePaymentIntents.invoiceId, invoiceId),
+          eq(s.servicePaymentIntents.instructionHash, context.instructionHash),
+        ),
+      );
+    if (delivered)
+      throw new AppError(
+        409,
+        'REPORT_AVAILABLE',
+        'Your report for these invoice instructions is already saved. Reopen it without another purchase.',
+      );
+  }
   if (!context.signals.length)
     throw new AppError(
       409,
@@ -530,7 +558,7 @@ export async function quoteService(tenantId: string, invoiceId: string, operatio
     },
     accepts: [terms],
   };
-  const [intent] = await d
+  const [created] = await d
     .insert(s.servicePaymentIntents)
     .values({
       id,
@@ -546,7 +574,10 @@ export async function quoteService(tenantId: string, invoiceId: string, operatio
       challenge,
       expiresAt: new Date(Date.now() + 300000),
     })
+    .onConflictDoNothing()
     .returning();
+  if (!created) return quoteService(tenantId, invoiceId, operationKey);
+  const intent = created;
   await audit(tenantId, 'service.challenge', id, {
     network,
     amountAtomic: SERVICE_AMOUNT,
@@ -739,6 +770,7 @@ export async function approveService(
       purpose: challenge.resource.description,
       sessionCapAtomic: SERVICE_SESSION_CAP,
       ...(prepared ? { prepared } : {}),
+      ...(tenantId !== OWNER_ID ? { selfServiceExpiry: true } : {}),
     };
     await tx
       .update(s.servicePaymentIntents)
@@ -767,6 +799,15 @@ export async function approveService(
   });
 }
 export async function cancelService(tenantId: string, id: string) {
+  const candidate = await ownedService(tenantId, id);
+  if (
+    tenantId !== OWNER_ID &&
+    candidate.state === 'approved' &&
+    candidate.expiresAt <= new Date() &&
+    storedPreparation(candidate.approval) &&
+    (candidate.approval as { selfServiceExpiry?: boolean })?.selfServiceExpiry === true
+  )
+    return recoverExpiredServiceCore(tenantId, id, true);
   return (await db()).transaction(async (tx) => {
     const [row] = await tx
       .select()
@@ -844,9 +885,13 @@ export async function cancelService(tenantId: string, id: string) {
 }
 // Explicitly enabled operator procedure, never called by quote/resume/cancel or a timer.
 // The HTTP caller must also be authenticated, origin-checked and own this intent.
-export async function recoverExpiredService(
+export async function recoverExpiredService(tenantId: string, id: string) {
+  return recoverExpiredServiceCore(tenantId, id);
+}
+async function recoverExpiredServiceCore(
   tenantId: string,
   id: string,
+  selfService = false,
 ): Promise<{
   state: string;
   recovered: boolean;
@@ -855,7 +900,7 @@ export async function recoverExpiredService(
   alreadyRecovered?: boolean;
   preparedDigest?: string;
 }> {
-  if (process.env.SERVICE_EXPIRED_RECOVERY_ENABLED !== 'true')
+  if (!selfService && process.env.SERVICE_EXPIRED_RECOVERY_ENABLED !== 'true')
     throw new AppError(
       403,
       'RECOVERY_DISABLED',
@@ -924,6 +969,14 @@ export async function recoverExpiredService(
       )
     )
       return held('SUBMISSION_REQUIRES_RECONCILIATION');
+    if (
+      selfService &&
+      (tenantId === OWNER_ID ||
+        row.expiresAt > new Date() ||
+        (row.approval as { selfServiceExpiry?: boolean })?.selfServiceExpiry !== true ||
+        events.some((e) => e.type.startsWith('service.wallet_')))
+    )
+      return held('UNSIGNED_CHECKOUT_REQUIRED');
     const challenge = row.challenge as ServiceChallenge;
     const terms = serviceTermsSchema.parse(challenge.accepts[0]);
     if (
@@ -1024,18 +1077,18 @@ export async function recoverExpiredService(
         .where(eq(s.serviceSpendingSessions.id, b.row.id));
     await tx
       .update(s.servicePaymentIntents)
-      .set({ state: 'expired-unexecuted' })
+      .set({ state: selfService ? 'cancelled' : 'expired-unexecuted' })
       .where(
         and(eq(s.servicePaymentIntents.id, id), eq(s.servicePaymentIntents.state, 'approved')),
       );
     await tx.insert(s.auditEvents).values({
       tenantId,
-      type: 'service.expiry_recovered',
+      type: selfService ? 'service.unsigned_expired' : 'service.expiry_recovered',
       entityId: id,
       detail: {
         reason: decision.reason,
         previousState: row.state,
-        state: 'expired-unexecuted',
+        state: selfService ? 'cancelled' : 'expired-unexecuted',
         preparedDigest: prepared.digest,
         window,
         evidence,
@@ -1054,7 +1107,7 @@ export async function recoverExpiredService(
       },
     });
     return {
-      state: 'expired-unexecuted',
+      state: selfService ? 'cancelled' : 'expired-unexecuted',
       recovered: true,
       alreadyRecovered: false,
       preparedDigest: prepared.digest,
@@ -1272,6 +1325,26 @@ export async function fulfillService(
       /* Submission can have succeeded. Reconcile the exact digest; never sign a replacement. */
     }
   }
+  return reconcileServicePayment(tenantId, id);
+}
+
+// Receipt-only: this function has no facilitator, signing or submission path.
+export async function reconcileServicePayment(tenantId: string, id: string) {
+  const row = await ownedService(tenantId, id);
+  const d = await db();
+  const [receipt] = await d
+    .select()
+    .from(s.servicePaymentReceipts)
+    .where(
+      and(
+        eq(s.servicePaymentReceipts.intentId, id),
+        eq(s.servicePaymentReceipts.tenantId, tenantId),
+      ),
+    );
+  if (receipt) return { state: 'settled', receipt };
+  const terms = serviceTermsSchema.parse((row.challenge as ServiceChallenge).accepts[0]);
+  const invoice = await ownedInvoice(tenantId, row.invoiceId);
+  const context = await trustContext(tenantId, invoice);
   if (row.state !== 'settling' || !row.digest || !row.payer)
     return {
       state: row.state,
@@ -1321,6 +1394,34 @@ export async function fulfillService(
     instructionChangedSinceQuote: context.instructionHash !== row.instructionHash,
   };
   const saved = await d.transaction(async (tx) => {
+    const [current] = await tx
+      .select()
+      .from(s.servicePaymentIntents)
+      .where(
+        and(eq(s.servicePaymentIntents.id, id), eq(s.servicePaymentIntents.tenantId, tenantId)),
+      )
+      .for('update');
+    if (
+      !current ||
+      current.digest !== row.digest ||
+      current.payer !== row.payer ||
+      !['settling', 'settled'].includes(current.state)
+    )
+      throw new AppError(
+        409,
+        'RECONCILIATION_STATE',
+        'The original payment remains protected while its evidence is checked.',
+      );
+    const [existing] = await tx
+      .select()
+      .from(s.servicePaymentReceipts)
+      .where(
+        and(
+          eq(s.servicePaymentReceipts.intentId, id),
+          eq(s.servicePaymentReceipts.tenantId, tenantId),
+        ),
+      );
+    if (existing) return existing;
     const [r] = await tx
       .insert(s.servicePaymentReceipts)
       .values({
@@ -1477,7 +1578,10 @@ export async function serviceProgress(tenantId: string, id: string, sessionKey?:
       row.spendingSessionId === budgetId(tenantId, sessionKey, terms.network),
     canCancel:
       ['quoted', 'approved'].includes(row.state) &&
-      !(prepared && terms.network === 'sui:mainnet') &&
+      (!(prepared && terms.network === 'sui:mainnet') ||
+        (tenantId !== OWNER_ID &&
+          row.expiresAt <= new Date() &&
+          (row.approval as { selfServiceExpiry?: boolean })?.selfServiceExpiry === true)) &&
       !row.payloadHash &&
       !row.digest &&
       !events.some((e) => e.type.startsWith('service.wallet_')),

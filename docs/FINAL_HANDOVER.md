@@ -1,5 +1,7 @@
 # PayGuard Verify — final handover
 
+The subsequent [self-service customer checkout release](CUSTOMER_CHECKOUT_2026-11-09.md) adds wallet readiness before quoting, automatic original-payment confirmation and scheduled source retention. The original closeout evidence below remains dated to its verified release.
+
 **EMAIL FORWARDING: VERIFIED.** The original external synthetic email completed in Production at **2026-11-08 22:37:20.237 UTC**, after the corrected release was verified live at 22:19:24 UTC. The original provider email, attachment and durable message keys are preserved. [Email evidence and chronology](LIVE_EMAIL_ACCEPTANCE_2026-11-08.md).
 
 One 18,241-byte PDF is retained in private Vercel Blob storage, with matching SHA-256, extracted invoice fields, **one administrator-owned document review draft and one intake audit**. The draft remains unsaved (`invoice_id = null`); source review does not establish supplier trust. Authenticated source preview and desktop/mobile review passed; anonymous and other-workspace document/preview access were denied.
@@ -23,8 +25,8 @@ The published technical article distinguishes the original hackathon evidence fr
 ## Operational limitations
 
 - Physical Nightly financial-signing acceptance remains unverified.
-- One separate, already-executed customer browser intent remains `settling` without its report/receipt. Only its owning customer's normal resume flow may reconcile it; closeout leaves its records unchanged and initiates no replacement payment.
+- The browser intent captured as `settling` in the original closeout is now handled by the receipt-only confirmation worker, using its original digest. Current delivery status is available in the owning customer’s saved report history; no replacement transaction is authorized.
 - Independent Resend management access and individual delivery-attempt timestamps are unavailable. Successful original processing is established by the Production records and source-review evidence.
-- Source access expires after seven days. Physical timed deletion requires the documented owner scheduler; expiry is not a provider-deletion claim. English OCR still requires human source review; no antivirus service is claimed.
+- Source access expires after seven days. The subsequent release schedules bounded daily source cleanup; provider deletion failures remain held and visible in retention results. English OCR still requires human source review; no antivirus service is claimed.
 
 [Sanitized email acceptance](evidence/live-email-acceptance-20261108.json) · [payment and memory preservation](evidence/email-closeout-preservation-20261108.json) · [owner operation](PAYGUARD_EMAIL_OWNER_SETUP.md).

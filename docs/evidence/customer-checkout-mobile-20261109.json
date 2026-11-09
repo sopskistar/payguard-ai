@@ -1,0 +1,48 @@
+{
+  "checkedAt": "2026-11-09T04:41:18.870Z",
+  "baseURL": "http://localhost:3038",
+  "storage": "New disposable local PGlite; not Neon",
+  "existingDataChanged": false,
+  "liveCredentials": false,
+  "financialSubmissions": false,
+  "memoryWrites": false,
+  "video": false,
+  "stats": {
+    "startTime": "2026-11-09T04:41:04.155Z",
+    "duration": 12731.779999999999,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "tests": [
+    {
+      "title": "customer wallet readiness comes before any quote or transaction preparation (wallet fixture)",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 26,
+            "column": 6
+          }
+        }
+      ]
+    },
+    {
+      "title": "automatically delivers a delayed report after refresh without another signature or submission (all providers mocked)",
+      "status": "expected",
+      "annotations": [
+        {
+          "type": "serial",
+          "location": {
+            "file": "/home/sopski/payguard-ai/tests/e2e/service-workflow.spec.ts",
+            "line": 26,
+            "column": 6
+          }
+        }
+      ]
+    }
+  ]
+}

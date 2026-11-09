@@ -783,6 +783,14 @@ export function Workspace({
                               >
                                 <BrainCircuit size={17} /> Correct this assessment
                               </button>
+                              {owner && invoice.status !== 'paid' && (
+                                <Link
+                                  className="button outline"
+                                  href={`/services?invoice=${invoice.id}`}
+                                >
+                                  Purchase deeper analysis · 0.001 SUI
+                                </Link>
+                              )}
                               <button
                                 className="button outline"
                                 disabled={!owner || invoice.status === 'paid'}
@@ -1247,8 +1255,8 @@ function TransactionPane({
       </p>
       {invoice && owner && (
         <p>
-          <Link className="inline-link" href="/services">
-            Request supplemental analysis · Mainnet service proposal
+          <Link className="inline-link" href={`/services?invoice=${invoice.id}`}>
+            Purchase deeper analysis · 0.001 SUI
           </Link>
         </p>
       )}

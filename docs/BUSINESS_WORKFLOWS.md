@@ -57,7 +57,7 @@ References: [Resend receiving](https://resend.com/docs/dashboard/receiving/intro
 
 `GET /api/intake-cleanup` is a scheduler boundary, disabled without an owner-configured `CRON_SECRET` of at least 32 characters. A configured scheduler must send its matching Bearer authorization. The legitimate administrator may alternatively invoke its same-origin authenticated POST. The task takes no tenant or document IDs, removes at most ten already-expired intake records per run, retains audit/checksum/invoice data, and reports held provider deletions instead of fabricating success.
 
-Configure the owner’s scheduler after private storage is ready. No recurring job or new secret is installed automatically by this release. Expired source access is denied even when physical cleanup is pending.
+The subsequent [customer-checkout release](CUSTOMER_CHECKOUT_2026-11-09.md) schedules this endpoint daily at 06:00 UTC through Vercel Cron, with a sensitive Production `CRON_SECRET`. The same-origin authenticated administrator POST remains available. Each run is bounded to ten expired source records; expired access remains denied while failed provider deletions are held for retry.
 
 ## Organization and maker-checker authority
 

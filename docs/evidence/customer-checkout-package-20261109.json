@@ -1,0 +1,12 @@
+{
+  "checkedAt": "2026-11-09T04:37:59.522Z",
+  "builtTrace": ".next/server/app/api/business/[[...path]]/route.js.nft.json",
+  "isolatedDependencies": true,
+  "sourceNodeModulesFallback": false,
+  "realPdfText": true,
+  "realPdfRasterPreview": true,
+  "realLocalImageOcr": true,
+  "databaseAccess": false,
+  "financialOperations": 0,
+  "providerWrites": 0
+}
