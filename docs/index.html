@@ -416,8 +416,11 @@
           automatically.
         </p>
         <p>
-          English OCR runs locally in the application. Optional email forwarding and retained
-          originals require owner-configured receiving webhooks and private storage. The original
+          English OCR runs locally in the application. Production has processed a genuine external
+          synthetic invoice through Resend receiving, a signed webhook, Private Blob storage and
+          administrator source review. Its sender and proposed destination remain untrusted. Email
+          forwarding is verified, with completed-message idempotency covered by isolated integration
+          tests. Other installations require owner receiving and storage configuration. The original
           video and evidence above represent the earlier submission and have not been regenerated to
           demonstrate these additions.
         </p>
@@ -425,12 +428,18 @@
           The owner-approved 16-record synthetic batch has completed. A fresh process verified 50
           distinct Walrus Mainnet blobs and 50 confirmed application records, including exact
           retrieval and provenance checks. The original three Mainnet analysis receipts remain
-          preserved. Physical Nightly customer financial acceptance remains unverified; a local SDK
-          test is a separate acceptance route.
+          preserved. A later customer terminal SDK purchase also finalized with independent Tatum
+          confirmation and a reopened saved report. Physical Nightly customer financial acceptance
+          remains unverified; the SDK signature is separate evidence.
         </p>
         <p>
           <a href="https://github.com/sopskistar/payguard-ai/blob/main/docs/BUSINESS_WORKFLOWS.md"
             >Business workflow and configuration</a
+          >
+          ·
+          <a
+            href="https://github.com/sopskistar/payguard-ai/blob/main/docs/LIVE_EMAIL_ACCEPTANCE_2026-11-08.md"
+            >Live email evidence</a
           >
           · <a href="https://payguard-ai-henna.vercel.app/app/business">Team Verification</a>
         </p>

@@ -1,10 +1,10 @@
 # Architecture
 
-PayGuard Verify is a Next.js application with personal wallet-authenticated accounts, explicitly shared business organizations and separate platform-owner administration. Public routes return explicitly synthetic fixtures. Server routes validate the session, origin, tenant ownership, input schema and quotas before touching owner records or providers. Supplier payments have no transaction-signing path. The separate first-party x402 service-payment pilot supports configured Mainnet and Testnet flows, with explicit financial approval and strict owner/member payer binding. Three developer-controlled Mainnet purchases are recorded; physical Nightly production financial acceptance remains independently unverified.
+PayGuard Verify is a Next.js application with personal wallet-authenticated accounts, explicitly shared business organizations and separate platform-owner administration. Public routes return explicitly synthetic fixtures. Server routes validate the session, origin, tenant ownership, input schema and quotas before touching owner records or providers. Supplier payments have no transaction-signing path. The separate first-party x402 service-payment pilot supports configured Mainnet and Testnet flows, with explicit financial approval and strict owner/member payer binding. The original three Mainnet purchases and later successful customer terminal SDK acceptance are preserved; physical Nightly production financial acceptance remains independently unverified. [Current payment evidence](MAINNET_PROOF.md).
 
 ```mermaid
 flowchart TD
-  File[Bounded PDF / TXT / CSV or manual form] --> Edit[Human edits extracted fields]
+  File[Bounded PDF / image / text upload or signed email intake] --> Edit[Human edits extracted fields]
   Edit --> Neon[(Neon PostgreSQL / Drizzle)]
   Neon --> Diff[Compare established recipient and reported instruction]
   Diff --> Rules[Deterministic findings]
@@ -45,6 +45,8 @@ Recalled text is untrusted. Exact stored text and blob ID must match an authoriz
 Memory OFF does not invoke semantic recall. It keeps baseline detection and mandatory rules. ON applies only actually returned, applicable citations. Review audit events distinguish fetched memories from those that influenced a finding.
 
 ## Provider and deployment boundaries
+
+Invoice email enters through a raw-signature-verified Resend webhook, one exact workspace alias, a durable original-message claim, authenticated provider metadata and bounded private attachment processing. The actual receiving API returned `cdn.resend.app`; only that exact additional host is accepted, with HTTPS, no credentials/nondefault port, no redirects and existing content/size limits. Extracted source remains an untrusted review draft. The original PDF and rendered preview are retained with Private Blob access behind tenant-authorized routes; storage credentials and provider download URLs never enter client responses. [Live email evidence and scope](LIVE_EMAIL_ACCEPTANCE_2026-11-08.md).
 
 Walrus is pinned to the managed Mainnet relayer. Tatum is pinned to native TLS gRPC with server-side `x-api-key`. Node route handlers use bounded calls and return unavailable/error states; there is no fabricated fallback. Manual digest lookup is the reliable demonstration path; bounded streaming discovery is provider-dependent, not complete archival history.
 

@@ -1,10 +1,18 @@
 # PayGuard receiving — owner setup
 
-The initial November 8 Production check saw the Resend API key, webhook secret and receiving domain, but reported **Private document storage missing**. The owner subsequently confirmed the store connection. The readiness correction recognizes either a read-write token or the complete platform OIDC credential pair supported by the installed SDK. A real private upload and external-email delivery must still pass before live acceptance is claimed. Recovery remains disabled. Checks use the application's legitimate administrator API without displaying secrets.
+Production configuration is complete. The owner-connected Private store and all four receiving settings are recognized without exposing credentials. The original external synthetic email completed on **November 8 at 22:37:20 UTC**: one exact PDF is privately retained, extracted and visible for source review in the administrator Invoice Inbox. The authenticated preview passes; anonymous and other-workspace access are denied. Recovery remains disabled. [Actual evidence and acceptance scope](LIVE_EMAIL_ACCEPTANCE_2026-11-08.md).
+
+## Current operation
+
+**EMAIL FORWARDING: VERIFIED.** The original email is complete; no new email, alias or replay is needed. Completed-message idempotency passes isolated integration tests and Production retains one document and one intake audit. Individual provider-attempt timestamps remain supplementary evidence because independent Resend management access is unavailable. No additional successful provider attempt is claimed.
+
+In the **administrator** Invoice Inbox, open **Document intake → Review extraction**. Compare the PDF and fields before checking the source-review box and choosing **Save & review invoice** when you intend to save it. Closeout verification leaves the original draft unsaved. Saving an invoice never establishes supplier trust.
 
 The receiving domain is **`invoices.flownix.xyz`**. A fresh DNS check finds MX priority 10 at `receive-euw1.forge.rmta.net`. The earlier no-MX result is historical. No root-domain Zoho or ShadowBid record was changed by this work.
 
-The owner reports a private store named **`payguard-private-invoices`**. A store name is not an authentication token or the environment-variable name required by the application. Complete the remaining steps without changing the working Resend setup:
+## Reference setup for another deployment
+
+The connected Private store is named **`payguard-private-invoices`**. A store name is not an authentication token or environment-variable name. The following setup reference is for a new installation; the existing Production configuration must not be repeated or replaced:
 
 1. Connect the **Private** store to the PayGuard project's Production environment. Vercel may supply `BLOB_STORE_ID` and its managed `VERCEL_OIDC_TOKEN`; both must be available for that supported mode. Do not manually copy or persist the short-lived OIDC token. For the owner's selected static-token path, use **Vercel → Storage → payguard-private-invoices → Projects → Update Project Connection → Add a read-write token env var to this connection**, with the default **`BLOB_READ_WRITE_TOKEN`** name and Production enabled. Its value must be the actual credential, not the store name. Never paste it in chat or commit it. See [Vercel's authentication instructions](https://vercel.com/docs/vercel-blob/using-blob-sdk#read-write-tokens).
 2. Redeploy the current Production release after saving the variable. Keep **`SERVICE_EXPIRED_RECOVERY_ENABLED=false`** and preserve the existing Resend settings. A successful deployment must make the application's forwarding readiness show no missing settings. This proves presence, while the subsequent real upload proves that the credential works with the Private store.

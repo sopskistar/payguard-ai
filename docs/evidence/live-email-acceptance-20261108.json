@@ -1,0 +1,144 @@
+{
+  "checkedAt": "2026-11-09T03:32:08.927Z",
+  "scope": "Genuine external email; original provider message; read-only validation",
+  "checks": [
+    {
+      "name": "ORIGINAL_PROVIDER_MESSAGE_COMPLETED",
+      "passed": true
+    },
+    {
+      "name": "EXACTLY_ONE_ADMINISTRATOR_DOCUMENT",
+      "passed": true
+    },
+    {
+      "name": "EXACT_SYNTHETIC_PDF_CONTENT",
+      "passed": true
+    },
+    {
+      "name": "PRIVATE_SOURCE_RETAINED_WITH_BOUNDED_RETENTION",
+      "passed": true
+    },
+    {
+      "name": "PDF_FIELDS_MATCH_SOURCE",
+      "passed": true
+    },
+    {
+      "name": "REVIEW_REQUIRED_NO_AUTOMATIC_TRUST_OR_INVOICE",
+      "passed": true
+    },
+    {
+      "name": "ONE_VERIFIED_PROVIDER_INTAKE_AUDIT",
+      "passed": true
+    },
+    {
+      "name": "LEGITIMATE_ADMINISTRATOR_SESSION",
+      "passed": true
+    },
+    {
+      "name": "DISTINCT_WORKSPACE_AUTHENTICATED",
+      "passed": true
+    },
+    {
+      "name": "OWNER_DOCUMENT_READ",
+      "passed": true
+    },
+    {
+      "name": "NO_PRIVATE_BLOB_URL_EXPOSED",
+      "passed": true
+    },
+    {
+      "name": "ACTUAL_PRIVATE_BLOB_PREVIEW_READ",
+      "passed": true
+    },
+    {
+      "name": "PRIVATE_NO_STORE_PREVIEW",
+      "passed": true
+    },
+    {
+      "name": "OTHER_WORKSPACE_DOCUMENT_AND_PREVIEW_DENIED",
+      "passed": true
+    },
+    {
+      "name": "ANONYMOUS_DOCUMENT_AND_PREVIEW_DENIED",
+      "passed": true
+    },
+    {
+      "name": "OTHER_WORKSPACE_INBOX_EXCLUDES_DOCUMENT",
+      "passed": true
+    },
+    {
+      "name": "OWNER_INBOX_HAS_ONE_REVIEW_DRAFT",
+      "passed": true
+    },
+    {
+      "name": "DESKTOP_REVIEW_NO_HORIZONTAL_OVERFLOW",
+      "passed": true
+    },
+    {
+      "name": "DESKTOP_REVIEW_READ_ONLY_NO_FINANCIAL_OR_SAVE_REQUEST",
+      "passed": true
+    },
+    {
+      "name": "MOBILE_REVIEW_NO_HORIZONTAL_OVERFLOW",
+      "passed": true
+    },
+    {
+      "name": "MOBILE_REVIEW_READ_ONLY_NO_FINANCIAL_OR_SAVE_REQUEST",
+      "passed": true
+    }
+  ],
+  "payments": 0,
+  "memoryWrites": 0,
+  "screenshots": [
+    "screenshots/live-email/desktop-review.png",
+    "screenshots/live-email/mobile-review.png"
+  ],
+  "documentId": "db8980ed-0d25-4f21-b03e-d70a9dfbe7dc",
+  "messageCompletedAt": "2026-11-08T22:37:20.237Z",
+  "sourceSha256": "2bdbe51af9d8a026a3d5f5ebee76d8fbd9ceb864c6c6472cc6ae87452bd325ed",
+  "bytes": 18241,
+  "documentStatus": "review",
+  "source": "email",
+  "extractedFields": {
+    "vendor": "Cypress Intake QA Synthetic",
+    "number": "SYN-EMAIL-20261105-01",
+    "issued": "2026-11-05",
+    "due": "2026-11-30",
+    "currency": "USD",
+    "amount": "1250.00",
+    "recipient": "bank:SYNTHETIC-EMAIL-QA-NOT-PAYABLE"
+  },
+  "intakeAuditCount": 1,
+  "providerSenderAuthentication": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+  },
+  "senderWarningCount": 1,
+  "previewSha256": "6c35b0f0ecc2aadd2fdbb16db041282b3f03ec3be3d47953a71322a7fd9571e0",
+  "verifiedReadOnlyDelivery": true,
+  "overallAcceptance": "EMAIL_FORWARDING_VERIFIED",
+  "originalIdentifiers": {
+    "providerEventId": "msg_3LqIC8uP4zAjS8cm7XIpCwErBQF",
+    "providerEventIdSource": "Owner-supplied original event; not a newly observed attempt",
+    "emailId": "87cbe9f6-3b95-4304-8db3-dbde5a693310",
+    "attachmentId": "ac48855c-12e2-4a73-8b4a-e71fdcc20a81",
+    "messageKey": "resend:87cbe9f6-3b95-4304-8db3-dbde5a693310",
+    "attachmentKey": "resend:87cbe9f6-3b95-4304-8db3-dbde5a693310:ac48855c-12e2-4a73-8b4a-e71fdcc20a81"
+  },
+  "duplicateCompletedEvent": {
+    "liveProviderRedeliveryConfirmed": false,
+    "isolatedIntegrationTestsPassed": true,
+    "codePath": "Completed message returns before provider fetch or document creation",
+    "additionalLiveReplayPerformed": false
+  },
+  "providerAttemptHistory": {
+    "managementAccessAvailable": false,
+    "additionalSuccessfulAttemptObserved": false,
+    "scope": "Supplementary; original persisted completion and review are verified"
+  },
+  "privateSenderAddressPublished": false,
+  "privateIntakeAddressPublished": false,
+  "signedUrlsPublished": false,
+  "credentialsPublished": false
+}

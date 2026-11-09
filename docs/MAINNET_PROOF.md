@@ -1,3 +1,26 @@
+# November 8 acceptance and preservation checkpoint
+
+The original three Mainnet settlements below remain intact. The later owner-approved **terminal SDK acceptance is verified independently of Nightly**:
+
+| Evidence                          | Verified result                                                                                   |
+| --------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Intent                            | `108c5f73-ceb3-4afe-aa47-10e96f4a4de7`                                                            |
+| Prepared and executed digest      | `7imzSd3vwTW7x5rdBYYqn7LWn1UAYmjpewT2bF73ZCS`                                                     |
+| Mainnet checkpoint / effects      | `342076083` / success                                                                             |
+| Independent Tatum merchant credit | **1,000,000 MIST / 0.001 SUI**                                                                    |
+| Receipt                           | `805af879-4162-4ce2-8cf5-af993c896410`, persisted customer report reopened without another charge |
+| Submission scope                  | One approved financial signature and one settlement request; no automatic replacement             |
+
+Existing November 8 wallet attempts also have read-only finalized Sui/Tatum evidence. One already has a receipt; digest `2xeyRARY91UvYNFNfL6XiJSTqNXtUW31ezkDADohgP1S` finalized successfully at checkpoint `343054969`, but its application record remains **`settling` with no receipt** in the latest read. Its payer must use the normal **Resume existing payment** action to reconcile that exact already-paid intent; no new signature, quote or payment is needed. Administrator credentials must not be used on that customer's private endpoint. [Independent provider evidence and limits](TATUM_PROOF.md).
+
+**Nightly browser-extension financial acceptance remains UNVERIFIED.** A cryptographic signature and finalized chain execution do not identify which extension's popup the owner approved, and a pending report cannot be counted as delivered.
+
+Fresh read-only comparison during email acceptance preserves all **31 intent rows, five receipts**, Harborline supplier/invoice/reference data and all **50 confirmed memory ID/job/blob/namespace tuples**. The three customer historical intents remain `expired-unexecuted`; the administrator intent remains separately `approved` and protected. Recovery is disabled. No payment or Walrus write was initiated by the email work. [Preservation and captured payment evidence](evidence/email-closeout-preservation-20261108.json). The 50-record provider verification remains the [November 5 confirmed batch evidence](evidence/approved-business-memory-verified-1793916025290.json); this preservation comparison is not relabeled as 50 new provider reads.
+
+The external email and private document evidence are recorded [separately](LIVE_EMAIL_ACCEPTANCE_2026-11-08.md). The approved hackathon video remains unchanged. Earlier dated counts below are retained as historical checkpoints.
+
+---
+
 # November 3 recovery checkpoint
 
 Read-only recovery confirmed **33 completed Walrus Mainnet records**, comprising the original 32 plus one member correction. Matching job/blob/namespace references were rechecked; original memory identities and all three settled receipt contents remained unchanged. [Provider check](evidence/recovered-walrus-provider-check.json) · [preservation check](evidence/nightly-account-preservation.json).

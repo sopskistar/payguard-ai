@@ -18,7 +18,7 @@ PayGuard makes the difference visible and retains the human verification require
 
 ## How it works
 
-1. Upload an invoice or enter its details. Review extracted fields against the source.
+1. Upload or forward an invoice, or enter its details. Review extracted fields against the source.
 2. Compare the proposed destination with the supplier’s established reference.
 3. Inspect changed recipients, conflicting instructions, payment links and embedded bypass requests.
 4. In a business workspace, submit a verification request to a different authorized identity.
@@ -34,7 +34,9 @@ Extracted fields remain suggestions. Missing and conflicting values require revi
 
 Uploads are limited to **3 MB**, with at most **15 PDF pages** or **3 scanned pages**. Raw originals are processed ephemerally by default. Optional retained attachments use private Vercel Blob storage behind tenant-authorized routes.
 
-The Resend inbound integration verifies raw webhook signatures, binds an unpredictable intake address to one workspace, deduplicates messages and handles attachments through the same review flow. **Live forwarding requires owner configuration and a real inbound acceptance test.** It is disabled when the receiving domain, provider credentials, webhook secret or private storage is absent. [Intake and setup boundaries](docs/BUSINESS_WORKFLOWS.md).
+Production has processed a **genuine external synthetic invoice email** through Resend at `invoices.flownix.xyz`: signed delivery, administrator-workspace routing, private PDF retention and extracted fields are confirmed. The document remains a review draft; no supplier destination was trusted automatically. Anonymous and other-workspace document access are denied. **EMAIL FORWARDING: VERIFIED.** Completed-message idempotency is covered by isolated integration tests. [Live evidence and acceptance scope](docs/LIVE_EMAIL_ACCEPTANCE_2026-11-08.md).
+
+Other deployments require owner-configured receiving credentials, webhook and private storage. Intake stays disabled when required configuration is missing. Workspace members never supply provider keys. [Intake and setup boundaries](docs/BUSINESS_WORKFLOWS.md).
 
 ## Supplier Change Timeline
 
@@ -56,15 +58,15 @@ The November 5 verification confirms **50 distinct Walrus Mainnet blobs and 50 c
 
 Every new record was retrieved with matching decrypted text in a fresh verification process. All **16 expanded policy contracts** and the existing **18/18 live-recall contracts** passed, retaining baseline holds and excluding stale or wrong-scope guidance. These are authored contract evaluations, not real-world fraud-detection accuracy scores. Retained history includes superseded and expired guidance; 50 memories does not mean 50 simultaneously applicable rules. [Approved batch](docs/BUSINESS_MEMORY_BATCH.md) · [methodology](docs/MEMORY_EVALUATION.md).
 
-The public Courtroom continues to show its dated, captured comparison. Current private recall and recorded public evidence remain distinct.
+An explicit human correction can stay private or, with separate consent, become minimized Walrus guidance for later recall. Corrections preserve provenance and the human verification hold. The public Courtroom remains a dated, captured comparison.
 
 ## Tatum and x402 evidence
 
-Three developer-controlled Sui Mainnet service purchases each credited the merchant **0.001 SUI**, with **three persisted reports and receipts**. Tatum provides independent native Sui gRPC verification; saved reports can be reopened without another charge. [Settlement evidence](docs/MAINNET_PROOF.md).
+The three original developer-controlled Sui Mainnet purchases each credited the merchant **0.001 SUI**, with their reports and receipts preserved. A later dedicated customer-wallet **terminal SDK acceptance also finalized**, with Tatum-confirmed 1,000,000 MIST merchant credit and a saved report reopened without another charge. Tatum provides independent native Sui gRPC verification. [Settlement evidence and current reconciliation](docs/MAINNET_PROOF.md) · [Tatum verification](docs/TATUM_PROOF.md).
 
 [Transaction 1](https://suivision.xyz/txblock/68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx) · [Transaction 2](https://suivision.xyz/txblock/xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r) · [Transaction 3](https://suivision.xyz/txblock/4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA)
 
-These are controlled experiments using synthetic invoices. **Physical Nightly customer financial-signing acceptance remains unverified.** A separate local test-wallet acceptance runner requires two typed terminal approvals and never treats an SDK signature as Nightly extension acceptance. A connection-only account match is not a finalized payment. Supplier invoice verification and the optional first-party analysis purchase have separate authorization and accounting. [Payment boundaries](docs/AGENT_PAYMENTS.md).
+These are controlled experiments using synthetic invoices. **Physical Nightly customer financial-signing acceptance remains unverified.** The successful terminal SDK test does not establish which browser extension approved an existing wallet transaction. A connection-only account match is not a finalized payment. Supplier invoice verification and the optional first-party analysis purchase have separate authorization and accounting. [Payment boundaries](docs/AGENT_PAYMENTS.md).
 
 ## Try the product
 
@@ -122,7 +124,7 @@ npm run test:e2e:qa
 
 The QA runner creates a disposable local database and disables live payment, memory, storage and email credentials. Tests cover document extraction, tenant isolation, maker-checker identity and concurrency, provenance, wallet adapter/payer binding and settlement integrity. Physical wallet acceptance and real provider configuration are reported separately. [Current results](docs/TEST_RESULTS.md).
 
-Release validation: **320 unit/integration passes**, **62 browser passes with two deliberate live-provider skips**, isolated serverless PDF/OCR acceptance, and the deployed synthetic maker-checker workflow. [Verified release and remaining owner actions](docs/AUTHORIZED_ACCEPTANCE_2026-11-05.md).
+Final validation: **328/328 unit/integration passes** and a fresh complete browser run with **62 passes, two intentional live-provider skips, zero failures or flakes**. The earlier focused browser run passed **31/31** separately. TypeScript, lint, formatting, production build and packaged PDF/OCR checks pass. Real email/storage evidence is recorded separately from provider fixtures. [Current test results](docs/TEST_RESULTS.md).
 
 OCR can misread payment details; human source review remains mandatory. No antivirus service is claimed. Private attachment retention and live email require owner setup. Increasing the memory count does not establish better fraud detection.
 
@@ -135,6 +137,7 @@ OCR can misread payment details; human source review remains mandatory. No antiv
 - [Memory evaluation](docs/MEMORY_EVALUATION.md)
 - [Mainnet proof](docs/MAINNET_PROOF.md)
 - [Testing](docs/TEST_RESULTS.md)
+- [Final handover](docs/FINAL_HANDOVER.md)
 - [Wallet security](docs/WALLET_SECURITY.md)
 
 ## License

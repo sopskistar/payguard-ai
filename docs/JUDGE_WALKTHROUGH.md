@@ -32,13 +32,14 @@ The payments are real **developer-controlled service experiments** using synthet
 
 ## Evidence at a glance
 
-| Evidence                   | Verified scope                                                                                                                                                                                    |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Walrus records             | **33 confirmed as of November 3, 2026**: original 32 plus one member correction; completed jobs and matching blobs rechecked. The public Courtroom's 32-record snapshot remains dated November 1. |
-| Cross-session context      | Real SDK recalls with owned blob/text provenance; tenant-scoped application checks and unchanged mandatory holds.                                                                                 |
-| Learning evaluation        | **18/18 authored synthetic contracts**, November 1; four actual recall queries. Not a real-world detection accuracy estimate.                                                                     |
-| Mainnet service payments   | **3 settlements / 0.003 SUI total merchant credit / 3 persisted reports**, independently rechecked November 3.                                                                                    |
-| Customer wallet acceptance | Free Nightly sign-in and private authoring are owner-confirmed. Physical production financial signing is **not independently verified**.                                                          |
+| Evidence                   | Verified scope                                                                                                                                                                                                |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Walrus records             | **50 provider-verified blobs / 50 confirmed application records**, verified November 5 and preserved during November 8 email work. The public Courtroom's 32-record snapshot remains dated November 1.        |
+| Cross-session context      | Real SDK recalls with owned blob/text provenance; tenant-scoped application checks and unchanged mandatory holds.                                                                                             |
+| Learning evaluation        | **18/18 authored synthetic contracts**, November 1; four actual recall queries. Not a real-world detection accuracy estimate.                                                                                 |
+| Mainnet service payments   | Original **3 settlements / 3 reports** preserved, plus successful customer terminal SDK acceptance with exact 0.001 SUI credit and reopened report. Existing browser reconciliation is documented separately. |
+| Customer wallet acceptance | Free Nightly sign-in and private authoring are owner-confirmed. Physical production financial signing is **not independently verified**.                                                                      |
+| Invoice email intake       | **EMAIL FORWARDING: VERIFIED** — genuine external PDF, signed Resend webhook, private storage, tenant-isolated source review and tested idempotency.                                                          |
 
 ## Supporting documentation
 
@@ -58,6 +59,7 @@ The approved YouTube demonstration and anonymous seven-step walkthrough show the
 To inspect the added workflow, use a private disposable or explicitly synthetic workspace:
 
 1. In **Invoice Inbox**, upload a PDF/image. Compare the rendered source with editable fields, missing values, contacts and payment references; confirm review before saving.
+   The configured administrator workspace also has a genuine forwarded synthetic PDF under **Document intake → Review extraction**. Its sender and proposed bank reference remain untrusted. [Real email evidence](LIVE_EMAIL_ACCEPTANCE_2026-11-08.md).
 2. Open **Vendor Trust** to inspect authentic supplier history and labeled database/Walrus evidence.
 3. In **Team Verification**, explicitly create a shared business workspace. A second person signs in independently with its own wallet; the administrator adds that existing identity as verifier.
 4. Submit an open invoice’s proposed destination. The requester cannot approve it, including after a role change.

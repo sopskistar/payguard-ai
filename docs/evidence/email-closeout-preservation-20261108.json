@@ -1,0 +1,130 @@
+{
+  "checkedAt": "2026-11-09T03:25:24.885Z",
+  "baselineAt": "2026-11-08T16:55:32.648Z",
+  "readOnly": true,
+  "sourceCommit": "7a5543c1ac7a1bb5547e3df19cc3e9efebbba9cc",
+  "recoveryEnabled": false,
+  "unchanged": {
+    "paymentIntents": true,
+    "paymentReceipts": true,
+    "memoryReferences": true,
+    "harborline": true
+  },
+  "counts": {
+    "intents": 31,
+    "receipts": 5,
+    "memories": 50,
+    "confirmedMemories": 50,
+    "distinctConfirmedBlobs": 50
+  },
+  "protectedIntentStates": [
+    {
+      "id": "544d939d-02d5-4d98-b549-69fb9fb501e8",
+      "state": "expired-unexecuted"
+    },
+    {
+      "id": "7a025238-06d9-43ca-8b5f-16ef7079f086",
+      "state": "expired-unexecuted"
+    },
+    {
+      "id": "d23937ed-1907-4e40-8156-488f453a921a",
+      "state": "expired-unexecuted"
+    },
+    {
+      "id": "b0386342-a7c2-40ba-909e-9edf17501767",
+      "state": "approved"
+    },
+    {
+      "id": "108c5f73-ceb3-4afe-aa47-10e96f4a4de7",
+      "state": "settled"
+    },
+    {
+      "id": "7b2c576b-172a-4ab9-8736-625e16b2fcb7",
+      "state": "settling"
+    }
+  ],
+  "sdkAcceptance": {
+    "checkedAt": "2026-11-05T23:25:19.193Z",
+    "intentId": "108c5f73-ceb3-4afe-aa47-10e96f4a4de7",
+    "digest": "7imzSd3vwTW7x5rdBYYqn7LWn1UAYmjpewT2bF73ZCS",
+    "checkpoint": "342076083",
+    "execution": "success",
+    "merchantCreditMist": "1000000",
+    "tatumConfirmed": true,
+    "receiptId": "805af879-4162-4ce2-8cf5-af993c896410",
+    "reportSha256": "4b200d8e6a696a45c5e4c645bfa5c8352e764f5d1ef6bf407d43a01ce3c02d03",
+    "reopenedWithoutCharge": true,
+    "financialSignatureCount": 1,
+    "settlementRequests": 1,
+    "submissionRetries": 0,
+    "localSdkAcceptance": "COMPLETE",
+    "nightlyExtensionFinancialAcceptance": "UNVERIFIED"
+  },
+  "existingBrowserProviderReads": {
+    "checkedAt": "2026-11-08T17:03:35.592Z",
+    "readOnly": true,
+    "submissionRequests": 0,
+    "signatureRequests": 0,
+    "results": [
+      {
+        "intentId": "1a4fe0a2-25e6-46b4-8f62-0f7f6a100ea4",
+        "digest": "7J34zZ1VnJt6RdvLbJRrnz387bcHrhstvbi3KAhBEcm7",
+        "preparedDigest": "7J34zZ1VnJt6RdvLbJRrnz387bcHrhstvbi3KAhBEcm7",
+        "fullnodeConfirmed": true,
+        "tatumConfirmed": true,
+        "network": "sui:mainnet",
+        "checkpoint": "343045220",
+        "merchantCreditMist": "1000000"
+      },
+      {
+        "intentId": "7b2c576b-172a-4ab9-8736-625e16b2fcb7",
+        "digest": "2xeyRARY91UvYNFNfL6XiJSTqNXtUW31ezkDADohgP1S",
+        "preparedDigest": "2xeyRARY91UvYNFNfL6XiJSTqNXtUW31ezkDADohgP1S",
+        "fullnodeConfirmed": true,
+        "tatumConfirmed": true,
+        "network": "sui:mainnet",
+        "checkpoint": "343054969",
+        "merchantCreditMist": "1000000"
+      }
+    ]
+  },
+  "originalEmailReadOnlyRevalidation": {
+    "checkedAt": "2026-11-09T03:29:49.362Z",
+    "phase": "before",
+    "readOnly": true,
+    "checks": {
+      "originalMessageCompleted": true,
+      "correctAdministratorWorkspace": true,
+      "originalAttachmentKey": true,
+      "exactPdf": true,
+      "privateRetention": true,
+      "extractionMatches": true,
+      "originalSubject": true,
+      "singleIntakeAudit": true,
+      "reviewDraftNoAutomaticInvoice": true,
+      "noSupplierTrust": true,
+      "sdkReceiptPreserved": true
+    },
+    "counts": {
+      "documents": 1,
+      "intakeAudits": 1,
+      "financialAudits": 106,
+      "receipts": 5
+    },
+    "fingerprints": {
+      "messages": "594f7fd80274cabde0ef1701e86813d0e846c9997b3d9da619501a8541005a98",
+      "documents": "c620d42702b55714c27bd03117c3d6285fd64d21c111e78fe53aa2eebf811e84",
+      "intakeAudits": "149f5446eef012515cc15e4c6589f6bcfb41b331c818dcf2bf29de2c940017a8",
+      "financialAudits": "9552e9261ce23c7486ad95a21dc911cc97aae55a0d22c3c6809df4b3400a8800",
+      "receipts": "2803c5045a717d776259354bc6e525881de6987565af8eb83c29cfaa5f5a3b8a"
+    },
+    "originalCompletionAt": "2026-11-08T22:37:20.237Z",
+    "financialActions": 0,
+    "memoryWrites": 0,
+    "providerAttachmentDownloads": 0,
+    "webhookReplays": 0,
+    "passed": true
+  },
+  "emailReleaseFinancialActions": 0,
+  "emailReleaseMemoryWrites": 0
+}

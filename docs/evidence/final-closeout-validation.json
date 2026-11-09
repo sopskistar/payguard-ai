@@ -1,0 +1,87 @@
+{
+  "checkedAt": "2026-11-09T03:34:01.367098+00:00",
+  "scope": "Final closeout; existing source preserved; documentation and sanitized evidence publication",
+  "unitIntegration": {
+    "success": true,
+    "numTotalTests": 328,
+    "numPassedTests": 328,
+    "numFailedTests": 0,
+    "numPendingTests": 0
+  },
+  "completeBrowser": {
+    "startTime": "2026-11-09T03:27:38.599Z",
+    "duration": 109030.229,
+    "expected": 62,
+    "skipped": 2,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "earlierFocusedBrowser": {
+    "passed": 31,
+    "failed": 0,
+    "skipped": 0,
+    "evidence": "email-host-fix-browser-20261108.json",
+    "freshCloseoutRun": false
+  },
+  "typecheck": "passed",
+  "lint": {
+    "errors": 0,
+    "warnings": 1,
+    "warningScope": "Pre-existing unused mkdir import in uncommitted demo-video/judge-final/capture-public.mjs"
+  },
+  "format": "passed",
+  "productionBuild": "passed; webpack; Next.js 16.4.3",
+  "packagedExtraction": {
+    "checkedAt": "2026-11-09T03:27:46.204Z",
+    "builtTrace": ".next/server/app/api/business/[[...path]]/route.js.nft.json",
+    "isolatedDependencies": true,
+    "sourceNodeModulesFallback": false,
+    "realPdfText": true,
+    "realPdfRasterPreview": true,
+    "realLocalImageOcr": true,
+    "databaseAccess": false,
+    "financialOperations": 0,
+    "providerWrites": 0
+  },
+  "liveAcceptance": {
+    "originalReadOnlyChecksPassed": 21,
+    "emailForwarding": "VERIFIED",
+    "freshRecordRevalidation": {
+      "originalMessageCompleted": true,
+      "correctAdministratorWorkspace": true,
+      "originalAttachmentKey": true,
+      "exactPdf": true,
+      "privateRetention": true,
+      "extractionMatches": true,
+      "originalSubject": true,
+      "singleIntakeAudit": true,
+      "reviewDraftNoAutomaticInvoice": true,
+      "noSupplierTrust": true,
+      "sdkReceiptPreserved": true
+    },
+    "providerAttemptHistoryIndependentlyAvailable": false,
+    "newProviderRedeliveryPerformed": false,
+    "freshReadOnlyChecksPassed": 21,
+    "freshReadOnlyCheckedAt": "2026-11-09T03:32:08.927Z"
+  },
+  "isolation": {
+    "browserDatabase": "Disposable local PGlite",
+    "liveProviderCredentials": false,
+    "productionMigrations": false,
+    "productionDataWrites": false,
+    "newPaymentQuotes": 0,
+    "financialSignatures": 0,
+    "settlementSubmissions": 0,
+    "walrusWrites": 0,
+    "duplicateEmailIngestions": 0
+  },
+  "preliminaryCommandFailures": [
+    "Sandbox Next.js TypeScript subprocess capture; successful build outside sandbox",
+    "Concurrent typecheck observed regenerated Next.js types; sequential final typecheck passed"
+  ],
+  "secretScan": {
+    "exactConfiguredSecretsAndLocalKey": "No matches in 1118 source, build and private log files",
+    "patternsAndSignedUrls": "No findings in 741 source, documentation and built artifact files",
+    "evidence": "final-closeout-secret-scan.json"
+  }
+}
