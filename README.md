@@ -92,13 +92,15 @@ npm run test:intake:package
 npm run test:e2e:qa
 ```
 
-## Limits and operational notes
+## Security and operational safeguards
 
-- OCR and extracted payment details can be wrong. **Human verification remains mandatory.**
-- Two separately authenticated wallets do not, by themselves, prove that two distinct people performed an offline supplier check.
-- The previously pending browser purchase has been reconciled with its original transaction and its report delivered without a replacement charge. Automated receipt checks are best-effort, not guaranteed instant settlement.
-- Private source access expires after seven days. Daily cleanup is scheduled at 06:00 UTC; its first scheduled invocation had not yet been independently observed at closeout. No antivirus scanner is claimed.
-- The 50 Walrus records include historical/superseded material; the count does not imply 50 currently applicable policies.
+PayGuard is designed for verification-sensitive workflows. Extracted invoice details require human review, supplier destination changes remain subject to independent approval, and payment confirmation is reconciled without duplicate charges.
+
+Private documents use restricted storage with scheduled retention cleanup. Walrus Memory preserves consented, minimized verification context, including historical corrections and superseded guidance, with scope and provenance checks.
+
+The application distinguishes verified Mainnet evidence from simulated tests and documents outstanding integration-specific acceptance checks separately.
+
+For implementation details, testing evidence and operational limitations, see the [Architecture](docs/ARCHITECTURE.md), [Test Results](docs/TEST_RESULTS.md) and [Final Handover](docs/FINAL_HANDOVER.md).
 
 ## Documentation
 
