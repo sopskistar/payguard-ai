@@ -76,9 +76,11 @@ Private invoice attachments can be retained in **Private Vercel Blob**; invoice 
 
 [Walrus evidence](docs/BUSINESS_MEMORY_BATCH.md) · [Mainnet settlement evidence](docs/MAINNET_PROOF.md) · [Email acceptance](docs/LIVE_EMAIL_ACCEPTANCE_2026-11-08.md) · [Self-service checkout](docs/CUSTOMER_CHECKOUT_2026-11-09.md) · [Test results](docs/TEST_RESULTS.md)
 
-**Wallet acceptance distinction:** The terminal SDK settlement is independently verified. The owner reports that Nightly extension signing worked in a different browser, but the project’s documented physical Nightly acceptance remains **unverified** until that browser transaction, merchant credit, and report are matched to provider evidence. Connection-only account matching is not payment proof.
+### Verification boundaries
 
-The original public [Memory Courtroom](https://payguard-ai-henna.vercel.app/courtroom) is a dated comparison, not a claim of continuous anonymous live recall. Memory evaluations use authored synthetic scenarios, not a measured real-world fraud-detection rate.
+**Wallet payments.** The recorded Sui Mainnet purchase through the terminal SDK has independently verified merchant credit, a persisted receipt, and a delivered report. Full end-to-end acceptance of a payment signed through the **Nightly browser extension** remains outside the independently verified evidence set. Connecting a wallet and matching its account establishes readiness, not payment completion. See the [settlement evidence](docs/MAINNET_PROOF.md) and [checkout verification](docs/CUSTOMER_CHECKOUT_2026-11-09.md).
+
+**Memory evaluation.** The public [Memory Courtroom](https://payguard-ai-henna.vercel.app/courtroom) presents recorded Memory ON/OFF comparisons from controlled synthetic scenarios, with evidence and provenance. It is a reproducible demonstration of the verification workflow, not an anonymous live Walrus recall service or a measured real-world fraud-detection benchmark. See the [memory evaluation](docs/MEMORY_EVALUATION.md).
 
 ## Try PayGuard
 
