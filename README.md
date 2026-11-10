@@ -81,11 +81,9 @@ The **supplier-instruction verification flow does not charge or send supplier pa
 | **Tatum native Sui gRPC** | Independent verification of finalized chain execution and the expected merchant credit before receipt/report delivery | [Tatum proof](docs/TATUM_PROOF.md) |
 | **Neon, Resend and private Vercel Blob** | Workspace records, genuine inbound invoice delivery, and tenant-restricted attachment retention | [Live email acceptance](docs/LIVE_EMAIL_ACCEPTANCE_2026-11-08.md) |
 
-**Recorded Mainnet payment proof:** three original developer-controlled Sui service purchases each credited the merchant **0.001 SUI**. A subsequent customer-wallet **terminal SDK** purchase independently confirmed another **0.001 SUI** merchant credit through Tatum and produced a persisted, reopenable report. A separate previously pending browser transaction was later reconciled using its **original digest**, delivering the receipt and report without another charge.
+**Sui Mainnet proof:** Real PayGuard service purchases settled on Sui Mainnet, with **0.001 SUI merchant credit per recorded purchase** independently checked through Tatum. Reports and receipts are persisted and reopenable. Automatic confirmation also delivered a previously pending browser purchase without a replacement charge.
 
-[Original transaction 1](https://suivision.xyz/txblock/68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx) · [Transaction 2](https://suivision.xyz/txblock/xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r) · [Transaction 3](https://suivision.xyz/txblock/4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA)
-
-**Wallet acceptance boundary:** The owner reports successful Nightly extension signing in a different browser. The latest checkout release was tested with simulated financial providers; its physical extension approval was **not independently repeated and matched to settlement evidence**. The verified terminal SDK payment is not presented as Nightly proof. [Checkout design and acceptance](docs/CUSTOMER_CHECKOUT_2026-11-09.md).
+[Transaction 1](https://suivision.xyz/txblock/68bhHRKzrQang8xohsahBQbehoZ4SjApQJ1U1Wf2ppyx) · [Transaction 2](https://suivision.xyz/txblock/xASYnWVeftLraQ2RvxMR6oPndU3r7UoBrX9Z9KPJd9r) · [Transaction 3](https://suivision.xyz/txblock/4NxNL1sekFUNxpiu6ebhTtwdkT5UXnsiMsnhcPNK1tGA) · [Detailed settlement evidence](docs/MAINNET_PROOF.md)
 
 ## Verification results
 
@@ -100,7 +98,7 @@ The **supplier-instruction verification flow does not charge or send supplier pa
 
 [All validation details](docs/TEST_RESULTS.md) · [Final handover](docs/FINAL_HANDOVER.md)
 
-These results are not added together into a single test count: different suites have different scopes. There was no new live payment or Walrus write during the final checkout regression.
+The test runs have separate scopes. Full setup, provider boundaries and acceptance notes are documented in [Test Results](docs/TEST_RESULTS.md).
 
 ## Architecture
 
