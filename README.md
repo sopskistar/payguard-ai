@@ -10,9 +10,22 @@ PayGuard Verify helps businesses spot changed supplier payment instructions, hol
 
 *The approved video documents the original hackathon submission. Invoice forwarding, supplier timelines, and team verification were added afterward.*
 
+## Start here: see the problem and the proof
+
+| Path | What you can inspect |
+| --- | --- |
+| [Interactive walkthrough](https://payguard-ai-henna.vercel.app/try) | Follow a synthetic supplier invoice through discrepancy review without a wallet or payment. |
+| [Memory Courtroom](https://payguard-ai-henna.vercel.app/courtroom) | Compare a documented memory-assisted case with the memory-off path; it is a dated demonstration, not continuous live recall. |
+| [Mainnet proof](https://payguard-ai-henna.vercel.app/proof) | Inspect the recorded Walrus memories, Sui/x402 settlement evidence, and limits on what the payments prove. |
+| [Technical tests](docs/TEST_RESULTS.md) | Read the actual unit, browser and provider acceptance results, including deliberate skips. |
+
+The product is primarily a **verification workflow**, not an automated payment system. No financial transaction is required to understand its core value.
+
 ## Why PayGuard exists
 
 A supplier invoice can look legitimate even when its payment destination has changed. An email address, logo, or familiar business name is not enough to establish that new instructions are trustworthy.
+
+**A practical example:** A business has paid the same supplier for months. A new invoice looks familiar but requests a different receiving account. Copying the new details into the payment system would be fast—and risky. PayGuard treats the change as something to investigate, surfaces the established-versus-proposed instructions, and requires an independent review instead of treating an invoice as authority. This is an illustrative situation, not a claim that a real fraud attempt was prevented.
 
 PayGuard gives teams a place to compare the proposed destination with their established records, capture independent verification, and retain useful context without removing the human decision.
 
@@ -26,6 +39,15 @@ PayGuard gives teams a place to compare the proposed destination with their esta
 6. **Recall what matters.** With separate approval, store minimized guidance in Walrus Memory and retrieve applicable context in later reviews.
 
 An approved supplier reference does **not** authorize a funds transfer. PayGuard supports informed decisions; it does not guarantee fraud prevention or automatically establish supplier identity.
+
+## What makes PayGuard different
+
+- **Trust comes from independent verification, not document appearance.** Extracted invoice text is editable source material; it cannot establish a trusted recipient by itself.
+- **A second person owns the sensitive decision.** A requester cannot approve their own destination change, and prior approval is not silently reused after material changes.
+- **Memory is scoped and correctable.** Walrus stores approved, minimized verification context with provenance and supersession checks—not the raw invoice by default.
+- **Payment evidence has a separate boundary.** Optional Sui/x402 analysis payments prove the documented settlement and report-delivery paths, not whether a supplier is legitimate.
+
+The value is less repeated checking and better decision history **without replacing human authorization**. No measured fraud-prevention or time-savings rate is claimed.
 
 ## Features
 
