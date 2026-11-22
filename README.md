@@ -153,3 +153,42 @@ For precise test boundaries, supported configurations, the first scheduled clean
 ## License
 
 [MIT](LICENSE).
+
+---
+
+## Cloud Engineering & DevOps
+
+*Project-specific engineering evidence; only repository-supported capabilities are listed.*
+
+### Cloud platforms
+- Hosted Next.js workflow using Neon PostgreSQL, private Vercel Blob and Resend email integration.
+- Server-side invoice analysis and tenant-scoped storage; Sui and Walrus services are separately integrated.
+
+### DevOps & CI/CD
+- Repository documents regression tests, production review and release evidence.
+- Deployment is not proof of Kubernetes, Terraform, or a production high-availability platform.
+
+### Networking & API engineering
+- Incoming email, server APIs, tenant authorization and independent supplier confirmation are distinct trust boundaries.
+- Sui/x402 payment integration and Walrus Memory gateway calls are backed by recorded external evidence.
+
+### Monitoring & reliability
+- Records human approval gates, retained audit state and deliberate provider failure/skip conditions.
+- Tenant-restricted attachment retention and automated cleanup are documented; no tested full recovery drill is claimed.
+
+### Architecture & infrastructure diagram
+
+```mermaid
+flowchart LR
+  U[Business user] --> V[Next.js on Vercel]
+  E[Resend inbound email] --> V
+  V --> N[(Neon PostgreSQL)]
+  V --> B[Private Vercel Blob]
+  V --> W[Walrus Memory and Sui services]
+```
+
+**Deployment:** https://payguard-ai-henna.vercel.app
+
+**Technical documentation and evidence:** [Architecture and implementation](docs/BUSINESS_WORKFLOWS.md) · [Mainnet proof](docs/MAINNET_PROOF.md) · [Email validation](docs/LIVE_EMAIL_ACCEPTANCE_2026-11-08.md) · [Final handover](docs/FINAL_HANDOVER.md).
+
+**Current limits:** External payment receipts and documented runs are not customer adoption claims. No Terraform or Kubernetes is claimed.
